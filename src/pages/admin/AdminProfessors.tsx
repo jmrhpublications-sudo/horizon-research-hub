@@ -56,7 +56,7 @@ const AdminProfessors = memo(() => {
                             <DialogHeader>
                                 <DialogTitle className="font-serif italic text-2xl text-gold">Assign New Member</DialogTitle>
                             </DialogHeader>
-                            <form onSubmit={handleAuth} className="space-y-6 pt-4">
+                            <form onSubmit={handleCreate} className="space-y-6 pt-4">
                                 <div className="space-y-2">
                                     <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Full Scholarly Name</label>
                                     <Input
@@ -131,8 +131,8 @@ const AdminProfessors = memo(() => {
                                     )}
                                 </div>
                             </div>
-                        </div> Standard Rules.
-          ))}
+                        </div>
+                    ))}
 
                     {professors.length === 0 && (
                         <div className="lg:col-span-3 py-32 text-center border-2 border-dashed border-white/5 rounded-[40px] flex flex-col items-center justify-center space-y-4">

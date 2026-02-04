@@ -31,7 +31,7 @@ interface JMRHContextType {
     papers: Paper[];
     currentUser: User | null;
     setCurrentUser: (user: User | null) => void;
-    registerUser: (name: string, email: string) => void;
+    registerUser: (name: string, email: string) => User;
     banUser: (userId: string) => void;
     unbanUser: (userId: string) => void;
     createProfessor: (name: string, email: string) => void;

@@ -75,11 +75,11 @@ const VisionMission = memo(() => {
                                             {item.text}
                                         </p>
                                     </div>
-                                </div> Standard Rules.
-              ))}
+                                </div>
+                            ))}
                         </div>
                     </div>
-                </motion.div> Standard Rules.
+                </motion.div>
             </div>
         </section>
     );

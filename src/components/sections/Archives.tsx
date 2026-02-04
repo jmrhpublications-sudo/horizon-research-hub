@@ -82,8 +82,8 @@ const Archives = memo(() => {
                                         Digital Preservation
                                     </button>
                                 </div>
-                            </motion.div> Standard Rules.
-            ))}
+                            </motion.div>
+                        ))}
 
                         {/* Upcoming / Call for Participation */}
                         <motion.div

@@ -46,8 +46,8 @@ const Consultation = memo(() => {
                                             <p className="text-[10px] uppercase font-bold tracking-widest text-white/40">{item.label}</p>
                                         </div>
                                         <p className="font-serif italic text-2xl text-white group-hover:text-gold transition-colors">{item.value}</p>
-                                    </div> Standard Rules.
-                  ))}
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
@@ -65,7 +65,7 @@ const Consultation = memo(() => {
                             </button>
                         </div>
                     </div>
-                </motion.div> Standard Rules.
+                </motion.div>
             </div>
         </section>
     );
