@@ -1,87 +1,74 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
-import { Coffee, Shield, Compass, Edit3, CheckCircle2 } from "lucide-react";
-import { fadeIn, staggerContainer } from "@/hooks/use-scroll-animation";
+import { Mail, Clock, ShieldCheck, Zap } from "lucide-react";
 
-const consultationPoints = [
-    { icon: Compass, text: "Clarifying Research Direction" },
-    { icon: Shield, text: "Strengthening Research Design" },
-    { icon: Coffee, text: "Responding to Reviewer Comments" },
-    { icon: Edit3, text: "Improving Manuscript Quality" },
-    { icon: CheckCircle2, text: "Ethical & Plagiarism Compliance" },
-];
-
-const Consultation = () => {
+const Consultation = memo(() => {
     return (
-        <section id="consultation" className="py-24 bg-white relative overflow-hidden">
+        <section id="consultation" className="py-32 bg-bg-alt relative overflow-hidden">
             <div className="container mx-auto px-6 lg:px-12 relative z-10">
                 <motion.div
-                    variants={staggerContainer}
-                    initial="initial"
-                    whileInView="animate"
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
-                    className="grid lg:grid-cols-12 gap-12 items-center"
+                    transition={{ duration: 0.8 }}
+                    className="bg-oxford rounded-[60px] p-16 lg:p-24 relative overflow-hidden shadow-2xl"
                 >
-                    {/* Content Block */}
-                    <motion.div variants={fadeIn} className="lg:col-span-7 space-y-8">
-                        <div className="space-y-4">
-                            <p className="section-label text-gold">One-to-One Excellence</p>
-                            <h2 className="section-title text-charcoal text-4xl lg:text-5xl leading-tight">
-                                Personal Academic <br />
-                                <span className="italic">Consultation</span>
-                            </h2>
-                        </div>
+                    {/* Decorative Pattern */}
+                    <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} />
 
-                        <p className="text-charcoal/70 text-lg font-sans leading-relaxed max-w-2xl">
-                            JMRH offers confidential, individualized academic consultations to address specific
-                            research challenges faced by scholars and academicians. Each consultation is
-                            scholarly, non-commercial, and strictly academic in nature, aimed at long-term
-                            research excellence.
-                        </p>
+                    {/* Accent Glow */}
+                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/10 rounded-full blur-[120px] -mr-[250px] -mt-[250px]" />
+                    <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-teal/10 rounded-full blur-[100px] -ml-[200px] -mb-[200px]" />
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {consultationPoints.map((point, idx) => (
-                                <div key={idx} className="flex items-center gap-3 p-4 bg-cream/30 border border-charcoal/5 group hover:bg-white hover:shadow-xl transition-all duration-500">
-                                    <point.icon className="w-4 h-4 text-gold group-hover:scale-125 transition-transform" />
-                                    <span className="font-serif text-charcoal text-sm italic">{point.text}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </motion.div>
-
-                    {/* Luxury Card Block */}
-                    <motion.div
-                        variants={fadeIn}
-                        className="lg:col-span-5 bg-charcoal p-10 lg:p-12 relative overflow-hidden shadow-2xl"
-                    >
-                        {/* Background Accent */}
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 -mr-16 -mt-16 rounded-full blur-3xl" />
-
-                        <div className="relative z-10 space-y-8">
-                            <div className="space-y-2">
-                                <p className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Inquiry</p>
-                                <h3 className="font-serif text-3xl text-cream italic">Request Consultation</h3>
+                    <div className="grid lg:grid-cols-2 gap-24 items-center relative z-10">
+                        <div className="space-y-12">
+                            <div className="space-y-6">
+                                <p className="section-label text-gold">Institutional Access</p>
+                                <h2 className="section-title text-white text-5xl lg:text-6xl font-bold leading-tight">
+                                    Scholarly <br />
+                                    <span className="italic academic-underline after:bg-white/20 py-1">Consultation Desk</span>
+                                </h2>
+                                <p className="text-white/60 text-xl leading-relaxed font-sans italic">
+                                    Engage with our editorial board for guidance on indexing standards, research quality improvement, and publication-ready formatting.
+                                </p>
                             </div>
 
-                            <p className="text-cream/50 text-sm font-sans leading-relaxed">
-                                Connect with our editorial office to schedule a confidential session.
-                                Focus on academic growth and methodological rigor.
-                            </p>
-
-                            <div className="space-y-4 pt-4 font-serif italic text-cream/80">
-                                <p className="border-b border-white/10 pb-2">Academic & Strictly Research-Oriented</p>
-                                <p className="border-b border-white/10 pb-2">Confidential & Individualized Sessions</p>
-                                <p className="border-b border-white/10 pb-2">Non-Commercial Institutional Guidance</p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+                                {[
+                                    { icon: Clock, label: "Response Window", value: "48 Academic Hours" },
+                                    { icon: ShieldCheck, label: "Security", value: "Verified institutional comms" },
+                                    { icon: Mail, label: "Correspondence", value: "editorial@jmrh.org" },
+                                    { icon: Zap, label: "Efficiency", value: "Direct scholar support" }
+                                ].map((item, idx) => (
+                                    <div key={idx} className="space-y-3 group">
+                                        <div className="flex items-center gap-3">
+                                            <item.icon className="w-5 h-5 text-gold group-hover:scale-125 transition-transform" />
+                                            <p className="text-[10px] uppercase font-bold tracking-widest text-white/40">{item.label}</p>
+                                        </div>
+                                        <p className="font-serif italic text-2xl text-white group-hover:text-gold transition-colors">{item.value}</p>
+                                    </div> Standard Rules.
+                  ))}
                             </div>
+                        </div>
 
-                            <button className="w-full bg-gold text-charcoal py-4 px-8 text-xs uppercase tracking-[0.2em] font-bold hover:bg-cream transition-colors duration-500">
-                                Book a Session
+                        <div className="bg-white/5 border border-white/10 p-12 rounded-[40px] space-y-10 group hover:border-gold/30 transition-all duration-700">
+                            <h4 className="font-serif italic text-3xl text-white font-bold leading-snug">" Advancing research from local insight to global impact. "</h4>
+                            <div className="space-y-6">
+                                <div className="h-[1.5px] w-20 bg-gold/50" />
+                                <p className="text-sm text-white/40 leading-[1.8] font-sans">
+                                    Our consultation framework is designed specifically for PhD scholars and university researchers
+                                    aiming to uphold the highest metrics of international scholarly excellence.
+                                </p>
+                            </div>
+                            <button className="w-full h-16 bg-white text-oxford rounded-none text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-gold hover:text-white transition-all shadow-xl">
+                                Initiate Consultation
                             </button>
                         </div>
-                    </motion.div>
-                </motion.div>
+                    </div>
+                </motion.div> Standard Rules.
             </div>
         </section>
     );
-};
+});
 
 export default Consultation;

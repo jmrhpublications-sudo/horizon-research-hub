@@ -1,7 +1,6 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, Users, ShieldCheck, Globe, Library } from "lucide-react";
-import { fadeIn, staggerContainer } from "@/hooks/use-scroll-animation";
 
 const commitments = [
   {
@@ -28,66 +27,66 @@ const commitments = [
 
 const AboutSection = memo(() => {
   return (
-    <section id="about" className="py-24 bg-white relative overflow-hidden">
+    <section id="about" className="py-32 bg-white relative overflow-hidden">
       <div className="container mx-auto px-6 lg:px-12 relative z-10">
         <motion.div
-          variants={staggerContainer}
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid lg:grid-cols-2 gap-16 items-center"
+          initial={{ opacity: 0, scale: 0.98 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="grid lg:grid-cols-2 gap-20 items-center"
         >
           {/* Left: Content */}
-          <motion.div variants={fadeIn} className="space-y-8">
+          <div className="space-y-10">
             <div className="space-y-4">
-              <p className="section-label text-gold">Academic Initiative</p>
-              <h2 className="section-title text-charcoal leading-tight">
-                About the Journal & <br />
-                <span className="italic underline decoration-gold/20 underline-offset-8">Academic Initiative</span>
+              <p className="section-label">Institutional Core</p>
+              <h2 className="section-title text-5xl leading-tight">
+                Strengthening the Quality & <br />
+                <span className="italic academic-underline py-1">Impact of Research</span>
               </h2>
             </div>
 
-            <p className="text-charcoal/70 text-lg leading-relaxed font-sans max-w-xl">
+            <p className="text-text-muted text-lg leading-[1.8] font-sans max-w-xl">
               JMRH is an academic publishing and research development platform established to
               strengthen the quality, integrity, and impact of multidisciplinary research.
               The journal serves as a bridge between research theory, academic practice, and
               real-world application.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
               {commitments.map((item, idx) => (
-                <div key={idx} className="space-y-3 group px-4 py-6 border-l border-gold/10 hover:border-gold transition-all duration-500 bg-cream/20">
-                  <div className="flex items-center gap-3">
-                    <item.icon className="w-5 h-5 text-gold" />
-                    <h3 className="font-serif text-charcoal font-medium">{item.title}</h3>
+                <div key={idx} className="space-y-4 group p-6 premium-card border-none bg-bg-alt">
+                  <div className="w-12 h-12 bg-white flex items-center justify-center rounded-lg shadow-sm group-hover:bg-gold transition-colors duration-500">
+                    <item.icon className="w-6 h-6 text-teal group-hover:text-white transition-colors" />
                   </div>
-                  <p className="text-xs text-charcoal/50 leading-relaxed font-sans">
+                  <h3 className="font-serif text-xl text-oxford leading-tight group-hover:text-teal transition-colors font-bold">{item.title}</h3>
+                  <p className="text-sm text-text-subtle leading-relaxed font-sans">
                     {item.description}
                   </p>
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
 
-          {/* Right: Visual/Image Placeholder replacement */}
-          <motion.div
-            variants={fadeIn}
-            className="relative lg:h-[600px] w-full bg-cream border border-charcoal/5 overflow-hidden flex items-center justify-center group"
-          >
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80')] bg-cover bg-center grayscale opacity-10 group-hover:scale-105 transition-transform duration-1000" />
-            <div className="relative z-10 p-12 text-center space-y-6">
-              <div className="w-20 h-20 border border-gold/30 mx-auto flex items-center justify-center rotate-45 group-hover:rotate-90 transition-transform duration-1000">
-                <Library className="w-8 h-8 text-gold -rotate-45 group-hover:-rotate-90 transition-transform duration-1000" />
+          {/* Right: Institutional Block */}
+          <div className="relative lg:h-[700px] w-full bg-oxford overflow-hidden flex items-center justify-center group rounded-2xl shadow-2xl">
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80')] bg-cover bg-center grayscale opacity-20 group-hover:scale-105 transition-transform duration-[2000ms]" />
+            <div className="relative z-10 p-16 text-center space-y-8 border border-white/10 m-8 w-full h-[calc(100%-4rem)] flex flex-col justify-center items-center">
+              <div className="w-24 h-24 border-2 border-gold/40 flex items-center justify-center rotate-45 group-hover:rotate-90 transition-transform duration-[1500ms]">
+                <Library className="w-10 h-10 text-gold -rotate-45 group-hover:-rotate-90 transition-transform duration-[1500ms]" />
               </div>
-              <h3 className="font-serif italic text-2xl text-charcoal">"Strengthening Research Impact"</h3>
-              <div className="w-12 h-[1px] bg-gold/40 mx-auto" />
-              <p className="text-[10px] uppercase tracking-[0.3em] text-gold">ESTABLISHED 2025</p>
+              <h3 className="font-serif italic text-3xl text-white leading-relaxed">" Empowering scholars to cross the frontiers of knowledge "</h3>
+              <div className="w-20 h-[1.5px] bg-gold/50" />
+              <div className="space-y-1">
+                <p className="text-[10px] uppercase tracking-[0.5em] text-gold font-bold">Foundation Excellence</p>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-ui italic">Academic Year 2025</p>
+              </div>
             </div>
 
-            {/* Decorative corners */}
-            <div className="absolute top-0 right-0 w-24 h-24 border-t border-r border-gold/40 m-4" />
-            <div className="absolute bottom-0 left-0 w-24 h-24 border-b border-l border-gold/40 m-4" />
-          </motion.div>
+            {/* Corner Accents */}
+            <div className="absolute top-0 right-0 w-32 h-32 border-t-2 border-r-2 border-gold/30 m-6" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 border-b-2 border-l-2 border-gold/30 m-6" />
+          </div>
         </motion.div>
       </div>
     </section>
