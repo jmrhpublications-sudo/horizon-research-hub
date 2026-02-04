@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { Target, BookOpen, BookCopy, Info, CheckCircle2 } from "lucide-react";
 import { fadeIn, staggerContainer } from "@/hooks/use-scroll-animation";
@@ -11,16 +12,16 @@ const aims = [
 ];
 
 const disciplines = [
-  { name: "Commerce & Management", color: "bg-blue-50" },
-  { name: "Economics & Finance", color: "bg-green-50" },
-  { name: "Education & Psychology", color: "bg-purple-50" }, // This is bg color for variety, text/brand will still be charcoal/gold
-  { name: "Social Sciences & Humanities", color: "bg-orange-50" },
-  { name: "Science & Technology", color: "bg-cyan-50" },
-  { name: "Environmental & Sustainability", color: "bg-emerald-50" },
-  { name: "Digital Transformation & Innovation", color: "bg-indigo-50" },
+  { name: "Commerce & Management" },
+  { name: "Economics & Finance" },
+  { name: "Education & Psychology" },
+  { name: "Social Sciences & Humanities" },
+  { name: "Science & Technology" },
+  { name: "Environmental & Sustainability" },
+  { name: "Digital Transformation & Innovation" },
 ];
 
-const AimsAndScopeSection = () => {
+const AimsAndScopeSection = memo(() => {
   return (
     <section id="scope" className="py-24 bg-cream/30 relative">
       <div className="container mx-auto px-6 lg:px-12">
@@ -111,6 +112,6 @@ const AimsAndScopeSection = () => {
       </div>
     </section>
   );
-};
+});
 
 export default AimsAndScopeSection;

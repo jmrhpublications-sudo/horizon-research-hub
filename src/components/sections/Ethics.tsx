@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { ShieldAlert, Fingerprint, Lock, ShieldCheck, FileWarning } from "lucide-react";
 import { fadeIn, staggerContainer } from "@/hooks/use-scroll-animation";
@@ -10,7 +11,7 @@ const ethicalStandards = [
     { icon: FileWarning, title: "Handling Misconduct", detail: "Transparent protocols for investigating and correcting ethical breaches." },
 ];
 
-const Ethics = () => {
+const Ethics = memo(() => {
     return (
         <section id="ethics" className="py-24 bg-charcoal text-cream overflow-hidden">
             <div className="container mx-auto px-6 lg:px-12">
@@ -49,9 +50,9 @@ const Ethics = () => {
                         <div className="relative z-10 space-y-10">
                             {ethicalStandards.map((std, idx) => (
                                 <div key={idx} className="flex gap-6 group">
-                                    <std.icon className="w-6 h-6 text-gold group-hover:scale-125 transition-transform" />
+                                    <std.icon className="w-6 h-6 text-gold group-hover:scale-125 transition-transform duration-500" />
                                     <div className="space-y-1">
-                                        <h4 className="font-serif text-lg tracking-wide text-cream">{std.title}</h4>
+                                        <h4 className="font-serif text-lg tracking-wide text-cream group-hover:text-gold transition-colors">{std.title}</h4>
                                         <p className="text-xs text-cream/40 font-sans leading-relaxed uppercase tracking-widest">{std.detail}</p>
                                     </div>
                                 </div>
@@ -62,6 +63,6 @@ const Ethics = () => {
             </div>
         </section>
     );
-};
+});
 
 export default Ethics;

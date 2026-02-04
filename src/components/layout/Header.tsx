@@ -1,23 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, BookOpen, GraduationCap } from "lucide-react";
+import { Menu, X, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Vision", href: "#vision" },
-  { label: "Mentorship", href: "#mentorship" },
-  { label: "Scope", href: "#scope" },
-  { label: "Editorial", href: "#editorial" },
-  { label: "Ethics", href: "#ethics" },
-  { label: "Guidelines", href: "#guidelines" },
-  { label: "Archives", href: "#archives" },
-  { label: "Contact", href: "#contact" },
+  { label: "About", href: "/about" },
+  { label: "Guidelines", href: "/guidelines" },
+  { label: "Editorial", href: "/editorial-board" },
+  { label: "Ethics", href: "/ethics-policy" },
+  { label: "Archives", href: "/archives" },
+  { label: "Contact", href: "/contact" },
 ];
 
-const Header = () => {
+const Header = memo(() => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -25,13 +24,22 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Prevent scroll when menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [isMenuOpen]);
+
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "bg-white/95 backdrop-blur-md border-b border-charcoal/5 py-4" : "bg-cream/40 py-6"}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "bg-white/95 backdrop-blur-md border-b border-charcoal/5 py-3" : "bg-cream/40 py-5"}`}>
       <div className="container mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-charcoal flex items-center justify-center rotate-45 group-hover:rotate-90 transition-transform duration-700">
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 bg-charcoal flex items-center justify-center rotate-45 group-hover:rotate-90 transition-transform duration-700 shadow-lg group-hover:shadow-gold/20">
               <BookOpen className="w-5 h-5 text-gold -rotate-45 group-hover:-rotate-90 transition-transform duration-700" />
             </div>
             <div className="flex flex-col">
@@ -40,36 +48,39 @@ const Header = () => {
               </span>
               <span className="text-[8px] uppercase tracking-[0.4em] text-charcoal/40 font-bold">Research Horizon</span>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden xl:flex items-center gap-6">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.label}
-                href={link.href}
-                className="text-[10px] uppercase tracking-[0.2em] font-bold text-charcoal/60 hover:text-gold transition-colors duration-300 relative group"
+                to={link.href}
+                className={`text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-300 relative group py-2 
+                  ${location.pathname === link.href ? "text-gold" : "text-charcoal/60 hover:text-gold"}`}
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full" />
-              </a>
+                <span className={`absolute -bottom-0 left-0 h-[1px] bg-gold transition-all duration-300 
+                  ${location.pathname === link.href ? "w-full" : "w-0 group-hover:w-full"}`}
+                />
+              </Link>
             ))}
           </nav>
 
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-4">
-            <Button variant="ghost" size="sm" className="font-serif italic text-charcoal hover:bg-transparent hover:text-gold">
-              Archives
+            <Button variant="ghost" size="sm" asChild className="font-serif italic text-charcoal hover:bg-transparent hover:text-gold">
+              <Link to="/archives">Archives</Link>
             </Button>
-            <Button variant="hero" size="sm" className="rounded-none bg-charcoal text-cream px-6 hover:bg-gold hover:text-charcoal transition-all duration-500">
-              Submit Manuscript
+            <Button variant="hero" size="sm" asChild className="rounded-none bg-charcoal text-cream px-6 hover:bg-gold hover:text-charcoal transition-all duration-500 shadow-md">
+              <Link to="/contact">Submit Manuscript</Link>
             </Button>
           </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="xl:hidden p-2 text-charcoal"
+            className="xl:hidden p-2 text-charcoal hover:text-gold transition-colors"
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -83,43 +94,54 @@ const Header = () => {
             initial={{ opacity: 0, x: "100%" }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-50 lg:hidden bg-charcoal text-cream p-8 flex flex-col"
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            className="fixed inset-0 z-50 xl:hidden bg-charcoal text-cream p-8 flex flex-col"
           >
-            <div className="flex justify-between items-center mb-12">
-              <span className="font-serif text-2xl italic text-gold">JMRH Portal</span>
-              <button onClick={() => setIsMenuOpen(false)} className="p-2 border border-white/10">
+            <div className="flex justify-between items-center mb-16">
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-6 h-6 text-gold" />
+                <span className="font-serif text-2xl italic text-gold">JMRH Portal</span>
+              </div>
+              <button onClick={() => setIsMenuOpen(false)} className="p-3 border border-white/10 rounded-none hover:bg-white/5 transition-colors">
                 <X className="w-6 h-6" />
               </button>
             </div>
 
-            <nav className="flex flex-col gap-6">
+            <nav className="flex flex-col gap-8">
               {navLinks.map((link, idx) => (
-                <motion.a
+                <motion.div
                   key={link.label}
-                  href={link.href}
-                  onClick={() => setIsMenuOpen(false)}
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.05 }}
-                  className="font-serif text-3xl italic hover:text-gold transition-colors text-left"
                 >
-                  {link.label}
-                </motion.a>
+                  <Link
+                    to={link.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className={`font-serif text-4xl italic transition-all block
+                      ${location.pathname === link.href ? "text-gold pl-4 border-l-2 border-gold" : "hover:text-gold"}`}
+                  >
+                    {link.label}
+                  </Link>
+                </motion.div>
               ))}
             </nav>
 
-            <div className="mt-auto space-y-4">
-              <Button variant="gold" size="xl" className="w-full rounded-none">
-                Submit Manuscript
+            <div className="mt-auto space-y-6 pt-12 border-t border-white/5">
+              <Button variant="gold" size="xl" asChild className="w-full rounded-none tracking-widest font-bold h-16 text-lg">
+                <Link to="/contact" onClick={() => setIsMenuOpen(false)}>SUBMIT MANUSCRIPT</Link>
               </Button>
-              <p className="text-[10px] uppercase tracking-widest text-center text-white/20">© 2025 JMRH Publications</p>
+              <div className="flex justify-between items-center px-2">
+                <p className="text-[8px] uppercase tracking-widest text-white/20">© 2025 JMRH Publications</p>
+                <div className="h-[1px] flex-1 mx-4 bg-white/5" />
+                <p className="text-[8px] uppercase tracking-widest text-gold animate-pulse">Scholar Access</p>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </header>
   );
-};
+});
 
 export default Header;

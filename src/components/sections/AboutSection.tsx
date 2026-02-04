@@ -1,5 +1,6 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
-import { BookOpen, Users, ShieldCheck, Globe, Library, Rocket } from "lucide-react";
+import { BookOpen, Users, ShieldCheck, Globe, Library } from "lucide-react";
 import { fadeIn, staggerContainer } from "@/hooks/use-scroll-animation";
 
 const commitments = [
@@ -25,7 +26,7 @@ const commitments = [
   },
 ];
 
-const AboutSection = () => {
+const AboutSection = memo(() => {
   return (
     <section id="about" className="py-24 bg-white relative overflow-hidden">
       <div className="container mx-auto px-6 lg:px-12 relative z-10">
@@ -91,6 +92,6 @@ const AboutSection = () => {
       </div>
     </section>
   );
-};
+});
 
 export default AboutSection;

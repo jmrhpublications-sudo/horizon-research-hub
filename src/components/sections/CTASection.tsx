@@ -1,8 +1,10 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { fadeIn } from "@/hooks/use-scroll-animation";
 
-const CTASection = () => {
+const CTASection = memo(() => {
   return (
     <section className="py-32 bg-charcoal relative overflow-hidden">
       <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80')] bg-fixed bg-cover" />
@@ -28,13 +30,15 @@ const CTASection = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8 pt-6">
-            <Button variant="hero" size="xl" className="rounded-none bg-gold text-charcoal hover:bg-cream transition-all duration-500 px-12 group relative overflow-hidden">
-              <span className="relative z-10">Submit Your Manuscript</span>
-              <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+            <Button variant="hero" size="xl" asChild className="rounded-none bg-gold text-charcoal hover:bg-cream transition-all duration-500 px-12 group relative overflow-hidden">
+              <Link to="/contact">
+                <span className="relative z-10">Submit Your Manuscript</span>
+                <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+              </Link>
             </Button>
-            <a href="#contact" className="text-xs uppercase tracking-[0.3em] font-bold text-cream border-b border-cream/20 pb-1 hover:text-gold hover:border-gold transition-all duration-300">
+            <Link to="/contact" className="text-xs uppercase tracking-[0.3em] font-bold text-cream border-b border-cream/20 pb-1 hover:text-gold hover:border-gold transition-all duration-300">
               Editorial Inquiry →
-            </a>
+            </Link>
           </div>
         </motion.div>
       </div>
@@ -44,6 +48,6 @@ const CTASection = () => {
       <div className="absolute bottom-0 left-0 w-full h-[1px] bg-white/10" />
     </section>
   );
-};
+});
 
 export default CTASection;

@@ -1,6 +1,7 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
-import { GraduationCap, MapPin, Mail, BookMarked, ShieldCheck } from "lucide-react";
-import { fadeIn, staggerContainer } from "@/hooks/use-scroll-animation";
+import { GraduationCap, MapPin, Mail, ShieldCheck } from "lucide-react";
+import { fadeIn } from "@/hooks/use-scroll-animation";
 
 const editors = [
   {
@@ -27,7 +28,7 @@ const editors = [
   },
 ];
 
-const EditorialBoardSection = () => {
+const EditorialBoardSection = memo(() => {
   return (
     <section id="editorial" className="py-24 bg-white relative">
       <div className="container mx-auto px-6 lg:px-12">
@@ -119,6 +120,6 @@ const EditorialBoardSection = () => {
       </div>
     </section>
   );
-};
+});
 
 export default EditorialBoardSection;

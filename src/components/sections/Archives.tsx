@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { Download, FileText, Calendar, ExternalLink } from "lucide-react";
 import { fadeIn, staggerContainer } from "@/hooks/use-scroll-animation";
@@ -8,7 +9,7 @@ const issues = [
     { volume: "Volume 1", issue: "Issue 3", date: "Mar 2025", articles: 10 },
 ];
 
-const Archives = () => {
+const Archives = memo(() => {
     return (
         <section id="archives" className="py-24 bg-cream overflow-hidden">
             <div className="container mx-auto px-6 lg:px-12">
@@ -85,6 +86,6 @@ const Archives = () => {
             </div>
         </section>
     );
-};
+});
 
 export default Archives;
