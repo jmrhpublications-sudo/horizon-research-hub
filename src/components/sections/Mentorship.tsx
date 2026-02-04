@@ -58,11 +58,11 @@ const Mentorship = memo(() => {
                                         <h4 className="font-serif text-2xl text-oxford font-bold group-hover:text-teal transition-colors leading-tight">{item.title}</h4>
                                         <p className="text-sm text-text-muted font-sans italic opacity-80 leading-relaxed font-bold">{item.text}</p>
                                     </div>
-                                </div> Standard Rules.
-              ))}
+                                </div>
+                            ))}
                         </div>
                     </div>
-                </motion.div> Standard Rules.
+                </motion.div>
             </div>
         </section>
     );

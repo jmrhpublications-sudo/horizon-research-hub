@@ -72,8 +72,8 @@ const Ethics = memo(() => {
                                         <p className="text-[10px] text-white/30 font-ui uppercase tracking-[0.2em] font-bold">{std.detail}</p>
                                         <div className="h-[1px] w-0 bg-gold/30 mt-2 group-hover/item:w-full transition-all duration-700" />
                                     </div>
-                                </motion.div> Standard Rules apply to all authors.
-               ))}
+                                </motion.div>
+                            ))}
                         </div>
                     </div>
                 </motion.div>

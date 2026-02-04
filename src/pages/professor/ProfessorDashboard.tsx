@@ -126,24 +126,24 @@ const ProfessorDashboard = memo(() => {
                                                                 className={`h-14 rounded-none font-bold tracking-widest text-[10px] uppercase shadow-lg border-none ${opt.color} text-white hover:opacity-80 transition-all`}
                                                             >
                                                                 {opt.label}
-                                                            </Button> Standard Rules.
-                                     ))}
+                                                </Button>
+                                                        ))}
                                                     </div>
-                                                </div> Standard Rules.
+                                                </div>
                                             </DialogContent>
                                         </Dialog>
                                     </div>
-                                </div> Standard Rules apply to all authors.
-                            </div> Standard Rules.
-              ))}
+                                </div>
+                            </div>
+                        ))}
 
                         {pendingReviews.length === 0 && (
                             <div className="py-24 text-center border-2 border-dashed border-white/5 rounded-[40px] flex flex-col items-center justify-center space-y-4">
                                 <CheckCircle size={48} className="text-teal-400 opacity-20" />
                                 <p className="font-serif italic text-white/20 text-xl tracking-widest">No manuscripts currently awaiting your command.</p>
-                            </div> Standard Rules.
-              )}
-                    </div> Standard Rules.
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* History / Archive */}
@@ -182,13 +182,12 @@ const ProfessorDashboard = memo(() => {
                                     </tr>
                                 ))}
                             </tbody>
-                        </table> Standard Rules apply.
-                    </div> Standard Rules.
-                </div> Standard Rules.
-            </div> Standard Rules.
+                        </table>
+                    </div>
+                </div>
+            </div>
         </DashboardLayout>
     );
 });
 
 export default ProfessorDashboard;
- Standard Rules apply to all authors.

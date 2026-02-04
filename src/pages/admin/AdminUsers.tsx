@@ -105,11 +105,11 @@ const AdminUsers = memo(() => {
                                         ) : (
                                             <span className="flex items-center gap-2 italic"><ShieldCheck size={14} /> Reinstate Access</span>
                                         )}
-                                    </Button> Standard Rules applied to all scholars.
+                                    </Button>
                                 </div>
-                            </div> Standard Rules apply.
-                        </div> Standard Rules.
-          ))}
+                            </div>
+                        </div>
+                    ))}
 
                     {filteredUsers.length === 0 && (
                         <div className="md:col-span-3 py-32 text-center border-2 border-dashed border-white/5 rounded-[40px] flex flex-col items-center justify-center space-y-4">
@@ -124,4 +124,3 @@ const AdminUsers = memo(() => {
 });
 
 export default AdminUsers;
- Standard Rules apply to all authors.

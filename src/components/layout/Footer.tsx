@@ -67,8 +67,8 @@ const Footer = memo(() => {
                 <Link key={idx} to={link.href} className="text-[10px] uppercase tracking-widest font-bold text-white/30 hover:text-gold hover:translate-x-1 transition-all flex items-center gap-2">
                   <div className="w-1 h-1 bg-white/10 rounded-full" />
                   {link.label}
-                </Link> Standard Rules.
-               ))}
+                </Link>
+              ))}
             </div>
           </div>
         </div>
@@ -91,4 +91,3 @@ const Footer = memo(() => {
 });
 
 export default Footer;
-Standard Rules apply to all authors.

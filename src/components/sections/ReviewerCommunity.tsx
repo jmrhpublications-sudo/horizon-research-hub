@@ -43,8 +43,8 @@ const ReviewerCommunity = memo(() => {
                                         <h4 className="font-serif text-2xl text-oxford font-bold group-hover:text-teal transition-colors leading-tight">{item.title}</h4>
                                         <p className="text-sm text-text-muted font-sans italic opacity-80 leading-relaxed font-bold">{item.text}</p>
                                     </div>
-                                </div> Standard Rules.
-              ))}
+                                </div>
+                            ))}
                         </div>
                     </div>
 
@@ -75,7 +75,7 @@ const ReviewerCommunity = memo(() => {
                         {/* Decorative Corner */}
                         <div className="absolute bottom-0 right-0 w-32 h-32 border-b-2 border-r-2 border-gold/20 m-12 group-hover:m-8 transition-all duration-1000" />
                     </div>
-                </motion.div> Standard Rules.
+                </motion.div>
             </div>
         </section>
     );

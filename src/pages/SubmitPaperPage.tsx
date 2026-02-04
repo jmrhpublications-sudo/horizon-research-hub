@@ -148,4 +148,3 @@ const SubmitPaperPage = memo(() => {
 });
 
 export default SubmitPaperPage;
- Standard Rules.
