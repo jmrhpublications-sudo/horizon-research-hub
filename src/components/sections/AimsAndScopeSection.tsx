@@ -1,103 +1,109 @@
 import { motion } from "framer-motion";
-import { Target, BookOpen, BookCopy, Info } from "lucide-react";
+import { Target, BookOpen, BookCopy, Info, CheckCircle2 } from "lucide-react";
+import { fadeIn, staggerContainer } from "@/hooks/use-scroll-animation";
 
 const aims = [
-  "Advance scholarly knowledge through rigorous and original interdisciplinary research.",
-  "Encourage the integration of diverse academic perspectives to address complex real-world challenges.",
-  "Provide a credible and inclusive publication platform for both emerging scholars and established researchers.",
-  "Uphold the highest standards of research ethics, transparency, and academic integrity.",
-  "Promote meaningful collaboration among researchers across disciplines and institutions.",
+  "Mentor scholars in producing high-quality academic research.",
+  "Maintain rigorous peer-review and ethical publishing standards.",
+  "Encourage interdisciplinary and socially relevant research.",
+  "Support emerging researchers through structured academic guidance.",
+  "Ensure transparent and equitable scholarly communication.",
 ];
 
 const disciplines = [
-  "Commerce & Management",
-  "Economics & Finance",
-  "Education & Psychology",
-  "Social Sciences & Humanities",
-  "Science & Technology",
-  "Environmental Studies",
-  "Digital Transformation",
+  { name: "Commerce & Management", color: "bg-blue-50" },
+  { name: "Economics & Finance", color: "bg-green-50" },
+  { name: "Education & Psychology", color: "bg-purple-50" }, // This is bg color for variety, text/brand will still be charcoal/gold
+  { name: "Social Sciences & Humanities", color: "bg-orange-50" },
+  { name: "Science & Technology", color: "bg-cyan-50" },
+  { name: "Environmental & Sustainability", color: "bg-emerald-50" },
+  { name: "Digital Transformation & Innovation", color: "bg-indigo-50" },
 ];
 
 const AimsAndScopeSection = () => {
   return (
-    <section id="about" className="py-24 bg-cream-dark">
+    <section id="scope" className="py-24 bg-cream/30 relative">
       <div className="container mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          variants={fadeIn}
+          initial="initial"
+          whileInView="animate"
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-20 max-w-3xl mx-auto"
         >
-          <p className="section-label mb-4">Journal Foundation</p>
-          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-charcoal">
-            Aims and <span className="italic">Scope</span>
+          <p className="section-label text-gold mb-4">Academic clarity</p>
+          <h2 className="section-title text-charcoal">
+            Aims and <span className="italic italic underline decoration-gold/20 underline-offset-8">Scope</span>
           </h2>
+          <p className="mt-6 text-charcoal/60 font-sans leading-relaxed">
+            JMRH encourages original, unpublished research that integrates multiple academic
+            disciplines and contributes to contemporary academic and societal challenges.
+          </p>
         </motion.div>
 
         {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
           {/* Journal Aims */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            className="lg:col-span-5 space-y-10"
           >
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-12 h-12 bg-charcoal rounded-lg flex items-center justify-center">
-                <Target className="w-5 h-5 text-cream" />
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-charcoal flex items-center justify-center rotate-45">
+                <Target className="w-5 h-5 text-gold -rotate-45" />
               </div>
-              <h3 className="font-serif text-2xl text-charcoal">Journal Aims</h3>
+              <h3 className="font-serif text-2xl text-charcoal uppercase tracking-wider">Our Aims</h3>
             </div>
-            <ul className="space-y-5">
+
+            <ul className="space-y-6">
               {aims.map((aim, index) => (
-                <li key={index} className="flex items-start gap-4">
-                  <span className="w-1.5 h-1.5 bg-gold rounded-full mt-2.5 shrink-0" />
-                  <p className="text-muted-foreground leading-relaxed">{aim}</p>
-                </li>
+                <motion.li key={index} variants={fadeIn} className="flex items-start gap-4 p-4 border-l border-gold/10 hover:border-gold hover:bg-white transition-all duration-500">
+                  <CheckCircle2 className="w-5 h-5 text-gold shrink-0 mt-0.5" />
+                  <p className="font-serif italic text-charcoal text-lg">{aim}</p>
+                </motion.li>
               ))}
             </ul>
           </motion.div>
 
           {/* Publication Scope */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            className="lg:col-span-7 space-y-10"
           >
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-12 h-12 bg-cream border border-gold rounded-lg flex items-center justify-center">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 border border-gold flex items-center justify-center">
                 <BookOpen className="w-5 h-5 text-gold" />
               </div>
-              <h3 className="font-serif text-2xl text-charcoal">Publication Scope</h3>
+              <h3 className="font-serif text-2xl text-charcoal uppercase tracking-wider">Research Focus</h3>
             </div>
-            <div className="space-y-3">
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {disciplines.map((discipline, index) => (
                 <motion.div
-                  key={discipline}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: index * 0.05 }}
-                  className="discipline-card group cursor-pointer"
+                  key={index}
+                  variants={fadeIn}
+                  className="p-5 bg-white border border-charcoal/5 flex items-center justify-between group hover:shadow-xl transition-all duration-500"
                 >
-                  <span className="font-serif text-charcoal group-hover:text-gold transition-colors">
-                    {discipline}
+                  <span className="font-serif text-charcoal group-hover:italic transition-all">
+                    {discipline.name}
                   </span>
-                  <BookCopy className="w-4 h-4 text-warm-gray group-hover:text-gold transition-colors" />
+                  <BookCopy className="w-4 h-4 text-gold/30 group-hover:text-gold transition-colors" />
                 </motion.div>
               ))}
             </div>
 
-            {/* ISSN Notice */}
-            <div className="mt-6 bg-cream rounded-lg p-4 flex items-start gap-3">
-              <Info className="w-4 h-4 text-gold mt-0.5 shrink-0" />
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                JMRH matches ISSN India expectations by focusing on high-quality, verified interdisciplinary scholarship.
+            <div className="p-6 bg-charcoal text-cream flex items-start gap-4 mt-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gold/10 -mr-12 -mt-12 rounded-full blur-2xl" />
+              <Info className="w-5 h-5 text-gold shrink-0 mt-1" />
+              <p className="text-sm font-sans leading-relaxed text-cream/70 relative z-10">
+                JMRH follows ISSN India compliance standards, prioritizing verifiable, high-impact interdisciplinary research.
               </p>
             </div>
           </motion.div>

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { GraduationCap, MapPin, Mail, BookMarked } from "lucide-react";
+import { GraduationCap, MapPin, Mail, BookMarked, ShieldCheck } from "lucide-react";
+import { fadeIn, staggerContainer } from "@/hooks/use-scroll-animation";
 
 const editors = [
   {
@@ -16,96 +17,83 @@ const editors = [
   {
     name: "Dr. K. Thamarai Selvi K",
     role: "Editorial Advisory Board",
-    badge: "Assistant Professor of Commerce",
+    badge: "Assistant Professor",
     institution: "Government Arts College",
     location: "Gudalur, The Nilgiris – 643212, Tamil Nadu, India",
     email: "thamarai@jems.org",
     specialization: "Entrepreneurship, Financial Inclusion, Digital Literacy",
-    bio: "Distinguished academic with extensive focus on entrepreneurship, financial inclusion, digital literacy. Dedicated to maintaining rigorous peer-review standards and promoting interdisciplinary scholarship.",
+    bio: "Focused on entrepreneurship and digital literacy, contributing to the academic quality and ethical oversight of JMRH publications.",
     affiliation: "Government Arts College",
   },
 ];
 
 const EditorialBoardSection = () => {
   return (
-    <section id="editorial" className="py-24 bg-cream">
+    <section id="editorial" className="py-24 bg-white relative">
       <div className="container mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          variants={fadeIn}
+          initial="initial"
+          whileInView="animate"
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-20 max-w-3xl mx-auto"
         >
-          <p className="section-label mb-4">Leadership</p>
-          <h2 className="font-serif text-4xl md:text-5xl text-charcoal">
-            Editorial <span className="italic">Board</span>
+          <p className="section-label text-gold mb-4">Academic Governance</p>
+          <h2 className="section-title text-charcoal">
+            Editorial <span className="italic italic underline decoration-gold/20 underline-offset-8">Leadership</span>
           </h2>
+          <p className="mt-6 text-charcoal/60 font-sans leading-relaxed">
+            Experienced academicians overseeing the journal's academic quality,
+            ethical standards, and peer-review integrity.
+          </p>
         </motion.div>
 
         {/* Editorial Cards */}
-        <div className="space-y-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {editors.map((editor, index) => (
             <motion.div
               key={editor.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              variants={fadeIn}
+              initial="initial"
+              whileInView="animate"
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.15 }}
-              className="bg-card rounded-2xl p-8 lg:p-10 border border-border"
+              className="bg-cream border border-charcoal/5 p-8 lg:p-10 group hover:bg-charcoal hover:text-cream transition-all duration-700 shadow-xl"
             >
-              <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-8">
-                {/* Left Column - Photo & Name */}
-                <div className="text-center lg:text-left">
-                  <div className="w-24 h-24 mx-auto lg:mx-0 mb-4 bg-cream-dark rounded-xl flex items-center justify-center border border-border">
-                    <GraduationCap className="w-10 h-10 text-warm-gray" />
+              <div className="space-y-8">
+                {/* Header Info */}
+                <div className="flex items-start justify-between">
+                  <div className="w-16 h-16 bg-white flex items-center justify-center border border-charcoal/5 group-hover:bg-gold transition-all duration-700">
+                    <GraduationCap className="w-8 h-8 text-gold group-hover:text-charcoal" />
                   </div>
-                  <h3 className="font-serif text-xl text-charcoal mb-1">{editor.name}</h3>
-                  <p className="section-label text-[10px] mb-3">{editor.role}</p>
-                  <span className="inline-block text-xs border border-border rounded-full px-3 py-1 text-muted-foreground">
-                    {editor.badge}
-                  </span>
+                  <div className="text-right">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-gold font-bold mb-1">{editor.role}</p>
+                    <p className="font-serif italic text-sm opacity-60 group-hover:opacity-100">{editor.badge}</p>
+                  </div>
                 </div>
 
-                {/* Right Column - Details */}
-                <div className="space-y-6">
-                  {/* Info Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="flex items-start gap-3">
-                      <MapPin className="w-4 h-4 text-gold mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-sm text-muted-foreground">{editor.institution}</p>
-                        <p className="text-xs text-warm-gray">{editor.location}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <BookMarked className="w-4 h-4 text-gold mt-0.5 shrink-0" />
-                      <div>
-                        <p className="info-label text-[10px] mb-1">Specialization</p>
-                        <p className="text-sm text-charcoal">{editor.specialization}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Mail className="w-4 h-4 text-gold shrink-0" />
-                      <a 
-                        href={`mailto:${editor.email}`} 
-                        className="text-sm text-gold hover:underline"
-                      >
-                        {editor.email}
-                      </a>
-                    </div>
+                <div className="space-y-4">
+                  <h3 className="font-serif text-3xl text-charcoal group-hover:text-gold transition-colors">{editor.name}</h3>
+                  <div className="flex items-start gap-3">
+                    <MapPin className="w-4 h-4 text-gold mt-1 shrink-0" />
+                    <p className="text-sm font-sans opacity-60 group-hover:opacity-80">{editor.location}</p>
+                  </div>
+                </div>
+
+                <div className="space-y-6 pt-6 border-t border-charcoal/5 group-hover:border-white/10 transition-colors">
+                  <div className="space-y-2">
+                    <label className="text-[10px] uppercase tracking-[0.2em] text-gold font-bold">Research focus</label>
+                    <p className="text-sm font-serif italic">{editor.specialization}</p>
                   </div>
 
-                  {/* Biography */}
-                  <div className="bg-cream rounded-lg p-6">
-                    <p className="section-label text-[10px] mb-3">Researcher Biography</p>
-                    <p className="font-serif italic text-muted-foreground leading-relaxed">
-                      {editor.bio}
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-4">
-                      Institutional Affiliation: <span className="text-charcoal">{editor.affiliation}</span>
-                    </p>
+                  <div className="space-y-2">
+                    <label className="text-[10px] uppercase tracking-[0.2em] text-gold font-bold">Biography</label>
+                    <p className="text-sm font-sans leading-relaxed opacity-60 group-hover:opacity-80">{editor.bio}</p>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-gold group-hover:text-white transition-colors">
+                    <Mail className="w-4 h-4" />
+                    <a href={`mailto:${editor.email}`} className="text-xs uppercase tracking-widest font-bold underline decoration-gold/20 underline-offset-4">{editor.email}</a>
                   </div>
                 </div>
               </div>
@@ -113,16 +101,19 @@ const EditorialBoardSection = () => {
           ))}
         </div>
 
-        {/* Ethics Notice */}
+        {/* Ethical Governance Footer */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          variants={fadeIn}
+          initial="initial"
+          whileInView="animate"
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mt-12 bg-charcoal rounded-2xl p-8 text-center max-w-4xl mx-auto"
+          className="mt-20 p-8 border border-charcoal/5 bg-cream/30 flex flex-col items-center text-center space-y-4"
         >
-          <p className="font-serif italic text-cream/80 text-sm leading-relaxed">
-            All board members are bound by COPE ethical guidelines. No personal email IDs are utilized for ISSN listing or official editorial correspondence.
+          <ShieldCheck className="w-8 h-8 text-gold" />
+          <h4 className="font-serif text-xl text-charcoal uppercase tracking-widest">Ethical Governance</h4>
+          <p className="max-w-3xl text-sm font-sans text-charcoal/50 leading-relaxed italic">
+            Board members oversee manuscript evaluation, peer-review integrity, and policy enforcement
+            in full compliance with COPE guidelines and international publishing ethics.
           </p>
         </motion.div>
       </div>
