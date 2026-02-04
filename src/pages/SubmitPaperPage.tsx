@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState, memo, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useJMRH } from "@/context/JMRHContext";
 import {
@@ -31,7 +31,7 @@ const SubmitPaperPage = memo(() => {
     const navigate = useNavigate();
     const { toast } = useToast();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         submitPaper(title, abstract, discipline);
         toast({

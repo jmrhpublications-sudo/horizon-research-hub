@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState, memo, FormEvent } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useJMRH } from "@/context/JMRHContext";
 import {
@@ -29,7 +29,7 @@ const AdminProfessors = memo(() => {
 
     const professors = users.filter(u => u.role === 'PROFESSOR');
 
-    const handleCreate = (e: React.FormEvent) => {
+    const handleCreate = (e: FormEvent) => {
         e.preventDefault();
         createProfessor(name, email);
         setName("");

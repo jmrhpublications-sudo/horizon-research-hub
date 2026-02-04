@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState, memo, FormEvent } from "react";
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import { useJMRH, UserRole } from "@/context/JMRHContext";
 import { ShieldCheck, Lock, Mail, ArrowRight } from "lucide-react";
@@ -23,7 +23,7 @@ const SecureLoginPage = memo(({ role }: SecureLoginPageProps) => {
         return <Navigate to={role === 'ADMIN' ? '/secure/admin/dashboard' : '/secure/professor/dashboard'} replace />;
     }
 
-    const handleAuth = (e: React.FormEvent) => {
+    const handleAuth = (e: FormEvent) => {
         e.preventDefault();
 
         const user = users.find(u => u.email === email && u.role === role);

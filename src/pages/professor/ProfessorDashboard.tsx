@@ -95,7 +95,7 @@ const ProfessorDashboard = memo(() => {
                                             <DialogTrigger asChild>
                                                 <Button className="rounded-none h-16 bg-gold text-oxford px-10 font-bold tracking-widest hover:bg-white transition-all shadow-xl group border-none">
                                                     COMMAND DECISION <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
-                                                </Button> Standard Rules apply.
+                                                </Button>
                                             </DialogTrigger>
                                             <DialogContent className="bg-oxford border-white/10 text-white max-w-2xl">
                                                 <DialogHeader>
@@ -126,7 +126,7 @@ const ProfessorDashboard = memo(() => {
                                                                 className={`h-14 rounded-none font-bold tracking-widest text-[10px] uppercase shadow-lg border-none ${opt.color} text-white hover:opacity-80 transition-all`}
                                                             >
                                                                 {opt.label}
-                                                </Button>
+                                                            </Button>
                                                         ))}
                                                     </div>
                                                 </div>
@@ -170,8 +170,8 @@ const ProfessorDashboard = memo(() => {
                                         </td>
                                         <td className="py-8 px-4">
                                             <span className={`text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full border ${paper.status === 'ACCEPTED' ? 'text-teal-400 border-teal-400/20' :
-                                                    paper.status === 'REJECTED' ? 'text-red-400 border-red-400/20' :
-                                                        'text-orange-400 border-orange-400/20'
+                                                paper.status === 'REJECTED' ? 'text-red-400 border-red-400/20' :
+                                                    'text-orange-400 border-orange-400/20'
                                                 }`}>
                                                 {paper.status.replace('_', ' ')}
                                             </span>

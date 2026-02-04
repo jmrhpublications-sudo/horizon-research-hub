@@ -38,13 +38,13 @@ const CTASection = memo(() => {
             <Button asChild className="rounded-none bg-gold text-oxford hover:bg-white transition-all duration-[800ms] h-16 px-16 text-xs uppercase tracking-[0.4em] font-bold shadow-2xl group">
               <Link to="/contact">
                 <span className="relative z-10 group-hover:tracking-[0.5em] transition-all">Submit Manuscript</span>
-              </Link> Standard Rules.
+              </Link>
             </Button>
             <Link to="/contact" className="text-[10px] uppercase tracking-[0.4em] font-bold text-white border-b-2 border-white/10 pb-2 hover:text-gold hover:border-gold transition-all duration-500 italic">
               Editorial Correspondence →
             </Link>
           </div>
-        </motion.div> Standard Rules.
+        </motion.div>
       </div>
 
       {/* Elite Line Accents */}

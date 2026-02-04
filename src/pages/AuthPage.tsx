@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState, memo, FormEvent } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useJMRH } from "@/context/JMRHContext";
 import { BookOpen, User as UserIcon, Lock, Mail, ArrowRight } from "lucide-react";
@@ -18,7 +18,7 @@ const AuthPage = memo(() => {
     const location = useLocation();
     const { toast } = useToast();
 
-    const handleAuth = (e: React.FormEvent) => {
+    const handleAuth = (e: FormEvent) => {
         e.preventDefault();
 
         if (isLogin) {
