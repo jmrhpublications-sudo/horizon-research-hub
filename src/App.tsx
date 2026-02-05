@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoadingOverlay from "@/components/ui/LoadingOverlay";
 import { JMRHProvider } from "@/context/JMRHContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 // Public Pages
 const Index = lazy(() => import("./pages/Index"));
@@ -115,6 +116,7 @@ const App = () => (
             </Routes>
           </Suspense>
         </BrowserRouter>
+        <SpeedInsights />
       </JMRHProvider>
     </TooltipProvider>
   </QueryClientProvider>
