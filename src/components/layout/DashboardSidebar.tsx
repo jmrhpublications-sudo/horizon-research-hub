@@ -106,8 +106,6 @@ const DashboardSidebar = memo(({ role }: DashboardSidebarProps) => {
                 </div>
             </aside>
 
-            {/* Main Content Spacer */}
-            <div className={`transition-all duration-500 ${isOpen ? "pl-64" : "pl-0 lg:pl-20"}`} />
         </>
     );
 });
