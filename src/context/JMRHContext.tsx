@@ -233,7 +233,7 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
 
     return (
         <JMRHContext.Provider value={{
-            users, papers, currentUser, setCurrentUser, registerUser,
+            users, papers, currentUser, setCurrentUser, registerUser, updateUser,
             banUser, unbanUser, createProfessor, assignPaper,
             submitPaper, updatePaperStatus, logout
         }}>
