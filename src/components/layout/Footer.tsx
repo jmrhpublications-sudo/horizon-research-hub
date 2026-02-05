@@ -9,7 +9,7 @@ const Footer = memo(() => {
       <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
 
       <div className="container mx-auto px-6 lg:px-12 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-20 pb-24 border-b border-white/5">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-20 pb-24 border-b border-white/5">
           {/* Brand & Mandate */}
           <div className="md:col-span-5 space-y-10">
             <Link to="/" className="flex items-center gap-4 group w-fit">

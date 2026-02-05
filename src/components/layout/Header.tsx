@@ -43,7 +43,7 @@ const Header = memo(() => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden xl:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
@@ -64,7 +64,7 @@ const Header = memo(() => {
             <Link to="/archives" className="text-[10px] uppercase tracking-[0.2em] font-bold text-oxford hover:text-gold transition-colors">
               Archives
             </Link>
-            <Button asChild className="rounded-none bg-oxford text-white px-8 hover:bg-teal transition-all duration-500 shadow-md">
+            <Button asChild className="rounded-none bg-oxford text-white px-6 hover:bg-teal transition-all duration-500 shadow-md">
               <Link to="/submit-paper">Submit Manuscript</Link>
             </Button>
           </div>
@@ -72,7 +72,7 @@ const Header = memo(() => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="xl:hidden p-2 text-oxford"
+            className="lg:hidden p-2 text-oxford"
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -86,7 +86,7 @@ const Header = memo(() => {
             initial={{ opacity: 0, x: "10%" }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "10%" }}
-            className="fixed inset-0 z-50 xl:hidden bg-oxford text-white p-8 flex flex-col"
+            className="fixed inset-0 z-50 lg:hidden bg-oxford text-white p-8 flex flex-col"
           >
             <div className="flex justify-between items-center mb-16">
               <span className="font-serif text-2xl italic text-gold">JMRH Portal</span>
