@@ -1,4 +1,4 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useJMRH, UserRole } from '@/context/JMRHContext';
 import { ReactNode } from 'react';
 
@@ -31,7 +31,12 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
                         Your account has been deactivated by the administrator for policy violations.
                         Please contact the editorial desk for further inquiries.
                     </p>
-                    <Navigate to="/login" replace />
+                    <Link
+                        className="inline-flex items-center justify-center rounded-md bg-oxford px-4 py-2 text-sm font-semibold text-white transition hover:bg-oxford/90"
+                        to="/login"
+                    >
+                        Return to login
+                    </Link>
                 </div>
             </div>
         );
