@@ -69,7 +69,7 @@ const SecureLoginPage = memo(({ role }: SecureLoginPageProps) => {
                             <Input
                                 required
                                 type="email"
-                                placeholder="secure@jmrh.org"
+                                placeholder="secure@jmrh.in"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="bg-white/5 border-white/10 focus:border-gold h-14 text-lg font-serif italic text-white placeholder:text-white/10 rounded-none transition-all"

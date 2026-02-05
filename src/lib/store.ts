@@ -49,9 +49,9 @@ interface JMRHState {
 
 // Initial Mock Data
 const MOCK_USERS: User[] = [
-    { id: 'admin-1', name: 'Super Admin', email: 'admin@jmrh.org', role: 'ADMIN', status: 'ACTIVE', createdAt: '2025-01-01' },
-    { id: 'prof-1', name: 'Dr. Sarah Wilson', email: 'sarah.w@jmrh.org', role: 'PROFESSOR', status: 'ACTIVE', createdAt: '2025-01-10' },
-    { id: 'prof-2', name: 'Prof. James Chen', email: 'james.c@jmrh.org', role: 'PROFESSOR', status: 'ACTIVE', createdAt: '2025-01-12' },
+    { id: 'admin-1', name: 'Super Admin', email: 'admin@jmrh.in', role: 'ADMIN', status: 'ACTIVE', createdAt: '2025-01-01' },
+    { id: 'prof-1', name: 'Dr. Sarah Wilson', email: 'sarah.w@jmrh.in', role: 'PROFESSOR', status: 'ACTIVE', createdAt: '2025-01-10' },
+    { id: 'prof-2', name: 'Prof. James Chen', email: 'james.c@jmrh.in', role: 'PROFESSOR', status: 'ACTIVE', createdAt: '2025-01-12' },
 ];
 
 export const useJMRHStore = create<JMRHState>()(

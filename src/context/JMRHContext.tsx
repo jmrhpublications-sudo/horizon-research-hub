@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 
 export type UserRole = 'ADMIN' | 'PROFESSOR' | 'USER';
 export type UserStatus = 'ACTIVE' | 'BANNED';
-export type PaperStatus = 'SUBMITTED' | 'UNDER_REVIEW' | 'REVISION_REQUIRED' | 'ACCEPTED' | 'REJECTED';
+export type PaperStatus = 'SUBMITTED' | 'UNDER_REVIEW' | 'REVISION_REQUIRED' | 'ACCEPTED' | 'REJECTED' | 'PUBLISHED' | 'ARCHIVED';
 
 export interface User {
     id: string;
@@ -11,6 +11,15 @@ export interface User {
     role: UserRole;
     status: UserStatus;
     createdAt: string;
+    // Extended Profile
+    address?: string;
+    phoneNumber?: string;
+    age?: string;
+    degree?: string;
+    university?: string;
+    college?: string;
+    department?: string;
+    studyType?: string;
 }
 
 export interface Paper {
@@ -24,6 +33,7 @@ export interface Paper {
     assignedProfessorId?: string;
     submissionDate: string;
     revisionComments?: string;
+    attachments?: string[];
 }
 
 interface JMRHContextType {
@@ -31,20 +41,33 @@ interface JMRHContextType {
     papers: Paper[];
     currentUser: User | null;
     setCurrentUser: (user: User | null) => void;
-    registerUser: (name: string, email: string) => User;
+    registerUser: (
+        name: string,
+        email: string,
+        details: {
+            address: string;
+            phoneNumber: string;
+            age: string;
+            degree: string;
+            university: string;
+            college: string;
+            department: string;
+            studyType: string;
+        }
+    ) => User;
     banUser: (userId: string) => void;
     unbanUser: (userId: string) => void;
     createProfessor: (name: string, email: string) => void;
     assignPaper: (paperId: string, professorId: string) => void;
-    submitPaper: (title: string, abstract: string, discipline: string) => void;
+    submitPaper: (title: string, abstract: string, discipline: string, authorName: string, attachments: string[]) => void;
     updatePaperStatus: (paperId: string, status: PaperStatus, comments?: string) => void;
     logout: () => void;
 }
 
 const MOCK_USERS: User[] = [
-    { id: 'admin-1', name: 'Super Admin', email: 'admin@jmrh.org', role: 'ADMIN', status: 'ACTIVE', createdAt: '2025-01-01' },
-    { id: 'prof-1', name: 'Dr. Sarah Wilson', email: 'sarah.w@jmrh.org', role: 'PROFESSOR', status: 'ACTIVE', createdAt: '2025-01-10' },
-    { id: 'prof-2', name: 'Prof. James Chen', email: 'james.c@jmrh.org', role: 'PROFESSOR', status: 'ACTIVE', createdAt: '2025-01-12' },
+    { id: 'admin-1', name: 'Super Admin', email: 'admin@jmrh.in', role: 'ADMIN', status: 'ACTIVE', createdAt: '2025-01-01' },
+    { id: 'prof-1', name: 'Dr. Sarah Wilson', email: 'sarah.w@jmrh.in', role: 'PROFESSOR', status: 'ACTIVE', createdAt: '2025-01-10' },
+    { id: 'prof-2', name: 'Prof. James Chen', email: 'james.c@jmrh.in', role: 'PROFESSOR', status: 'ACTIVE', createdAt: '2025-01-12' },
 ];
 
 const JMRHContext = createContext<JMRHContextType | undefined>(undefined);
@@ -77,14 +100,28 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem('jmrh_current_user', JSON.stringify(currentUser));
     }, [currentUser]);
 
-    const registerUser = (name: string, email: string) => {
+    const registerUser = (
+        name: string,
+        email: string,
+        details: {
+            address: string;
+            phoneNumber: string;
+            age: string;
+            degree: string;
+            university: string;
+            college: string;
+            department: string;
+            studyType: string;
+        }
+    ) => {
         const newUser: User = {
             id: `user-${Math.random().toString(36).substr(2, 9)}`,
             name,
             email,
             role: 'USER',
             status: 'ACTIVE',
-            createdAt: new Date().toISOString().split('T')[0]
+            createdAt: new Date().toISOString().split('T')[0],
+            ...details
         };
         setUsers(prev => [...prev, newUser]);
         return newUser;
@@ -119,17 +156,18 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         } : p));
     };
 
-    const submitPaper = (title: string, abstract: string, discipline: string) => {
+    const submitPaper = (title: string, abstract: string, discipline: string, authorName: string, attachments: string[]) => {
         if (!currentUser) return;
         setPapers(prev => [...prev, {
             id: `paper-${Math.random().toString(36).substr(2, 9)}`,
             authorId: currentUser.id,
-            authorName: currentUser.name,
+            authorName: authorName || currentUser.name,
             title,
             abstract,
             discipline,
             status: 'SUBMITTED',
-            submissionDate: new Date().toISOString().split('T')[0]
+            submissionDate: new Date().toISOString().split('T')[0],
+            attachments
         }]);
     };
 

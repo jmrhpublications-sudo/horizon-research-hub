@@ -65,7 +65,7 @@ const Header = memo(() => {
               Archives
             </Link>
             <Button asChild className="rounded-none bg-oxford text-white px-8 hover:bg-teal transition-all duration-500 shadow-md">
-              <Link to="/contact">Submit Manuscript</Link>
+              <Link to="/submit-paper">Submit Manuscript</Link>
             </Button>
           </div>
 
@@ -111,7 +111,7 @@ const Header = memo(() => {
 
             <div className="mt-auto space-y-6">
               <Button asChild className="w-full h-16 rounded-none bg-gold text-oxford text-lg font-bold tracking-widest hover:bg-white transition-colors">
-                <Link to="/contact" onClick={() => setIsMenuOpen(false)}>SUBMIT MANUSCRIPT</Link>
+                <Link to="/submit-paper" onClick={() => setIsMenuOpen(false)}>SUBMIT MANUSCRIPT</Link>
               </Button>
               <p className="text-[10px] uppercase tracking-widest text-center text-white/40 font-ui">© 2025 JMRH Publications</p>
             </div>

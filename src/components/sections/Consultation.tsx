@@ -37,7 +37,7 @@ const Consultation = memo(() => {
                                 {[
                                     { icon: Clock, label: "Response Window", value: "48 Academic Hours" },
                                     { icon: ShieldCheck, label: "Security", value: "Verified institutional comms" },
-                                    { icon: Mail, label: "Correspondence", value: "editorial@jmrh.org" },
+                                    { icon: Mail, label: "Correspondence", value: "editorial@jmrh.in" },
                                     { icon: Zap, label: "Efficiency", value: "Direct scholar support" }
                                 ].map((item, idx) => (
                                     <div key={idx} className="space-y-3 group">

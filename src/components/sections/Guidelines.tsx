@@ -15,7 +15,7 @@ const Guidelines = memo(() => {
                     className="space-y-20"
                 >
                     {/* Header */}
-                    <div className="text-center max-w-3xl mx-auto space-y-6">
+                    <div className="text-left max-w-3xl space-y-6">
                         <p className="section-label">Submission Standards</p>
                         <h2 className="section-title text-5xl">
                             Author <span className="italic academic-underline py-1">Guidelines</span>
@@ -122,7 +122,7 @@ const Guidelines = memo(() => {
                                     </div>
                                     <div className="mt-16 text-center">
                                         <p className="section-label mb-4">Official Channel</p>
-                                        <p className="font-serif text-3xl text-teal italic underline decoration-gold/40 underline-offset-8">editorial@jmrh.org</p>
+                                        <p className="font-serif text-3xl text-teal italic underline decoration-gold/40 underline-offset-8">editorial@jmrh.in</p>
                                     </div>
                                 </TabsContent>
                             </div>

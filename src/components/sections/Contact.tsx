@@ -44,8 +44,8 @@ const Contact = memo(() => {
                                 <div className="space-y-2">
                                     <h4 className="font-serif text-2xl text-oxford font-bold">Inquiry Channels</h4>
                                     <div className="space-y-1 font-ui text-xs uppercase tracking-[0.2em] font-bold">
-                                        <p className="text-teal hover:text-gold transition-colors cursor-pointer">editorial@jmrh.org</p>
-                                        <p className="text-text-subtle">submissions@jmrh.org</p>
+                                        <p className="text-teal hover:text-gold transition-colors cursor-pointer">editorial@jmrh.in</p>
+                                        <p className="text-text-subtle">submissions@jmrh.in</p>
                                     </div>
                                 </div>
                             </div>

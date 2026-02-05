@@ -111,7 +111,7 @@ const App = () => (
                 </ProtectedRoute>
               } />
 
-              <Route path="*" element={<NotFound />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>
         </BrowserRouter>

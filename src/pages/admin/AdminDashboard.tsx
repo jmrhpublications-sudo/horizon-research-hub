@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useJMRH } from "@/context/JMRHContext";
 import {
@@ -68,7 +69,7 @@ const AdminDashboard = memo(() => {
                     <div className="lg:col-span-2 space-y-8 p-10 bg-white/5 rounded-[40px] border border-white/10 shadow-3xl">
                         <div className="flex justify-between items-center">
                             <h3 className="font-serif text-2xl font-bold italic text-gold">Latest Manuscripts</h3>
-                            <button className="text-[10px] uppercase tracking-widest font-bold text-teal-400 hover:text-white transition-colors">Audit All Submissions →</button>
+                            <Link to="/secure/admin/papers" className="text-[10px] uppercase tracking-widest font-bold text-teal-400 hover:text-white transition-colors">Audit All Submissions →</Link>
                         </div>
 
                         <div className="overflow-x-auto">

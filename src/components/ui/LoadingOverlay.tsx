@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const LoadingOverlay = () => {
     return (
-        <div className="fixed inset-0 z-[100] bg-cream flex flex-col items-center justify-center space-y-8">
+        <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center space-y-8">
             <div className="relative">
                 <motion.div
                     animate={{
@@ -21,7 +21,7 @@ const LoadingOverlay = () => {
             </div>
 
             <div className="text-center space-y-2">
-                <h2 className="font-serif text-2xl italic text-charcoal">JMRH Portal</h2>
+                <h2 className="font-serif text-2xl italic text-oxford">JMRH Portal</h2>
                 <p className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold animate-pulse">Initializing Scholar Interface</p>
             </div>
         </div>
