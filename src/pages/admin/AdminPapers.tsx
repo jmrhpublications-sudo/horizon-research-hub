@@ -162,19 +162,13 @@ const AdminPapers = memo(() => {
                                     {paper.status !== 'PUBLISHED' && paper.status !== 'ARCHIVED' && (
                                         <div className="flex gap-2 w-full">
                                             <Button
-                                                onClick={() => {
-                                                    // Assuming updatePaperStatus is available from useJMRH hook destructuring
-                                                    // We need to make sure we destructured it in the component top level
-                                                    // Just in case, I will handle this via a small helper or ensuring the hook is correct
-                                                    // But for this snippet, I'll assume the handler exists or add it.
-                                                    // *Wait, I cannot add the handler in this snippet easily if it's not in the view.*
-                                                    // *I will stick to UI here and ensure logic matches*
-                                                }}
-                                                // I need to add the handler to the component first!
-                                                // Actually, I should probably replace the whole component to be safe due to the logic changes needed.
-                                                className="flex-1 h-10 bg-teal text-white text-[10px] uppercase font-bold tracking-widest hover:bg-teal/80"
+                                                onClick={() => handlePublish(paper.id)}
+                                                className={`flex-1 h-10 text-[10px] uppercase font-bold tracking-widest transition-all ${paper.status === 'ACCEPTED'
+                                                        ? 'bg-teal text-white hover:bg-teal/80 shadow-lg animate-pulse'
+                                                        : 'bg-white/5 text-white/40 hover:bg-white/10'
+                                                    }`}
                                             >
-                                                Publish
+                                                {paper.status === 'ACCEPTED' ? 'Officially Publish' : 'Force Publish'}
                                             </Button>
                                         </div>
                                     )}

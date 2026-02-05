@@ -20,6 +20,8 @@ export interface User {
     college?: string;
     department?: string;
     studyType?: string;
+    specialization?: string;
+    bio?: string;
 }
 
 export interface Paper {
@@ -55,9 +57,22 @@ interface JMRHContextType {
             studyType: string;
         }
     ) => User;
+    updateUser: (userId: string, updates: Partial<User>) => void;
     banUser: (userId: string) => void;
     unbanUser: (userId: string) => void;
-    createProfessor: (name: string, email: string) => void;
+    createProfessor: (
+        name: string,
+        email: string,
+        details: {
+            phoneNumber: string;
+            address: string;
+            department: string;
+            university: string;
+            degree: string;
+            specialization: string;
+            bio: string;
+        }
+    ) => void;
     assignPaper: (paperId: string, professorId: string) => void;
     submitPaper: (title: string, abstract: string, discipline: string, authorName: string, attachments: string[]) => void;
     updatePaperStatus: (paperId: string, status: PaperStatus, comments?: string) => void;
@@ -66,8 +81,32 @@ interface JMRHContextType {
 
 const MOCK_USERS: User[] = [
     { id: 'admin-1', name: 'Super Admin', email: 'admin@jmrh.in', role: 'ADMIN', status: 'ACTIVE', createdAt: '2025-01-01' },
-    { id: 'prof-1', name: 'Dr. Sarah Wilson', email: 'sarah.w@jmrh.in', role: 'PROFESSOR', status: 'ACTIVE', createdAt: '2025-01-10' },
-    { id: 'prof-2', name: 'Prof. James Chen', email: 'james.c@jmrh.in', role: 'PROFESSOR', status: 'ACTIVE', createdAt: '2025-01-12' },
+    {
+        id: 'prof-1',
+        name: 'Dr. Sarah Wilson',
+        email: 'sarah.w@jmrh.in',
+        role: 'PROFESSOR',
+        status: 'ACTIVE',
+        createdAt: '2025-01-10',
+        university: 'Oxford University',
+        department: 'Computer Science',
+        degree: 'PhD',
+        specialization: 'Artificial Intelligence',
+        bio: 'Leading researcher in AI ethics.'
+    },
+    {
+        id: 'prof-2',
+        name: 'Prof. James Chen',
+        email: 'james.c@jmrh.in',
+        role: 'PROFESSOR',
+        status: 'ACTIVE',
+        createdAt: '2025-01-12',
+        university: 'Stanford University',
+        department: 'Physics',
+        degree: 'PhD',
+        specialization: 'Quantum Mechanics',
+        bio: 'Nobel prize nominee.'
+    },
 ];
 
 const JMRHContext = createContext<JMRHContextType | undefined>(undefined);
@@ -129,6 +168,10 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
 
     const logout = () => setCurrentUser(null);
 
+    const updateUser = (userId: string, updates: Partial<User>) => {
+        setUsers(prev => prev.map(u => u.id === userId ? { ...u, ...updates } : u));
+    };
+
     const banUser = (userId: string) => {
         setUsers(prev => prev.map(u => u.id === userId ? { ...u, status: 'BANNED' } : u));
     };
@@ -137,14 +180,27 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         setUsers(prev => prev.map(u => u.id === userId ? { ...u, status: 'ACTIVE' } : u));
     };
 
-    const createProfessor = (name: string, email: string) => {
+    const createProfessor = (
+        name: string,
+        email: string,
+        details: {
+            phoneNumber: string;
+            address: string;
+            department: string;
+            university: string;
+            degree: string;
+            specialization: string;
+            bio: string;
+        }
+    ) => {
         setUsers(prev => [...prev, {
             id: `prof-${Math.random().toString(36).substr(2, 9)}`,
             name,
             email,
             role: 'PROFESSOR',
             status: 'ACTIVE',
-            createdAt: new Date().toISOString().split('T')[0]
+            createdAt: new Date().toISOString().split('T')[0],
+            ...details
         }]);
     };
 
