@@ -136,7 +136,7 @@
   }
 
   .nav-link {
-    @apply text-[10px] font-bold tracking-[0.2em] uppercase text-text-muted hover:text-teal transition-all duration-300;
+    @apply text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground hover:text-teal transition-all duration-300;
   }
 
   .discipline-card {
@@ -144,7 +144,7 @@
   }
 
   .premium-card {
-    @apply bg-white rounded-lg border border-border shadow-[0_10px_25px_rgba(0, 0, 0, 0.06)] hover:shadow-[0_20px_40px_rgba(0, 0, 0, 0.08)] transition-all duration-700 hover:-translate-y-1;
+    @apply bg-white rounded-lg border border-border shadow-lg hover:shadow-xl transition-all duration-700 hover:-translate-y-1;
   }
 
   .academic-underline {
@@ -175,39 +175,7 @@
 }
 
 @layer utilities {
-  .text-gold {
-    color: hsl(var(--gold));
-  }
-
-  .text-charcoal {
-    color: hsl(var(--charcoal));
-  }
-
-  .text-charcoal-light {
-    color: hsl(var(--charcoal-light));
-  }
-
-  .text-warm-gray {
-    color: hsl(var(--warm-gray));
-  }
-
-  .bg-cream {
-    background-color: hsl(var(--cream));
-  }
-
-  .bg-cream-dark {
-    background-color: hsl(var(--cream-dark));
-  }
-
-  .bg-charcoal {
-    background-color: hsl(var(--charcoal));
-  }
-
-  .border-gold {
-    border-color: hsl(var(--gold));
-  }
-
-  .hover\:border-gold:hover {
-    border-color: hsl(var(--gold));
+  .text-text-muted {
+    color: hsl(var(--text-muted));
   }
 }

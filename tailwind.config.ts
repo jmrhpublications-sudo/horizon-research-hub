@@ -57,6 +57,8 @@ export default {
         teal: "hsl(var(--academic-teal))",
         gold: "hsl(var(--antique-gold))",
         "bg-alt": "hsl(var(--bg-alt))",
+        "text-muted": "hsl(var(--text-muted))",
+        charcoal: "hsl(var(--text-primary))",
       },
       borderRadius: {
         none: "0",
