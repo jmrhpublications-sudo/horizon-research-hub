@@ -7,10 +7,7 @@ import { Link } from "react-router-dom";
 const HeroSection = memo(() => {
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-background pt-20 overflow-hidden">
-      {/* Background Texture Overlay */}
-      <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
-        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}
-      />
+      {/* Background - Pristine White */}\n      <div className="absolute inset-0 bg-background" />\n
 
       <div className="container mx-auto px-6 lg:px-12 py-20 relative z-10">
         <div className="space-y-12 max-w-5xl mx-auto text-center">
@@ -23,28 +20,27 @@ const HeroSection = memo(() => {
           >
             <div className="inline-flex items-center gap-4 border-b border-gold/40 pb-3">
               <BookOpen className="w-4 h-4 text-gold" />
-              <span className="section-label">International Publication Portal</span>
+              <span className="section-label">
+                Publication Portal</span>
               <span className="w-1.5 h-1.5 bg-gold rotate-45" />
             </div>
           </motion.div>
 
           {/* Main Title */}
-          <div className="space-y-6">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.2 }}
-              className="font-serif text-6xl md:text-7xl lg:text-9xl font-bold text-oxford tracking-tighter leading-tight"
-            >
-              Journal of
-              <br />
-              <span className="italic relative academic-underline py-2">
-                Multidisciplinary
-              </span>
-              <br />
-              Research Horizon
-            </motion.h1>
-          </div>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.2 }}
+            className="font-serif text-5xl md:text-7xl lg:text-6xl font-bold text-oxford tracking-tighter leading-[0.9] select-none"
+          >
+            Journal of
+            <br />
+            <span className="italic relative academic-underline py-2">
+              Multidisciplinary
+            </span>
+            <br />
+            Research Horizon
+          </motion.h1>
 
           {/* Tagline / Purpose */}
           <motion.div

@@ -26,7 +26,7 @@ const Header = memo(() => {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 
-      ${scrolled ? "bg-white/95 backdrop-blur-md border-b border-border py-3 shadow-sm" : "bg-transparent py-6"}`}>
+      ${scrolled || location.pathname !== "/" ? "bg-white/95 backdrop-blur-md border-b border-border py-3 shadow-sm" : "bg-transparent py-6"}`}>
       <div className="container mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -86,34 +86,43 @@ const Header = memo(() => {
             initial={{ opacity: 0, x: "10%" }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "10%" }}
-            className="fixed inset-0 z-50 lg:hidden bg-oxford text-white p-8 flex flex-col"
+            className="fixed inset-0 z-50 lg:hidden bg-oxford text-white p-8 flex flex-col relative overflow-hidden"
           >
-            <div className="flex justify-between items-center mb-16">
-              <span className="font-serif text-2xl italic text-gold">JMRH Portal</span>
-              <button onClick={() => setIsMenuOpen(false)} className="p-3 border border-white/10">
-                <X className="w-6 h-6 text-white" />
-              </button>
-            </div>
+            {/* Ambient Background Effects */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-gold/5 rounded-full blur-3xl -ml-32 -mb-32 pointer-events-none" />
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+              style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '30px 30px' }}
+            />
 
-            <nav className="flex flex-col gap-10">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  to={link.href}
-                  onClick={() => setIsMenuOpen(false)}
-                  className={`font-serif text-4xl italic transition-all
-                    ${location.pathname === link.href ? "text-gold translate-x-4" : "hover:text-gold"}`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
+            <div className="relative z-10 flex flex-col h-full">
+              <div className="flex justify-between items-center mb-16">
+                <span className="font-serif text-2xl italic text-gold">JMRH Portal</span>
+                <button onClick={() => setIsMenuOpen(false)} className="p-3 border border-white/10 hover:bg-white/10 transition-colors">
+                  <X className="w-6 h-6 text-white" />
+                </button>
+              </div>
 
-            <div className="mt-auto space-y-6">
-              <Button asChild className="w-full h-16 rounded-none bg-gold text-oxford text-lg font-bold tracking-widest hover:bg-white transition-colors">
-                <Link to="/submit-paper" onClick={() => setIsMenuOpen(false)}>SUBMIT MANUSCRIPT</Link>
-              </Button>
-              <p className="text-[10px] uppercase tracking-widest text-center text-white/40 font-ui">© 2025 JMRH Publications</p>
+              <nav className="flex flex-col gap-10">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.label}
+                    to={link.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className={`font-serif text-4xl italic transition-all
+                      ${location.pathname === link.href ? "text-gold translate-x-4" : "hover:text-gold"}`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+
+              <div className="mt-auto space-y-6">
+                <Button asChild className="w-full h-16 rounded-none bg-gold text-oxford text-lg font-bold tracking-widest hover:bg-white transition-colors shadow-lg">
+                  <Link to="/submit-paper" onClick={() => setIsMenuOpen(false)}>SUBMIT MANUSCRIPT</Link>
+                </Button>
+                <p className="text-[10px] uppercase tracking-widest text-center text-white/40 font-ui whitespace-nowrap">© 2025 JMRH Publications</p>
+              </div>
             </div>
           </motion.div>
         )}

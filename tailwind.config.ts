@@ -62,11 +62,11 @@ export default {
       },
       borderRadius: {
         none: "0",
-        sm: "4px",
-        DEFAULT: "8px",
-        md: "12px",
-        lg: "16px",
-        xl: "24px",
+        sm: "0px",
+        DEFAULT: "2px",
+        md: "4px",
+        lg: "6px",
+        xl: "12px",
         full: "9999px",
       },
       keyframes: {
