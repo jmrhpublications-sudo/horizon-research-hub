@@ -98,12 +98,14 @@
 @layer base {
   html {
     @apply scroll-smooth antialiased;
-    font-size: 15px; /* Premium 1x Smaller Scaling Base */
+    font-size: 15px;
+    /* Premium 1x Smaller Scaling Base */
   }
 
   @media (min-width: 1280px) {
     html {
-      font-size: 14.5px; /* More sophisticated density on large screens */
+      font-size: 14.5px;
+      /* More sophisticated density on large screens */
     }
   }
 
@@ -138,31 +140,102 @@
 
 @layer components {
   .section-label {
-    @apply text-[10px] font-bold tracking-[0.4em] uppercase text-gold;
+    @apply text-[9px] font-black tracking-[0.6em] uppercase text-gold flex items-center gap-4;
+    transition: all 0.5s ease;
   }
 
   .section-title {
-    @apply font-serif text-oxford tracking-tight;
+    @apply font-serif text-oxford tracking-tighter leading-[0.95] text-4xl md:text-6xl lg:text-5xl xl:text-7xl;
   }
 
   .nav-link {
-    @apply text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground hover:text-teal transition-all duration-300;
+    @apply text-[9px] font-black tracking-[0.3em] uppercase text-muted-foreground hover:text-gold transition-all duration-500;
   }
 
   .discipline-card {
-    @apply bg-white border border-border px-8 py-6 flex items-center justify-between hover:border-oxford transition-all duration-300;
+    @apply bg-white border border-black/5 px-10 py-8 flex items-center justify-between hover:border-gold/30 hover:shadow-2xl transition-all duration-700 relative overflow-hidden;
   }
 
   .premium-card {
-    @apply bg-white border border-border hover:border-oxford transition-all duration-500 hover:-translate-y-1;
+    @apply bg-white border border-black/5 shadow-sm hover:shadow-2xl hover:border-gold/20 transition-all duration-700 hover:-translate-y-2;
   }
 
   .academic-underline {
-    @apply relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gold after:transition-all after:duration-500 hover:after:w-full;
+    @apply relative inline-block;
+  }
+
+  .academic-underline::after {
+    content: '';
+    @apply absolute -bottom-2 left-0 w-0 h-[1px] bg-gold transition-all duration-700;
+  }
+
+  .academic-underline:hover::after {
+    @apply w-full;
   }
 }
 
 @layer utilities {
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .perspective-2000 {
+    perspective: 2000px;
+  }
+
+  .perspective-3000 {
+    perspective: 3000px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .rotate-x-6 {
+    transform: rotateX(6deg);
+  }
+
+  .rotate-x-12 {
+    transform: rotateX(12deg);
+  }
+
+  .rotate-y-12 {
+    transform: rotateY(12deg);
+  }
+
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+
+  .translate-z-10 {
+    transform: translateZ(10px);
+  }
+
+  .translate-z-20 {
+    transform: translateZ(20px);
+  }
+
+  .translate-z-30 {
+    transform: translateZ(30px);
+  }
+
+  .vertical-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-2xl;
+  }
+
+  .cinematic-glow {
+    box-shadow: 0 0 50px -10px rgba(212, 175, 55, 0.2);
+  }
+
   .text-oxford {
     color: hsl(var(--oxford-blue));
   }
@@ -182,9 +255,7 @@
   .bg-bg-alt {
     background-color: hsl(var(--bg-alt));
   }
-}
 
-@layer utilities {
   .text-text-muted {
     color: hsl(var(--text-muted));
   }

@@ -27,67 +27,104 @@ const commitments = [
 
 const AboutSection = memo(() => {
   return (
-    <section id="about" className="py-32 bg-white relative overflow-hidden">
-      <div className="container mx-auto px-6 lg:px-12 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="grid lg:grid-cols-2 gap-20 items-center"
-        >
-          {/* Left: Content */}
-          <div className="space-y-10">
-            <div className="space-y-4">
-              <p className="section-label">Institutional Core</p>
-              <h2 className="section-title text-4xl leading-tight">
+    <section id="about" className="py-24 md:py-32 bg-white relative overflow-hidden font-ui">
+      {/* Structural Background Accents */}
+      <div className="absolute top-0 right-0 w-[40%] h-full bg-oxford/5 opacity-20 pointer-events-none" />
+
+      <div className="container max-w-[1800px] mx-auto px-6 lg:px-10 relative z-10">
+        <div className="grid lg:grid-cols-12 gap-20 xl:gap-32 items-center">
+
+          {/* Content Matrix (Left) */}
+          <div className="lg:col-span-7 space-y-16">
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              className="space-y-8"
+            >
+              <div className="section-label">
+                <span className="w-12 h-[1px] bg-gold" />
+                Institutional Foundations
+              </div>
+              <h2 className="section-title">
                 Strengthening the Quality & <br />
-                <span className="italic academic-underline py-1">Impact of Research</span>
+                <span className="italic academic-underline">Impact of Research</span>
               </h2>
-            </div>
+              <p className="text-oxford/40 font-serif italic text-xl md:text-2xl leading-relaxed max-w-2xl">
+                "Directing the next generation of researchers toward publication-ready scholarship through expert mentoring and peer-reviewed excellence."
+              </p>
+            </motion.div>
 
-            <p className="text-text-muted text-base leading-[1.8] font-sans max-w-xl">
-              JMRH is an academic publishing and research development platform established to
-              strengthen the quality, integrity, and impact of multidisciplinary research.
-              The journal serves as a bridge between research theory, academic practice, and
-              real-world application.
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
               {commitments.map((item, idx) => (
-                <div key={idx} className="space-y-4 group p-6 premium-card border-none bg-bg-alt">
-                  <div className="w-12 h-12 bg-white flex items-center justify-center rounded-lg shadow-sm group-hover:bg-gold transition-colors duration-500">
-                    <item.icon className="w-6 h-6 text-teal group-hover:text-white transition-colors" />
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: idx * 0.1 }}
+                  className="space-y-6 group"
+                >
+                  <div className="w-14 h-14 bg-oxford/5 flex items-center justify-center group-hover:bg-gold transition-all duration-700 relative overflow-hidden">
+                    <item.icon className="w-6 h-6 text-oxford group-hover:text-white relative z-10 transition-colors" strokeWidth={1} />
+                    <div className="absolute inset-0 bg-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                   </div>
-                  <h3 className="font-serif text-xl text-oxford leading-tight group-hover:text-teal transition-colors font-bold">{item.title}</h3>
-                  <p className="text-sm text-text-subtle leading-relaxed font-sans">
-                    {item.description}
-                  </p>
-                </div>
+                  <div className="space-y-3">
+                    <h3 className="font-serif text-2xl font-black text-oxford group-hover:tracking-tighter transition-all">{item.title}</h3>
+                    <p className="font-sans text-sm text-oxford/50 leading-loose">
+                      {item.description}
+                    </p>
+                  </div>
+                </motion.div>
               ))}
             </div>
           </div>
 
-          {/* Right: Institutional Block */}
-          <div className="relative lg:h-[700px] w-full bg-oxford overflow-hidden flex items-center justify-center group rounded-2xl shadow-2xl">
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80')] bg-cover bg-center grayscale opacity-20 group-hover:scale-105 transition-transform duration-[2000ms]" />
-            <div className="relative z-10 p-16 text-center space-y-8 border border-white/10 m-8 w-full h-[calc(100%-4rem)] flex flex-col justify-center items-center">
-              <div className="w-24 h-24 border-2 border-gold/40 flex items-center justify-center rotate-45 group-hover:rotate-90 transition-transform duration-[1500ms]">
-                <Library className="w-10 h-10 text-gold -rotate-45 group-hover:-rotate-90 transition-transform duration-[1500ms]" />
+          {/* Institutional Monolith (Right) */}
+          <div className="lg:col-span-5 relative group">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+              className="relative aspect-[4/5] bg-oxford overflow-hidden flex items-center justify-center perspective-2000"
+            >
+              {/* Refractive Image BG */}
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80')] bg-cover bg-center grayscale opacity-10 group-hover:scale-110 group-hover:rotate-1 transition-transform duration-[3000ms]" />
+
+              <div className="relative z-10 p-12 text-center space-y-12 border border-white/5 m-8 w-full h-[calc(100%-4rem)] flex flex-col justify-center items-center backdrop-blur-sm group-hover:border-gold/20 transition-all duration-1000">
+                <motion.div
+                  animate={{ rotateY: [0, 15, 0] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-24 h-24 border border-gold/40 flex items-center justify-center rotate-45 group-hover:rotate-90 transition-transform duration-[1500ms] preserve-3d shadow-2xl"
+                >
+                  <Library className="w-10 h-10 text-gold -rotate-45 group-hover:-rotate-90 transition-transform duration-[1500ms]" strokeWidth={0.5} />
+                </motion.div>
+
+                <div className="space-y-6">
+                  <h3 className="font-serif italic text-2xl md:text-3xl text-white leading-relaxed font-light">" Empowering scholars to cross the frontiers of knowledge "</h3>
+                  <div className="w-16 h-[1px] bg-gold mx-auto opacity-30 group-hover:w-32 transition-all duration-1000" />
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-gold">Foundation Excellence</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 italic">Academic Year 2026</p>
+                  </div>
+                </div>
               </div>
-              <h3 className="font-serif italic text-2xl text-white leading-relaxed">" Empowering scholars to cross the frontiers of knowledge "</h3>
-              <div className="w-20 h-[1.5px] bg-gold/50" />
-              <div className="space-y-1">
-                <p className="text-[9px] uppercase tracking-[0.5em] text-gold font-bold">Foundation Excellence</p>
-                <p className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-ui italic">Academic Year 2025</p>
+
+              {/* Architectural Accents */}
+              <div className="absolute top-0 right-0 w-48 h-48 border-t border-r border-gold/10 m-8 group-hover:m-4 transition-all duration-1000" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 border-b border-l border-gold/10 m-8 group-hover:m-4 transition-all duration-1000" />
+            </motion.div>
+
+            {/* Float Metric Badge */}
+            <div className="absolute -bottom-8 -left-8 p-8 bg-white border border-black/5 shadow-3xl hidden xl:flex flex-col gap-2 z-20">
+              <span className="text-[9px] font-black text-teal uppercase tracking-[0.8em]">Operational Status</span>
+              <div className="flex items-center gap-3">
+                <span className="w-2 h-2 rounded-full bg-teal animate-pulse" />
+                <span className="text-[10px] font-bold text-oxford">Global Protocol Active</span>
               </div>
             </div>
-
-            {/* Corner Accents */}
-            <div className="absolute top-0 right-0 w-32 h-32 border-t-2 border-r-2 border-gold/30 m-6" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 border-b-2 border-l-2 border-gold/30 m-6" />
           </div>
-        </motion.div>
+
+        </div>
       </div>
     </section>
   );
