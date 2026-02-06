@@ -13,7 +13,6 @@ export interface User {
     role: UserRole;
     status: UserStatus;
     createdAt: string;
-    // Extended Profile
     pincode?: string;
     city?: string;
     dob?: string;
@@ -53,6 +52,9 @@ export interface Review {
     updatedAt: string;
 }
 
+// Helper to cast supabase client for untyped tables
+const db = supabase as any;
+
 interface JMRHContextType {
     users: User[];
     papers: Paper[];
@@ -61,20 +63,11 @@ interface JMRHContextType {
     isLoading: boolean;
     setCurrentUser: (user: User | null) => void;
     signIn: (email: string, pass: string) => Promise<void>;
-    signUp: (
-        name: string,
-        email: string,
-        pass: string,
-        details: any
-    ) => Promise<void>;
+    signUp: (name: string, email: string, pass: string, details: any) => Promise<void>;
     updateUser: (userId: string, updates: Partial<User>) => Promise<void>;
     banUser: (userId: string) => Promise<void>;
     unbanUser: (userId: string) => Promise<void>;
-    createProfessor: (
-        name: string,
-        email: string,
-        details: any
-    ) => Promise<void>;
+    createProfessor: (name: string, email: string, details: any) => Promise<void>;
     assignPaper: (paperId: string, professorId: string) => Promise<void>;
     submitPaper: (title: string, abstract: string, discipline: string, authorName: string, attachments: string[]) => Promise<void>;
     updatePaper: (paperId: string, updates: any) => Promise<void>;
@@ -88,6 +81,52 @@ interface JMRHContextType {
 
 const JMRHContext = createContext<JMRHContextType | undefined>(undefined);
 
+const mapProfile = (p: any): User => ({
+    id: p.id,
+    name: p.name || '',
+    email: p.email || '',
+    role: (p.role || 'USER') as UserRole,
+    status: (p.status || 'ACTIVE') as UserStatus,
+    createdAt: p.created_at || '',
+    pincode: p.pincode,
+    city: p.city,
+    dob: p.dob,
+    address: p.address,
+    phoneNumber: p.phone_number,
+    age: p.age,
+    degree: p.degree,
+    university: p.university,
+    college: p.college,
+    department: p.department,
+    studyType: p.study_type,
+    specialization: p.specialization,
+    bio: p.bio,
+});
+
+const mapPaper = (p: any): Paper => ({
+    id: p.id,
+    authorId: p.author_id,
+    authorName: p.author_name || '',
+    title: p.title || '',
+    abstract: p.abstract || '',
+    discipline: p.discipline || '',
+    status: p.status as PaperStatus,
+    assignedProfessorId: p.assigned_professor_id,
+    submissionDate: p.submission_date || '',
+    revisionComments: p.revision_comments,
+    attachments: p.attachments,
+});
+
+const mapReview = (r: any): Review => ({
+    id: r.id,
+    userId: r.user_id,
+    userName: r.user_name || '',
+    content: r.content || '',
+    rating: r.rating,
+    createdAt: r.created_at || '',
+    updatedAt: r.updated_at || '',
+});
+
 export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     const [users, setUsers] = useState<User[]>([]);
     const [papers, setPapers] = useState<Paper[]>([]);
@@ -96,37 +135,37 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     const [isLoading, setIsLoading] = useState(true);
     const { toast } = useToast();
 
+    const fetchUserProfile = async (userId: string): Promise<User | null> => {
+        const { data: profile } = await db.from('profiles').select('*').eq('id', userId).maybeSingle();
+        if (!profile) return null;
+
+        // Fetch role from user_roles
+        const { data: roles } = await db.from('user_roles').select('role').eq('user_id', userId);
+        const userRole = roles?.[0]?.role?.toUpperCase() || 'USER';
+
+        return { ...mapProfile(profile), role: userRole as UserRole };
+    };
+
     useEffect(() => {
-        // Initial session check
-        const checkSession = async () => {
+        const init = async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (session?.user) {
-                const { data: profile } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', session.user.id)
-                    .single();
-
-                if (profile) {
-                    setCurrentUser(profile as User);
-                }
+                const profile = await fetchUserProfile(session.user.id);
+                if (profile) setCurrentUser(profile);
             }
             setIsLoading(false);
         };
 
-        checkSession();
+        init();
 
-        // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-            if (session?.user) {
-                const { data: profile } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', session.user.id)
-                    .single();
-                setCurrentUser(profile as User);
-            } else {
+            if (event === 'SIGNED_OUT') {
                 setCurrentUser(null);
+                return;
+            }
+            if (session?.user) {
+                const profile = await fetchUserProfile(session.user.id);
+                if (profile) setCurrentUser(profile);
             }
         });
 
@@ -136,13 +175,15 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     const refreshData = async () => {
-        const { data: profiles } = await supabase.from('profiles').select('*');
-        const { data: papersData } = await supabase.from('papers').select('*');
-        const { data: reviewsData } = await supabase.from('reviews').select('*');
+        const [profilesRes, papersRes, reviewsRes] = await Promise.all([
+            db.from('profiles').select('*'),
+            db.from('papers').select('*'),
+            db.from('reviews').select('*'),
+        ]);
 
-        if (profiles) setUsers(profiles as User[]);
-        if (papersData) setPapers(papersData as Paper[]);
-        if (reviewsData) setReviews(reviewsData as Review[]);
+        if (profilesRes.data) setUsers(profilesRes.data.map(mapProfile));
+        if (papersRes.data) setPapers(papersRes.data.map(mapPaper));
+        if (reviewsRes.data) setReviews(reviewsRes.data.map(mapReview));
     };
 
     const signIn = async (email: string, pass: string) => {
@@ -155,26 +196,9 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         const { data, error } = await supabase.auth.signUp({
             email,
             password: pass,
-            options: {
-                data: { full_name: name, ...details }
-            }
+            options: { data: { full_name: name, ...details } }
         });
         if (error) throw error;
-
-        // Note: The profile creation typically happens via a DB trigger in Supabase,
-        // but if not, we would manually insert it here.
-        if (data.user) {
-            const { error: profileError } = await supabase.from('profiles').insert({
-                id: data.user.id,
-                name,
-                email,
-                role: 'USER',
-                status: 'ACTIVE',
-                ...details
-            });
-            if (profileError) console.error("Profile creation error:", profileError);
-        }
-
         toast({ title: "Registration Success", description: "Please check your email for verification link." });
     };
 
@@ -185,94 +209,91 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const updateUser = async (userId: string, updates: Partial<User>) => {
-        const { error } = await supabase.from('profiles').update(updates).eq('id', userId);
+        const dbUpdates: any = {};
+        if (updates.name !== undefined) dbUpdates.name = updates.name;
+        if (updates.email !== undefined) dbUpdates.email = updates.email;
+        if (updates.status !== undefined) dbUpdates.status = updates.status;
+        if (updates.pincode !== undefined) dbUpdates.pincode = updates.pincode;
+        if (updates.city !== undefined) dbUpdates.city = updates.city;
+        if (updates.dob !== undefined) dbUpdates.dob = updates.dob;
+        if (updates.address !== undefined) dbUpdates.address = updates.address;
+        if (updates.phoneNumber !== undefined) dbUpdates.phone_number = updates.phoneNumber;
+        if (updates.age !== undefined) dbUpdates.age = updates.age;
+        if (updates.degree !== undefined) dbUpdates.degree = updates.degree;
+        if (updates.university !== undefined) dbUpdates.university = updates.university;
+        if (updates.college !== undefined) dbUpdates.college = updates.college;
+        if (updates.department !== undefined) dbUpdates.department = updates.department;
+        if (updates.studyType !== undefined) dbUpdates.study_type = updates.studyType;
+        if (updates.specialization !== undefined) dbUpdates.specialization = updates.specialization;
+        if (updates.bio !== undefined) dbUpdates.bio = updates.bio;
+
+        const { error } = await db.from('profiles').update(dbUpdates).eq('id', userId);
         if (error) throw error;
-        refreshData();
+        await refreshData();
     };
 
-    const banUser = async (userId: string) => {
-        await updateUser(userId, { status: 'BANNED' });
-    };
-
-    const unbanUser = async (userId: string) => {
-        await updateUser(userId, { status: 'ACTIVE' });
-    };
+    const banUser = async (userId: string) => updateUser(userId, { status: 'BANNED' });
+    const unbanUser = async (userId: string) => updateUser(userId, { status: 'ACTIVE' });
 
     const createProfessor = async (name: string, email: string, details: any) => {
-        // Since we can't create Auth users directly from frontend without admin key,
-        // we'll insert into a 'pending_invites' or handle it via a secure edge function.
-        // For this demo, we insert into profiles and assume auth is handled separately or by admin.
-        const { error } = await supabase.from('profiles').insert({
-            name,
-            email,
-            role: 'PROFESSOR',
-            status: 'ACTIVE',
-            ...details
-        });
+        const { error } = await db.from('profiles').insert({ name, email, status: 'ACTIVE', ...details });
         if (error) throw error;
-        refreshData();
+        await refreshData();
     };
 
     const assignPaper = async (paperId: string, professorId: string) => {
-        const { error } = await supabase.from('papers').update({
-            status: 'UNDER_REVIEW',
-            assigned_professor_id: professorId
-        }).eq('id', paperId);
+        const { error } = await db.from('papers').update({ status: 'UNDER_REVIEW', assigned_professor_id: professorId }).eq('id', paperId);
         if (error) throw error;
-        refreshData();
+        await refreshData();
     };
 
     const submitPaper = async (title: string, abstract: string, discipline: string, authorName: string, attachments: string[]) => {
         if (!currentUser) return;
-        const { error } = await supabase.from('papers').insert({
+        const { error } = await db.from('papers').insert({
             author_id: currentUser.id,
             author_name: authorName || currentUser.name,
-            title,
-            abstract,
-            discipline,
+            title, abstract, discipline,
             status: 'SUBMITTED',
             submission_date: new Date().toISOString().split('T')[0],
             attachments
         });
         if (error) throw error;
-        refreshData();
+        await refreshData();
     };
 
     const updatePaper = async (paperId: string, updates: any) => {
-        const { error } = await supabase.from('papers').update(updates).eq('id', paperId);
+        const { error } = await db.from('papers').update(updates).eq('id', paperId);
         if (error) throw error;
-        refreshData();
+        await refreshData();
     };
 
     const updatePaperStatus = async (paperId: string, status: PaperStatus, comments?: string) => {
-        const { error } = await supabase.from('papers').update({ status, revision_comments: comments }).eq('id', paperId);
+        const { error } = await db.from('papers').update({ status, revision_comments: comments }).eq('id', paperId);
         if (error) throw error;
-        refreshData();
+        await refreshData();
     };
 
     const addReview = async (content: string, rating: number) => {
         if (!currentUser) return;
-        const { error } = await supabase.from('reviews').insert({
+        const { error } = await db.from('reviews').insert({
             user_id: currentUser.id,
             user_name: currentUser.name,
-            content,
-            rating,
-            created_at: new Date().toISOString()
+            content, rating,
         });
         if (error) throw error;
-        refreshData();
+        await refreshData();
     };
 
     const updateReview = async (reviewId: string, content: string, rating: number) => {
-        const { error } = await supabase.from('reviews').update({ content, rating, updated_at: new Date().toISOString() }).eq('id', reviewId);
+        const { error } = await db.from('reviews').update({ content, rating }).eq('id', reviewId);
         if (error) throw error;
-        refreshData();
+        await refreshData();
     };
 
     const deleteReview = async (reviewId: string) => {
-        const { error } = await supabase.from('reviews').delete().eq('id', reviewId);
+        const { error } = await db.from('reviews').delete().eq('id', reviewId);
         if (error) throw error;
-        refreshData();
+        await refreshData();
     };
 
     return (
@@ -291,4 +312,3 @@ export const useJMRH = () => {
     if (!context) throw new Error('useJMRH must be used within a JMRHProvider');
     return context;
 };
-
