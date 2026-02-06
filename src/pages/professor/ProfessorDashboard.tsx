@@ -255,9 +255,9 @@ const ProfessorDashboard = memo(() => {
                                                         <p className="font-serif italic text-xl text-white font-bold group-hover:text-gold transition-colors">{paper.title}</p>
 
                                                         <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-white/20 font-bold">
-                                                            <span>{paper.author}</span>
+                                                            <span>{paper.authorName}</span>
                                                             <span className="w-1 h-1 rounded-full bg-white/10" />
-                                                            <span>{paper.category}</span>
+                                                            <span>{paper.discipline}</span>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -271,9 +271,21 @@ const ProfessorDashboard = memo(() => {
                                                 </td>
                                                 <td className="p-8 text-right">
                                                     <p className="text-white/40 text-[10px] uppercase tracking-widest font-bold">
-                                                        {new Date(paper.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                        {new Date(paper.submissionDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                                     </p>
                                                 </td>
                                             </tr>
                                         ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </TabsContent>
+                </Tabs>
+            </div>
+        </DashboardLayout>
+    );
+});
+
+export default ProfessorDashboard;
 
