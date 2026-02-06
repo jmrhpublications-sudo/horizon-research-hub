@@ -25,33 +25,146 @@ import Footer from "@/components/layout/Footer";
 import { useToast } from "@/hooks/use-toast";
 
 const UNIVERSITIES = [
+
+    // ===== Tamil Nadu =====
     "Anna University",
     "University of Madras",
     "Bharathiar University",
+    "Bharathidasan University",
     "Madurai Kamaraj University",
+    "Tamil Nadu Open University",
+    "Alagappa University",
+    "Annamalai University",
+    "Manonmaniam Sundaranar University",
+    "Periyar University",
     "SRM Institute of Science and Technology",
     "VIT University",
-    "Amrita Vishwa Vidyapeetham",
-    "Delhi University",
-    "Mumbai University",
+    "Sathyabama Institute of Science and Technology",
+    "Saveetha Institute of Medical and Technical Sciences",
+    "Hindustan Institute of Technology and Science",
+    "Vel Tech Rangarajan Dr. Sagunthala R&D Institute",
+    "Amrita Vishwa Vidyapeetham (Tamil Nadu)",
+    "Dr. M.G.R. Educational and Research Institute",
+
+    // ===== Kerala =====
+    "University of Kerala",
+    "Mahatma Gandhi University",
+    "University of Calicut",
+    "Kannur University",
+    "Cochin University of Science and Technology",
+    "Sree Sankaracharya University of Sanskrit",
+    "Kerala Agricultural University",
+    "Kerala University of Fisheries and Ocean Studies",
+    "APJ Abdul Kalam Technological University",
+    "Kerala University of Health Sciences",
+    "National University of Advanced Legal Studies",
+    "Amrita Vishwa Vidyapeetham (Kerala)",
+    "Indian Institute of Space Science and Technology",
+
+    // ===== Andhra Pradesh =====
+    "Andhra University",
+    "Sri Venkateswara University",
+    "Acharya Nagarjuna University",
+    "Krishna University",
+    "Rayalaseema University",
+    "Yogi Vemana University",
+    "Dr. B.R. Ambedkar University",
+    "Sri Krishnadevaraya University",
+    "Jawaharlal Nehru Technological University Anantapur",
+    "Jawaharlal Nehru Technological University Kakinada",
+    "Jawaharlal Nehru Technological University Hyderabad",
+    "Andhra Pradesh Open University",
+    "Sri Padmavati Mahila Visvavidyalayam",
+    "Damodaram Sanjivayya National Law University",
+
+    // ===== Karnataka =====
+    "Bangalore University",
+    "University of Mysore",
+    "Karnataka University",
+    "Gulbarga University",
+    "Mangalore University",
+    "Kuvempu University",
+    "Tumkur University",
+    "Rani Channamma University",
+    "Visvesvaraya Technological University",
+    "Karnataka State Open University",
+    "Rajiv Gandhi University of Health Sciences",
+    "National Law School of India University",
+    "Indian Institute of Science",
+    "Christ University",
+    "Jain University",
+    "Presidency University",
+    "Alliance University",
+    "Azim Premji University",
+
+    // ===== Common / Catch-all =====
     "Indian Institute of Technology (IIT)",
     "National Institute of Technology (NIT)",
+    "Other State University",
+    "Other Deemed University",
+    "Other Private University",
     "Other International Institution"
+
+
 ];
 
 const DEPARTMENTS = [
     "Computer Science & Engineering",
     "Information Technology",
-    "Electronics & Communication",
+    "Artificial Intelligence & Data Science",
+    "Electronics & Communication Engineering",
+    "Electrical & Electronics Engineering",
     "Mechanical Engineering",
     "Civil Engineering",
-    "Commerce & Management",
+    "Chemical Engineering",
+    "Biotechnology",
+    "Biomedical Engineering",
+
+    "Commerce",
+    "Management Studies",
+    "Business Administration",
+    "Accounting & Finance",
+    "Human Resource Management",
+
     "Physics",
     "Chemistry",
     "Mathematics",
+    "Statistics",
+    "Applied Mathematics",
+
     "English Literature",
+    "Linguistics",
+    "Comparative Literature",
+    "Indian Languages",
+    "Foreign Languages",
+
+    "Economics",
+    "Commerce & Management",
     "Social Sciences",
-    "Economics"
+    "Sociology",
+    "Political Science",
+    "Public Administration",
+    "History",
+    "Geography",
+
+    "Education",
+    "Psychology",
+    "Philosophy",
+    "Journalism & Mass Communication",
+    "Library & Information Science",
+
+    "Environmental Science",
+    "Environmental Engineering",
+    "Earth Sciences",
+    "Geology",
+    "Oceanography",
+
+    "Law",
+    "Interdisciplinary Studies",
+    "Multidisciplinary Research",
+    "Other"
+
+
 ];
 
 const AuthPage = memo(() => {
