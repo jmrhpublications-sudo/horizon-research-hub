@@ -1,8 +1,9 @@
 import { useState, useEffect, memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, BookOpen, Send, ChevronRight } from "lucide-react";
+import { Menu, X, BookOpen, Send, ChevronRight, ShieldCheck, User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useJMRH } from "@/context/JMRHContext";
 
 const navLinks = [
   { label: "About", href: "/about" },
@@ -17,6 +18,7 @@ const navLinks = [
 const Header = memo(() => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { currentUser } = useJMRH();
   const location = useLocation();
 
   useEffect(() => {
@@ -28,7 +30,7 @@ const Header = memo(() => {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 
       ${scrolled || location.pathname !== "/"
-        ? "bg-white/80 backdrop-blur-xl border-b border-black/5 py-3 shadow-sm"
+        ? "bg-white/90 backdrop-blur-2xl border-b border-black/5 py-3 shadow-sm"
         : "bg-transparent py-5"}`}>
       <div className="container max-w-[1800px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between">
@@ -78,14 +80,32 @@ const Header = memo(() => {
             ))}
           </nav>
 
-          {/* CTA Buttons */}
-          <div className="hidden lg:flex items-center gap-4">
+          {/* CTA Buttons & Profile */}
+          <div className="hidden lg:flex items-center gap-6">
+            {!currentUser ? (
+              <div className="flex items-center gap-3 px-4 py-2 bg-gold/5 border border-gold/10 rounded-full">
+                <ShieldCheck size={12} className="text-gold" />
+                <span className="text-[9px] uppercase tracking-[0.2em] font-black text-gold/60">Trial Access</span>
+                <Link to="/auth" className="text-[9px] uppercase tracking-[0.3em] font-black text-oxford hover:text-gold transition-colors ml-2 underline underline-offset-4">Sign In</Link>
+              </div>
+            ) : (
+              <Link to="/account" className="flex items-center gap-3 group">
+                <div className="w-10 h-10 rounded-full bg-oxford/5 flex items-center justify-center border border-black/5 group-hover:border-gold transition-all">
+                  <UserIcon size={16} className="text-teal" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase tracking-widest font-black text-oxford">{currentUser.name.split(' ')[0]}</span>
+                  <span className={`text-[8px] uppercase tracking-[0.2em] font-bold ${currentUser.role === 'ADMIN' ? 'text-red-500' : 'text-teal'}`}>{currentUser.role}</span>
+                </div>
+              </Link>
+            )}
+
             <Link
               to="/submit-paper"
-              className="flex items-center gap-2 bg-oxford text-white px-6 py-3 text-[10px] uppercase tracking-[0.25em] font-black hover:bg-gold hover:text-oxford transition-all duration-500 shadow-[0_5px_15px_rgba(10,37,64,0.1)] group relative overflow-hidden"
+              className="flex items-center gap-2 bg-oxford text-white px-8 py-3.5 text-[10px] uppercase tracking-[0.25em] font-black hover:bg-gold hover:text-oxford transition-all duration-500 shadow-2xl group relative overflow-hidden"
             >
               <span className="relative z-10 flex items-center gap-2">
-                Submit Paper <Send size={12} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                Submit <Send size={12} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </span>
               <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 opacity-10" />
             </Link>
@@ -133,15 +153,39 @@ const Header = memo(() => {
                 ))}
               </nav>
 
-              <div className="mt-auto space-y-4">
-                <Button asChild className="w-full h-14 rounded-none bg-oxford text-white text-[11px] font-bold tracking-[0.3em] hover:bg-gold transition-all duration-500 shadow-xl">
+              <div className="mt-auto space-y-6">
+                {!currentUser ? (
+                  <div className="p-6 bg-gold/5 border border-gold/10 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck size={14} className="text-gold" />
+                      <span className="text-[10px] uppercase tracking-[0.3em] font-black text-gold">Trial Access</span>
+                    </div>
+                    <p className="text-[10px] text-oxford/40 font-bold uppercase tracking-widest leading-relaxed">
+                      You are exploring in Observer Mode. Authorized access is restricted.
+                    </p>
+                    <Link to="/auth" onClick={() => setIsMenuOpen(false)} className="block text-[10px] uppercase tracking-[0.3em] font-black text-teal hover:text-gold transition-colors">Authorize Node →</Link>
+                  </div>
+                ) : (
+                  <Link to="/account" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 p-6 bg-oxford/5 border border-black/5">
+                    <div className="w-12 h-12 rounded-full bg-oxford text-gold flex items-center justify-center font-serif italic text-xl">
+                      {currentUser.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford">{currentUser.name}</p>
+                      <p className="text-[9px] uppercase tracking-widest text-teal font-bold">{currentUser.role} Profile</p>
+                    </div>
+                  </Link>
+                )}
+
+                <Button asChild className="w-full h-16 rounded-none bg-oxford text-white text-[11px] font-bold tracking-[0.3em] hover:bg-gold transition-all duration-500 shadow-xl">
                   <Link to="/submit-paper" onClick={() => setIsMenuOpen(false)}>SUBMIT MANUSCRIPT</Link>
                 </Button>
+
                 <div className="flex justify-between items-center px-1">
                   <p className="text-[9px] uppercase tracking-widest text-oxford/20 font-bold">© 2025 JMRH Portal</p>
                   <div className="flex gap-4">
                     <span className="w-1.5 h-1.5 rounded-full bg-teal animate-pulse" />
-                    <span className="text-[8px] uppercase tracking-widest text-teal font-black">Encrypted Access</span>
+                    <span className="text-[8px] uppercase tracking-widest text-teal font-black">Secure Shell Active</span>
                   </div>
                 </div>
               </div>

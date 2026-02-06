@@ -159,32 +159,44 @@ const SubmitPaperPage = memo(() => {
                         </div>
                     </div>
 
-                    {/* Guest Login Prompt */}
-                    {!currentUser && (
-                        <div className="mb-8 p-6 bg-gold/10 border border-gold/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div className="flex items-start gap-4">
-                                <ShieldCheck className="text-gold shrink-0 mt-0.5" size={24} />
-                                <div>
-                                    <h3 className="font-semibold text-oxford text-sm">Login Required to Submit</h3>
-                                    <p className="text-xs text-muted-foreground mt-1">Please sign in or register before submitting your manuscript.</p>
+                    {/* Trial Mode / Access Control */}
+                    {!currentUser ? (
+                        <div className="mb-12 relative group overflow-hidden bg-[#111418] border border-gold/20 p-8 sm:p-12 shadow-2xl">
+                            {/* Cinematic Accents */}
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 blur-3xl -mr-16 -mt-16" />
+                            <div className="absolute bottom-0 left-0 w-24 h-24 bg-teal/5 blur-2xl -ml-12 -mb-12" />
+                            <div className="absolute top-0 right-0 w-1 h-20 bg-gold" />
+
+                            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
+                                <div className="space-y-4 text-center md:text-left">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-gold/10 border border-gold/20 rounded-full">
+                                        <ShieldCheck className="text-gold" size={14} />
+                                        <span className="text-[10px] uppercase tracking-[0.3em] font-black text-gold">Nexus Trial Mode</span>
+                                    </div>
+                                    <h2 className="text-3xl font-serif italic font-bold text-white tracking-tight">Experience our Submission Node</h2>
+                                    <p className="text-sm text-white/40 max-w-lg leading-relaxed">
+                                        You are currently in <span className="text-gold font-bold">Observer Mode</span>. You may explore the interface, but manuscript transmission requires verified scholar status.
+                                    </p>
+                                </div>
+                                <div className="flex flex-col gap-4 min-w-[200px]">
+                                    <Link to="/auth">
+                                        <Button className="w-full h-14 bg-gold text-[#0A0C10] hover:bg-white hover:text-black transition-all duration-500 font-black tracking-[0.2em] uppercase text-[10px] shadow-[0_10px_30px_rgba(212,175,55,0.1)]">
+                                            Authorize Identity
+                                        </Button>
+                                    </Link>
+                                    <p className="text-[9px] uppercase tracking-widest text-center text-white/20">Secure Encryption Enabled</p>
                                 </div>
                             </div>
-                            <Link to="/auth">
-                                <Button variant="default" className="h-10 px-6 bg-oxford hover:bg-gold text-primary-foreground font-bold tracking-wider text-xs uppercase">
-                                    Login / Register
-                                </Button>
-                            </Link>
+                        </div>
+                    ) : (
+                        <div className="mb-8 p-6 bg-[#111418] border border-white/5 flex items-start gap-4 shadow-xl">
+                            <ShieldCheck className="text-teal shrink-0 mt-0.5" size={24} />
+                            <div>
+                                <h3 className="font-semibold text-white/80 text-sm italic">Double-Blind Peer Review Status</h3>
+                                <p className="text-[10px] uppercase tracking-widest text-white/30 mt-1">Identity Encryption Protocol: Active</p>
+                            </div>
                         </div>
                     )}
-
-                    {/* Info Card */}
-                    <div className="mb-8 p-6 bg-muted border border-border flex items-start gap-4">
-                        <ShieldCheck className="text-teal shrink-0 mt-0.5" size={24} />
-                        <div>
-                            <h3 className="font-semibold text-oxford text-sm">Double-Blind Peer Review</h3>
-                            <p className="text-xs text-muted-foreground mt-1">All submissions undergo rigorous evaluation by expert reviewers.</p>
-                        </div>
-                    </div>
 
                     {/* Form */}
                     <form onSubmit={handleSubmit} className="space-y-8">

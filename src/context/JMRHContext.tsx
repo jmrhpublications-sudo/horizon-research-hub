@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 export type UserRole = 'ADMIN' | 'PROFESSOR' | 'USER';
 export type UserStatus = 'ACTIVE' | 'BANNED';
@@ -56,271 +58,228 @@ interface JMRHContextType {
     papers: Paper[];
     reviews: Review[];
     currentUser: User | null;
+    isLoading: boolean;
     setCurrentUser: (user: User | null) => void;
-    registerUser: (
+    signIn: (email: string, pass: string) => Promise<void>;
+    signUp: (
         name: string,
         email: string,
-        details: {
-            address: string;
-            phoneNumber: string;
-            age: string;
-            dob: string;
-            city: string;
-            pincode: string;
-            degree: string;
-            university: string;
-            college: string;
-            department: string;
-            studyType: string;
-        }
-    ) => User;
-    updateUser: (userId: string, updates: Partial<User>) => void;
-    banUser: (userId: string) => void;
-    unbanUser: (userId: string) => void;
+        pass: string,
+        details: any
+    ) => Promise<void>;
+    updateUser: (userId: string, updates: Partial<User>) => Promise<void>;
+    banUser: (userId: string) => Promise<void>;
+    unbanUser: (userId: string) => Promise<void>;
     createProfessor: (
         name: string,
         email: string,
-        details: {
-            phoneNumber: string;
-            address: string;
-            department: string;
-            university: string;
-            degree: string;
-            specialization: string;
-            bio: string;
-        }
-    ) => void;
-    assignPaper: (paperId: string, professorId: string) => void;
-    submitPaper: (title: string, abstract: string, discipline: string, authorName: string, attachments: string[]) => void;
-    updatePaper: (paperId: string, updates: { title?: string; abstract?: string; discipline?: string; attachments?: string[] }) => void;
-    updatePaperStatus: (paperId: string, status: PaperStatus, comments?: string) => void;
-    addReview: (content: string, rating: number) => void;
-    updateReview: (reviewId: string, content: string, rating: number) => void;
-    deleteReview: (reviewId: string) => void;
-    logout: () => void;
+        details: any
+    ) => Promise<void>;
+    assignPaper: (paperId: string, professorId: string) => Promise<void>;
+    submitPaper: (title: string, abstract: string, discipline: string, authorName: string, attachments: string[]) => Promise<void>;
+    updatePaper: (paperId: string, updates: any) => Promise<void>;
+    updatePaperStatus: (paperId: string, status: PaperStatus, comments?: string) => Promise<void>;
+    addReview: (content: string, rating: number) => Promise<void>;
+    updateReview: (reviewId: string, content: string, rating: number) => Promise<void>;
+    deleteReview: (reviewId: string) => Promise<void>;
+    logout: () => Promise<void>;
+    refreshData: () => Promise<void>;
 }
-
-const MOCK_USERS: User[] = [
-    { id: 'admin-1', name: 'Super Admin', email: 'admin@jmrh.in', role: 'ADMIN', status: 'ACTIVE', createdAt: '2025-01-01' },
-    {
-        id: 'prof-1',
-        name: 'Dr. Sarah Wilson',
-        email: 'sarah.w@jmrh.in',
-        role: 'PROFESSOR',
-        status: 'ACTIVE',
-        createdAt: '2025-01-10',
-        university: 'Oxford University',
-        department: 'Computer Science',
-        degree: 'PhD',
-        specialization: 'Artificial Intelligence',
-        bio: 'Leading researcher in AI ethics.'
-    },
-    {
-        id: 'prof-2',
-        name: 'Prof. James Chen',
-        email: 'james.c@jmrh.in',
-        role: 'PROFESSOR',
-        status: 'ACTIVE',
-        createdAt: '2025-01-12',
-        university: 'Stanford University',
-        department: 'Physics',
-        degree: 'PhD',
-        specialization: 'Quantum Mechanics',
-        bio: 'Nobel prize nominee.'
-    },
-];
-
-const MOCK_REVIEWS: Review[] = [
-    {
-        id: 'rev-1',
-        userId: 'user-1',
-        userName: 'Alex Thompson',
-        content: 'The peer review process at JMRH is incredibly rigorous and helpful. The feedback I received truly elevated my manuscript.',
-        rating: 5,
-        createdAt: '2025-02-01',
-        updatedAt: '2025-02-01'
-    },
-    {
-        id: 'rev-2',
-        userId: 'prof-1',
-        userName: 'Dr. Sarah Wilson',
-        content: 'A fantastic platform for multidisciplinary research. The interface is clean and the editorial team is very professional.',
-        rating: 5,
-        createdAt: '2025-02-03',
-        updatedAt: '2025-02-03'
-    }
-];
 
 const JMRHContext = createContext<JMRHContextType | undefined>(undefined);
 
 export const JMRHProvider = ({ children }: { children: ReactNode }) => {
-    const [users, setUsers] = useState<User[]>(() => {
-        const saved = localStorage.getItem('jmrh_users');
-        return saved ? JSON.parse(saved) : MOCK_USERS;
-    });
-
-    const [papers, setPapers] = useState<Paper[]>(() => {
-        const saved = localStorage.getItem('jmrh_papers');
-        return saved ? JSON.parse(saved) : [];
-    });
-
-    const [currentUser, setCurrentUser] = useState<User | null>(() => {
-        const saved = localStorage.getItem('jmrh_current_user');
-        return saved ? JSON.parse(saved) : null;
-    });
-
-    const [reviews, setReviews] = useState<Review[]>(() => {
-        const saved = localStorage.getItem('jmrh_reviews');
-        return saved ? JSON.parse(saved) : MOCK_REVIEWS;
-    });
+    const [users, setUsers] = useState<User[]>([]);
+    const [papers, setPapers] = useState<Paper[]>([]);
+    const [reviews, setReviews] = useState<Review[]>([]);
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const { toast } = useToast();
 
     useEffect(() => {
-        localStorage.setItem('jmrh_users', JSON.stringify(users));
-    }, [users]);
+        // Initial session check
+        const checkSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user) {
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .single();
 
-    useEffect(() => {
-        localStorage.setItem('jmrh_papers', JSON.stringify(papers));
-    }, [papers]);
-
-    useEffect(() => {
-        localStorage.setItem('jmrh_current_user', JSON.stringify(currentUser));
-    }, [currentUser]);
-
-    useEffect(() => {
-        localStorage.setItem('jmrh_reviews', JSON.stringify(reviews));
-    }, [reviews]);
-
-    const registerUser = (
-        name: string,
-        email: string,
-        details: {
-            address: string;
-            phoneNumber: string;
-            age: string;
-            dob: string;
-            city: string;
-            pincode: string;
-            degree: string;
-            university: string;
-            college: string;
-            department: string;
-            studyType: string;
-        }
-    ) => {
-        const newUser: User = {
-            id: `user-${Math.random().toString(36).substr(2, 9)}`,
-            name,
-            email,
-            role: 'USER',
-            status: 'ACTIVE',
-            createdAt: new Date().toISOString().split('T')[0],
-            ...details
+                if (profile) {
+                    setCurrentUser(profile as User);
+                }
+            }
+            setIsLoading(false);
         };
-        setUsers(prev => [...prev, newUser]);
-        return newUser;
+
+        checkSession();
+
+        // Listen for auth changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+            if (session?.user) {
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .single();
+                setCurrentUser(profile as User);
+            } else {
+                setCurrentUser(null);
+            }
+        });
+
+        refreshData();
+
+        return () => subscription.unsubscribe();
+    }, []);
+
+    const refreshData = async () => {
+        const { data: profiles } = await supabase.from('profiles').select('*');
+        const { data: papersData } = await supabase.from('papers').select('*');
+        const { data: reviewsData } = await supabase.from('reviews').select('*');
+
+        if (profiles) setUsers(profiles as User[]);
+        if (papersData) setPapers(papersData as Paper[]);
+        if (reviewsData) setReviews(reviewsData as Review[]);
     };
 
-    const logout = () => setCurrentUser(null);
-
-    const updateUser = (userId: string, updates: Partial<User>) => {
-        setUsers(prev => prev.map(u => u.id === userId ? { ...u, ...updates } : u));
+    const signIn = async (email: string, pass: string) => {
+        const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+        if (error) throw error;
+        toast({ title: "Authentication Success", description: "Welcome back to JMRH" });
     };
 
-    const banUser = (userId: string) => {
-        setUsers(prev => prev.map(u => u.id === userId ? { ...u, status: 'BANNED' } : u));
-    };
+    const signUp = async (name: string, email: string, pass: string, details: any) => {
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password: pass,
+            options: {
+                data: { full_name: name, ...details }
+            }
+        });
+        if (error) throw error;
 
-    const unbanUser = (userId: string) => {
-        setUsers(prev => prev.map(u => u.id === userId ? { ...u, status: 'ACTIVE' } : u));
-    };
-
-    const createProfessor = (
-        name: string,
-        email: string,
-        details: {
-            phoneNumber: string;
-            address: string;
-            department: string;
-            university: string;
-            degree: string;
-            specialization: string;
-            bio: string;
+        // Note: The profile creation typically happens via a DB trigger in Supabase,
+        // but if not, we would manually insert it here.
+        if (data.user) {
+            const { error: profileError } = await supabase.from('profiles').insert({
+                id: data.user.id,
+                name,
+                email,
+                role: 'USER',
+                status: 'ACTIVE',
+                ...details
+            });
+            if (profileError) console.error("Profile creation error:", profileError);
         }
-    ) => {
-        setUsers(prev => [...prev, {
-            id: `prof-${Math.random().toString(36).substr(2, 9)}`,
+
+        toast({ title: "Registration Success", description: "Please check your email for verification link." });
+    };
+
+    const logout = async () => {
+        const { error } = await supabase.auth.signOut();
+        if (error) throw error;
+        setCurrentUser(null);
+    };
+
+    const updateUser = async (userId: string, updates: Partial<User>) => {
+        const { error } = await supabase.from('profiles').update(updates).eq('id', userId);
+        if (error) throw error;
+        refreshData();
+    };
+
+    const banUser = async (userId: string) => {
+        await updateUser(userId, { status: 'BANNED' });
+    };
+
+    const unbanUser = async (userId: string) => {
+        await updateUser(userId, { status: 'ACTIVE' });
+    };
+
+    const createProfessor = async (name: string, email: string, details: any) => {
+        // Since we can't create Auth users directly from frontend without admin key,
+        // we'll insert into a 'pending_invites' or handle it via a secure edge function.
+        // For this demo, we insert into profiles and assume auth is handled separately or by admin.
+        const { error } = await supabase.from('profiles').insert({
             name,
             email,
             role: 'PROFESSOR',
             status: 'ACTIVE',
-            createdAt: new Date().toISOString().split('T')[0],
             ...details
-        }]);
+        });
+        if (error) throw error;
+        refreshData();
     };
 
-    const assignPaper = (paperId: string, professorId: string) => {
-        setPapers(prev => prev.map(p => p.id === paperId ? {
-            ...p,
+    const assignPaper = async (paperId: string, professorId: string) => {
+        const { error } = await supabase.from('papers').update({
             status: 'UNDER_REVIEW',
-            assignedProfessorId: professorId
-        } : p));
+            assigned_professor_id: professorId
+        }).eq('id', paperId);
+        if (error) throw error;
+        refreshData();
     };
 
-    const submitPaper = (title: string, abstract: string, discipline: string, authorName: string, attachments: string[]) => {
+    const submitPaper = async (title: string, abstract: string, discipline: string, authorName: string, attachments: string[]) => {
         if (!currentUser) return;
-        setPapers(prev => [...prev, {
-            id: `paper-${Math.random().toString(36).substr(2, 9)}`,
-            authorId: currentUser.id,
-            authorName: authorName || currentUser.name,
+        const { error } = await supabase.from('papers').insert({
+            author_id: currentUser.id,
+            author_name: authorName || currentUser.name,
             title,
             abstract,
             discipline,
             status: 'SUBMITTED',
-            submissionDate: new Date().toISOString().split('T')[0],
+            submission_date: new Date().toISOString().split('T')[0],
             attachments
-        }]);
+        });
+        if (error) throw error;
+        refreshData();
     };
 
-    const updatePaper = (paperId: string, updates: { title?: string; abstract?: string; discipline?: string; attachments?: string[] }) => {
-        setPapers(prev => prev.map(p => p.id === paperId ? { ...p, ...updates } : p));
+    const updatePaper = async (paperId: string, updates: any) => {
+        const { error } = await supabase.from('papers').update(updates).eq('id', paperId);
+        if (error) throw error;
+        refreshData();
     };
 
-    const updatePaperStatus = (paperId: string, status: PaperStatus, comments?: string) => {
-        setPapers(prev => prev.map(p => p.id === paperId ? { ...p, status, revisionComments: comments } : p));
+    const updatePaperStatus = async (paperId: string, status: PaperStatus, comments?: string) => {
+        const { error } = await supabase.from('papers').update({ status, revision_comments: comments }).eq('id', paperId);
+        if (error) throw error;
+        refreshData();
     };
 
-    const addReview = (content: string, rating: number) => {
+    const addReview = async (content: string, rating: number) => {
         if (!currentUser) return;
-        const newReview: Review = {
-            id: `rev-${Math.random().toString(36).substr(2, 9)}`,
-            userId: currentUser.id,
-            userName: currentUser.name,
+        const { error } = await supabase.from('reviews').insert({
+            user_id: currentUser.id,
+            user_name: currentUser.name,
             content,
             rating,
-            createdAt: new Date().toISOString().split('T')[0],
-            updatedAt: new Date().toISOString().split('T')[0]
-        };
-        setReviews(prev => [newReview, ...prev]);
+            created_at: new Date().toISOString()
+        });
+        if (error) throw error;
+        refreshData();
     };
 
-    const updateReview = (reviewId: string, content: string, rating: number) => {
-        setReviews(prev => prev.map(r => r.id === reviewId ? {
-            ...r,
-            content,
-            rating,
-            updatedAt: new Date().toISOString().split('T')[0]
-        } : r));
+    const updateReview = async (reviewId: string, content: string, rating: number) => {
+        const { error } = await supabase.from('reviews').update({ content, rating, updated_at: new Date().toISOString() }).eq('id', reviewId);
+        if (error) throw error;
+        refreshData();
     };
 
-    const deleteReview = (reviewId: string) => {
-        setReviews(prev => prev.filter(r => r.id !== reviewId));
+    const deleteReview = async (reviewId: string) => {
+        const { error } = await supabase.from('reviews').delete().eq('id', reviewId);
+        if (error) throw error;
+        refreshData();
     };
 
     return (
         <JMRHContext.Provider value={{
-            users, papers, reviews, currentUser, setCurrentUser, registerUser, updateUser,
+            users, papers, reviews, currentUser, isLoading, setCurrentUser, signIn, signUp, updateUser,
             banUser, unbanUser, createProfessor, assignPaper,
-            submitPaper, updatePaper, updatePaperStatus, addReview, updateReview, deleteReview, logout
+            submitPaper, updatePaper, updatePaperStatus, addReview, updateReview, deleteReview, logout, refreshData
         }}>
             {children}
         </JMRHContext.Provider>

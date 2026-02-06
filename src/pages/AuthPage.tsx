@@ -14,9 +14,12 @@ import {
     Calendar,
     Hash,
     Building2,
-    ShieldCheck
+    ShieldCheck,
+    Cpu,
+    Globe,
+    Zap
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -25,150 +28,19 @@ import Footer from "@/components/layout/Footer";
 import { useToast } from "@/hooks/use-toast";
 
 const UNIVERSITIES = [
-
-    // ===== Tamil Nadu =====
-    "Anna University",
-    "University of Madras",
-    "Bharathiar University",
-    "Bharathidasan University",
-    "Madurai Kamaraj University",
-    "Tamil Nadu Open University",
-    "Alagappa University",
-    "Annamalai University",
-    "Manonmaniam Sundaranar University",
-    "Periyar University",
-    "SRM Institute of Science and Technology",
-    "VIT University",
-    "Sathyabama Institute of Science and Technology",
-    "Saveetha Institute of Medical and Technical Sciences",
-    "Hindustan Institute of Technology and Science",
-    "Vel Tech Rangarajan Dr. Sagunthala R&D Institute",
-    "Amrita Vishwa Vidyapeetham (Tamil Nadu)",
-    "Dr. M.G.R. Educational and Research Institute",
-
-    // ===== Kerala =====
-    "University of Kerala",
-    "Mahatma Gandhi University",
-    "University of Calicut",
-    "Kannur University",
-    "Cochin University of Science and Technology",
-    "Sree Sankaracharya University of Sanskrit",
-    "Kerala Agricultural University",
-    "Kerala University of Fisheries and Ocean Studies",
-    "APJ Abdul Kalam Technological University",
-    "Kerala University of Health Sciences",
-    "National University of Advanced Legal Studies",
-    "Amrita Vishwa Vidyapeetham (Kerala)",
-    "Indian Institute of Space Science and Technology",
-
-    // ===== Andhra Pradesh =====
-    "Andhra University",
-    "Sri Venkateswara University",
-    "Acharya Nagarjuna University",
-    "Krishna University",
-    "Rayalaseema University",
-    "Yogi Vemana University",
-    "Dr. B.R. Ambedkar University",
-    "Sri Krishnadevaraya University",
-    "Jawaharlal Nehru Technological University Anantapur",
-    "Jawaharlal Nehru Technological University Kakinada",
-    "Jawaharlal Nehru Technological University Hyderabad",
-    "Andhra Pradesh Open University",
-    "Sri Padmavati Mahila Visvavidyalayam",
-    "Damodaram Sanjivayya National Law University",
-
-    // ===== Karnataka =====
-    "Bangalore University",
-    "University of Mysore",
-    "Karnataka University",
-    "Gulbarga University",
-    "Mangalore University",
-    "Kuvempu University",
-    "Tumkur University",
-    "Rani Channamma University",
-    "Visvesvaraya Technological University",
-    "Karnataka State Open University",
-    "Rajiv Gandhi University of Health Sciences",
-    "National Law School of India University",
-    "Indian Institute of Science",
-    "Christ University",
-    "Jain University",
-    "Presidency University",
-    "Alliance University",
-    "Azim Premji University",
-
-    // ===== Common / Catch-all =====
-    "Indian Institute of Technology (IIT)",
-    "National Institute of Technology (NIT)",
-    "Other State University",
-    "Other Deemed University",
-    "Other Private University",
-    "Other International Institution"
-
-
+    "Anna University", "University of Madras", "SRM Institute", "VIT University", "IIT Madras",
+    "Bangalore University", "University of Mysore", "Cochin University", "University of Kerala",
+    "Other Recognized University"
 ];
 
 const DEPARTMENTS = [
-    "Computer Science & Engineering",
-    "Information Technology",
-    "Artificial Intelligence & Data Science",
-    "Electronics & Communication Engineering",
-    "Electrical & Electronics Engineering",
-    "Mechanical Engineering",
-    "Civil Engineering",
-    "Chemical Engineering",
-    "Biotechnology",
-    "Biomedical Engineering",
-
-    "Commerce",
-    "Management Studies",
-    "Business Administration",
-    "Accounting & Finance",
-    "Human Resource Management",
-
-    "Physics",
-    "Chemistry",
-    "Mathematics",
-    "Statistics",
-    "Applied Mathematics",
-
-    "English Literature",
-    "Linguistics",
-    "Comparative Literature",
-    "Indian Languages",
-    "Foreign Languages",
-
-    "Economics",
-    "Commerce & Management",
-    "Social Sciences",
-    "Sociology",
-    "Political Science",
-    "Public Administration",
-    "History",
-    "Geography",
-
-    "Education",
-    "Psychology",
-    "Philosophy",
-    "Journalism & Mass Communication",
-    "Library & Information Science",
-
-    "Environmental Science",
-    "Environmental Engineering",
-    "Earth Sciences",
-    "Geology",
-    "Oceanography",
-
-    "Law",
-    "Interdisciplinary Studies",
-    "Multidisciplinary Research",
-    "Other"
-
-
+    "Computer Science & IT", "Electronics & Communication", "Mechanical Engineering",
+    "Commerce & Management", "Biotechnology", "Social Sciences", "Law", "Multidisciplinary"
 ];
 
 const AuthPage = memo(() => {
     const [isLogin, setIsLogin] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     // Login State
     const [email, setEmail] = useState("");
@@ -192,297 +64,210 @@ const AuthPage = memo(() => {
     const [department, setDepartment] = useState("");
     const [studyType, setStudyType] = useState("");
 
-    const { users, setCurrentUser, registerUser } = useJMRH();
+    const { signIn, signUp } = useJMRH();
     const navigate = useNavigate();
     const location = useLocation();
     const { toast } = useToast();
 
-    const handleAuth = (e: FormEvent) => {
+    const handleAuth = async (e: FormEvent) => {
         e.preventDefault();
+        setLoading(true);
 
-        if (isLogin) {
-            const user = users.find(u => u.email === email && u.role === 'USER');
-            if (user) {
-                if (user.status === 'BANNED') {
-                    toast({ title: "Access Denied", description: "This account has been banned.", variant: "destructive" });
-                    return;
-                }
-                setCurrentUser(user);
-                toast({ title: "Welcome back", description: `Signed in as ${user.name}` });
+        try {
+            if (isLogin) {
+                await signIn(email, password);
                 navigate(location.state?.from?.pathname || '/');
             } else {
-                toast({ title: "Auth Failed", description: "Invalid credentials or unauthorized role.", variant: "destructive" });
+                if (regPass !== repeatPass) {
+                    toast({ title: "Validation Error", description: "Passwords do not match.", variant: "destructive" });
+                    setLoading(false);
+                    return;
+                }
+                await signUp(regName, regEmail, regPass, {
+                    address, phoneNumber, age, dob, city, pincode, degree, university, college, department, studyType
+                });
+                setIsLogin(true);
             }
-        } else {
-            if (regPass !== repeatPass) {
-                toast({ title: "Validation Error", description: "Passwords do not match.", variant: "destructive" });
-                return;
-            }
-
-            const existing = users.find(u => u.email === regEmail);
-            if (existing) {
-                toast({ title: "Registration failed", description: "Email already exists.", variant: "destructive" });
-                return;
-            }
-            const newUser = registerUser(regName, regEmail, {
-                address,
-                phoneNumber,
-                age,
-                dob,
-                city,
-                pincode,
-                degree,
-                university,
-                college,
-                department,
-                studyType
-            });
-            setCurrentUser(newUser);
-            toast({ title: "Account created", description: "Welcome to JMRH Portal" });
-            navigate('/');
+        } catch (error: any) {
+            toast({ title: "Error", description: error.message || "An unexpected error occurred.", variant: "destructive" });
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-[#FDFCFB] flex flex-col font-sans">
+        <div className="min-h-screen bg-[#0A0C10] flex flex-col font-sans selection:bg-gold/30">
             <Header />
             <main className="flex-1 flex items-center justify-center p-6 pt-32 pb-24 relative overflow-hidden">
-                {/* Background Accents */}
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-teal/5 blur-[120px] -mr-64 -mt-64 rounded-full" />
-                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gold/5 blur-[100px] -ml-48 -mb-48 rounded-full" />
+                {/* Cinematic Background Elements */}
+                <div className="absolute inset-0 z-0">
+                    <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-teal/10 blur-[160px] animate-pulse" />
+                    <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gold/5 blur-[140px] animate-pulse delay-1000" />
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03]" />
+                </div>
 
-                <div className={`w-full ${isLogin ? 'max-w-md' : 'max-w-5xl'} space-y-12 relative z-10 animate-academic-reveal`}>
-                    <div className="text-center space-y-6">
-                        <div className="w-20 h-20 bg-oxford flex items-center justify-center perspective-1000 mx-auto shadow-2xl group cursor-pointer">
-                            <motion.div
-                                className="preserve-3d transition-transform duration-1000 group-hover:rotate-y-180"
-                            >
-                                <BookOpen className="text-gold" size={32} />
-                            </motion.div>
+                <div className={`w-full ${isLogin ? 'max-w-md' : 'max-w-6xl'} space-y-12 relative z-10`}>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-center space-y-6"
+                    >
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full backdrop-blur-md mb-4">
+                            <span className="w-2 h-2 rounded-full bg-gold animate-ping" />
+                            <span className="text-[10px] uppercase tracking-[0.3em] font-black text-white/50">Secure Academic Node</span>
                         </div>
-                        <div className="space-y-2">
-                            <h1 className="font-serif text-5xl font-black text-oxford tracking-tighter">
-                                {isLogin ? "Nexus Access" : "Join the Horizon"}
+
+                        <div className="space-y-4">
+                            <h1 className="font-serif text-6xl font-black text-white tracking-tighter leading-none">
+                                {isLogin ? "Nexus Access" : "The Registry"}
                             </h1>
-                            <p className="text-xs uppercase tracking-[0.5em] text-teal font-black">
-                                {isLogin ? "Institutional Authentication" : "Scholar Registration Protocol"}
+                            <p className="text-xs uppercase tracking-[0.6em] text-gold font-bold">
+                                {isLogin ? "Institutional Authentication Protocol" : "Join the Multidisciplinary Horizon"}
                             </p>
                         </div>
-                    </div>
+                    </motion.div>
 
-                    <form onSubmit={handleAuth} className="space-y-12 bg-white p-10 md:p-16 border border-black/5 shadow-[0_50px_100px_rgba(0,0,0,0.05)] relative overflow-hidden">
-                        {/* Elegant Corner Accent */}
-                        <div className="absolute top-0 right-0 w-2 h-24 bg-gold" />
-                        <div className="absolute top-0 right-0 w-24 h-2 bg-gold" />
+                    <form onSubmit={handleAuth} className="bg-[#111418] border border-white/5 shadow-[0_40px_100px_rgba(0,0,0,0.5)] relative overflow-hidden group">
+                        {/* Decorative Accents */}
+                        <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+                        <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-teal/50 to-transparent" />
+                        <div className="absolute top-0 right-0 p-8">
+                            <Cpu className="text-white/5 group-hover:text-gold/20 transition-colors duration-1000" size={40} />
+                        </div>
 
-                        {isLogin ? (
-                            // LOGIN FORM
-                            <div className="space-y-8">
-                                <div className="space-y-3 group">
-                                    <label className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/40 flex items-center gap-2 group-focus-within:text-gold transition-colors">
-                                        <Mail size={12} className="text-teal" /> Email Address
-                                    </label>
-                                    <Input
-                                        required
-                                        type="email"
-                                        placeholder="scholar@university.edu"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        className="h-14 border-0 border-b-2 border-black/5 focus:border-gold rounded-none bg-transparent px-0 font-serif text-xl italic transition-all placeholder:text-black/10 shadow-none"
-                                    />
-                                </div>
-                                <div className="space-y-3 group">
-                                    <label className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/40 flex items-center gap-2 group-focus-within:text-gold transition-colors">
-                                        <Lock size={12} className="text-teal" /> Security Key
-                                    </label>
-                                    <Input
-                                        required
-                                        type="password"
-                                        placeholder="••••••••"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="h-14 border-0 border-b-2 border-black/5 focus:border-gold rounded-none bg-transparent px-0 font-serif text-xl transition-all placeholder:text-black/10 shadow-none"
-                                    />
-                                </div>
-                            </div>
-                        ) : (
-                            // REGISTRATION FORM
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-                                {/* Section 1: Personal Profile */}
-                                <div className="space-y-10">
-                                    <div className="border-l-4 border-gold pl-6">
-                                        <h3 className="font-serif italic text-2xl font-bold text-oxford">Personal Identity</h3>
-                                        <p className="text-[10px] uppercase tracking-widest text-teal font-black mt-1">Foundational Details</p>
+                        <div className="p-10 md:p-16">
+                            {isLogin ? (
+                                <div className="space-y-12">
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <Mail size={14} className="text-gold" />
+                                            <span className="text-[10px] uppercase tracking-[0.3em] font-black text-white/40">Credential ID</span>
+                                        </div>
+                                        <Input
+                                            required
+                                            type="email"
+                                            placeholder="academic.id@horizon.edu"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            className="h-16 border-0 border-b-2 border-white/5 bg-transparent rounded-none px-0 font-serif text-2xl italic text-white focus:border-gold transition-all duration-500 placeholder:text-white/10 shadow-none focus-visible:ring-0"
+                                        />
                                     </div>
 
-                                    <div className="space-y-8">
-                                        <div className="space-y-3 group">
-                                            <label className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/40 flex items-center gap-2 group-focus-within:text-gold transition-colors">
-                                                <UserIcon size={12} className="text-teal" /> Full Legal Name
-                                            </label>
-                                            <Input required value={regName} onChange={(e) => setRegName(e.target.value)} className="h-12 border-0 border-b border-black/10 rounded-none px-0 font-serif italic text-lg shadow-none focus:border-gold transition-all" />
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <Lock size={14} className="text-gold" />
+                                            <span className="text-[10px] uppercase tracking-[0.3em] font-black text-white/40">Security Matrix</span>
+                                        </div>
+                                        <Input
+                                            required
+                                            type="password"
+                                            placeholder="••••••••"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            className="h-16 border-0 border-b-2 border-white/5 bg-transparent rounded-none px-0 font-serif text-2xl text-white focus:border-gold transition-all duration-500 placeholder:text-white/10 shadow-none focus-visible:ring-0"
+                                        />
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+                                    <div className="space-y-12">
+                                        <div className="space-y-2 border-l-2 border-gold pl-6">
+                                            <h3 className="font-serif italic text-3xl font-bold text-white">Identity</h3>
+                                            <p className="text-[10px] uppercase tracking-widest text-gold/50">Personal Details</p>
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-8">
-                                            <div className="space-y-3 group">
-                                                <label className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/40 flex items-center gap-2 group-focus-within:text-gold transition-colors">
-                                                    <Calendar size={12} className="text-teal" /> DOB
-                                                </label>
-                                                <Input required type="date" value={dob} onChange={(e) => setDob(e.target.value)} className="h-12 border-0 border-b border-black/10 rounded-none px-0 font-serif text-lg shadow-none focus:border-gold transition-all" />
+                                        <div className="space-y-8">
+                                            <Input required placeholder="Full Legal Name" value={regName} onChange={(e) => setRegName(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 font-serif italic text-lg text-white focus:border-gold transition-all" />
+                                            <div className="grid grid-cols-2 gap-6">
+                                                <Input required type="date" value={dob} onChange={(e) => setDob(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all text-sm" />
+                                                <Input required type="number" placeholder="Age" value={age} onChange={(e) => setAge(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all text-sm" />
                                             </div>
-                                            <div className="space-y-3 group">
-                                                <label className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/40 flex items-center gap-2 group-focus-within:text-gold transition-colors">
-                                                    <Hash size={12} className="text-teal" /> Age
-                                                </label>
-                                                <Input required type="number" value={age} onChange={(e) => setAge(e.target.value)} className="h-12 border-0 border-b border-black/10 rounded-none px-0 font-serif text-lg shadow-none focus:border-gold transition-all" />
+                                            <div className="grid grid-cols-2 gap-6">
+                                                <Input required placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all text-sm" />
+                                                <Input required placeholder="Pincode" value={pincode} onChange={(e) => setPincode(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all text-sm" />
                                             </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-2 gap-8">
-                                            <div className="space-y-3 group">
-                                                <label className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/40 flex items-center gap-2 group-focus-within:text-gold transition-colors">
-                                                    <Building size={12} className="text-teal" /> City
-                                                </label>
-                                                <Input required value={city} onChange={(e) => setCity(e.target.value)} className="h-12 border-0 border-b border-black/10 rounded-none px-0 font-serif text-lg shadow-none focus:border-gold transition-all" />
-                                            </div>
-                                            <div className="space-y-3 group">
-                                                <label className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/40 flex items-center gap-2 group-focus-within:text-gold transition-colors">
-                                                    <Hash size={12} className="text-teal" /> Pincode
-                                                </label>
-                                                <Input required value={pincode} onChange={(e) => setPincode(e.target.value)} className="h-12 border-0 border-b border-black/10 rounded-none px-0 font-serif text-lg shadow-none focus:border-gold transition-all" />
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-3 group">
-                                            <label className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/40 flex items-center gap-2 group-focus-within:text-gold transition-colors">
-                                                <Phone size={12} className="text-teal" /> Phone
-                                            </label>
-                                            <Input required value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="h-12 border-0 border-b border-black/10 rounded-none px-0 font-serif text-lg shadow-none focus:border-gold transition-all" />
-                                        </div>
-
-                                        <div className="space-y-3 group">
-                                            <label className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/40 flex items-center gap-2 group-focus-within:text-gold transition-colors">
-                                                <Mail size={12} className="text-teal" /> Email
-                                            </label>
-                                            <Input required type="email" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} className="h-12 border-0 border-b border-black/10 rounded-none px-0 font-serif italic text-lg shadow-none focus:border-gold transition-all" />
-                                        </div>
-
-                                        <div className="grid grid-cols-2 gap-8">
-                                            <div className="space-y-3 group">
-                                                <label className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/40 flex items-center gap-2 group-focus-within:text-gold transition-colors">
-                                                    <Lock size={12} className="text-teal" /> Password
-                                                </label>
-                                                <Input required type="password" value={regPass} onChange={(e) => setRegPass(e.target.value)} className="h-12 border-0 border-b border-black/10 rounded-none px-0 font-serif text-lg shadow-none focus:border-gold transition-all" />
-                                            </div>
-                                            <div className="space-y-3 group">
-                                                <label className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/40 flex items-center gap-2 group-focus-within:text-gold transition-colors">
-                                                    <ShieldCheck size={12} className="text-teal" /> Repeat
-                                                </label>
-                                                <Input required type="password" value={repeatPass} onChange={(e) => setRepeatPass(e.target.value)} className="h-12 border-0 border-b border-black/10 rounded-none px-0 font-serif text-lg shadow-none focus:border-gold transition-all" />
+                                            <Input required placeholder="Phone Number" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all text-sm" />
+                                            <Input required type="email" placeholder="Email Address" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all text-sm" />
+                                            <div className="grid grid-cols-2 gap-6">
+                                                <Input required type="password" placeholder="Pass-key" value={regPass} onChange={(e) => setRegPass(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all text-sm" />
+                                                <Input required type="password" placeholder="Verify" value={repeatPass} onChange={(e) => setRepeatPass(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all text-sm" />
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* Section 2: Academic Profile */}
-                                <div className="space-y-10">
-                                    <div className="border-l-4 border-teal pl-6">
-                                        <h3 className="font-serif italic text-2xl font-bold text-oxford">Academic Credential</h3>
-                                        <p className="text-[10px] uppercase tracking-widest text-gold font-black mt-1">Institutional Status</p>
-                                    </div>
+                                    <div className="space-y-12">
+                                        <div className="space-y-2 border-l-2 border-teal pl-6">
+                                            <h3 className="font-serif italic text-3xl font-bold text-white">Scholarship</h3>
+                                            <p className="text-[10px] uppercase tracking-widest text-teal/50">Academic Status</p>
+                                        </div>
 
-                                    <div className="space-y-8">
-                                        <div className="space-y-3 group">
-                                            <label className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/40 flex items-center gap-2 group-focus-within:text-gold transition-colors">
-                                                <GraduationCap size={12} className="text-teal" /> Current Degree
-                                            </label>
+                                        <div className="space-y-8">
                                             <Select onValueChange={setDegree} required>
-                                                <SelectTrigger className="h-12 border-0 border-b border-black/10 rounded-none px-0 font-serif italic text-lg shadow-none focus:ring-0 focus:border-gold transition-all">
-                                                    <SelectValue placeholder="Select Degree" />
+                                                <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-none text-white/50 focus:ring-0 focus:border-gold">
+                                                    <SelectValue placeholder="Current Degree" />
                                                 </SelectTrigger>
-                                                <SelectContent className="rounded-none border-black/5">
+                                                <SelectContent className="bg-[#111418] border-white/10 text-white rounded-none">
                                                     <SelectItem value="Bachelors">Bachelor's Degree</SelectItem>
                                                     <SelectItem value="Masters">Master's Degree</SelectItem>
                                                     <SelectItem value="PhD">PhD / Doctorate</SelectItem>
-                                                    <SelectItem value="PostDoc">Post-Doctoral</SelectItem>
                                                 </SelectContent>
                                             </Select>
-                                        </div>
 
-                                        <div className="space-y-3 group">
-                                            <label className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/40 flex items-center gap-2 group-focus-within:text-gold transition-colors">
-                                                <Building2 size={12} className="text-teal" /> University / Institution
-                                            </label>
                                             <Select onValueChange={setUniversity} required>
-                                                <SelectTrigger className="h-12 border-0 border-b border-black/10 rounded-none px-0 font-serif italic text-lg shadow-none focus:ring-0 focus:border-gold transition-all">
-                                                    <SelectValue placeholder="Select Institution" />
+                                                <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-none text-white/50 focus:ring-0 focus:border-gold">
+                                                    <SelectValue placeholder="Institution" />
                                                 </SelectTrigger>
-                                                <SelectContent className="rounded-none border-black/5">
-                                                    {UNIVERSITIES.map(u => (
-                                                        <SelectItem key={u} value={u}>{u}</SelectItem>
-                                                    ))}
+                                                <SelectContent className="bg-[#111418] border-white/10 text-white rounded-none">
+                                                    {UNIVERSITIES.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
                                                 </SelectContent>
                                             </Select>
-                                        </div>
 
-                                        <div className="space-y-3 group">
-                                            <label className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/40 flex items-center gap-2 group-focus-within:text-gold transition-colors">
-                                                <Building size={12} className="text-teal" /> College / School
-                                            </label>
-                                            <Input required value={college} onChange={(e) => setCollege(e.target.value)} className="h-12 border-0 border-b border-black/10 rounded-none px-0 font-serif text-lg shadow-none focus:border-gold transition-all" />
-                                        </div>
+                                            <Input required placeholder="College Name" value={college} onChange={(e) => setCollege(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all" />
 
-                                        <div className="space-y-3 group">
-                                            <label className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/40 flex items-center gap-2 group-focus-within:text-gold transition-colors">
-                                                <BookOpen size={12} className="text-teal" /> Department
-                                            </label>
                                             <Select onValueChange={setDepartment} required>
-                                                <SelectTrigger className="h-12 border-0 border-b border-black/10 rounded-none px-0 font-serif italic text-lg shadow-none focus:ring-0 focus:border-gold transition-all">
-                                                    <SelectValue placeholder="Select Department" />
+                                                <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-none text-white/50 focus:ring-0 focus:border-gold">
+                                                    <SelectValue placeholder="Department" />
                                                 </SelectTrigger>
-                                                <SelectContent className="rounded-none border-black/5">
-                                                    {DEPARTMENTS.map(d => (
-                                                        <SelectItem key={d} value={d}>{d}</SelectItem>
-                                                    ))}
+                                                <SelectContent className="bg-[#111418] border-white/10 text-white rounded-none">
+                                                    {DEPARTMENTS.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
                                                 </SelectContent>
                                             </Select>
-                                        </div>
 
-                                        <div className="space-y-3 group">
-                                            <label className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/40 flex items-center gap-2 group-focus-within:text-gold transition-colors">
-                                                <BookOpen size={12} className="text-teal" /> Study Mode
-                                            </label>
                                             <Select onValueChange={setStudyType} required>
-                                                <SelectTrigger className="h-12 border-0 border-b border-black/10 rounded-none px-0 font-serif italic text-lg shadow-none focus:ring-0 focus:border-gold transition-all">
-                                                    <SelectValue placeholder="Select Mode" />
+                                                <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-none text-white/50 focus:ring-0 focus:border-gold">
+                                                    <SelectValue placeholder="Engagement Mode" />
                                                 </SelectTrigger>
-                                                <SelectContent className="rounded-none border-black/5">
+                                                <SelectContent className="bg-[#111418] border-white/10 text-white rounded-none">
                                                     <SelectItem value="FullTime">Full Time</SelectItem>
                                                     <SelectItem value="PartTime">Part Time</SelectItem>
-                                                    <SelectItem value="Distance">Distance Learning</SelectItem>
                                                     <SelectItem value="Research">Research Scholar</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
 
-                        <Button type="submit" className="w-full h-20 rounded-none bg-oxford text-white hover:bg-gold hover:text-white transition-all duration-700 font-bold tracking-[0.5em] shadow-2xl flex items-center justify-center gap-4 text-sm uppercase relative group overflow-hidden">
-                            <span className="relative z-10 flex items-center gap-3">
-                                {isLogin ? "Finalize Authentication" : "Complete Registration"} <ArrowRight size={18} />
-                            </span>
-                            <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                        </Button>
+                            <div className="mt-16">
+                                <Button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="w-full h-20 rounded-none bg-gold text-[#0A0C10] hover:bg-white hover:text-black transition-all duration-700 font-black tracking-[1em] shadow-[0_10px_40px_rgba(212,175,55,0.2)] flex items-center justify-center gap-4 text-sm uppercase relative group overflow-hidden disabled:opacity-50"
+                                >
+                                    <span className="relative z-10 flex items-center gap-4">
+                                        {loading ? <Zap className="animate-spin" size={18} /> : (isLogin ? "Terminate Access Protocol" : "Authorize Nexus Identity")} <ArrowRight size={18} />
+                                    </span>
+                                </Button>
+                            </div>
+                        </div>
                     </form>
 
                     <div className="text-center">
                         <button
                             onClick={() => setIsLogin(!isLogin)}
-                            className="text-[11px] uppercase tracking-[0.4em] font-black text-oxford/30 hover:text-gold transition-all border-b border-black/5 pb-2 hover:border-gold"
+                            className="text-[11px] uppercase tracking-[0.6em] font-black text-white/20 hover:text-gold transition-all border-b border-white/5 pb-2 hover:border-gold"
                         >
-                            {isLogin ? "New Scholar? Request Registration protocol" : "Member? Secure Login Entry"}
+                            {isLogin ? "Request New Registration Protocol" : "Authorize Existing Account Matrix"}
                         </button>
                     </div>
                 </div>

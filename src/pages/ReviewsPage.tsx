@@ -1,4 +1,5 @@
 import { memo, useState } from "react";
+import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { useJMRH, Review } from "@/context/JMRHContext";
@@ -135,10 +136,22 @@ const ReviewsPage = memo(() => {
                                 </DialogContent>
                             </Dialog>
                         ) : (
-                            <div className="bg-gold/5 p-6 border-l-4 border-gold">
-                                <p className="text-oxford font-bold text-sm flex items-center gap-3">
-                                    <CheckCircle2 className="text-gold" /> Login required to post reviews
-                                </p>
+                            <div className="relative group overflow-hidden bg-[#111418] border border-gold/20 p-6 shadow-2xl">
+                                <div className="absolute top-0 right-0 w-16 h-16 bg-gold/5 blur-2xl -mr-8 -mt-8" />
+                                <div className="relative z-10 flex items-center gap-8">
+                                    <div className="space-y-1">
+                                        <div className="flex items-center gap-2">
+                                            <ShieldCheck className="text-gold" size={12} />
+                                            <span className="text-[9px] uppercase tracking-[0.3em] font-black text-gold">Nexus Trial Mode</span>
+                                        </div>
+                                        <p className="text-white font-serif italic text-sm">Trial Access to Community Feedback</p>
+                                    </div>
+                                    <Link to="/auth">
+                                        <Button className="h-10 px-6 bg-gold text-[#0A0C10] hover:bg-white hover:text-black transition-all duration-500 font-bold tracking-widest uppercase text-[9px]">
+                                            Authorize
+                                        </Button>
+                                    </Link>
+                                </div>
                             </div>
                         )}
                     </motion.div>

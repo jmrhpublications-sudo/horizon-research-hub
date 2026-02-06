@@ -153,25 +153,38 @@ const AdminPapers = memo(() => {
                                             </DialogContent>
                                         </Dialog>
                                     ) : (
-                                        <Button variant="ghost" className="w-full h-12 rounded-none border border-white/10 text-white/20 cursor-default px-8 text-[10px] uppercase font-bold tracking-widest">
-                                            Vetting In Progress
-                                        </Button>
-                                    )}
-
-                                    {/* Publish Action - Only if vetted or strictly by Admin override */}
-                                    {paper.status !== 'PUBLISHED' && paper.status !== 'ARCHIVED' && (
-                                        <div className="flex gap-2 w-full">
+                                        <div className="w-full space-y-2">
+                                            <div className="flex items-center justify-between px-4 py-2 bg-white/5 border border-white/10">
+                                                <span className="text-[8px] uppercase tracking-widest text-white/40 font-black">Lead Reviewer</span>
+                                                <span className="text-[9px] uppercase tracking-widest text-gold font-bold">{users.find(u => u.id === paper.assignedProfessorId)?.name.split(' ')[0]}</span>
+                                            </div>
                                             <Button
-                                                onClick={() => handlePublish(paper.id)}
-                                                className={`flex-1 h-10 text-[10px] uppercase font-bold tracking-widest transition-all ${paper.status === 'ACCEPTED'
-                                                        ? 'bg-teal text-white hover:bg-teal/80 shadow-lg animate-pulse'
-                                                        : 'bg-white/5 text-white/40 hover:bg-white/10'
-                                                    }`}
+                                                onClick={() => updatePaperStatus(paper.id, 'ACCEPTED', 'Manual Admin Override')}
+                                                className="w-full h-10 bg-teal/10 hover:bg-teal text-teal hover:text-white border border-teal/20 text-[9px] uppercase font-bold tracking-widest transition-all"
                                             >
-                                                {paper.status === 'ACCEPTED' ? 'Officially Publish' : 'Force Publish'}
+                                                Fast-Track Acceptance
                                             </Button>
                                         </div>
                                     )}
+
+                                    {/* Publish/Archive Action */}
+                                    <div className="flex gap-2 w-full pt-2">
+                                        {paper.status === 'ACCEPTED' ? (
+                                            <Button
+                                                onClick={() => handlePublish(paper.id)}
+                                                className="flex-1 h-12 bg-white text-oxford hover:bg-gold hover:text-white font-black tracking-[0.2em] text-[10px] uppercase transition-all shadow-2xl"
+                                            >
+                                                Commit to Archives
+                                            </Button>
+                                        ) : paper.status === 'PUBLISHED' ? (
+                                            <Button
+                                                onClick={() => updatePaperStatus(paper.id, 'ARCHIVED', 'Archived by Admin')}
+                                                className="flex-1 h-12 bg-white/5 text-white/40 hover:text-white border border-white/10 font-bold tracking-widest text-[10px] uppercase transition-all"
+                                            >
+                                                Move to Legacy
+                                            </Button>
+                                        ) : null}
+                                    </div>
                                 </div>
                             </div>
                         </div>
