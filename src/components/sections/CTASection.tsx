@@ -52,10 +52,12 @@ const CTASection = memo(() => {
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-12 pt-12">
             <Button asChild className="group relative overflow-hidden rounded-none bg-gold text-oxford h-24 px-20 shadow-[0_30px_60px_rgba(212,175,55,0.1)] hover:bg-white hover:text-oxford transition-all duration-700">
-              <Link to="/submit-paper" className="relative z-10 flex items-center gap-4 text-sm font-black tracking-[0.4em] uppercase">
-                Submit Research <Send size={18} className="group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform duration-500" />
+              <Link to="/submit-paper" className="relative z-10 flex items-center justify-center gap-4 text-sm font-black tracking-[0.4em] uppercase">
+                <span className="relative z-10 flex items-center gap-4">
+                  Submit Research <Send size={18} className="group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform duration-500" />
+                </span>
+                <span aria-hidden className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-700" />
               </Link>
-              <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-700" />
             </Button>
 
             <Link to="/contact" className="group flex flex-col items-center gap-4 text-[10px] uppercase tracking-[0.5em] font-black text-white/30 hover:text-gold transition-all py-4">
