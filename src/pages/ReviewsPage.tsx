@@ -3,7 +3,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { useJMRH, Review } from "@/context/JMRHContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, MessageSquare, Plus, User, Trash2, Edit3, ShieldHeader, CheckCircle2 } from "lucide-react";
+import { Star, MessageSquare, Plus, User, Trash2, Edit3, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -79,7 +79,7 @@ const ReviewsPage = memo(() => {
                     >
                         <div className="space-y-4 max-w-3xl">
                             <div className="flex items-center gap-4">
-                                <ShieldHeader className="text-gold w-5 h-5" />
+                                <ShieldCheck className="text-gold w-5 h-5" />
                                 <p className="section-label text-gold">Scholarly Feedback</p>
                             </div>
                             <h1 className="text-6xl font-serif font-black text-oxford tracking-tighter leading-none">
