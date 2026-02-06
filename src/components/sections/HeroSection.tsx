@@ -39,7 +39,7 @@ const HeroSection = memo(() => {
           transition={{ duration: 1.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="space-y-10"
         >
-          <h1 className="font-serif text-5xl md:text-7xl lg:text-9xl font-black text-oxford tracking-tighter leading-[0.9] max-w-5xl mx-auto">
+          <h1 className="font-serif text-5xl md:text-7xl lg:text-6xl font-black text-oxford tracking-tighter leading-[0.9] max-w-5xl mx-auto">
             Journal of <br />
             Multidisciplinary <br />
             Research Horizon
