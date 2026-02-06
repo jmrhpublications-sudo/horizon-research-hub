@@ -12,6 +12,9 @@ export interface User {
     status: UserStatus;
     createdAt: string;
     // Extended Profile
+    pincode?: string;
+    city?: string;
+    dob?: string;
     address?: string;
     phoneNumber?: string;
     age?: string;
@@ -146,6 +149,9 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
             address: string;
             phoneNumber: string;
             age: string;
+            dob: string;
+            city: string;
+            pincode: string;
             degree: string;
             university: string;
             college: string;

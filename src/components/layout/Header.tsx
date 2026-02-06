@@ -1,7 +1,7 @@
 import { useState, useEffect, memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, BookOpen } from "lucide-react";
+import { Menu, X, BookOpen, Send, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navLinks = [
@@ -10,7 +10,7 @@ const navLinks = [
   { label: "Editorial", href: "/editorial-board" },
   { label: "Ethics", href: "/ethics-policy" },
   { label: "Archives", href: "/archives" },
-  { label: "Contact", href: "/contact" },
+  { label: "Contact", href: "/contact" }
 ];
 
 const Header = memo(() => {
@@ -19,40 +19,58 @@ const Header = memo(() => {
   const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 
-      ${scrolled || location.pathname !== "/" ? "bg-white/95 backdrop-blur-md border-b border-border py-3 shadow-sm" : "bg-transparent py-6"}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 
+      ${scrolled || location.pathname !== "/"
+        ? "bg-white/80 backdrop-blur-xl border-b border-black/5 py-4 shadow-sm"
+        : "bg-transparent py-8"}`}>
       <div className="container mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-oxford flex items-center justify-center rotate-45 group-hover:rotate-90 transition-transform duration-1000 shadow-xl">
-              <BookOpen className="w-5 h-5 text-gold -rotate-45 group-hover:-rotate-90 transition-transform duration-1000" />
+          {/* 3D Book Logo */}
+          <Link to="/" className="flex items-center gap-4 group">
+            <div className="relative w-12 h-12 perspective-1000">
+              <motion.div
+                className="relative w-full h-full transition-all duration-1000 preserve-3d"
+                whileHover={{ rotateY: 180 }}
+              >
+                {/* Front Cover */}
+                <div className="absolute inset-0 bg-oxford flex items-center justify-center backface-hidden shadow-xl border-r-2 border-gold/40">
+                  <BookOpen className="w-6 h-6 text-gold" />
+                </div>
+                {/* Back Cover / Pages */}
+                <div className="absolute inset-0 bg-gold flex items-center justify-center rotate-y-180 backface-hidden shadow-xl border-l-2 border-oxford/40">
+                  <div className="flex flex-col gap-1">
+                    <div className="w-6 h-0.5 bg-oxford/20" />
+                    <div className="w-6 h-0.5 bg-oxford/20" />
+                    <div className="w-6 h-0.5 bg-oxford/20" />
+                  </div>
+                </div>
+              </motion.div>
             </div>
             <div className="flex flex-col">
-              <span className="font-serif text-2xl font-bold text-oxford tracking-tighter leading-none">
-                JMRH<span className="text-gold">.</span>
+              <span className="font-serif text-2xl font-black text-oxford tracking-tighter leading-none group-hover:text-gold transition-colors duration-500">
+                JMRH<span className="text-gold group-hover:text-oxford">.</span>
               </span>
-              <span className="text-[10px] uppercase tracking-[0.4em] text-teal font-bold font-ui">Research Horizon</span>
+              <span className="text-[10px] uppercase tracking-[0.5em] text-teal font-black font-ui mt-1 opacity-80">Research Horizon</span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
+          <nav className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 to={link.href}
-                className={`nav-link relative py-1
-                  ${location.pathname === link.href ? "text-teal" : "text-text-muted hover:text-teal"}`}
+                className={`text-[11px] uppercase tracking-[0.25em] font-bold transition-all duration-500 hover:text-gold relative group
+                  ${location.pathname === link.href ? "text-gold" : "text-oxford/60"}`}
               >
                 {link.label}
-                <span className={`absolute -bottom-1 left-0 h-[2px] bg-gold transition-all duration-500 
+                <span className={`absolute -bottom-2 left-0 h-[2px] bg-gold transition-all duration-500 rounded-full
                   ${location.pathname === link.href ? "w-full" : "w-0 group-hover:w-full"}`}
                 />
               </Link>
@@ -60,19 +78,22 @@ const Header = memo(() => {
           </nav>
 
           {/* CTA Buttons */}
-          <div className="hidden lg:flex items-center gap-6 font-ui">
-            <Link to="/archives" className="text-[10px] uppercase tracking-[0.2em] font-bold text-oxford hover:text-gold transition-colors">
-              Archives
+          <div className="hidden lg:flex items-center gap-6">
+            <Link
+              to="/submit-paper"
+              className="flex items-center gap-3 bg-oxford text-white px-8 py-4 text-[11px] uppercase tracking-[0.3em] font-black hover:bg-gold hover:text-oxford transition-all duration-500 shadow-[0_10px_30px_rgba(10,37,64,0.15)] group relative overflow-hidden"
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                Submit Paper <Send size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              </span>
+              <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 opacity-10" />
             </Link>
-            <Button asChild className="rounded-none bg-oxford text-white px-6 hover:bg-teal transition-all duration-500 shadow-md">
-              <Link to="/submit-paper">Submit Manuscript</Link>
-            </Button>
           </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden p-2 text-oxford"
+            className="lg:hidden w-12 h-12 flex items-center justify-center text-oxford border border-black/5 hover:border-gold transition-colors"
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -83,45 +104,45 @@ const Header = memo(() => {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, x: "10%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "10%" }}
-            className="fixed inset-0 z-50 lg:hidden bg-oxford text-white p-8 flex flex-col relative overflow-hidden"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed inset-0 z-50 lg:hidden bg-white px-8 pt-24 pb-12 flex flex-col"
           >
-            {/* Ambient Background Effects */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-gold/5 rounded-full blur-3xl -ml-32 -mb-32 pointer-events-none" />
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
-              style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '30px 30px' }}
-            />
-
-            <div className="relative z-10 flex flex-col h-full">
-              <div className="flex justify-between items-center mb-16">
-                <span className="font-serif text-2xl italic text-gold">JMRH Portal</span>
-                <button onClick={() => setIsMenuOpen(false)} className="p-3 border border-white/10 hover:bg-white/10 transition-colors">
-                  <X className="w-6 h-6 text-white" />
+            <div className="container mx-auto h-full flex flex-col">
+              <div className="flex justify-between items-center mb-16 border-b border-black/5 pb-8">
+                <span className="font-serif text-3xl font-bold italic text-oxford">Scholar Menu</span>
+                <button onClick={() => setIsMenuOpen(false)} className="p-4 bg-oxford text-white hover:bg-gold transition-colors">
+                  <X size={24} />
                 </button>
               </div>
 
-              <nav className="flex flex-col gap-10">
+              <nav className="flex flex-col gap-8 flex-1">
                 {navLinks.map((link) => (
                   <Link
                     key={link.label}
                     to={link.href}
                     onClick={() => setIsMenuOpen(false)}
-                    className={`font-serif text-4xl italic transition-all
-                      ${location.pathname === link.href ? "text-gold translate-x-4" : "hover:text-gold"}`}
+                    className={`font-serif text-4xl italic transition-all flex items-center justify-between group
+                      ${location.pathname === link.href ? "text-gold translate-x-4" : "text-oxford/40 hover:text-gold hover:translate-x-2"}`}
                   >
                     {link.label}
+                    <ChevronRight className={`transition-all duration-500 ${location.pathname === link.href ? "opacity-100" : "opacity-0 group-hover:opacity-40"}`} size={32} />
                   </Link>
                 ))}
               </nav>
 
-              <div className="mt-auto space-y-6">
-                <Button asChild className="w-full h-16 rounded-none bg-gold text-oxford text-lg font-bold tracking-widest hover:bg-white transition-colors shadow-lg">
+              <div className="mt-auto space-y-4">
+                <Button asChild className="w-full h-20 rounded-none bg-oxford text-white text-sm font-bold tracking-[0.4em] hover:bg-gold transition-all duration-700 shadow-2xl">
                   <Link to="/submit-paper" onClick={() => setIsMenuOpen(false)}>SUBMIT MANUSCRIPT</Link>
                 </Button>
-                <p className="text-[10px] uppercase tracking-widest text-center text-white/40 font-ui whitespace-nowrap">© 2025 JMRH Publications</p>
+                <div className="flex justify-between items-center px-2">
+                  <p className="text-[10px] uppercase tracking-widest text-oxford/20 font-bold">© 2025 JMRH Portal</p>
+                  <div className="flex gap-4">
+                    <span className="w-1.5 h-1.5 rounded-full bg-teal animate-pulse" />
+                    <span className="text-[8px] uppercase tracking-widest text-teal font-black">Encrypted Access</span>
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>

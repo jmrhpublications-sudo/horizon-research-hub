@@ -2,54 +2,76 @@ import { memo } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { ArrowRight, Send, Mail } from "lucide-react";
 
 const CTASection = memo(() => {
   return (
-    <section className="py-40 bg-oxford relative overflow-hidden">
-      {/* Cinematic Background */}
-      <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80')] bg-fixed bg-cover bg-center grayscale shadow-inner" />
-
-      {/* Decorative Overlays */}
-      <div className="absolute inset-0 bg-gradient-to-b from-oxford via-transparent to-oxford" />
-      <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")` }} />
+    <section className="py-48 bg-oxford relative overflow-hidden font-ui">
+      {/* Background Visuals */}
+      <div className="absolute inset-0 z-0 select-none pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.05)_0%,transparent_70%)]" />
+        <div className="absolute inset-0 bg-[#0A192F]/80 mix-blend-multiply" />
+        {/* Animated Grid lines */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: `linear-gradient(to right, #D4AF37 1px, transparent 1px), linear-gradient(to bottom, #D4AF37 1px, transparent 1px)`,
+          backgroundSize: '80px 80px'
+        }} />
+      </div>
 
       <div className="container mx-auto px-6 lg:px-12 relative z-10">
         <motion.div
-          initial={{ opacity: 0, scale: 0.98, y: 20 }}
+          initial={{ opacity: 0, scale: 0.95, y: 40 }}
           whileInView={{ opacity: 1, scale: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 1 }}
-          className="text-center max-w-5xl mx-auto space-y-12"
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center max-w-6xl mx-auto space-y-16"
         >
-          <div className="space-y-6">
-            <p className="section-label text-gold tracking-[0.6em]">Scholarly Contribution</p>
-            <h2 className="section-title text-white text-6xl md:text-8xl leading-[1.05] font-bold">
-              Refining the <span className="italic academic-underline after:bg-white/30 py-1">Scientific</span> <br />
-              Frontiers of Knowledge
+          <div className="space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              className="inline-block"
+            >
+              <div className="flex items-center gap-6">
+                <div className="w-12 h-[1px] bg-gold/40" />
+                <span className="text-[11px] uppercase tracking-[0.8em] text-gold font-black">Scholarly Invitation</span>
+                <div className="w-12 h-[1px] bg-gold/40" />
+              </div>
+            </motion.div>
+
+            <h2 className="font-serif text-6xl md:text-9xl text-white leading-[0.9] font-black tracking-tighter perspective-1000">
+              Advance the <span className="italic text-gold block md:inline hover:rotate-x-12 transition-transform duration-700">Manuscript</span> <br />
+              of Human Progress
             </h2>
           </div>
 
-          <p className="font-serif italic text-white/60 text-xl md:text-3xl leading-relaxed max-w-3xl mx-auto font-bold opacity-80">
+          <p className="font-serif italic text-white/40 text-2xl md:text-4xl leading-relaxed max-w-4xl mx-auto font-black px-4">
             Join an international council of researchers dedicated to
-            upholding the absolute integrity of scholarly inquiry.
+            the rigorous pursuit of truth through peer-reviewed excellence.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-10 pt-10 font-ui">
-            <Button asChild className="rounded-none bg-gold text-oxford hover:bg-white transition-all duration-[800ms] h-16 px-16 text-xs uppercase tracking-[0.4em] font-bold shadow-2xl group">
-              <Link to="/contact">
-                <span className="relative z-10 group-hover:tracking-[0.5em] transition-all">Submit Manuscript</span>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-12 pt-12">
+            <Button asChild className="group relative overflow-hidden rounded-none bg-gold text-oxford h-24 px-20 shadow-[0_30px_60px_rgba(212,175,55,0.1)] hover:bg-white hover:text-oxford transition-all duration-700">
+              <Link to="/submit-paper" className="relative z-10 flex items-center gap-4 text-sm font-black tracking-[0.4em] uppercase">
+                Submit Research <Send size={18} className="group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform duration-500" />
               </Link>
+              <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-700" />
             </Button>
-            <Link to="/contact" className="text-[10px] uppercase tracking-[0.4em] font-bold text-white border-b-2 border-white/10 pb-2 hover:text-gold hover:border-gold transition-all duration-500 italic">
-              Editorial Correspondence →
+
+            <Link to="/contact" className="group flex flex-col items-center gap-4 text-[10px] uppercase tracking-[0.5em] font-black text-white/30 hover:text-gold transition-all py-4">
+              <span className="group-hover:translate-x-2 transition-transform flex items-center gap-3">
+                Editorial Desk <Mail size={14} />
+              </span>
+              <div className="w-0 h-[2px] bg-gold group-hover:w-full transition-all duration-700" />
             </Link>
           </div>
         </motion.div>
       </div>
 
-      {/* Elite Line Accents */}
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-white/5" />
-      <div className="absolute bottom-0 left-0 w-full h-[1px] bg-white/5" />
+      {/* Decorative Branding */}
+      <div className="absolute bottom-12 right-12 opacity-[0.05] pointer-events-none">
+        <span className="font-serif text-[20vw] font-black text-white italic leading-none">JMRH</span>
+      </div>
     </section>
   );
 });

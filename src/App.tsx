@@ -61,14 +61,12 @@ const App = () => (
               <Route path="/ethics-policy" element={<EthicsPage />} />
               <Route path="/archives" element={<ArchivesPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/auth" element={<AuthPage />} />
               <Route path="/login" element={<AuthPage />} />
 
               {/* User Secure Routes */}
-              <Route path="/submit-paper" element={
-                <ProtectedRoute allowedRoles={['USER']}>
-                  <SubmitPaperPage />
-                </ProtectedRoute>
-              } />
+              <Route path="/submit-paper" element={<SubmitPaperPage />} />
+              <Route path="/submit-paper/:id" element={<SubmitPaperPage />} />
               <Route path="/account" element={
                 <ProtectedRoute allowedRoles={['USER']}>
                   <AccountPage />
