@@ -52,21 +52,21 @@ const HeroSection = memo(() => {
               transition={{ duration: 1.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
               className="space-y-8"
             >
-              <h1 className="font-serif text-6xl md:text-8xl lg:text-7xl xl:text-8xl font-black text-oxford tracking-tighter leading-[0.85]">
-                Horizon <br />
+              <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-oxford tracking-tighter leading-[0.9]">
+                Journal of <br />
                 <span className="italic text-gold relative inline-block group">
-                  Research
+                  Multidisciplinary
                   <motion.span
-                    className="absolute -bottom-4 left-0 w-full h-[2px] bg-gold/20"
+                    className="absolute -bottom-2 left-0 w-full h-[2px] bg-gold/20"
                     initial={{ width: 0 }}
                     animate={{ width: '100%' }}
                     transition={{ duration: 2, delay: 1 }}
                   />
                 </span> <br />
-                <span className="text-teal/80">Hub.</span>
+                <span className="text-teal/80">Research Hub.</span>
               </h1>
-              <p className="font-serif italic text-2xl md:text-3xl text-oxford/30 max-w-2xl leading-relaxed">
-                "Where multidisciplinary rigor meets global vision."
+              <p className="font-serif italic text-lg sm:text-xl md:text-2xl text-oxford/40 max-w-xl leading-relaxed">
+                "Where academic rigor meets global vision—advancing knowledge through peer-reviewed excellence."
               </p>
             </motion.div>
 
@@ -76,11 +76,11 @@ const HeroSection = memo(() => {
               transition={{ delay: 0.8, duration: 1 }}
               className="flex flex-col sm:flex-row items-center gap-12 pt-8"
             >
-              <Button asChild className="group h-20 px-14 rounded-none bg-oxford text-white hover:bg-gold hover:text-white transition-all duration-700 shadow-3xl relative overflow-hidden group">
-                <Link to="/submit-paper" className="relative z-10 flex items-center justify-center gap-4 text-[11px] font-black tracking-[0.3em] uppercase">
-                  <span>Transmit Manuscript</span>
-                  <ArrowUpRight size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                  <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+              <Button asChild className="group h-16 sm:h-20 px-8 sm:px-14 rounded-none bg-oxford text-white hover:bg-gold hover:text-white transition-all duration-700 shadow-xl relative overflow-hidden">
+                <Link to="/submit-paper" className="relative z-10 flex items-center justify-center gap-3 text-[10px] sm:text-[11px] font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase">
+                  <span>Submit Manuscript</span>
+                  <ArrowUpRight size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  <span aria-hidden className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                 </Link>
               </Button>
 

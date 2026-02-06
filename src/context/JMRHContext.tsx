@@ -92,6 +92,7 @@ interface JMRHContextType {
     ) => void;
     assignPaper: (paperId: string, professorId: string) => void;
     submitPaper: (title: string, abstract: string, discipline: string, authorName: string, attachments: string[]) => void;
+    updatePaper: (paperId: string, updates: { title?: string; abstract?: string; discipline?: string; attachments?: string[] }) => void;
     updatePaperStatus: (paperId: string, status: PaperStatus, comments?: string) => void;
     addReview: (content: string, rating: number) => void;
     updateReview: (reviewId: string, content: string, rating: number) => void;
@@ -280,6 +281,10 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         }]);
     };
 
+    const updatePaper = (paperId: string, updates: { title?: string; abstract?: string; discipline?: string; attachments?: string[] }) => {
+        setPapers(prev => prev.map(p => p.id === paperId ? { ...p, ...updates } : p));
+    };
+
     const updatePaperStatus = (paperId: string, status: PaperStatus, comments?: string) => {
         setPapers(prev => prev.map(p => p.id === paperId ? { ...p, status, revisionComments: comments } : p));
     };
@@ -315,7 +320,7 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         <JMRHContext.Provider value={{
             users, papers, reviews, currentUser, setCurrentUser, registerUser, updateUser,
             banUser, unbanUser, createProfessor, assignPaper,
-            submitPaper, updatePaperStatus, addReview, updateReview, deleteReview, logout
+            submitPaper, updatePaper, updatePaperStatus, addReview, updateReview, deleteReview, logout
         }}>
             {children}
         </JMRHContext.Provider>
@@ -327,3 +332,4 @@ export const useJMRH = () => {
     if (!context) throw new Error('useJMRH must be used within a JMRHProvider');
     return context;
 };
+

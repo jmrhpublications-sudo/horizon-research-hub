@@ -10,7 +10,8 @@ import {
     Plus,
     ArrowRight,
     ShieldCheck,
-    MessageCircle
+    MessageCircle,
+    Edit3
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/layout/Header";
@@ -108,12 +109,23 @@ const AccountPage = memo(() => {
                                     </div>
                                 </div>
 
-                                <div className="pt-8 flex justify-end gap-6 items-center border-t border-border">
-                                    <button className="text-[10px] uppercase tracking-widest font-bold text-text-muted hover:text-teal transition-colors flex items-center gap-2 block">
-                                        <MessageCircle size={14} /> Scholarly Correspondence
+                                <div className="pt-8 flex flex-wrap justify-end gap-6 items-center border-t border-border">
+                                    <button className="text-[10px] uppercase tracking-widest font-bold text-text-muted hover:text-teal transition-colors flex items-center gap-2">
+                                        <MessageCircle size={14} /> Correspondence
                                     </button>
+
+                                    {/* Edit button - only for SUBMITTED papers */}
+                                    {paper.status === 'SUBMITTED' && (
+                                        <Link
+                                            to={`/submit-paper/${paper.id}`}
+                                            className="text-[10px] uppercase tracking-widest font-bold text-gold hover:text-oxford transition-colors flex items-center gap-2"
+                                        >
+                                            <Edit3 size={14} /> Edit Submission
+                                        </Link>
+                                    )}
+
                                     <Button variant="ghost" className="rounded-none border-b-2 border-gold text-oxford px-0 hover:bg-transparent group/link flex items-center gap-3 font-bold tracking-widest text-[10px] uppercase h-10">
-                                        View Submission Details <ArrowRight size={14} className="group-hover/link:translate-x-2 transition-transform" />
+                                        View Details <ArrowRight size={14} className="group-hover/link:translate-x-2 transition-transform" />
                                     </Button>
                                 </div>
                             </div>

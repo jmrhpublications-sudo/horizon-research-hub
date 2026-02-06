@@ -1,4 +1,4 @@
-import React, { useState, memo, FormEvent, useRef } from "react";
+import React, { useState, memo, FormEvent, useRef, useEffect, useMemo } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useJMRH } from "@/context/JMRHContext";
 import {
@@ -27,10 +27,14 @@ import Footer from "@/components/layout/Footer";
 import { useToast } from "@/hooks/use-toast";
 
 const SubmitPaperPage = memo(() => {
-    const { submitPaper, currentUser, papers } = useJMRH();
+    const { submitPaper, updatePaper, currentUser, papers } = useJMRH();
     const navigate = useNavigate();
     const { id } = useParams();
     const { toast } = useToast();
+
+    // Find existing paper when editing
+    const existingPaper = useMemo(() => papers.find(p => p.id === id), [papers, id]);
+    const isEditMode = Boolean(existingPaper);
 
     const [title, setTitle] = useState("");
     const [abstract, setAbstract] = useState("");
@@ -45,6 +49,17 @@ const SubmitPaperPage = memo(() => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Populate form when editing
+    useEffect(() => {
+        if (existingPaper) {
+            setTitle(existingPaper.title);
+            setAbstract(existingPaper.abstract);
+            setDiscipline(existingPaper.discipline);
+            setAuthorName(existingPaper.authorName);
+            setAttachments(existingPaper.attachments || []);
+        }
+    }, [existingPaper]);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -93,7 +108,10 @@ const SubmitPaperPage = memo(() => {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        if (!currentUser) return;
+        if (!currentUser) {
+            toast({ title: "Login Required", description: "Please log in to submit your manuscript.", variant: "destructive" });
+            return;
+        }
         if (attachments.length === 0) {
             toast({ title: "Attachments Required", description: "Please upload your manuscript file.", variant: "destructive" });
             return;
@@ -104,8 +122,14 @@ const SubmitPaperPage = memo(() => {
         }
         setIsSubmitting(true);
         await new Promise(r => setTimeout(r, 1200));
-        submitPaper(title, abstract, discipline, authorName, attachments);
-        toast({ title: "Manuscript Submitted!", description: "Your paper has been received for review." });
+
+        if (isEditMode && existingPaper) {
+            updatePaper(existingPaper.id, { title, abstract, discipline, attachments });
+            toast({ title: "Manuscript Updated!", description: "Your changes have been saved." });
+        } else {
+            submitPaper(title, abstract, discipline, authorName, attachments);
+            toast({ title: "Manuscript Submitted!", description: "Your paper has been received for review." });
+        }
         navigate('/account');
     };
 
@@ -124,10 +148,34 @@ const SubmitPaperPage = memo(() => {
                             <ArrowLeft size={14} /> Back to Account
                         </Link>
                         <div className="border-l-4 border-gold pl-6">
-                            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-oxford">Submit Manuscript</h1>
-                            <p className="text-sm text-muted-foreground mt-1">Share your research with the academic community</p>
+                            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-oxford">
+                                {isEditMode ? "Edit Manuscript" : "Submit Manuscript"}
+                            </h1>
+                            <p className="text-sm text-muted-foreground mt-1">
+                                {isEditMode
+                                    ? "Update your paper details and resubmit"
+                                    : "Share your research with the academic community"}
+                            </p>
                         </div>
                     </div>
+
+                    {/* Guest Login Prompt */}
+                    {!currentUser && (
+                        <div className="mb-8 p-6 bg-gold/10 border border-gold/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div className="flex items-start gap-4">
+                                <ShieldCheck className="text-gold shrink-0 mt-0.5" size={24} />
+                                <div>
+                                    <h3 className="font-semibold text-oxford text-sm">Login Required to Submit</h3>
+                                    <p className="text-xs text-muted-foreground mt-1">Please sign in or register before submitting your manuscript.</p>
+                                </div>
+                            </div>
+                            <Link to="/auth">
+                                <Button variant="default" className="h-10 px-6 bg-oxford hover:bg-gold text-primary-foreground font-bold tracking-wider text-xs uppercase">
+                                    Login / Register
+                                </Button>
+                            </Link>
+                        </div>
+                    )}
 
                     {/* Info Card */}
                     <div className="mb-8 p-6 bg-muted border border-border flex items-start gap-4">
@@ -284,8 +332,8 @@ const SubmitPaperPage = memo(() => {
                         {/* Submit Button */}
                         <Button
                             type="submit"
-                            disabled={isSubmitting}
-                            className="w-full h-14 bg-oxford text-primary-foreground hover:bg-gold transition-colors text-sm font-bold tracking-widest uppercase"
+                            disabled={isSubmitting || !currentUser}
+                            className="w-full h-14 bg-oxford text-primary-foreground hover:bg-gold transition-colors text-sm font-bold tracking-widest uppercase disabled:opacity-60 disabled:cursor-not-allowed"
                         >
                             {isSubmitting ? (
                                 <span className="flex items-center gap-2">
@@ -294,7 +342,15 @@ const SubmitPaperPage = memo(() => {
                                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                                         className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
                                     />
-                                    Submitting...
+                                    {isEditMode ? "Updating..." : "Submitting..."}
+                                </span>
+                            ) : !currentUser ? (
+                                <span className="flex items-center gap-2">
+                                    <ShieldCheck size={16} /> Login to Submit
+                                </span>
+                            ) : isEditMode ? (
+                                <span className="flex items-center gap-2">
+                                    <Send size={16} /> Save Changes
                                 </span>
                             ) : (
                                 <span className="flex items-center gap-2">
