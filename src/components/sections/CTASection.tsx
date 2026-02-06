@@ -66,33 +66,32 @@ const CTASection = memo(() => {
             <span className="text-[9px] uppercase tracking-[0.5em] text-gold/80 font-bold">Manuscript Intake Protocol Active</span>
           </motion.div>
 
-          <div className="space-y-10">
-            <h2 className="font-serif text-5xl md:text-8xl lg:text-5xl font-black text-white tracking-tighter leading-[1.05]">
-              Advance the <span className="italic text-gold block md:inline relative">
-                Manuscript
+          <div className="space-y-8">
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter leading-tight">
+              Share Your <span className="italic text-gold relative inline-block">
+                Research
                 <motion.span
-                  className="absolute -bottom-2 left-0 w-full h-[1px] bg-gold/30"
+                  className="absolute -bottom-1 left-0 w-full h-[1px] bg-gold/30"
                   initial={{ width: 0 }}
                   whileInView={{ width: '100%' }}
                   transition={{ duration: 1.5, delay: 1 }}
                 />
-              </span> <br />
-              of Human Progress
+              </span> <br className="hidden md:block" />
+              With the World
             </h2>
 
-            <p className="font-serif italic text-white/50 text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto">
-              "Joining an international council of researchers dedicated to
-              the rigorous pursuit of truth through peer-reviewed excellence."
+            <p className="font-serif italic text-white/50 text-base sm:text-lg md:text-xl leading-relaxed max-w-2xl mx-auto">
+              Join a global community of scholars committed to advancing knowledge through rigorous peer-reviewed publication.
             </p>
 
-            <div className="flex flex-col md:flex-row items-center justify-center gap-10 pt-10">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 pt-6">
               <Button
                 asChild
-                className="h-20 px-12 bg-white text-oxford rounded-none font-black tracking-[0.3em] uppercase text-xs hover:bg-gold hover:text-white transition-all duration-700 shadow-2xl group border-none relative overflow-hidden"
+                className="h-14 sm:h-16 px-8 sm:px-12 bg-white text-oxford rounded-none font-bold tracking-[0.2em] uppercase text-[10px] sm:text-xs hover:bg-gold hover:text-white transition-all duration-500 shadow-xl group border-none relative overflow-hidden"
               >
-                <Link to="/submit-paper" className="relative z-10 flex items-center gap-4">
+                <Link to="/submit-paper" className="relative z-10 flex items-center gap-3">
                   <span>Submit Manuscript</span>
-                  <Send size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  <Send size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                   <span
                     aria-hidden
                     className="absolute inset-0 bg-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500"
