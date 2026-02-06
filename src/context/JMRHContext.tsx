@@ -53,6 +53,9 @@ interface JMRHContextType {
             address: string;
             phoneNumber: string;
             age: string;
+            dob: string;
+            city: string;
+            pincode: string;
             degree: string;
             university: string;
             college: string;
