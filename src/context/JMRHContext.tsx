@@ -41,9 +41,20 @@ export interface Paper {
     attachments?: string[];
 }
 
+export interface Review {
+    id: string;
+    userId: string;
+    userName: string;
+    content: string;
+    rating: number;
+    createdAt: string;
+    updatedAt: string;
+}
+
 interface JMRHContextType {
     users: User[];
     papers: Paper[];
+    reviews: Review[];
     currentUser: User | null;
     setCurrentUser: (user: User | null) => void;
     registerUser: (
@@ -82,6 +93,9 @@ interface JMRHContextType {
     assignPaper: (paperId: string, professorId: string) => void;
     submitPaper: (title: string, abstract: string, discipline: string, authorName: string, attachments: string[]) => void;
     updatePaperStatus: (paperId: string, status: PaperStatus, comments?: string) => void;
+    addReview: (content: string, rating: number) => void;
+    updateReview: (reviewId: string, content: string, rating: number) => void;
+    deleteReview: (reviewId: string) => void;
     logout: () => void;
 }
 
@@ -115,6 +129,27 @@ const MOCK_USERS: User[] = [
     },
 ];
 
+const MOCK_REVIEWS: Review[] = [
+    {
+        id: 'rev-1',
+        userId: 'user-1',
+        userName: 'Alex Thompson',
+        content: 'The peer review process at JMRH is incredibly rigorous and helpful. The feedback I received truly elevated my manuscript.',
+        rating: 5,
+        createdAt: '2025-02-01',
+        updatedAt: '2025-02-01'
+    },
+    {
+        id: 'rev-2',
+        userId: 'prof-1',
+        userName: 'Dr. Sarah Wilson',
+        content: 'A fantastic platform for multidisciplinary research. The interface is clean and the editorial team is very professional.',
+        rating: 5,
+        createdAt: '2025-02-03',
+        updatedAt: '2025-02-03'
+    }
+];
+
 const JMRHContext = createContext<JMRHContextType | undefined>(undefined);
 
 export const JMRHProvider = ({ children }: { children: ReactNode }) => {
@@ -133,6 +168,11 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         return saved ? JSON.parse(saved) : null;
     });
 
+    const [reviews, setReviews] = useState<Review[]>(() => {
+        const saved = localStorage.getItem('jmrh_reviews');
+        return saved ? JSON.parse(saved) : MOCK_REVIEWS;
+    });
+
     useEffect(() => {
         localStorage.setItem('jmrh_users', JSON.stringify(users));
     }, [users]);
@@ -144,6 +184,10 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         localStorage.setItem('jmrh_current_user', JSON.stringify(currentUser));
     }, [currentUser]);
+
+    useEffect(() => {
+        localStorage.setItem('jmrh_reviews', JSON.stringify(reviews));
+    }, [reviews]);
 
     const registerUser = (
         name: string,
@@ -240,11 +284,38 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         setPapers(prev => prev.map(p => p.id === paperId ? { ...p, status, revisionComments: comments } : p));
     };
 
+    const addReview = (content: string, rating: number) => {
+        if (!currentUser) return;
+        const newReview: Review = {
+            id: `rev-${Math.random().toString(36).substr(2, 9)}`,
+            userId: currentUser.id,
+            userName: currentUser.name,
+            content,
+            rating,
+            createdAt: new Date().toISOString().split('T')[0],
+            updatedAt: new Date().toISOString().split('T')[0]
+        };
+        setReviews(prev => [newReview, ...prev]);
+    };
+
+    const updateReview = (reviewId: string, content: string, rating: number) => {
+        setReviews(prev => prev.map(r => r.id === reviewId ? {
+            ...r,
+            content,
+            rating,
+            updatedAt: new Date().toISOString().split('T')[0]
+        } : r));
+    };
+
+    const deleteReview = (reviewId: string) => {
+        setReviews(prev => prev.filter(r => r.id !== reviewId));
+    };
+
     return (
         <JMRHContext.Provider value={{
-            users, papers, currentUser, setCurrentUser, registerUser, updateUser,
+            users, papers, reviews, currentUser, setCurrentUser, registerUser, updateUser,
             banUser, unbanUser, createProfessor, assignPaper,
-            submitPaper, updatePaperStatus, logout
+            submitPaper, updatePaperStatus, addReview, updateReview, deleteReview, logout
         }}>
             {children}
         </JMRHContext.Provider>

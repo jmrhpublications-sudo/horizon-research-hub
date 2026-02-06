@@ -15,6 +15,7 @@ const GuidelinesPage = lazy(() => import("./pages/GuidelinesPage"));
 const EditorialPage = lazy(() => import("./pages/EditorialPage"));
 const EthicsPage = lazy(() => import("./pages/EthicsPage"));
 const ArchivesPage = lazy(() => import("./pages/ArchivesPage"));
+const ReviewsPage = lazy(() => import("./pages/ReviewsPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 const AuthPage = lazy(() => import("./pages/AuthPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -60,18 +61,19 @@ const App = () => (
               <Route path="/editorial-board" element={<EditorialPage />} />
               <Route path="/ethics-policy" element={<EthicsPage />} />
               <Route path="/archives" element={<ArchivesPage />} />
+              <Route path="/reviews" element={<ReviewsPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/login" element={<AuthPage />} />
 
               {/* User Secure Routes - Protected */}
               <Route path="/submit-paper" element={
-                <ProtectedRoute allowedRoles={['USER']}>
+                <ProtectedRoute allowedRoles={['USER', 'ADMIN', 'PROFESSOR']}>
                   <SubmitPaperPage />
                 </ProtectedRoute>
               } />
               <Route path="/submit-paper/:id" element={
-                <ProtectedRoute allowedRoles={['USER']}>
+                <ProtectedRoute allowedRoles={['USER', 'ADMIN', 'PROFESSOR']}>
                   <SubmitPaperPage />
                 </ProtectedRoute>
               } />

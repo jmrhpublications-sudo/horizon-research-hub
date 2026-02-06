@@ -10,6 +10,7 @@ const navLinks = [
   { label: "Editorial", href: "/editorial-board" },
   { label: "Ethics", href: "/ethics-policy" },
   { label: "Archives", href: "/archives" },
+  { label: "Reviews", href: "/reviews" },
   { label: "Contact", href: "/contact" }
 ];
 
@@ -27,9 +28,9 @@ const Header = memo(() => {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 
       ${scrolled || location.pathname !== "/"
-        ? "bg-white/80 backdrop-blur-xl border-b border-black/5 py-4 shadow-sm"
-        : "bg-transparent py-8"}`}>
-      <div className="container mx-auto px-6 lg:px-12">
+        ? "bg-white/80 backdrop-blur-xl border-b border-black/5 py-3 shadow-sm"
+        : "bg-transparent py-5"}`}>
+      <div className="container max-w-[1800px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between">
           {/* 3D Book Logo */}
           <Link to="/" className="flex items-center gap-4 group">
@@ -53,24 +54,24 @@ const Header = memo(() => {
               </motion.div>
             </div>
             <div className="flex flex-col">
-              <span className="font-serif text-2xl font-black text-oxford tracking-tighter leading-none group-hover:text-gold transition-colors duration-500">
+              <span className="font-serif text-xl font-black text-oxford tracking-tighter leading-none group-hover:text-gold transition-colors duration-500">
                 JMRH<span className="text-gold group-hover:text-oxford">.</span>
               </span>
-              <span className="text-[10px] uppercase tracking-[0.5em] text-teal font-black font-ui mt-1 opacity-80">Research Horizon</span>
+              <span className="text-[9px] uppercase tracking-[0.4em] text-teal font-black font-ui mt-0.5 opacity-80">Research Horizon</span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 to={link.href}
-                className={`text-[11px] uppercase tracking-[0.25em] font-bold transition-all duration-500 hover:text-gold relative group
+                className={`text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-500 hover:text-gold relative group
                   ${location.pathname === link.href ? "text-gold" : "text-oxford/60"}`}
               >
                 {link.label}
-                <span className={`absolute -bottom-2 left-0 h-[2px] bg-gold transition-all duration-500 rounded-full
+                <span className={`absolute -bottom-1 left-0 h-[1.5px] bg-gold transition-all duration-500 rounded-full
                   ${location.pathname === link.href ? "w-full" : "w-0 group-hover:w-full"}`}
                 />
               </Link>
@@ -78,13 +79,13 @@ const Header = memo(() => {
           </nav>
 
           {/* CTA Buttons */}
-          <div className="hidden lg:flex items-center gap-6">
+          <div className="hidden lg:flex items-center gap-4">
             <Link
               to="/submit-paper"
-              className="flex items-center gap-3 bg-oxford text-white px-8 py-4 text-[11px] uppercase tracking-[0.3em] font-black hover:bg-gold hover:text-oxford transition-all duration-500 shadow-[0_10px_30px_rgba(10,37,64,0.15)] group relative overflow-hidden"
+              className="flex items-center gap-2 bg-oxford text-white px-6 py-3 text-[10px] uppercase tracking-[0.25em] font-black hover:bg-gold hover:text-oxford transition-all duration-500 shadow-[0_5px_15px_rgba(10,37,64,0.1)] group relative overflow-hidden"
             >
               <span className="relative z-10 flex items-center gap-2">
-                Submit Paper <Send size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                Submit Paper <Send size={12} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </span>
               <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 opacity-10" />
             </Link>
@@ -133,11 +134,11 @@ const Header = memo(() => {
               </nav>
 
               <div className="mt-auto space-y-4">
-                <Button asChild className="w-full h-20 rounded-none bg-oxford text-white text-sm font-bold tracking-[0.4em] hover:bg-gold transition-all duration-700 shadow-2xl">
+                <Button asChild className="w-full h-14 rounded-none bg-oxford text-white text-[11px] font-bold tracking-[0.3em] hover:bg-gold transition-all duration-500 shadow-xl">
                   <Link to="/submit-paper" onClick={() => setIsMenuOpen(false)}>SUBMIT MANUSCRIPT</Link>
                 </Button>
-                <div className="flex justify-between items-center px-2">
-                  <p className="text-[10px] uppercase tracking-widest text-oxford/20 font-bold">© 2025 JMRH Portal</p>
+                <div className="flex justify-between items-center px-1">
+                  <p className="text-[9px] uppercase tracking-widest text-oxford/20 font-bold">© 2025 JMRH Portal</p>
                   <div className="flex gap-4">
                     <span className="w-1.5 h-1.5 rounded-full bg-teal animate-pulse" />
                     <span className="text-[8px] uppercase tracking-widest text-teal font-black">Encrypted Access</span>

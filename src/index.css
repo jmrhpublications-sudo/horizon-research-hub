@@ -96,31 +96,43 @@
 }
 
 @layer base {
+  html {
+    @apply scroll-smooth antialiased;
+    font-size: 15px; /* Premium 1x Smaller Scaling Base */
+  }
+
+  @media (min-width: 1280px) {
+    html {
+      font-size: 14.5px; /* More sophisticated density on large screens */
+    }
+  }
+
   * {
     @apply border-border;
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased leading-[1.6] text-sm md:text-base;
+    @apply bg-background text-foreground font-sans selection:bg-gold selection:text-white overflow-x-hidden;
+    line-height: 1.5;
   }
 
   h1,
   h2,
   h3,
   h4 {
-    @apply font-serif font-bold text-oxford leading-[1.2];
+    @apply font-serif font-black text-oxford tracking-tighter leading-[1.1];
   }
 
   h1 {
-    @apply text-3xl md:text-4xl lg:text-5xl;
+    @apply text-3xl md:text-5xl lg:text-6xl;
   }
 
   h2 {
-    @apply text-2xl md:text-3xl lg:text-4xl;
+    @apply text-2xl md:text-4xl lg:text-5xl;
   }
 
   h3 {
-    @apply text-xl md:text-2xl;
+    @apply text-xl md:text-2xl lg:text-3xl;
   }
 }
 

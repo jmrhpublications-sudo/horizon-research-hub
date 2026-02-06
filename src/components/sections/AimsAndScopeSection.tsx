@@ -30,13 +30,13 @@ const AimsAndScopeSection = memo(() => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-24 max-w-3xl mx-auto space-y-6"
+          className="text-center mb-16 max-w-3xl mx-auto space-y-4"
         >
           <p className="section-label">Academic Clarity</p>
-          <h2 className="section-title text-5xl">
+          <h2 className="section-title text-4xl lg:text-5xl">
             Aims and <span className="italic academic-underline py-1 px-4">Research Scope</span>
           </h2>
-          <p className="text-text-muted text-lg leading-[1.8] font-sans">
+          <p className="text-text-muted text-base leading-[1.8] font-sans">
             JMRH encourages original, unpublished research that integrates multiple academic
             disciplines and contributes to contemporary academic and societal challenges.
           </p>
@@ -46,11 +46,11 @@ const AimsAndScopeSection = memo(() => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
           {/* Journal Aims */}
           <div className="lg:col-span-5 space-y-12">
-            <div className="flex items-center gap-6">
-              <div className="w-14 h-14 bg-oxford flex items-center justify-center rotate-45 shadow-lg">
-                <Target className="w-6 h-6 text-gold -rotate-45" />
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-oxford flex items-center justify-center rotate-45 shadow-lg">
+                <Target className="w-5 h-5 text-gold -rotate-45" />
               </div>
-              <h3 className="font-serif text-3xl text-oxford italic font-bold">The Strategic Aims</h3>
+              <h3 className="font-serif text-2xl text-oxford italic font-bold">The Strategic Aims</h3>
             </div>
 
             <ul className="space-y-8">
@@ -72,11 +72,11 @@ const AimsAndScopeSection = memo(() => {
 
           {/* Publication Scope */}
           <div className="lg:col-span-7 space-y-12">
-            <div className="flex items-center gap-6">
-              <div className="w-14 h-14 border-2 border-gold flex items-center justify-center rounded-full">
-                <BookOpen className="w-6 h-6 text-teal" />
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 border-2 border-gold flex items-center justify-center rounded-full">
+                <BookOpen className="w-5 h-5 text-teal" />
               </div>
-              <h3 className="font-serif text-3xl text-oxford italic font-bold">Call for Disciplines</h3>
+              <h3 className="font-serif text-2xl text-oxford italic font-bold">Call for Disciplines</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

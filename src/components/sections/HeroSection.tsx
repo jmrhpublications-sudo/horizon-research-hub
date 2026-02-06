@@ -13,7 +13,7 @@ const HeroSection = memo(() => {
 
       {/* Moving Particles (CSS only for perf) */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]" style={{
-        backgroundImage: `radial-gradient(circle, #102540 1px, transparent 1px)`,
+        backgroundImage: `radial-gradient(circle, #1f385aff 1px, transparent 1px)`,
         backgroundSize: '40px 40px'
       }} />
 
@@ -30,7 +30,7 @@ const HeroSection = memo(() => {
             >
               <Sparkles className="w-4 h-4 text-gold animate-pulse" />
               <span className="text-[10px] uppercase tracking-[0.4em] font-black text-oxford/60 group-hover:text-gold transition-colors">
-                Scholarly Excellence Repository 2025
+                Scholarly Excellence Repository 2026
               </span>
             </motion.div>
 
@@ -40,12 +40,12 @@ const HeroSection = memo(() => {
               transition={{ duration: 1.2, delay: 0.2 }}
               className="space-y-6"
             >
-              <h1 className="font-serif text-6xl md:text-8xl font-black text-oxford tracking-tighter leading-[0.85]">
+              <h1 className="font-serif text-5xl md:text-7xl lg:text-5xl font-black text-oxford tracking-tighter leading-[0.85]">
                 Horizon <br />
                 <span className="italic text-gold perspective-1000 inline-block hover:rotate-x-12 transition-transform duration-700">Research</span> <br />
                 <span className="text-teal underline decoration-black/5 underline-offset-8">Hub.</span>
               </h1>
-              <p className="font-serif italic text-2xl md:text-3xl text-oxford/40 max-w-2xl leading-relaxed">
+              <p className="font-serif italic text-xl md:text-2xl text-oxford/40 max-w-2xl leading-relaxed">
                 "Where multidisciplinary rigor meets global scholarly vision."
               </p>
             </motion.div>
@@ -65,10 +65,10 @@ const HeroSection = memo(() => {
               transition={{ duration: 0.8, delay: 0.8 }}
               className="flex flex-col sm:flex-row items-center gap-10 pt-8"
             >
-              <Button asChild className="group h-20 px-12 rounded-none bg-oxford text-white hover:bg-gold hover:text-white transition-all duration-700 shadow-[0_30px_60px_rgba(10,37,64,0.15)] relative overflow-hidden">
-                <Link to="/submit-paper" className="relative z-10 flex items-center justify-center gap-4 text-sm font-black tracking-[0.3em] uppercase">
-                  <span className="relative z-10 flex items-center gap-4">
-                    Transmit Manuscript <ArrowUpRight className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              <Button asChild className="group h-16 px-10 rounded-none bg-oxford text-white hover:bg-gold hover:text-white transition-all duration-700 shadow-[0_15px_30px_rgba(10,37,64,0.1)] relative overflow-hidden">
+                <Link to="/submit-paper" className="relative z-10 flex items-center justify-center gap-4 text-xs font-black tracking-[0.2em] uppercase">
+                  <span className="relative z-10 flex items-center gap-3">
+                    Transmit Manuscript <ArrowUpRight size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                   </span>
                   <span aria-hidden className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                 </Link>

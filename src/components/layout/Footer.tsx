@@ -4,7 +4,7 @@ import { BookOpen, MapPin, Mail, ShieldCheck, Globe, Library, Instagram, Link as
 
 const Footer = memo(() => {
   return (
-    <footer className="bg-white border-t border-black/5 pt-24 pb-12 overflow-hidden relative font-ui">
+    <footer className="bg-white border-t border-black/5 pt-16 pb-12 overflow-hidden relative font-ui">
       {/* Visual Accent */}
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-gold/40 to-transparent opacity-50" />
 
@@ -12,31 +12,31 @@ const Footer = memo(() => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-16 lg:gap-24 pb-20">
           {/* Brand & Mandate */}
           <div className="md:col-span-5 space-y-10">
-            <Link to="/" className="flex items-center gap-5 group w-fit">
-              <div className="relative w-14 h-14 perspective-1000 group-hover:rotate-y-180 transition-transform duration-1000 preserve-3d">
+            <Link to="/" className="flex items-center gap-4 group w-fit">
+              <div className="relative w-12 h-12 perspective-1000 group-hover:rotate-y-180 transition-transform duration-1000 preserve-3d">
                 <div className="absolute inset-0 bg-oxford flex items-center justify-center backface-hidden shadow-2xl">
-                  <BookOpen size={24} className="text-gold" />
+                  <BookOpen size={20} className="text-gold" />
                 </div>
                 <div className="absolute inset-0 bg-gold flex items-center justify-center rotate-y-180 backface-hidden shadow-2xl">
-                  <Library size={24} className="text-oxford" />
+                  <Library size={20} className="text-oxford" />
                 </div>
               </div>
               <div>
-                <span className="font-serif text-4xl font-black tracking-tighter text-oxford">
+                <span className="font-serif text-3xl font-black tracking-tighter text-oxford">
                   JMRH<span className="text-gold">.</span>
                 </span>
-                <p className="text-[10px] uppercase tracking-[0.6em] text-teal font-black block mt-1">Scholar Mandate</p>
+                <p className="text-[9px] uppercase tracking-[0.5em] text-teal font-black block mt-1">Scholar Mandate</p>
               </div>
             </Link>
 
-            <p className="font-serif italic text-oxford/60 text-xl leading-relaxed max-w-md">
+            <p className="font-serif italic text-oxford/60 text-lg leading-relaxed max-w-md">
               " Dedicated to fostering excellence in multidisciplinary research through rigorous peer review and global scholarly collaboration. "
             </p>
 
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               {[Instagram, LinkIcon, Mail, ShieldCheck].map((Icon, idx) => (
-                <a key={idx} href="#" className="w-12 h-12 border border-black/5 flex items-center justify-center hover:bg-oxford hover:text-white transition-all duration-500 shadow-sm hover:translate-y-[-4px]">
-                  <Icon className="w-5 h-5" />
+                <a key={idx} href="#" className="w-10 h-10 border border-black/5 flex items-center justify-center hover:bg-oxford hover:text-white transition-all duration-500 shadow-sm hover:translate-y-[-4px]">
+                  <Icon className="w-4 h-4" />
                 </a>
               ))}
             </div>
@@ -74,6 +74,7 @@ const Footer = memo(() => {
                 { label: "Board", href: "/editorial-board" },
                 { label: "Ethics", href: "/ethics-policy" },
                 { label: "Archives", href: "/archives" },
+                { label: "Reviews", href: "/reviews" },
                 { label: "Contact", href: "/contact" },
                 { label: "Peer Review", href: "/about" },
                 { label: "Submit", href: "/submit-paper" },

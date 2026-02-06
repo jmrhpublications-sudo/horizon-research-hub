@@ -40,13 +40,13 @@ const AboutSection = memo(() => {
           <div className="space-y-10">
             <div className="space-y-4">
               <p className="section-label">Institutional Core</p>
-              <h2 className="section-title text-5xl leading-tight">
+              <h2 className="section-title text-4xl leading-tight">
                 Strengthening the Quality & <br />
                 <span className="italic academic-underline py-1">Impact of Research</span>
               </h2>
             </div>
 
-            <p className="text-text-muted text-lg leading-[1.8] font-sans max-w-xl">
+            <p className="text-text-muted text-base leading-[1.8] font-sans max-w-xl">
               JMRH is an academic publishing and research development platform established to
               strengthen the quality, integrity, and impact of multidisciplinary research.
               The journal serves as a bridge between research theory, academic practice, and
@@ -75,11 +75,11 @@ const AboutSection = memo(() => {
               <div className="w-24 h-24 border-2 border-gold/40 flex items-center justify-center rotate-45 group-hover:rotate-90 transition-transform duration-[1500ms]">
                 <Library className="w-10 h-10 text-gold -rotate-45 group-hover:-rotate-90 transition-transform duration-[1500ms]" />
               </div>
-              <h3 className="font-serif italic text-3xl text-white leading-relaxed">" Empowering scholars to cross the frontiers of knowledge "</h3>
+              <h3 className="font-serif italic text-2xl text-white leading-relaxed">" Empowering scholars to cross the frontiers of knowledge "</h3>
               <div className="w-20 h-[1.5px] bg-gold/50" />
               <div className="space-y-1">
-                <p className="text-[10px] uppercase tracking-[0.5em] text-gold font-bold">Foundation Excellence</p>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-ui italic">Academic Year 2025</p>
+                <p className="text-[9px] uppercase tracking-[0.5em] text-gold font-bold">Foundation Excellence</p>
+                <p className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-ui italic">Academic Year 2025</p>
               </div>
             </div>
 
