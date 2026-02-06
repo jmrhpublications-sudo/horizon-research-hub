@@ -66,10 +66,12 @@ const HeroSection = memo(() => {
               className="flex flex-col sm:flex-row items-center gap-10 pt-8"
             >
               <Button asChild className="group h-20 px-12 rounded-none bg-oxford text-white hover:bg-gold hover:text-white transition-all duration-700 shadow-[0_30px_60px_rgba(10,37,64,0.15)] relative overflow-hidden">
-                <Link to="/submit-paper" className="relative z-10 flex items-center gap-4 text-sm font-black tracking-[0.3em] uppercase">
-                  Transmit Manuscript <ArrowUpRight className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                <Link to="/submit-paper" className="relative z-10 flex items-center justify-center gap-4 text-sm font-black tracking-[0.3em] uppercase">
+                  <span className="relative z-10 flex items-center gap-4">
+                    Transmit Manuscript <ArrowUpRight className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  </span>
+                  <span aria-hidden className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                 </Link>
-                <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
               </Button>
 
               <Link to="/archives" className="group flex items-center gap-4 text-[11px] uppercase tracking-[0.4em] font-black text-oxford/40 hover:text-teal transition-all">
