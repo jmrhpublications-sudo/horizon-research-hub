@@ -112,8 +112,8 @@ const AdminUsers = memo(() => {
                                             <div className="py-6 border-t border-white/10">
                                                 <h4 className="text-teal-400 uppercase tracking-widest text-xs font-bold mb-4">Submission Portfolio</h4>
                                                 <div className="space-y-3">
-                                                    {papers.filter(p => p.submittedBy === user.id).length > 0 ? (
-                                                        papers.filter(p => p.submittedBy === user.id).map(p => (
+                                                    {papers.filter(p => p.authorId === user.id).length > 0 ? (
+                                                        papers.filter(p => p.authorId === user.id).map(p => (
                                                             <div key={p.id} className="p-4 bg-white/5 border border-white/5 flex justify-between items-center group/paper hover:bg-white/10 transition-all">
                                                                 <div>
                                                                     <p className="text-sm font-serif font-bold group-hover/paper:text-gold transition-colors">{p.title}</p>

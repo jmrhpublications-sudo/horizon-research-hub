@@ -14,16 +14,183 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      papers: {
+        Row: {
+          abstract: string
+          assigned_professor_id: string | null
+          attachments: string[] | null
+          author_id: string
+          author_name: string
+          created_at: string
+          discipline: string
+          id: string
+          revision_comments: string | null
+          status: string
+          submission_date: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          abstract?: string
+          assigned_professor_id?: string | null
+          attachments?: string[] | null
+          author_id: string
+          author_name?: string
+          created_at?: string
+          discipline?: string
+          id?: string
+          revision_comments?: string | null
+          status?: string
+          submission_date?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          abstract?: string
+          assigned_professor_id?: string | null
+          attachments?: string[] | null
+          author_id?: string
+          author_name?: string
+          created_at?: string
+          discipline?: string
+          id?: string
+          revision_comments?: string | null
+          status?: string
+          submission_date?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          age: string | null
+          bio: string | null
+          city: string | null
+          college: string | null
+          created_at: string
+          degree: string | null
+          department: string | null
+          dob: string | null
+          email: string
+          id: string
+          name: string
+          phone_number: string | null
+          pincode: string | null
+          specialization: string | null
+          status: string
+          study_type: string | null
+          university: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          age?: string | null
+          bio?: string | null
+          city?: string | null
+          college?: string | null
+          created_at?: string
+          degree?: string | null
+          department?: string | null
+          dob?: string | null
+          email?: string
+          id: string
+          name?: string
+          phone_number?: string | null
+          pincode?: string | null
+          specialization?: string | null
+          status?: string
+          study_type?: string | null
+          university?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          age?: string | null
+          bio?: string | null
+          city?: string | null
+          college?: string | null
+          created_at?: string
+          degree?: string | null
+          department?: string | null
+          dob?: string | null
+          email?: string
+          id?: string
+          name?: string
+          phone_number?: string | null
+          pincode?: string | null
+          specialization?: string | null
+          status?: string
+          study_type?: string | null
+          university?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          rating: number
+          updated_at: string
+          user_id: string
+          user_name: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          rating: number
+          updated_at?: string
+          user_id: string
+          user_name?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          rating?: number
+          updated_at?: string
+          user_id?: string
+          user_name?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "professor" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +317,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "professor", "user"],
+    },
   },
 } as const
