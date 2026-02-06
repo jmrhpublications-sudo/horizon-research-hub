@@ -44,7 +44,7 @@ const AccountPage = memo(() => {
                                 <div className="flex items-center gap-2 text-xs font-bold font-ui text-teal">
                                     <ShieldCheck size={16} className="text-gold" /> {currentUser?.email}
                                 </div>
-                                <button onClick={handleLogout} className="text-xs uppercase tracking-widest font-bold text-red-500 hover:text-red-700 transition-colors flex items-center gap-2 block">
+                                <button onClick={handleLogout} className="text-xs uppercase tracking-widest font-bold text-red-500 hover:text-red-700 transition-colors flex items-center gap-2">
                                     <LogOut size={14} /> End Session
                                 </button>
                             </div>
@@ -140,7 +140,7 @@ const AccountPage = memo(() => {
                                         " The journey of a thousand discoveries begins with the first submission. Share your inquiry with the global research community. "
                                     </p>
                                 </div>
-                                <Button asChild className="rounded-none h-16 bg-oxford text-white px-10 font-bold tracking-widest hover:bg-gold transition-all shadow-xl block">
+                                <Button asChild className="rounded-none h-16 bg-oxford text-white px-10 font-bold tracking-widest hover:bg-gold transition-all shadow-xl">
                                     <Link to="/submit-paper">INITIATE FIRST SUBMISSION</Link>
                                 </Button>
                             </div>
