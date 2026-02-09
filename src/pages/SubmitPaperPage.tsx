@@ -1,6 +1,7 @@
 import React, { useState, memo, FormEvent, useRef, useEffect, useMemo } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useJMRH } from "@/context/JMRHContext";
+import { supabase } from "@/integrations/supabase/client";
 import {
     Send,
     FileText,
@@ -44,7 +45,9 @@ const SubmitPaperPage = memo(() => {
     const [authorName, setAuthorName] = useState(currentUser?.name || "");
 
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [attachments, setAttachments] = useState<string[]>([]);
+    const [attachments, setAttachments] = useState<string[]>([]); // Now stores storage paths, not base64
+    const [attachmentFiles, setAttachmentFiles] = useState<File[]>([]);
+    const [attachmentPreviews, setAttachmentPreviews] = useState<string[]>([]);
     const [isCameraOpen, setIsCameraOpen] = useState(false);
     const [stream, setStream] = useState<MediaStream | null>(null);
 
@@ -60,17 +63,23 @@ const SubmitPaperPage = memo(() => {
             setDiscipline(existingPaper.discipline);
             setAuthorName(existingPaper.authorName);
             setAttachments(existingPaper.attachments || []);
+            // For existing papers, attachments are storage paths - generate previews via signed URLs
+            setAttachmentPreviews((existingPaper.attachments || []).map(() => ''));
         }
     }, [existingPaper]);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
-            Array.from(e.target.files).forEach(file => {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    setAttachments(prev => [...prev, reader.result as string]);
-                };
-                reader.readAsDataURL(file);
+            const files = Array.from(e.target.files);
+            setAttachmentFiles(prev => [...prev, ...files]);
+            // Create preview URLs for display only
+            files.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const url = URL.createObjectURL(file);
+                    setAttachmentPreviews(prev => [...prev, url]);
+                } else {
+                    setAttachmentPreviews(prev => [...prev, 'file']);
+                }
             });
         }
     };
@@ -103,9 +112,28 @@ const SubmitPaperPage = memo(() => {
             const ctx = canvas.getContext('2d');
             if (ctx) {
                 ctx.drawImage(video, 0, 0);
-                setAttachments(prev => [...prev, canvas.toDataURL('image/jpeg')]);
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        const file = new File([blob], `photo_${Date.now()}.jpg`, { type: 'image/jpeg' });
+                        setAttachmentFiles(prev => [...prev, file]);
+                        setAttachmentPreviews(prev => [...prev, URL.createObjectURL(file)]);
+                    }
+                }, 'image/jpeg');
             }
         }
+    };
+
+    const uploadFilesToStorage = async (): Promise<string[]> => {
+        if (!currentUser) return [];
+        const paths: string[] = [];
+        for (const file of attachmentFiles) {
+            const filePath = `${currentUser.id}/${Date.now()}_${file.name}`;
+            const { error } = await supabase.storage.from('papers').upload(filePath, file);
+            if (error) throw error;
+            paths.push(filePath);
+        }
+        // Include any existing attachment paths (from edit mode)
+        return [...attachments, ...paths];
     };
 
     const handleSubmit = async (e: FormEvent) => {
@@ -114,7 +142,7 @@ const SubmitPaperPage = memo(() => {
             toast({ title: "Login Required", description: "Please log in to submit your manuscript.", variant: "destructive" });
             return;
         }
-        if (attachments.length === 0) {
+        if (attachmentFiles.length === 0 && attachments.length === 0) {
             toast({ title: "Attachments Required", description: "Please upload your manuscript file.", variant: "destructive" });
             return;
         }
@@ -125,14 +153,23 @@ const SubmitPaperPage = memo(() => {
         setIsSubmitting(true);
         await new Promise(r => setTimeout(r, 1200));
 
-        if (isEditMode && existingPaper) {
-            updatePaper(existingPaper.id, { title, abstract, discipline, attachments });
-            toast({ title: "Manuscript Updated!", description: "Your changes have been saved." });
-        } else {
-            submitPaper(title, abstract, discipline, authorName, attachments);
-            toast({ title: "Manuscript Submitted!", description: "Your paper has been received for review." });
+        try {
+            // Upload files to Supabase Storage instead of storing base64 in DB
+            const storagePaths = await uploadFilesToStorage();
+
+            if (isEditMode && existingPaper) {
+                updatePaper(existingPaper.id, { title, abstract, discipline, attachments: storagePaths });
+                toast({ title: "Manuscript Updated!", description: "Your changes have been saved." });
+            } else {
+                submitPaper(title, abstract, discipline, authorName, storagePaths);
+                toast({ title: "Manuscript Submitted!", description: "Your paper has been received for review." });
+            }
+            navigate('/account');
+        } catch (error: any) {
+            toast({ title: "Upload Error", description: error?.message || "Failed to upload files.", variant: "destructive" });
+        } finally {
+            setIsSubmitting(false);
         }
-        navigate('/account');
     };
 
     const disciplines = ["Commerce", "Science", "Technology", "Management", "Others"];
@@ -316,21 +353,44 @@ const SubmitPaperPage = memo(() => {
                             </AnimatePresence>
 
                             {/* Attachments Preview */}
-                            {attachments.length > 0 && (
+                            {(attachmentPreviews.length > 0 || attachments.length > 0) && (
                                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                    {/* Existing attachments (storage paths from edit mode) */}
                                     {attachments.map((att, i) => (
-                                        <div key={i} className="relative aspect-square border border-border bg-background overflow-hidden group">
-                                            {att.startsWith('data:image') ? (
-                                                <img src={att} alt={`Attachment ${i + 1}`} className="w-full h-full object-cover" />
+                                        <div key={`existing-${i}`} className="relative aspect-square border border-border bg-background overflow-hidden group">
+                                            <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                                                <FileText size={24} />
+                                                <span className="text-[10px] mt-1">Existing File {i + 1}</span>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => setAttachments(prev => prev.filter((_, idx) => idx !== i))}
+                                                className="absolute top-1 right-1 p-1.5 bg-destructive text-destructive-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <X size={12} />
+                                            </button>
+                                            <div className="absolute bottom-1 left-1 p-1 bg-background/80 rounded">
+                                                <CheckCircle size={14} className="text-teal" />
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {/* New file attachments */}
+                                    {attachmentPreviews.map((preview, i) => (
+                                        <div key={`new-${i}`} className="relative aspect-square border border-border bg-background overflow-hidden group">
+                                            {preview !== 'file' ? (
+                                                <img src={preview} alt={`Attachment ${i + 1}`} className="w-full h-full object-cover" />
                                             ) : (
                                                 <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
                                                     <FileText size={24} />
-                                                    <span className="text-[10px] mt-1">File {i + 1}</span>
+                                                    <span className="text-[10px] mt-1">{attachmentFiles[i]?.name || `File ${i + 1}`}</span>
                                                 </div>
                                             )}
                                             <button
                                                 type="button"
-                                                onClick={() => setAttachments(prev => prev.filter((_, idx) => idx !== i))}
+                                                onClick={() => {
+                                                    setAttachmentFiles(prev => prev.filter((_, idx) => idx !== i));
+                                                    setAttachmentPreviews(prev => prev.filter((_, idx) => idx !== i));
+                                                }}
                                                 className="absolute top-1 right-1 p-1.5 bg-destructive text-destructive-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                                             >
                                                 <X size={12} />

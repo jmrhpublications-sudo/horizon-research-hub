@@ -1,7 +1,7 @@
 import { useState, memo, FormEvent } from "react";
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import { useJMRH, UserRole } from "@/context/JMRHContext";
-import { ShieldCheck, Lock, Mail, ArrowRight } from "lucide-react";
+import { ShieldCheck, Lock, Mail, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -13,7 +13,8 @@ interface SecureLoginPageProps {
 const SecureLoginPage = memo(({ role }: SecureLoginPageProps) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { users, currentUser, setCurrentUser } = useJMRH();
+    const [isLoading, setIsLoading] = useState(false);
+    const { currentUser, signIn, logout } = useJMRH();
     const navigate = useNavigate();
     const location = useLocation();
     const { toast } = useToast();
@@ -23,20 +24,28 @@ const SecureLoginPage = memo(({ role }: SecureLoginPageProps) => {
         return <Navigate to={role === 'ADMIN' ? '/secure/admin/dashboard' : '/secure/professor/dashboard'} replace />;
     }
 
-    const handleAuth = (e: FormEvent) => {
+    const handleAuth = async (e: FormEvent) => {
         e.preventDefault();
+        setIsLoading(true);
 
-        const user = users.find(u => u.email === email && u.role === role);
-        if (user) {
-            if (user.status === 'BANNED') {
-                toast({ title: "Portal Blocked", description: "Account is in BANNED status.", variant: "destructive" });
-                return;
-            }
-            setCurrentUser(user);
-            toast({ title: "Console Access Granted", description: `Authenticated as ${role}` });
+        try {
+            // Use proper Supabase authentication with password verification
+            await signIn(email, password);
+
+            // After signIn, the auth state change listener in JMRHContext will
+            // fetch the user profile and role. We need to wait briefly for state to update.
+            // The ProtectedRoute will handle role verification server-side via RLS.
+            
+            toast({ title: "Console Access Granted", description: `Authenticating as ${role}...` });
             navigate(location.state?.from?.pathname || (role === 'ADMIN' ? '/secure/admin/dashboard' : '/secure/professor/dashboard'));
-        } else {
-            toast({ title: "Identification Failed", description: "Invalid secure credentials.", variant: "destructive" });
+        } catch (error: any) {
+            toast({ 
+                title: "Authentication Failed", 
+                description: error?.message || "Invalid credentials.", 
+                variant: "destructive" 
+            });
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -72,6 +81,7 @@ const SecureLoginPage = memo(({ role }: SecureLoginPageProps) => {
                                 placeholder="secure@jmrh.in"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                disabled={isLoading}
                                 className="bg-white/5 border-white/10 focus:border-gold h-14 text-lg font-serif italic text-white placeholder:text-white/10 rounded-none transition-all"
                             />
                         </div>
@@ -85,13 +95,22 @@ const SecureLoginPage = memo(({ role }: SecureLoginPageProps) => {
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                disabled={isLoading}
                                 className="bg-white/5 border-white/10 focus:border-gold h-14 text-white placeholder:text-white/10 rounded-none transition-all"
                             />
                         </div>
                     </div>
 
-                    <Button type="submit" className="w-full h-16 rounded-none bg-gold text-oxford hover:bg-white transition-all duration-700 font-bold tracking-[0.3em] flex items-center justify-center gap-4 text-xs">
-                        VERIFY & ENTER PORTAL <ArrowRight size={16} />
+                    <Button 
+                        type="submit" 
+                        disabled={isLoading}
+                        className="w-full h-16 rounded-none bg-gold text-oxford hover:bg-white transition-all duration-700 font-bold tracking-[0.3em] flex items-center justify-center gap-4 text-xs"
+                    >
+                        {isLoading ? (
+                            <><Loader2 size={16} className="animate-spin" /> VERIFYING...</>
+                        ) : (
+                            <>VERIFY & ENTER PORTAL <ArrowRight size={16} /></>
+                        )}
                     </Button>
                 </form>
 

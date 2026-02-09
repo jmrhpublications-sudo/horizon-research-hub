@@ -29,8 +29,20 @@ const ReviewsPage = memo(() => {
     const { toast } = useToast();
 
     const handleAddReview = () => {
-        if (!content.trim()) return;
-        addReview(content, rating);
+        const trimmed = content.trim();
+        if (!trimmed) {
+            toast({ title: "Empty Review", description: "Please write your feedback.", variant: "destructive" });
+            return;
+        }
+        if (trimmed.length < 10) {
+            toast({ title: "Too Short", description: "Review must be at least 10 characters.", variant: "destructive" });
+            return;
+        }
+        if (trimmed.length > 2000) {
+            toast({ title: "Too Long", description: "Review must be under 2000 characters.", variant: "destructive" });
+            return;
+        }
+        addReview(trimmed, rating);
         setContent("");
         setRating(5);
         setIsAddOpen(false);
@@ -41,8 +53,17 @@ const ReviewsPage = memo(() => {
     };
 
     const handleUpdateReview = () => {
-        if (!editingReview || !content.trim()) return;
-        updateReview(editingReview.id, content, rating);
+        const trimmed = content.trim();
+        if (!editingReview || !trimmed) return;
+        if (trimmed.length < 10) {
+            toast({ title: "Too Short", description: "Review must be at least 10 characters.", variant: "destructive" });
+            return;
+        }
+        if (trimmed.length > 2000) {
+            toast({ title: "Too Long", description: "Review must be under 2000 characters.", variant: "destructive" });
+            return;
+        }
+        updateReview(editingReview.id, trimmed, rating);
         setEditingReview(null);
         setContent("");
         setRating(5);
@@ -124,11 +145,13 @@ const ReviewsPage = memo(() => {
                                                 <MessageSquare size={14} /> Academic Commentary
                                             </label>
                                             <Textarea
-                                                placeholder="Share your experience with JMRH..."
+                                                placeholder="Share your experience with JMRH... (10-2000 characters)"
+                                                maxLength={2000}
                                                 className="bg-black/5 border-none h-40 focus:ring-1 focus:ring-gold text-oxford font-serif italic text-lg"
                                                 value={content}
                                                 onChange={(e) => setContent(e.target.value)}
                                             />
+                                            <p className="text-xs text-muted-foreground text-right">{content.length}/2000</p>
                                         </div>
                                     </div>
                                     <DialogFooter className="pt-6">
@@ -252,11 +275,13 @@ const ReviewsPage = memo(() => {
                                     <MessageSquare size={14} /> Refined Commentary
                                 </label>
                                 <Textarea
-                                    placeholder="Update your feedback..."
+                                    placeholder="Update your feedback... (10-2000 characters)"
+                                    maxLength={2000}
                                     className="bg-black/5 border-none h-40 focus:ring-1 focus:ring-gold text-oxford font-serif italic text-lg"
                                     value={content}
                                     onChange={(e) => setContent(e.target.value)}
                                 />
+                                <p className="text-xs text-muted-foreground text-right">{content.length}/2000</p>
                             </div>
                         </div>
                         <DialogFooter className="pt-6">
