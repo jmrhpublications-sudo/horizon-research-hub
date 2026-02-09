@@ -7,6 +7,8 @@ import { BookOpen, Download, Search, Filter, Calendar, ExternalLink, Shield } fr
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import SEOHead from "@/components/seo/SEOHead";
+import { pageSEO } from "@/lib/seo-data";
 
 const ArchivesPage = memo(() => {
     const { papers } = useJMRH();
@@ -33,6 +35,7 @@ const ArchivesPage = memo(() => {
 
     return (
         <div className="min-h-screen bg-[#FDFCFB] flex flex-col font-sans selection:bg-gold selection:text-white">
+            <SEOHead {...pageSEO.archives} canonical="/archives" />
             <Header />
             <main className="flex-1">
                 {/* Cinematic Editorial Hero */}
