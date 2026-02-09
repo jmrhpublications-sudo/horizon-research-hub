@@ -25,6 +25,8 @@ import {
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { useToast } from "@/hooks/use-toast";
+import SEOHead from "@/components/seo/SEOHead";
+import { pageSEO } from "@/lib/seo-data";
 
 const SubmitPaperPage = memo(() => {
     const { submitPaper, updatePaper, currentUser, papers } = useJMRH();
@@ -137,6 +139,7 @@ const SubmitPaperPage = memo(() => {
 
     return (
         <div className="min-h-screen bg-background flex flex-col">
+            <SEOHead {...pageSEO.submitPaper} canonical="/submit-paper" />
             <Header />
             <canvas ref={canvasRef} className="hidden" />
 

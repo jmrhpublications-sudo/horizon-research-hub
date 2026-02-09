@@ -64,7 +64,7 @@ const Header = memo(() => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-6">
+          <nav className="hidden lg:flex items-center gap-6" aria-label="Main navigation">
             {navLinks.map((link) => (
               <Link
                 key={link.label}

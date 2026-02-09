@@ -16,6 +16,8 @@ import {
     DialogFooter
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import SEOHead from "@/components/seo/SEOHead";
+import { pageSEO } from "@/lib/seo-data";
 
 const ReviewsPage = memo(() => {
     const { reviews, currentUser, addReview, updateReview, deleteReview } = useJMRH();
@@ -69,6 +71,7 @@ const ReviewsPage = memo(() => {
 
     return (
         <div className="min-h-screen bg-background font-sans selection:bg-gold selection:text-white">
+            <SEOHead {...pageSEO.reviews} canonical="/reviews" />
             <Header />
             <main className="pt-32 pb-24">
                 <div className="container max-w-[1800px] mx-auto px-6 lg:px-10">
