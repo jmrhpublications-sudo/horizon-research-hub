@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoadingOverlay from "@/components/ui/LoadingOverlay";
 import { JMRHProvider } from "@/context/JMRHContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import { Analytics } from "@vercel/analytics/react";
 
 // Public Pages
 const Index = lazy(() => import("./pages/Index"));
@@ -51,6 +52,7 @@ const App = () => (
       <JMRHProvider>
         <Toaster />
         <Sonner />
+        <Analytics />
         <BrowserRouter>
           <Suspense fallback={<LoadingOverlay />}>
             <Routes>
