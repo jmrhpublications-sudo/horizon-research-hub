@@ -16,56 +16,53 @@ const Index = memo(() => {
       <Header />
       
       <main className="relative">
-        {/* ==================== HERO SECTION ==================== */}
-        <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
-          {/* Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-oxford via-oxford/95 to-oxford">
-            {/* Decorative elements */}
+        {/* ==================== HERO SECTION (LIGHT THEME) ==================== */}
+        <section className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-white">
+          {/* Background - Light theme */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-gold/5">
+            {/* Decorative elements - Light */}
             <div className="absolute top-20 right-20 w-96 h-96 bg-gold/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-20 left-20 w-64 h-64 bg-gold/5 rounded-full blur-3xl" />
-            <div className="absolute inset-0 opacity-10" style={{ 
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }} />
+            <div className="absolute bottom-20 left-20 w-64 h-64 bg-oxford/5 rounded-full blur-3xl" />
           </div>
           
           <div className="container max-w-[1400px] mx-auto px-6 relative z-10 py-20">
             <div className="max-w-4xl">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/20 mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-oxford/5 border border-gold/20 mb-8">
                 <span className="w-2 h-2 rounded-full bg-gold animate-pulse" />
-                <span className="text-xs uppercase tracking-[0.3em] text-gold font-bold">Now Accepting Submissions for 2026</span>
+                <span className="text-xs uppercase tracking-[0.3em] text-oxford font-bold">Now Accepting Submissions for 2026</span>
               </div>
               
-              <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.9] mb-8">
+              <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-black text-oxford leading-[0.9] mb-8">
                 Welcome to <br />
                 <span className="text-gold">JMRH Publications</span>
               </h1>
               
-              <p className="text-xl md:text-2xl text-white/70 font-light leading-relaxed mb-12 max-w-2xl">
+              <p className="text-xl md:text-2xl text-oxford/70 font-light leading-relaxed mb-12 max-w-2xl">
                 Advancing Knowledge Through Research & Scholarly Publishing
               </p>
               
-              <p className="text-white/50 mb-12 max-w-xl">
+              <p className="text-oxford/50 mb-12 max-w-xl">
                 JMRH Publications is committed to promoting high-quality research dissemination through peer-reviewed journals and academic book publishing.
               </p>
               
               <div className="flex flex-wrap gap-4">
                 <Link 
                   to="/journal/submit"
-                  className="inline-flex items-center gap-3 bg-gold text-oxford px-8 py-4 text-xs uppercase tracking-widest font-black hover:bg-white hover:text-oxford transition-all shadow-lg"
+                  className="inline-flex items-center gap-3 bg-oxford text-white px-8 py-4 text-xs uppercase tracking-widest font-black hover:bg-gold hover:text-oxford transition-all shadow-lg"
                 >
                   <Send size={16} />
                   Submit to Journal
                 </Link>
                 <Link 
                   to="/books/proposal"
-                  className="inline-flex items-center gap-3 border border-white/20 text-white px-8 py-4 text-xs uppercase tracking-widest font-bold hover:bg-white hover:text-oxford transition-all"
+                  className="inline-flex items-center gap-3 border border-oxford text-oxford px-8 py-4 text-xs uppercase tracking-widest font-bold hover:bg-oxford hover:text-white transition-all"
                 >
                   <BookOpen size={16} />
                   Submit Book Proposal
                 </Link>
                 <Link 
                   to="/call-for-papers"
-                  className="inline-flex items-center gap-3 text-white/60 px-8 py-4 text-xs uppercase tracking-widest font-bold hover:text-gold transition-all"
+                  className="inline-flex items-center gap-3 text-oxford/60 px-8 py-4 text-xs uppercase tracking-widest font-bold hover:text-gold transition-all"
                 >
                   <FileText size={16} />
                   View Current Calls
@@ -145,7 +142,7 @@ const Index = memo(() => {
             
             <div className="grid md:grid-cols-2 gap-8">
               {/* Journal Division */}
-              <div className="bg-white p-10 border border-black/5 hover:border-gold/30 transition-all group">
+              <Link to="/journal/about" className="bg-white p-10 border border-black/5 hover:border-gold/30 transition-all group block">
                 <div className="w-16 h-16 bg-oxford flex items-center justify-center mb-6 group-hover:bg-gold transition-colors">
                   <BookOpen className="w-8 h-8 text-gold group-hover:text-oxford transition-colors" />
                 </div>
@@ -156,16 +153,13 @@ const Index = memo(() => {
                   <li>• Open Access</li>
                   <li>• Quarterly</li>
                 </ul>
-                <Link 
-                  to="/journal/about"
-                  className="inline-flex items-center gap-2 text-oxford font-bold hover:text-gold transition-colors"
-                >
+                <span className="inline-flex items-center gap-2 text-oxford font-bold hover:text-gold transition-colors">
                   View Journal <ArrowRight size={16} />
-                </Link>
-              </div>
+                </span>
+              </Link>
               
               {/* Book Division */}
-              <div className="bg-white p-10 border border-black/5 hover:border-gold/30 transition-all group">
+              <Link to="/books/about" className="bg-white p-10 border border-black/5 hover:border-gold/30 transition-all group block">
                 <div className="w-16 h-16 bg-oxford flex items-center justify-center mb-6 group-hover:bg-gold transition-colors">
                   <BookOpen className="w-8 h-8 text-gold group-hover:text-oxford transition-colors" />
                 </div>
@@ -176,13 +170,10 @@ const Index = memo(() => {
                   <li>• Edited Volumes</li>
                   <li>• Conference Proceedings</li>
                 </ul>
-                <Link 
-                  to="/books/about"
-                  className="inline-flex items-center gap-2 text-oxford font-bold hover:text-gold transition-colors"
-                >
+                <span className="inline-flex items-center gap-2 text-oxford font-bold hover:text-gold transition-colors">
                   View Books <ArrowRight size={16} />
-                </Link>
-              </div>
+                </span>
+              </Link>
             </div>
           </div>
         </section>

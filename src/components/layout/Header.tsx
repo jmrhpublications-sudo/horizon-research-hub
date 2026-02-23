@@ -53,39 +53,24 @@ const Header = memo(() => {
     return location.pathname.startsWith(href);
   };
 
+  // Light background for homepage, white for other pages
+  const isHomePage = location.pathname === "/";
+  const headerBg = !isHomePage || scrolled ? "bg-white/95 backdrop-blur-2xl border-b border-black/5" : "bg-white";
+
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 
-      ${scrolled || location.pathname !== "/"
-        ? "bg-white/95 backdrop-blur-2xl border-b border-black/5 py-3 shadow-sm"
-        : "bg-transparent py-5"}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${headerBg}`}>
       <div className="container max-w-[1800px] mx-auto px-6 lg:px-10">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between py-4">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-4 group">
-            <div className="relative w-12 h-12 perspective-1000">
-              <motion.div
-                className="relative w-full h-full transition-all duration-1000 preserve-3d"
-                whileHover={{ rotateY: 180 }}
-              >
-                {/* Front Cover */}
-                <div className="absolute inset-0 bg-oxford flex items-center justify-center backface-hidden shadow-xl border-r-2 border-gold/40">
-                  <BookOpen className="w-6 h-6 text-gold" />
-                </div>
-                {/* Back Cover / Pages */}
-                <div className="absolute inset-0 bg-gold flex items-center justify-center rotate-y-180 backface-hidden shadow-xl border-l-2 border-oxford/40">
-                  <div className="flex flex-col gap-1">
-                    <div className="w-6 h-0.5 bg-oxford/20" />
-                    <div className="w-6 h-0.5 bg-oxford/20" />
-                    <div className="w-6 h-0.5 bg-oxford/20" />
-                  </div>
-                </div>
-              </motion.div>
+            <div className="w-12 h-12 bg-oxford flex items-center justify-center rotate-45 group-hover:rotate-90 transition-transform duration-700">
+              <BookOpen size={20} className="text-gold -rotate-45 group-hover:-rotate-90 transition-transform duration-700" />
             </div>
             <div className="flex flex-col">
-              <span className="font-serif text-xl font-black text-oxford tracking-tighter leading-none group-hover:text-gold transition-colors duration-500">
-                JMRH<span className="text-gold group-hover:text-oxford">.</span>
+              <span className="font-serif text-xl font-black text-oxford tracking-tighter leading-none">
+                JMRH<span className="text-gold">.</span>
               </span>
-              <span className="text-[9px] uppercase tracking-[0.4em] text-teal font-black font-ui mt-0.5 opacity-80">Publications</span>
+              <span className="text-[9px] uppercase tracking-[0.4em] text-oxford/50 font-bold font-ui mt-0.5">Publications</span>
             </div>
           </Link>
 
@@ -149,11 +134,11 @@ const Header = memo(() => {
             ) : (
               <Link to="/account" className="flex items-center gap-3 group">
                 <div className="w-10 h-10 rounded-full bg-oxford/5 flex items-center justify-center border border-black/5 group-hover:border-gold transition-all">
-                  <UserIcon size={16} className="text-teal" />
+                  <UserIcon size={16} className="text-oxford" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[10px] uppercase tracking-widest font-black text-oxford">{currentUser.name.split(' ')[0]}</span>
-                  <span className={`text-[8px] uppercase tracking-[0.2em] font-bold ${currentUser.role === 'ADMIN' ? 'text-red-500' : 'text-teal'}`}>{currentUser.role}</span>
+                  <span className={`text-[8px] uppercase tracking-[0.2em] font-bold ${currentUser.role === 'ADMIN' ? 'text-red-500' : 'text-oxford/60'}`}>{currentUser.role}</span>
                 </div>
               </Link>
             )}
