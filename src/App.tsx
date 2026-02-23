@@ -85,6 +85,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               
               {/* ==================== JOURNAL SECTION ==================== */}
+              <Route path="/journals" element={<JournalAbout />} />
               <Route path="/journal/about" element={<JournalAbout />} />
               <Route path="/journal/aims-scope" element={<JournalAimsScope />} />
               <Route path="/journal/editorial-board" element={<JournalEditorialBoard />} />
@@ -98,6 +99,7 @@ const App = () => (
               <Route path="/journal/submit" element={<JournalSubmit />} />
               
               {/* ==================== BOOKS SECTION ==================== */}
+              <Route path="/books" element={<BooksPublished />} />
               <Route path="/books/about" element={<BooksAbout />} />
               <Route path="/books/published" element={<BooksPublished />} />
               <Route path="/books/proposal" element={<BooksProposal />} />
