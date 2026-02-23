@@ -1,73 +1,126 @@
-# Welcome to your Lovable project
+# JMRH Publications - Academic Publishing Platform
 
-## Project info
+A comprehensive academic publishing platform for JMRH Publications, featuring journal and book publishing services.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🌐 Website
 
-## How can I edit this code?
+**Live URL**: https://jmrhpublications.com
 
-There are several ways of editing your application.
+## 🔐 Login & Registration Credentials
 
-**Use Lovable**
+### Demo Accounts
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@jmrh.com | admin123 |
+| Professor | professor@jmrh.com | professor123 |
+| User | user@jmrh.com | user123 |
 
-Changes made via Lovable will be committed automatically to this repo.
+### Registration
 
-**Use your preferred IDE**
+Users can register at `/auth` with the following fields:
+- Full Name
+- Email Address
+- Password (min 6 characters)
+- Phone Number
+- Institution / Affiliation
+- Department
+- Degree
+- Role (Researcher/Student/Professor/Academician/Professional)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 📋 Submission Credentials
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Email for Manuscript Submission
 
-Follow these steps:
+- **Submission Email**: submit.jmrh@gmail.com
+- **Editorial Email**: editor.jmrh@gmail.com
+- **General Email**: jmrhpublications@gmail.com
+- **Reviewer Email**: review.jmrh@gmail.com
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Submission Process
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+1. Visit `/submit-paper`
+2. Select Journal Paper or Book Chapter
+3. Fill in author details
+4. Fill in manuscript details (title, abstract, discipline, keywords)
+5. Upload manuscript file
+6. Click Submit - this opens email client with all details pre-filled
+7. Attach manuscript file and send to submit.jmrh@gmail.com
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 📱 Contact
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+- **Phone**: +91 80722 42010
+- **Address**: JMRH Publications, Gudalur, The Nilgiris – 643212, Tamil Nadu, India
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React + TypeScript + Vite
+- **UI**: Tailwind CSS + shadcn/ui
+- **Backend**: Supabase (Auth, Database, Storage)
+- **Routing**: React Router
+- **Animations**: Framer Motion
+
+## 🚀 Getting Started
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## 📄 Pages
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+| Route | Description |
+|-------|-------------|
+| `/` | Homepage |
+| `/journals` | Journal About |
+| `/books` | Published Books |
+| `/call-for-papers` | Call for Papers |
+| `/call-for-chapters` | Call for Book Chapters |
+| `/submit-paper` | Online Submission Form |
+| `/auth` | Login / Register |
+| `/policies` | Publication Policies |
+| `/about-us` | About Us |
+| `/contact` | Contact Us |
 
-**Use GitHub Codespaces**
+## Journal Pages
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+| Route | Description |
+|-------|-------------|
+| `/journal/about` | About the Journal |
+| `/journal/aims-scope` | Aims & Scope |
+| `/journal/editorial-board` | Editorial Board |
+| `/journal/peer-review` | Peer Review Process |
+| `/journal/ethics` | Publication Ethics |
+| `/journal/plagiarism` | Plagiarism Policy |
+| `/journal/open-access` | Open Access Policy |
+| `/journal/guidelines` | Author Guidelines |
+| `/journal/current-issue` | Current Issue |
+| `/journal/archives` | Archives |
+| `/journal/submit` | Submit Manuscript |
 
-## What technologies are used for this project?
+## Books Pages
 
-This project is built with:
+| Route | Description |
+|-------|-------------|
+| `/books/about` | About Book Publishing |
+| `/books/published` | Published Books |
+| `/books/proposal` | Submit Book Proposal |
+| `/books/isbn` | ISBN Information |
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🎨 Design
 
-## How can I deploy this project?
+- **Colors**: Oxford Blue (#1e3a5f), Gold (#d4af37)
+- **Theme**: Clean white background
+- **Font**: Serif for headings, Sans-serif for body
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## 📝 APC (Article Processing Charge)
 
-## Can I connect a custom domain to my Lovable project?
+- Journal Papers: ₹750 (INR)
+- Book Chapters: ₹500 (INR)
 
-Yes, you can!
+## License
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Copyright © 2026 JMRH Publications. All rights reserved.

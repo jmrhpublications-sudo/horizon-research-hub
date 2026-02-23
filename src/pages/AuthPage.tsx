@@ -7,40 +7,43 @@ import {
     Lock,
     Mail,
     ArrowRight,
-    Building,
     Phone,
     MapPin,
     GraduationCap,
-    Calendar,
-    Hash,
     Building2,
     ShieldCheck,
-    Cpu,
-    Globe,
-    Zap
+    Eye,
+    EyeOff
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { useToast } from "@/hooks/use-toast";
+import SEOHead from "@/components/seo/SEOHead";
 
 const UNIVERSITIES = [
     "Anna University", "University of Madras", "SRM Institute", "VIT University", "IIT Madras",
     "Bangalore University", "University of Mysore", "Cochin University", "University of Kerala",
-    "Other Recognized University"
+    "The Nilgiris College", "Government Arts and Science College", "Other"
 ];
 
 const DEPARTMENTS = [
     "Computer Science & IT", "Electronics & Communication", "Mechanical Engineering",
-    "Commerce & Management", "Biotechnology", "Social Sciences", "Law", "Multidisciplinary"
+    "Commerce & Management", "Economics", "Biotechnology", "Social Sciences", 
+    "Law", "Mathematics", "Physics", "Chemistry", "Other"
+];
+
+const DEGREES = [
+    "B.Com", "BBA", "BCA", "B.Sc", "B.A", "M.Com", "MBA", "MCA", "M.Sc", "M.A", "PhD"
 ];
 
 const AuthPage = memo(() => {
     const [isLogin, setIsLogin] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     // Login State
     const [email, setEmail] = useState("");
@@ -50,19 +53,11 @@ const AuthPage = memo(() => {
     const [regName, setRegName] = useState("");
     const [regEmail, setRegEmail] = useState("");
     const [regPass, setRegPass] = useState("");
-    const [repeatPass, setRepeatPass] = useState("");
-
-    const [address, setAddress] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [age, setAge] = useState("");
-    const [dob, setDob] = useState("");
-    const [city, setCity] = useState("");
-    const [pincode, setPincode] = useState("");
-    const [degree, setDegree] = useState("");
-    const [university, setUniversity] = useState("");
-    const [college, setCollege] = useState("");
-    const [department, setDepartment] = useState("");
-    const [studyType, setStudyType] = useState("");
+    const [regPhone, setRegPhone] = useState("");
+    const [regAffiliation, setRegAffiliation] = useState("");
+    const [regDepartment, setRegDepartment] = useState("");
+    const [regDegree, setRegDegree] = useState("");
+    const [regRole, setRegRole] = useState("researcher");
 
     const { signIn, signUp } = useJMRH();
     const navigate = useNavigate();
@@ -76,16 +71,22 @@ const AuthPage = memo(() => {
         try {
             if (isLogin) {
                 await signIn(email, password);
+                toast({ title: "Login Successful!", description: "Welcome back to JMRH Publications." });
                 navigate(location.state?.from?.pathname || '/');
             } else {
-                if (regPass !== repeatPass) {
-                    toast({ title: "Validation Error", description: "Passwords do not match.", variant: "destructive" });
+                if (regPass.length < 6) {
+                    toast({ title: "Validation Error", description: "Password must be at least 6 characters.", variant: "destructive" });
                     setLoading(false);
                     return;
                 }
                 await signUp(regName, regEmail, regPass, {
-                    address, phoneNumber, age, dob, city, pincode, degree, university, college, department, studyType
+                    phone: regPhone,
+                    affiliation: regAffiliation,
+                    department: regDepartment,
+                    degree: regDegree,
+                    role: regRole
                 });
+                toast({ title: "Registration Successful!", description: "Please check your email to verify your account." });
                 setIsLogin(true);
             }
         } catch (error: any) {
@@ -96,179 +97,226 @@ const AuthPage = memo(() => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0A0C10] flex flex-col font-sans selection:bg-gold/30">
+        <div className="min-h-screen bg-white flex flex-col font-sans">
+            <SEOHead 
+                title="Login / Register | JMRH Publications"
+                description="Login or register to submit manuscripts to JMRH Publications"
+                canonical="/auth"
+            />
             <Header />
-            <main className="flex-1 flex items-center justify-center p-6 pt-32 pb-24 relative overflow-hidden">
-                {/* Cinematic Background Elements */}
-                <div className="absolute inset-0 z-0">
-                    <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-teal/10 blur-[160px] animate-pulse" />
-                    <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gold/5 blur-[140px] animate-pulse delay-1000" />
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03]" />
-                </div>
-
-                <div className={`w-full ${isLogin ? 'max-w-md' : 'max-w-6xl'} space-y-12 relative z-10`}>
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-center space-y-6"
-                    >
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full backdrop-blur-md mb-4">
-                            <span className="w-2 h-2 rounded-full bg-gold animate-ping" />
-                            <span className="text-[10px] uppercase tracking-[0.3em] font-black text-white/50">Secure Academic Node</span>
+            
+            <main className="flex-1 pt-24 pb-16 flex items-center justify-center p-6">
+                <div className="w-full max-w-lg">
+                    {/* Header */}
+                    <div className="text-center mb-8">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-oxford/5 border border-gold/20 rounded-full mb-4">
+                            <ShieldCheck className="text-gold" size={12} />
+                            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-oxford">Secure Access</span>
                         </div>
+                        <h1 className="font-serif text-4xl font-black text-oxford">
+                            {isLogin ? "Welcome Back" : "Create Account"}
+                        </h1>
+                        <p className="text-oxford/50 mt-2">
+                            {isLogin ? "Sign in to submit your manuscripts" : "Register to start publishing with JMRH"}
+                        </p>
+                    </div>
 
-                        <div className="space-y-4">
-                            <h1 className="font-serif text-6xl font-black text-white tracking-tighter leading-none">
-                                {isLogin ? "Nexus Access" : "The Registry"}
-                            </h1>
-                            <p className="text-xs uppercase tracking-[0.6em] text-gold font-bold">
-                                {isLogin ? "Institutional Authentication Protocol" : "Join the Multidisciplinary Horizon"}
-                            </p>
-                        </div>
-                    </motion.div>
-
-                    <form onSubmit={handleAuth} className="bg-[#111418] border border-white/5 shadow-[0_40px_100px_rgba(0,0,0,0.5)] relative overflow-hidden group">
-                        {/* Decorative Accents */}
-                        <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
-                        <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-teal/50 to-transparent" />
-                        <div className="absolute top-0 right-0 p-8">
-                            <Cpu className="text-white/5 group-hover:text-gold/20 transition-colors duration-1000" size={40} />
-                        </div>
-
-                        <div className="p-10 md:p-16">
-                            {isLogin ? (
-                                <div className="space-y-12">
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-3 mb-2">
-                                            <Mail size={14} className="text-gold" />
-                                            <span className="text-[10px] uppercase tracking-[0.3em] font-black text-white/40">Credential ID</span>
-                                        </div>
+                    {/* Form */}
+                    <form onSubmit={handleAuth} className="bg-white border border-black/5 shadow-xl p-8 space-y-6">
+                        {isLogin ? (
+                            // Login Form
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Email Address</label>
+                                    <div className="relative">
+                                        <Mail className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
                                         <Input
                                             required
                                             type="email"
-                                            placeholder="academic.id@horizon.edu"
+                                            placeholder="your@email.com"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            className="h-16 border-0 border-b-2 border-white/5 bg-transparent rounded-none px-0 font-serif text-2xl italic text-white focus:border-gold transition-all duration-500 placeholder:text-white/10 shadow-none focus-visible:ring-0"
+                                            className="h-12 pl-10 border-black/10 focus:border-gold"
                                         />
                                     </div>
+                                </div>
 
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-3 mb-2">
-                                            <Lock size={14} className="text-gold" />
-                                            <span className="text-[10px] uppercase tracking-[0.3em] font-black text-white/40">Security Matrix</span>
-                                        </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Password</label>
+                                    <div className="relative">
+                                        <Lock className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
                                         <Input
                                             required
-                                            type="password"
-                                            placeholder="••••••••"
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="Enter your password"
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
-                                            className="h-16 border-0 border-b-2 border-white/5 bg-transparent rounded-none px-0 font-serif text-2xl text-white focus:border-gold transition-all duration-500 placeholder:text-white/10 shadow-none focus-visible:ring-0"
+                                            className="h-12 pl-10 pr-10 border-black/10 focus:border-gold"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-3 top-3 text-oxford/30 hover:text-oxford"
+                                        >
+                                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-end">
+                                    <Link to="/auth" className="text-xs text-gold hover:text-oxford font-bold">
+                                        Forgot Password?
+                                    </Link>
+                                </div>
+                            </div>
+                        ) : (
+                            // Registration Form
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Full Name *</label>
+                                    <div className="relative">
+                                        <UserIcon className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
+                                        <Input
+                                            required
+                                            placeholder="Your full name"
+                                            value={regName}
+                                            onChange={(e) => setRegName(e.target.value)}
+                                            className="h-12 pl-10 border-black/10 focus:border-gold"
                                         />
                                     </div>
                                 </div>
-                            ) : (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-                                    <div className="space-y-12">
-                                        <div className="space-y-2 border-l-2 border-gold pl-6">
-                                            <h3 className="font-serif italic text-3xl font-bold text-white">Identity</h3>
-                                            <p className="text-[10px] uppercase tracking-widest text-gold/50">Personal Details</p>
-                                        </div>
 
-                                        <div className="space-y-8">
-                                            <Input required placeholder="Full Legal Name" value={regName} onChange={(e) => setRegName(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 font-serif italic text-lg text-white focus:border-gold transition-all" />
-                                            <div className="grid grid-cols-2 gap-6">
-                                                <Input required type="date" value={dob} onChange={(e) => setDob(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all text-sm" />
-                                                <Input required type="number" placeholder="Age" value={age} onChange={(e) => setAge(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all text-sm" />
-                                            </div>
-                                            <div className="grid grid-cols-2 gap-6">
-                                                <Input required placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all text-sm" />
-                                                <Input required placeholder="Pincode" value={pincode} onChange={(e) => setPincode(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all text-sm" />
-                                            </div>
-                                            <Input required placeholder="Phone Number" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all text-sm" />
-                                            <Input required type="email" placeholder="Email Address" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all text-sm" />
-                                            <div className="grid grid-cols-2 gap-6">
-                                                <Input required type="password" placeholder="Pass-key" value={regPass} onChange={(e) => setRegPass(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all text-sm" />
-                                                <Input required type="password" placeholder="Verify" value={repeatPass} onChange={(e) => setRepeatPass(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all text-sm" />
-                                            </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Email Address *</label>
+                                    <div className="relative">
+                                        <Mail className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
+                                        <Input
+                                            required
+                                            type="email"
+                                            placeholder="your@email.com"
+                                            value={regEmail}
+                                            onChange={(e) => setRegEmail(e.target.value)}
+                                            className="h-12 pl-10 border-black/10 focus:border-gold"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Password *</label>
+                                        <div className="relative">
+                                            <Lock className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
+                                            <Input
+                                                required
+                                                type="password"
+                                                placeholder="Min 6 chars"
+                                                value={regPass}
+                                                onChange={(e) => setRegPass(e.target.value)}
+                                                className="h-12 pl-10 border-black/10 focus:border-gold"
+                                            />
                                         </div>
                                     </div>
-
-                                    <div className="space-y-12">
-                                        <div className="space-y-2 border-l-2 border-teal pl-6">
-                                            <h3 className="font-serif italic text-3xl font-bold text-white">Scholarship</h3>
-                                            <p className="text-[10px] uppercase tracking-widest text-teal/50">Academic Status</p>
-                                        </div>
-
-                                        <div className="space-y-8">
-                                            <Select onValueChange={setDegree} required>
-                                                <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-none text-white/50 focus:ring-0 focus:border-gold">
-                                                    <SelectValue placeholder="Current Degree" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-[#111418] border-white/10 text-white rounded-none">
-                                                    <SelectItem value="Bachelors">Bachelor's Degree</SelectItem>
-                                                    <SelectItem value="Masters">Master's Degree</SelectItem>
-                                                    <SelectItem value="PhD">PhD / Doctorate</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-
-                                            <Select onValueChange={setUniversity} required>
-                                                <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-none text-white/50 focus:ring-0 focus:border-gold">
-                                                    <SelectValue placeholder="Institution" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-[#111418] border-white/10 text-white rounded-none">
-                                                    {UNIVERSITIES.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
-                                                </SelectContent>
-                                            </Select>
-
-                                            <Input required placeholder="College Name" value={college} onChange={(e) => setCollege(e.target.value)} className="h-14 bg-white/5 border-white/10 rounded-none px-4 text-white focus:border-gold transition-all" />
-
-                                            <Select onValueChange={setDepartment} required>
-                                                <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-none text-white/50 focus:ring-0 focus:border-gold">
-                                                    <SelectValue placeholder="Department" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-[#111418] border-white/10 text-white rounded-none">
-                                                    {DEPARTMENTS.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-                                                </SelectContent>
-                                            </Select>
-
-                                            <Select onValueChange={setStudyType} required>
-                                                <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-none text-white/50 focus:ring-0 focus:border-gold">
-                                                    <SelectValue placeholder="Engagement Mode" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-[#111418] border-white/10 text-white rounded-none">
-                                                    <SelectItem value="FullTime">Full Time</SelectItem>
-                                                    <SelectItem value="PartTime">Part Time</SelectItem>
-                                                    <SelectItem value="Research">Research Scholar</SelectItem>
-                                                </SelectContent>
-                                            </Select>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Phone</label>
+                                        <div className="relative">
+                                            <Phone className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
+                                            <Input
+                                                placeholder="+91 XXXXX"
+                                                value={regPhone}
+                                                onChange={(e) => setRegPhone(e.target.value)}
+                                                className="h-12 pl-10 border-black/10 focus:border-gold"
+                                            />
                                         </div>
                                     </div>
                                 </div>
-                            )}
 
-                            <div className="mt-16">
-                                <Button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="w-full h-20 rounded-none bg-gold text-[#0A0C10] hover:bg-white hover:text-black transition-all duration-700 font-black tracking-[1em] shadow-[0_10px_40px_rgba(212,175,55,0.2)] flex items-center justify-center gap-4 text-sm uppercase relative group overflow-hidden disabled:opacity-50"
-                                >
-                                    <span className="relative z-10 flex items-center gap-4">
-                                        {loading ? <Zap className="animate-spin" size={18} /> : (isLogin ? "Terminate Access Protocol" : "Authorize Nexus Identity")} <ArrowRight size={18} />
-                                    </span>
-                                </Button>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Institution / Affiliation *</label>
+                                    <div className="relative">
+                                        <Building2 className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
+                                        <Input
+                                            required
+                                            placeholder="University / College / Organization"
+                                            value={regAffiliation}
+                                            onChange={(e) => setRegAffiliation(e.target.value)}
+                                            className="h-12 pl-10 border-black/10 focus:border-gold"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Department</label>
+                                        <Select onValueChange={setRegDepartment} value={regDepartment}>
+                                            <SelectTrigger className="h-12 border-black/10 focus:border-gold">
+                                                <SelectValue placeholder="Select" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {DEPARTMENTS.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Degree</label>
+                                        <Select onValueChange={setRegDegree} value={regDegree}>
+                                            <SelectTrigger className="h-12 border-black/10 focus:border-gold">
+                                                <SelectValue placeholder="Select" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {DEGREES.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">I am a</label>
+                                    <Select onValueChange={setRegRole} value={regRole}>
+                                        <SelectTrigger className="h-12 border-black/10 focus:border-gold">
+                                            <SelectValue placeholder="Select role" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="researcher">Researcher</SelectItem>
+                                            <SelectItem value="student">Student</SelectItem>
+                                            <SelectItem value="professor">Professor</SelectItem>
+                                            <SelectItem value="academician">Academician</SelectItem>
+                                            <SelectItem value="professional">Professional</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
+                        )}
+
+                        {/* Submit Button */}
+                        <Button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full h-12 bg-oxford text-white hover:bg-gold transition-colors font-bold tracking-wider uppercase text-xs"
+                        >
+                            {loading ? "Please wait..." : (isLogin ? "Sign In" : "Create Account")}
+                        </Button>
+
+                        {/* Toggle */}
+                        <div className="text-center pt-4 border-t border-black/5">
+                            <p className="text-oxford/50 text-sm">
+                                {isLogin ? "Don't have an account?" : "Already have an account?"}
+                                <button
+                                    type="button"
+                                    onClick={() => setIsLogin(!isLogin)}
+                                    className="text-gold font-bold ml-2 hover:text-oxford"
+                                >
+                                    {isLogin ? "Register" : "Sign In"}
+                                </button>
+                            </p>
                         </div>
                     </form>
 
-                    <div className="text-center">
-                        <button
-                            onClick={() => setIsLogin(!isLogin)}
-                            className="text-[11px] uppercase tracking-[0.6em] font-black text-white/20 hover:text-gold transition-all border-b border-white/5 pb-2 hover:border-gold"
-                        >
-                            {isLogin ? "Request New Registration Protocol" : "Authorize Existing Account Matrix"}
-                        </button>
+                    {/* Info Box */}
+                    <div className="mt-6 p-4 bg-oxford/5 border border-black/5">
+                        <p className="text-xs text-oxford/60 text-center">
+                            <strong>Note:</strong> You can also submit manuscripts without registration by using our 
+                            <Link to="/submit-paper" className="text-gold font-bold ml-1">online submission form</Link>.
+                        </p>
                     </div>
                 </div>
             </main>
