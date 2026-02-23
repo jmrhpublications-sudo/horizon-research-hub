@@ -2,18 +2,17 @@ import { useState, memo, FormEvent } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useJMRH } from "@/context/JMRHContext";
 import {
-    BookOpen,
     User as UserIcon,
     Lock,
     Mail,
     ArrowRight,
     Phone,
-    MapPin,
-    GraduationCap,
     Building2,
     ShieldCheck,
     Eye,
-    EyeOff
+    EyeOff,
+    CheckCircle,
+    AlertCircle
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -23,12 +22,6 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { useToast } from "@/hooks/use-toast";
 import SEOHead from "@/components/seo/SEOHead";
-
-const UNIVERSITIES = [
-    "Anna University", "University of Madras", "SRM Institute", "VIT University", "IIT Madras",
-    "Bangalore University", "University of Mysore", "Cochin University", "University of Kerala",
-    "The Nilgiris College", "Government Arts and Science College", "Other"
-];
 
 const DEPARTMENTS = [
     "Computer Science & IT", "Electronics & Communication", "Mechanical Engineering",
@@ -44,6 +37,7 @@ const AuthPage = memo(() => {
     const [isLogin, setIsLogin] = useState(true);
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [verificationSent, setVerificationSent] = useState(false);
 
     // Login State
     const [email, setEmail] = useState("");
@@ -79,6 +73,12 @@ const AuthPage = memo(() => {
                     setLoading(false);
                     return;
                 }
+                if (!regName || !regEmail || !regAffiliation) {
+                    toast({ title: "Validation Error", description: "Please fill in all required fields.", variant: "destructive" });
+                    setLoading(false);
+                    return;
+                }
+                
                 await signUp(regName, regEmail, regPass, {
                     phone: regPhone,
                     affiliation: regAffiliation,
@@ -86,15 +86,64 @@ const AuthPage = memo(() => {
                     degree: regDegree,
                     role: regRole
                 });
-                toast({ title: "Registration Successful!", description: "Please check your email to verify your account." });
-                setIsLogin(true);
+                
+                // Show verification message
+                setVerificationSent(true);
+                toast({ 
+                    title: "Verification Email Sent!", 
+                    description: "Please check your email and click the verification link to activate your account." 
+                });
             }
         } catch (error: any) {
+            console.error("Auth error:", error);
             toast({ title: "Error", description: error.message || "An unexpected error occurred.", variant: "destructive" });
         } finally {
             setLoading(false);
         }
     };
+
+    // If verification email was sent, show success screen
+    if (verificationSent) {
+        return (
+            <div className="min-h-screen bg-white flex flex-col font-sans">
+                <SEOHead title="Verification Email Sent | JMRH Publications" canonical="/auth" />
+                <Header />
+                <main className="flex-1 pt-24 pb-16 flex items-center justify-center p-6">
+                    <div className="w-full max-w-md text-center space-y-6">
+                        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                            <Mail className="w-10 h-10 text-green-600" />
+                        </div>
+                        <h1 className="font-serif text-3xl font-bold text-oxford">Check Your Email</h1>
+                        <p className="text-oxford/60">
+                            We've sent a verification link to <strong>{regEmail}</strong>. 
+                            Please click the link in the email to verify your account.
+                        </p>
+                        <div className="bg-oxford/5 p-4 rounded-lg">
+                            <p className="text-sm text-oxford/60">
+                                Didn't receive the email? Check your spam folder or 
+                                <button 
+                                    onClick={() => {
+                                        setVerificationSent(false);
+                                        setIsLogin(true);
+                                    }}
+                                    className="text-gold font-bold ml-1"
+                                >
+                                    try again
+                                </button>
+                            </p>
+                        </div>
+                        <Button onClick={() => {
+                            setVerificationSent(false);
+                            setIsLogin(true);
+                        }} className="w-full bg-oxford hover:bg-gold">
+                            Back to Login
+                        </Button>
+                    </div>
+                </main>
+                <Footer />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-white flex flex-col font-sans">
@@ -161,12 +210,6 @@ const AuthPage = memo(() => {
                                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                         </button>
                                     </div>
-                                </div>
-
-                                <div className="flex justify-end">
-                                    <Link to="/auth" className="text-xs text-gold hover:text-oxford font-bold">
-                                        Forgot Password?
-                                    </Link>
                                 </div>
                             </div>
                         ) : (
@@ -267,22 +310,6 @@ const AuthPage = memo(() => {
                                             </SelectContent>
                                         </Select>
                                     </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">I am a</label>
-                                    <Select onValueChange={setRegRole} value={regRole}>
-                                        <SelectTrigger className="h-12 border-black/10 focus:border-gold">
-                                            <SelectValue placeholder="Select role" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="researcher">Researcher</SelectItem>
-                                            <SelectItem value="student">Student</SelectItem>
-                                            <SelectItem value="professor">Professor</SelectItem>
-                                            <SelectItem value="academician">Academician</SelectItem>
-                                            <SelectItem value="professional">Professional</SelectItem>
-                                        </SelectContent>
-                                    </Select>
                                 </div>
                             </div>
                         )}
