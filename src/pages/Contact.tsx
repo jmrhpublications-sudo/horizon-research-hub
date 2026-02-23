@@ -7,7 +7,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 
 const Contact = memo(() => {
   return (
-    <div className="min-h-screen bg-background font-sans">
+    <div className="min-h-screen bg-white font-sans">
       <SEOHead 
         title="Contact Us | JMRH Publications"
         description="Contact JMRH Publications for any queries related to journal submissions, book proposals, or general inquiries."
@@ -16,7 +16,7 @@ const Contact = memo(() => {
       <Header />
       
       {/* Page Header */}
-      <section className="pt-32 pb-16 bg-gradient-to-b from-oxford/5 to-transparent">
+      <section className="pt-32 pb-16 bg-white">
         <div className="container max-w-4xl mx-auto px-6">
           <nav className="flex items-center gap-2 text-xs uppercase tracking-widest text-oxford/40 mb-6">
             <Link to="/" className="hover:text-gold transition-colors">Home</Link>
@@ -33,7 +33,7 @@ const Contact = memo(() => {
       </section>
 
       {/* Content */}
-      <section className="py-16">
+      <section className="py-16 bg-white">
         <div className="container max-w-4xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-8">
             {/* Contact Information */}
@@ -41,8 +41,8 @@ const Contact = memo(() => {
               {/* Office Address */}
               <div className="bg-white border border-black/5 p-6">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gold/10 flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-5 h-5 text-gold" />
+                  <div className="w-12 h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-5 h-5 text-oxford" />
                   </div>
                   <div>
                     <h3 className="font-bold text-oxford mb-2">Office Address</h3>
@@ -58,12 +58,12 @@ const Contact = memo(() => {
               {/* Official Email */}
               <div className="bg-white border border-black/5 p-6">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gold/10 flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-5 h-5 text-gold" />
+                  <div className="w-12 h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-5 h-5 text-oxford" />
                   </div>
                   <div>
                     <h3 className="font-bold text-oxford mb-2">Official Email</h3>
-                    <p className="text-oxford/50 text-sm mb-1">For general inquiries and administrative communication</p>
+                    <p className="text-oxford/50 text-sm mb-1">For general inquiries</p>
                     <a href="mailto:jmrhpublications@gmail.com" className="text-gold font-bold hover:text-oxford transition-colors">
                       jmrhpublications@gmail.com
                     </a>
@@ -74,12 +74,12 @@ const Contact = memo(() => {
               {/* Submission Email */}
               <div className="bg-white border border-black/5 p-6">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gold/10 flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-5 h-5 text-gold" />
+                  <div className="w-12 h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-5 h-5 text-oxford" />
                   </div>
                   <div>
                     <h3 className="font-bold text-oxford mb-2">Submission Email</h3>
-                    <p className="text-oxford/50 text-sm mb-1">For journal manuscripts and book chapter submissions</p>
+                    <p className="text-oxford/50 text-sm mb-1">For manuscripts</p>
                     <a href="mailto:submit.jmrh@gmail.com" className="text-gold font-bold hover:text-oxford transition-colors">
                       submit.jmrh@gmail.com
                     </a>
@@ -90,30 +90,14 @@ const Contact = memo(() => {
               {/* Editorial Email */}
               <div className="bg-white border border-black/5 p-6">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gold/10 flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-5 h-5 text-gold" />
+                  <div className="w-12 h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-5 h-5 text-oxford" />
                   </div>
                   <div>
                     <h3 className="font-bold text-oxford mb-2">Editorial Email</h3>
-                    <p className="text-oxford/50 text-sm mb-1">For editorial and review-related queries</p>
+                    <p className="text-oxford/50 text-sm mb-1">For editorial queries</p>
                     <a href="mailto:editor.jmrh@gmail.com" className="text-gold font-bold hover:text-oxford transition-colors">
                       editor.jmrh@gmail.com
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Reviewer Email */}
-              <div className="bg-white border border-black/5 p-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gold/10 flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-5 h-5 text-gold" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-oxford mb-2">Reviewer Email</h3>
-                    <p className="text-oxford/50 text-sm mb-1">For reviewer communication and reviewer applications</p>
-                    <a href="mailto:review.jmrh@gmail.com" className="text-gold font-bold hover:text-oxford transition-colors">
-                      review.jmrh@gmail.com
                     </a>
                   </div>
                 </div>
@@ -122,21 +106,21 @@ const Contact = memo(() => {
               {/* Phone */}
               <div className="bg-white border border-black/5 p-6">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gold/10 flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-5 h-5 text-gold" />
+                  <div className="w-12 h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-5 h-5 text-oxford" />
                   </div>
                   <div>
                     <h3 className="font-bold text-oxford mb-2">Phone</h3>
                     <a href="tel:+918072242010" className="text-gold font-bold hover:text-oxford transition-colors">
                       +91 80722 42010
                     </a>
-                    <p className="text-oxford/50 text-sm mt-1">Available during standard working hours, Monday–Friday</p>
+                    <p className="text-oxford/50 text-sm mt-1">Mon-Fri</p>
                   </div>
                 </div>
               </div>
 
               {/* Response Time */}
-              <div className="bg-gold/5 p-6 border border-gold/10">
+              <div className="bg-oxford/5 p-6 border border-black/5">
                 <p className="text-oxford/70">
                   <strong>Response Time:</strong> All inquiries will be responded to within <strong>2–3 working days</strong>.
                 </p>

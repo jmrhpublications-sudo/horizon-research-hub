@@ -6,7 +6,7 @@ import SEOHead from "@/components/seo/SEOHead";
 
 const Policies = memo(() => {
   return (
-    <div className="min-h-screen bg-background font-sans">
+    <div className="min-h-screen bg-white font-sans">
       <SEOHead 
         title="Policies | JMRH Publications"
         description="View publication ethics, peer review policy, plagiarism policy, open access policy, and more."
@@ -15,7 +15,7 @@ const Policies = memo(() => {
       <Header />
       
       {/* Page Header */}
-      <section className="pt-32 pb-16 bg-gradient-to-b from-oxford/5 to-transparent">
+      <section className="pt-32 pb-16 bg-white">
         <div className="container max-w-4xl mx-auto px-6">
           <nav className="flex items-center gap-2 text-xs uppercase tracking-widest text-oxford/40 mb-6">
             <Link to="/" className="hover:text-gold transition-colors">Home</Link>
@@ -32,7 +32,7 @@ const Policies = memo(() => {
       </section>
 
       {/* Content */}
-      <section className="py-16">
+      <section className="py-16 bg-white">
         <div className="container max-w-4xl mx-auto px-6">
           <div className="bg-white border border-black/5 p-8 md:p-12 space-y-12">
             {/* Publication Ethics */}

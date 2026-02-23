@@ -6,7 +6,7 @@ import SEOHead from "@/components/seo/SEOHead";
 
 const AboutUs = memo(() => {
   return (
-    <div className="min-h-screen bg-background font-sans">
+    <div className="min-h-screen bg-white font-sans">
       <SEOHead 
         title="About Us | JMRH Publications"
         description="Learn about JMRH Publications - an independent academic publishing platform committed to promoting high-quality scholarly communication."
@@ -15,7 +15,7 @@ const AboutUs = memo(() => {
       <Header />
       
       {/* Page Header */}
-      <section className="pt-32 pb-16 bg-gradient-to-b from-oxford/5 to-transparent">
+      <section className="pt-32 pb-16 bg-white">
         <div className="container max-w-4xl mx-auto px-6">
           <nav className="flex items-center gap-2 text-xs uppercase tracking-widest text-oxford/40 mb-6">
             <Link to="/" className="hover:text-gold transition-colors">Home</Link>
@@ -29,7 +29,7 @@ const AboutUs = memo(() => {
       </section>
 
       {/* Content */}
-      <section className="py-16">
+      <section className="py-16 bg-white">
         <div className="container max-w-4xl mx-auto px-6">
           <div className="bg-white border border-black/5 p-8 md:p-12 space-y-12">
             {/* Introduction */}
@@ -92,7 +92,7 @@ const AboutUs = memo(() => {
               <p className="text-oxford/70 leading-relaxed mb-4">
                 JMRH Publications operates as an independent academic publishing initiative based in Tamil Nadu, India.
               </p>
-              <div className="bg-gold/5 p-6 border border-gold/10">
+              <div className="bg-oxford/5 p-6 border border-black/5">
                 <p className="text-oxford/70 font-bold">MSME Registered</p>
                 <p className="text-oxford/60 mt-2">
                   The publishing entity is registered under <strong>MSME (Micro, Small & Medium Enterprises), Government of India</strong>.
