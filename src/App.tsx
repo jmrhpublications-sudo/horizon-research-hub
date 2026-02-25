@@ -53,6 +53,7 @@ const SecureLoginPage = lazy(() => import("./pages/SecureLoginPage"));
 // User Pages
 const SubmitPaperPage = lazy(() => import("./pages/SubmitPaperPage"));
 const AccountPage = lazy(() => import("./pages/AccountPage"));
+const RequestUploadPage = lazy(() => import("./pages/RequestUploadPage"));
 
 // Admin Dashboard
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
@@ -133,6 +134,7 @@ const App = () => (
               {/* User Secure Routes - Submit Paper publicly viewable, action blocked at page level */}
               <Route path="/submit-paper" element={<SubmitPaperPage />} />
               <Route path="/submit-paper/:id" element={<SubmitPaperPage />} />
+              <Route path="/request-upload" element={<RequestUploadPage />} />
               <Route path="/account" element={
                 <ProtectedRoute allowedRoles={['USER']}>
                   <AccountPage />

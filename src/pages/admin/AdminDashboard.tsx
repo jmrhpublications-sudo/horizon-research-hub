@@ -1,7 +1,8 @@
-import { memo, useState, useMemo } from "react";
+import { memo, useState, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import { useJMRH, UserRole } from "@/context/JMRHContext";
+import { useJMRH, UserRole, PublishedJournal, PublishedBook, UploadRequest } from "@/context/JMRHContext";
+import { supabase } from "@/integrations/supabase/client";
 import {
     Users,
     BookOpen,
@@ -15,10 +16,19 @@ import {
     Eye,
     Download,
     Globe,
-    Shield
+    Shield,
+    Upload,
+    FileText,
+    Library,
+    Inbox,
+    Check,
+    X,
+    ExternalLink,
+    Image
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
     Dialog,
     DialogContent,
@@ -37,38 +47,96 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 const AdminDashboard = memo(() => {
-    const { users, papers, professors, assignPaper, updatePaperStatus, publishPaper, createUser } = useJMRH();
-    const [activeTab, setActiveTab] = useState<"papers" | "users" | "professors">("papers");
+    const { 
+        users, papers, professors, assignPaper, updatePaperStatus, publishPaper, createUser,
+        publishedJournals, publishedBooks, uploadRequests,
+        createPublishedJournal, deletePublishedJournal, createPublishedBook, deletePublishedBook,
+        updateUploadRequest, deleteUploadRequest
+    } = useJMRH();
+    const [activeTab, setActiveTab] = useState<"papers" | "users" | "professors" | "upload">("papers");
     const [isCreateUserOpen, setIsCreateUserOpen] = useState(false);
     const [isAssignOpen, setIsAssignOpen] = useState(false);
+    const [isUploadJournalOpen, setIsUploadJournalOpen] = useState(false);
+    const [isUploadBookOpen, setIsUploadBookOpen] = useState(false);
     const [selectedPaper, setSelectedPaper] = useState<any>(null);
     const [selectedProfessor, setSelectedProfessor] = useState("");
     
-    // New user form
     const [newUserName, setNewUserName] = useState("");
     const [newUserEmail, setNewUserEmail] = useState("");
     const [newUserPassword, setNewUserPassword] = useState("");
     const [newUserRole, setNewUserRole] = useState<UserRole>("USER");
     const [newUserAffiliation, setNewUserAffiliation] = useState("");
     
+    const [journalForm, setJournalForm] = useState({
+        title: "",
+        authors: "",
+        abstract: "",
+        discipline: "",
+        keywords: "",
+        volume: "",
+        issue: "",
+        pages: "",
+        doi: "",
+        publicationDate: new Date().toISOString().split('T')[0],
+        pdfUrl: "",
+        coverImage: ""
+    });
+    
+    const [bookForm, setBookForm] = useState({
+        title: "",
+        authors: "",
+        editors: "",
+        isbn: "",
+        publisher: "",
+        description: "",
+        discipline: "",
+        keywords: "",
+        edition: "",
+        publicationYear: "",
+        pdfUrl: "",
+        coverImage: "",
+        purchaseLink: ""
+    });
+
+    const journalFileRef = useRef<HTMLInputElement>(null);
+    const bookCoverRef = useRef<HTMLInputElement>(null);
+    const journalCoverRef = useRef<HTMLInputElement>(null);
+    const bookFileRef = useRef<HTMLInputElement>(null);
+    const [isUploadingJournal, setIsUploadingJournal] = useState(false);
+    const [isUploadingBook, setIsUploadingBook] = useState(false);
+
     const { toast } = useToast();
 
     const professorsList = users.filter(u => u.role === 'PROFESSOR');
     const regularUsers = users.filter(u => u.role === 'USER');
     
     const submittedPapers = papers.filter(p => p.status === 'SUBMITTED');
-    const underReviewPapers = papers.filter(p => p.status === 'UNDER_REVIEW');
     const acceptedPapers = papers.filter(p => p.status === 'ACCEPTED');
     const publishedPapers = papers.filter(p => p.status === 'PUBLISHED');
     
     const journalPapers = papers.filter(p => p.paperType === 'JOURNAL' && p.status === 'PUBLISHED');
     const bookPapers = papers.filter(p => p.paperType === 'BOOK' && p.status === 'PUBLISHED');
 
+    const pendingRequests = uploadRequests.filter(r => r.status === 'PENDING');
+
+    const disciplines = [
+        "Commerce and Management",
+        "Economics and Finance", 
+        "Education and Psychology",
+        "Social Sciences and Humanities",
+        "Science and Technology",
+        "Environmental Studies and Sustainability",
+        "Digital Transformation and Information Systems",
+        "Entrepreneurship and Innovation",
+        "Public Policy and Governance",
+        "Other"
+    ];
+
     const stats = [
-        { label: "Published Journal Papers", value: journalPapers.length, icon: BookOpen, color: "text-gold" },
-        { label: "Published Book Chapters", value: bookPapers.length, icon: BookOpen, color: "text-teal-400" },
+        { label: "Published Journals", value: publishedJournals.length + journalPapers.length, icon: Library, color: "text-gold" },
+        { label: "Published Books", value: publishedBooks.length + bookPapers.length, icon: BookOpen, color: "text-teal-400" },
         { label: "Pending Review", value: submittedPapers.length, icon: Clock, color: "text-orange-400" },
-        { label: "Total Users", value: users.length, icon: Users, color: "text-blue-400" },
+        { label: "Upload Requests", value: pendingRequests.length, icon: Inbox, color: "text-purple-400" },
     ];
 
     const handleAssignProfessor = () => {
@@ -100,6 +168,101 @@ const AdminDashboard = memo(() => {
         setNewUserAffiliation("");
     };
 
+    const uploadFile = async (file: File, folder: string): Promise<string | null> => {
+        const fileName = `${folder}/${Date.now()}_${file.name}`;
+        const { data, error } = await supabase.storage
+            .from('publications')
+            .upload(fileName, file, { cacheControl: '3600', upsert: false });
+        
+        if (error) {
+            console.error('Upload error:', error);
+            return null;
+        }
+        
+        const { data: { publicUrl } } = supabase.storage
+            .from('publications')
+            .getPublicUrl(fileName);
+        
+        return publicUrl;
+    };
+
+    const handleJournalFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files?.[0]) {
+            setIsUploadingJournal(true);
+            const url = await uploadFile(e.target.files[0], 'journals');
+            if (url) {
+                setJournalForm(prev => ({ ...prev, pdfUrl: url }));
+                toast({ title: "File Uploaded", description: "PDF uploaded successfully" });
+            }
+            setIsUploadingJournal(false);
+        }
+    };
+
+    const handleBookFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files?.[0]) {
+            setIsUploadingBook(true);
+            const url = await uploadFile(e.target.files[0], 'books');
+            if (url) {
+                setBookForm(prev => ({ ...prev, pdfUrl: url }));
+                toast({ title: "File Uploaded", description: "PDF uploaded successfully" });
+            }
+            setIsUploadingBook(false);
+        }
+    };
+
+    const handleJournalCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files?.[0]) {
+            const url = await uploadFile(e.target.files[0], 'covers');
+            if (url) {
+                setJournalForm(prev => ({ ...prev, coverImage: url }));
+                toast({ title: "Cover Uploaded", description: "Cover image uploaded successfully" });
+            }
+        }
+    };
+
+    const handleBookCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files?.[0]) {
+            const url = await uploadFile(e.target.files[0], 'covers');
+            if (url) {
+                setBookForm(prev => ({ ...prev, coverImage: url }));
+                toast({ title: "Cover Uploaded", description: "Cover image uploaded successfully" });
+            }
+        }
+    };
+
+    const handlePublishJournal = async () => {
+        if (!journalForm.title || !journalForm.authors || !journalForm.discipline) {
+            toast({ title: "Error", description: "Please fill required fields", variant: "destructive" });
+            return;
+        }
+        await createPublishedJournal(journalForm);
+        setIsUploadJournalOpen(false);
+        setJournalForm({
+            title: "", authors: "", abstract: "", discipline: "", keywords: "",
+            volume: "", issue: "", pages: "", doi: "", publicationDate: new Date().toISOString().split('T')[0],
+            pdfUrl: "", coverImage: ""
+        });
+    };
+
+    const handlePublishBook = async () => {
+        if (!bookForm.title || !bookForm.authors || !bookForm.discipline) {
+            toast({ title: "Error", description: "Please fill required fields", variant: "destructive" });
+            return;
+        }
+        await createPublishedBook(bookForm);
+        setIsUploadBookOpen(false);
+        setBookForm({
+            title: "", authors: "", editors: "", isbn: "", publisher: "",
+            description: "", discipline: "", keywords: "", edition: "",
+            publicationYear: "", pdfUrl: "", coverImage: "", purchaseLink: ""
+        });
+    };
+
+    const handleRequestAction = async (request: UploadRequest, status: 'APPROVED' | 'REJECTED') => {
+        await updateUploadRequest(request.id, { status, adminNotes: status === 'APPROVED' ? 'Approved by admin' : 'Rejected by admin' });
+        toast({ title: status === 'APPROVED' ? "Request Approved" : "Request Rejected", description: `Request for "${request.title}" has been ${status.toLowerCase()}.` });
+    };
+
     return (
         <DashboardLayout role="ADMIN">
             <div className="space-y-8">
@@ -125,12 +288,12 @@ const AdminDashboard = memo(() => {
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-2 border-b border-black/10">
+                <div className="flex gap-2 border-b border-black/10 overflow-x-auto">
                     <button
                         onClick={() => setActiveTab("papers")}
                         className={`px-6 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === "papers" ? "border-gold text-oxford" : "border-transparent text-oxford/50"}`}
                     >
-                        All Papers
+                        Papers
                     </button>
                     <button
                         onClick={() => setActiveTab("users")}
@@ -143,6 +306,12 @@ const AdminDashboard = memo(() => {
                         className={`px-6 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === "professors" ? "border-gold text-oxford" : "border-transparent text-oxford/50"}`}
                     >
                         Professors
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("upload")}
+                        className={`px-6 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === "upload" ? "border-gold text-oxford" : "border-transparent text-oxford/50"}`}
+                    >
+                        Upload & Requests
                     </button>
                 </div>
 
@@ -157,7 +326,6 @@ const AdminDashboard = memo(() => {
                                         <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Type</th>
                                         <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Author</th>
                                         <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Status</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Assigned To</th>
                                         <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Actions</th>
                                     </tr>
                                 </thead>
@@ -185,19 +353,12 @@ const AdminDashboard = memo(() => {
                                                     {paper.status}
                                                 </span>
                                             </td>
-                                            <td className="p-4 text-sm text-oxford/70">
-                                                {paper.assignedProfessorName || "-"}
-                                            </td>
                                             <td className="p-4">
                                                 <div className="flex gap-2">
                                                     {paper.status === 'SUBMITTED' && (
                                                         <Dialog open={isAssignOpen} onOpenChange={setIsAssignOpen}>
                                                             <DialogTrigger asChild>
-                                                                <Button 
-                                                                    size="sm" 
-                                                                    variant="outline"
-                                                                    onClick={() => setSelectedPaper(paper)}
-                                                                >
+                                                                <Button size="sm" variant="outline" onClick={() => setSelectedPaper(paper)}>
                                                                     <Send size={14} className="mr-1" /> Assign
                                                                 </Button>
                                                             </DialogTrigger>
@@ -225,11 +386,7 @@ const AdminDashboard = memo(() => {
                                                     )}
                                                     
                                                     {paper.status === 'ACCEPTED' && (
-                                                        <Button 
-                                                            size="sm"
-                                                            className="bg-gold hover:bg-gold/80"
-                                                            onClick={() => handlePublishPaper(paper)}
-                                                        >
+                                                        <Button size="sm" className="bg-gold hover:bg-gold/80" onClick={() => handlePublishPaper(paper)}>
                                                             <Globe size={14} className="mr-1" /> Publish
                                                         </Button>
                                                     )}
@@ -245,7 +402,7 @@ const AdminDashboard = memo(() => {
                                     ))}
                                     {papers.length === 0 && (
                                         <tr>
-                                            <td colSpan={6} className="p-8 text-center text-oxford/50">
+                                            <td colSpan={5} className="p-8 text-center text-oxford/50">
                                                 No papers submitted yet.
                                             </td>
                                         </tr>
@@ -271,38 +428,18 @@ const AdminDashboard = memo(() => {
                                         <DialogTitle>Create New User</DialogTitle>
                                     </DialogHeader>
                                     <div className="space-y-4 py-4">
-                                        <Input 
-                                            placeholder="Full Name" 
-                                            value={newUserName}
-                                            onChange={(e) => setNewUserName(e.target.value)}
-                                        />
-                                        <Input 
-                                            placeholder="Email" 
-                                            type="email"
-                                            value={newUserEmail}
-                                            onChange={(e) => setNewUserEmail(e.target.value)}
-                                        />
-                                        <Input 
-                                            placeholder="Password" 
-                                            type="password"
-                                            value={newUserPassword}
-                                            onChange={(e) => setNewUserPassword(e.target.value)}
-                                        />
+                                        <Input placeholder="Full Name" value={newUserName} onChange={(e) => setNewUserName(e.target.value)} />
+                                        <Input placeholder="Email" type="email" value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} />
+                                        <Input placeholder="Password" type="password" value={newUserPassword} onChange={(e) => setNewUserPassword(e.target.value)} />
                                         <Select onValueChange={(v) => setNewUserRole(v as UserRole)} value={newUserRole}>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Role" />
-                                            </SelectTrigger>
+                                            <SelectTrigger><SelectValue placeholder="Role" /></SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="USER">User</SelectItem>
                                                 <SelectItem value="PROFESSOR">Professor</SelectItem>
                                                 <SelectItem value="ADMIN">Admin</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <Input 
-                                            placeholder="Affiliation" 
-                                            value={newUserAffiliation}
-                                            onChange={(e) => setNewUserAffiliation(e.target.value)}
-                                        />
+                                        <Input placeholder="Affiliation" value={newUserAffiliation} onChange={(e) => setNewUserAffiliation(e.target.value)} />
                                     </div>
                                     <DialogFooter>
                                         <Button onClick={handleCreateUser}>Create User</Button>
@@ -319,7 +456,6 @@ const AdminDashboard = memo(() => {
                                         <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Email</th>
                                         <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Role</th>
                                         <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Status</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Papers</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-black/5">
@@ -344,9 +480,6 @@ const AdminDashboard = memo(() => {
                                                     {user.status}
                                                 </span>
                                             </td>
-                                            <td className="p-4 text-sm text-oxford/70">
-                                                {papers.filter(p => p.authorId === user.id).length}
-                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -370,66 +503,280 @@ const AdminDashboard = memo(() => {
                                         <DialogTitle>Create Professor Account</DialogTitle>
                                     </DialogHeader>
                                     <div className="space-y-4 py-4">
-                                        <Input 
-                                            placeholder="Full Name" 
-                                            value={newUserName}
-                                            onChange={(e) => setNewUserName(e.target.value)}
-                                        />
-                                        <Input 
-                                            placeholder="Email" 
-                                            type="email"
-                                            value={newUserEmail}
-                                            onChange={(e) => setNewUserEmail(e.target.value)}
-                                        />
-                                        <Input 
-                                            placeholder="Password" 
-                                            type="password"
-                                            value={newUserPassword}
-                                            onChange={(e) => setNewUserPassword(e.target.value)}
-                                        />
-                                        <Input 
-                                            placeholder="Affiliation" 
-                                            value={newUserAffiliation}
-                                            onChange={(e) => setNewUserAffiliation(e.target.value)}
-                                        />
+                                        <Input placeholder="Full Name" value={newUserName} onChange={(e) => setNewUserName(e.target.value)} />
+                                        <Input placeholder="Email" type="email" value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} />
+                                        <Input placeholder="Password" type="password" value={newUserPassword} onChange={(e) => setNewUserPassword(e.target.value)} />
+                                        <Input placeholder="Affiliation" value={newUserAffiliation} onChange={(e) => setNewUserAffiliation(e.target.value)} />
                                     </div>
                                     <DialogFooter>
-                                        <Button onClick={() => {
-                                            setNewUserRole("PROFESSOR");
-                                            handleCreateUser();
-                                        }}>Create Professor</Button>
+                                        <Button onClick={() => { setNewUserRole("PROFESSOR"); handleCreateUser(); }}>Create Professor</Button>
                                     </DialogFooter>
                                 </DialogContent>
                             </Dialog>
                         </div>
 
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {professorsList.map((prof) => {
-                                const profPapers = papers.filter(p => p.assignedProfessorId === prof.id);
-                                return (
-                                    <div key={prof.id} className="p-6 bg-white border border-black/5 hover:shadow-md transition-shadow">
-                                        <div className="flex items-start gap-4">
-                                            <div className="w-12 h-12 bg-oxford/10 rounded-full flex items-center justify-center">
-                                                <GraduationCap className="w-6 h-6 text-oxford" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <h3 className="font-bold text-oxford">{prof.name}</h3>
-                                                <p className="text-sm text-oxford/60">{prof.email}</p>
-                                                <p className="text-xs text-oxford/50 mt-1">{prof.affiliation}</p>
-                                            </div>
+                            {professorsList.map((prof) => (
+                                <div key={prof.id} className="p-6 bg-white border border-black/5 hover:shadow-md transition-shadow">
+                                    <div className="flex items-start gap-4">
+                                        <div className="w-12 h-12 bg-oxford/10 rounded-full flex items-center justify-center">
+                                            <GraduationCap className="w-6 h-6 text-oxford" />
                                         </div>
-                                        <div className="mt-4 pt-4 border-t border-black/5 flex justify-between text-sm">
-                                            <span className="text-oxford/60">Papers Assigned:</span>
-                                            <span className="font-bold text-oxford">{profPapers.length}</span>
+                                        <div className="flex-1">
+                                            <h3 className="font-bold text-oxford">{prof.name}</h3>
+                                            <p className="text-sm text-oxford/60">{prof.email}</p>
+                                            <p className="text-xs text-oxford/50 mt-1">{prof.affiliation}</p>
                                         </div>
                                     </div>
-                                );
-                            })}
+                                </div>
+                            ))}
                             {professorsList.length === 0 && (
                                 <div className="col-span-full p-8 text-center text-oxford/50">
                                     No professors added yet.
                                 </div>
                             )}
+                        </div>
+                    </div>
+                )}
+
+                {/* Upload & Requests Tab */}
+                {activeTab === "upload" && (
+                    <div className="space-y-8">
+                        {/* Upload Section */}
+                        <div className="grid md:grid-cols-2 gap-6">
+                            {/* Upload Journal */}
+                            <div className="bg-white border border-black/5 p-6">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center">
+                                        <Library className="w-6 h-6 text-gold" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-oxford">Upload Journal Article</h3>
+                                        <p className="text-xs text-oxford/50">Publish a new journal article</p>
+                                    </div>
+                                </div>
+                                <Dialog open={isUploadJournalOpen} onOpenChange={setIsUploadJournalOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button className="w-full bg-oxford hover:bg-gold">
+                                            <Upload size={16} className="mr-2" /> Upload Journal
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                                        <DialogHeader>
+                                            <DialogTitle>Publish Journal Article</DialogTitle>
+                                        </DialogHeader>
+                                        <div className="space-y-4 py-4">
+                                            <Input placeholder="Article Title *" value={journalForm.title} onChange={(e) => setJournalForm(prev => ({ ...prev, title: e.target.value }))} />
+                                            <Input placeholder="Authors *" value={journalForm.authors} onChange={(e) => setJournalForm(prev => ({ ...prev, authors: e.target.value }))} />
+                                            <Textarea placeholder="Abstract" value={journalForm.abstract} onChange={(e) => setJournalForm(prev => ({ ...prev, abstract: e.target.value }))} />
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <Select onValueChange={(v) => setJournalForm(prev => ({ ...prev, discipline: v }))} value={journalForm.discipline}>
+                                                    <SelectTrigger><SelectValue placeholder="Discipline *" /></SelectTrigger>
+                                                    <SelectContent>
+                                                        {disciplines.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+                                                    </SelectContent>
+                                                </Select>
+                                                <Input placeholder="Keywords" value={journalForm.keywords} onChange={(e) => setJournalForm(prev => ({ ...prev, keywords: e.target.value }))} />
+                                            </div>
+                                            <div className="grid grid-cols-3 gap-4">
+                                                <Input placeholder="Volume" value={journalForm.volume} onChange={(e) => setJournalForm(prev => ({ ...prev, volume: e.target.value }))} />
+                                                <Input placeholder="Issue" value={journalForm.issue} onChange={(e) => setJournalForm(prev => ({ ...prev, issue: e.target.value }))} />
+                                                <Input placeholder="Pages" value={journalForm.pages} onChange={(e) => setJournalForm(prev => ({ ...prev, pages: e.target.value }))} />
+                                            </div>
+                                            <Input placeholder="DOI" value={journalForm.doi} onChange={(e) => setJournalForm(prev => ({ ...prev, doi: e.target.value }))} />
+                                            <Input type="date" value={journalForm.publicationDate} onChange={(e) => setJournalForm(prev => ({ ...prev, publicationDate: e.target.value }))} />
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold uppercase text-oxford/60">PDF File</label>
+                                                <input ref={journalFileRef} type="file" accept=".pdf" onChange={handleJournalFileUpload} className="hidden" />
+                                                <div className="flex gap-2">
+                                                    <Button type="button" variant="outline" onClick={() => journalFileRef.current?.click()} className="flex-1">
+                                                        {isUploadingJournal ? "Uploading..." : journalForm.pdfUrl ? "PDF Uploaded ✓" : "Choose PDF"}
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                            <Input placeholder="PDF URL (if already hosted)" value={journalForm.pdfUrl} onChange={(e) => setJournalForm(prev => ({ ...prev, pdfUrl: e.target.value }))} />
+                                        </div>
+                                        <DialogFooter>
+                                            <Button variant="outline" onClick={() => setIsUploadJournalOpen(false)}>Cancel</Button>
+                                            <Button className="bg-gold hover:bg-oxford" onClick={handlePublishJournal}>Publish Journal</Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            </div>
+
+                            {/* Upload Book */}
+                            <div className="bg-white border border-black/5 p-6">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="w-12 h-12 bg-teal-500/10 rounded-lg flex items-center justify-center">
+                                        <BookOpen className="w-6 h-6 text-teal-500" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-oxford">Upload Book</h3>
+                                        <p className="text-xs text-oxford/50">Publish a new book</p>
+                                    </div>
+                                </div>
+                                <Dialog open={isUploadBookOpen} onOpenChange={setIsUploadBookOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button className="w-full bg-oxford hover:bg-gold">
+                                            <Upload size={16} className="mr-2" /> Upload Book
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                                        <DialogHeader>
+                                            <DialogTitle>Publish Book</DialogTitle>
+                                        </DialogHeader>
+                                        <div className="space-y-4 py-4">
+                                            <Input placeholder="Book Title *" value={bookForm.title} onChange={(e) => setBookForm(prev => ({ ...prev, title: e.target.value }))} />
+                                            <Input placeholder="Authors *" value={bookForm.authors} onChange={(e) => setBookForm(prev => ({ ...prev, authors: e.target.value }))} />
+                                            <Input placeholder="Editors" value={bookForm.editors} onChange={(e) => setBookForm(prev => ({ ...prev, editors: e.target.value }))} />
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <Input placeholder="ISBN" value={bookForm.isbn} onChange={(e) => setBookForm(prev => ({ ...prev, isbn: e.target.value }))} />
+                                                <Input placeholder="Publisher" value={bookForm.publisher} onChange={(e) => setBookForm(prev => ({ ...prev, publisher: e.target.value }))} />
+                                            </div>
+                                            <Textarea placeholder="Description" value={bookForm.description} onChange={(e) => setBookForm(prev => ({ ...prev, description: e.target.value }))} />
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <Select onValueChange={(v) => setBookForm(prev => ({ ...prev, discipline: v }))} value={bookForm.discipline}>
+                                                    <SelectTrigger><SelectValue placeholder="Discipline *" /></SelectTrigger>
+                                                    <SelectContent>
+                                                        {disciplines.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+                                                    </SelectContent>
+                                                </Select>
+                                                <Input placeholder="Keywords" value={bookForm.keywords} onChange={(e) => setBookForm(prev => ({ ...prev, keywords: e.target.value }))} />
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <Input placeholder="Edition" value={bookForm.edition} onChange={(e) => setBookForm(prev => ({ ...prev, edition: e.target.value }))} />
+                                                <Input placeholder="Publication Year" value={bookForm.publicationYear} onChange={(e) => setBookForm(prev => ({ ...prev, publicationYear: e.target.value }))} />
+                                            </div>
+                                            <Input placeholder="Purchase Link" value={bookForm.purchaseLink} onChange={(e) => setBookForm(prev => ({ ...prev, purchaseLink: e.target.value }))} />
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold uppercase text-oxford/60">PDF File</label>
+                                                <input ref={bookFileRef} type="file" accept=".pdf" onChange={handleBookFileUpload} className="hidden" />
+                                                <Button type="button" variant="outline" onClick={() => bookFileRef.current?.click()} className="w-full">
+                                                    {isUploadingBook ? "Uploading..." : bookForm.pdfUrl ? "PDF Uploaded ✓" : "Choose PDF"}
+                                                </Button>
+                                            </div>
+                                            <Input placeholder="PDF URL (if already hosted)" value={bookForm.pdfUrl} onChange={(e) => setBookForm(prev => ({ ...prev, pdfUrl: e.target.value }))} />
+                                        </div>
+                                        <DialogFooter>
+                                            <Button variant="outline" onClick={() => setIsUploadBookOpen(false)}>Cancel</Button>
+                                            <Button className="bg-gold hover:bg-oxford" onClick={handlePublishBook}>Publish Book</Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            </div>
+                        </div>
+
+                        {/* Published Content */}
+                        <div className="grid md:grid-cols-2 gap-6">
+                            {/* Published Journals */}
+                            <div className="bg-white border border-black/5">
+                                <div className="p-4 border-b border-black/5">
+                                    <h3 className="font-bold text-oxford">Published Journals ({publishedJournals.length})</h3>
+                                </div>
+                                <div className="divide-y divide-black/5 max-h-64 overflow-y-auto">
+                                    {publishedJournals.map(journal => (
+                                        <div key={journal.id} className="p-4 hover:bg-oxford/5">
+                                            <p className="font-medium text-oxford line-clamp-1">{journal.title}</p>
+                                            <p className="text-xs text-oxford/50">{journal.authors}</p>
+                                            <div className="flex gap-2 mt-2">
+                                                {journal.pdfUrl && (
+                                                    <a href={journal.pdfUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-gold hover:underline flex items-center gap-1">
+                                                        <ExternalLink size={12} /> View PDF
+                                                    </a>
+                                                )}
+                                                <button onClick={() => deletePublishedJournal(journal.id)} className="text-xs text-red-500 hover:underline flex items-center gap-1">
+                                                    <Trash2 size={12} /> Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {publishedJournals.length === 0 && (
+                                        <p className="p-4 text-center text-oxford/50 text-sm">No journals published yet</p>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Published Books */}
+                            <div className="bg-white border border-black/5">
+                                <div className="p-4 border-b border-black/5">
+                                    <h3 className="font-bold text-oxford">Published Books ({publishedBooks.length})</h3>
+                                </div>
+                                <div className="divide-y divide-black/5 max-h-64 overflow-y-auto">
+                                    {publishedBooks.map(book => (
+                                        <div key={book.id} className="p-4 hover:bg-oxford/5">
+                                            <p className="font-medium text-oxford line-clamp-1">{book.title}</p>
+                                            <p className="text-xs text-oxford/50">{book.authors} {book.isbn && `(ISBN: ${book.isbn})`}</p>
+                                            <div className="flex gap-2 mt-2">
+                                                {book.pdfUrl && (
+                                                    <a href={book.pdfUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-gold hover:underline flex items-center gap-1">
+                                                        <ExternalLink size={12} /> View PDF
+                                                    </a>
+                                                )}
+                                                {book.purchaseLink && (
+                                                    <a href={book.purchaseLink} target="_blank" rel="noopener noreferrer" className="text-xs text-teal-500 hover:underline flex items-center gap-1">
+                                                        <ExternalLink size={12} /> Purchase
+                                                    </a>
+                                                )}
+                                                <button onClick={() => deletePublishedBook(book.id)} className="text-xs text-red-500 hover:underline flex items-center gap-1">
+                                                    <Trash2 size={12} /> Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {publishedBooks.length === 0 && (
+                                        <p className="p-4 text-center text-oxford/50 text-sm">No books published yet</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Upload Requests from Users */}
+                        <div className="bg-white border border-black/5">
+                            <div className="p-4 border-b border-black/5">
+                                <h3 className="font-bold text-oxford">User Upload Requests ({pendingRequests.length} pending)</h3>
+                            </div>
+                            <div className="divide-y divide-black/5">
+                                {uploadRequests.map(request => (
+                                    <div key={request.id} className="p-4 hover:bg-oxford/5">
+                                        <div className="flex items-start justify-between">
+                                            <div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className={`px-2 py-0.5 text-xs font-bold uppercase ${
+                                                        request.requestType === 'JOURNAL' ? 'bg-gold/10 text-gold' : 'bg-teal-500/10 text-teal-600'
+                                                    }`}>
+                                                        {request.requestType}
+                                                    </span>
+                                                    <span className={`px-2 py-0.5 text-xs font-bold uppercase ${
+                                                        request.status === 'PENDING' ? 'bg-orange-100 text-orange-600' :
+                                                        request.status === 'APPROVED' ? 'bg-green-100 text-green-600' :
+                                                        'bg-red-100 text-red-600'
+                                                    }`}>
+                                                        {request.status}
+                                                    </span>
+                                                </div>
+                                                <p className="font-medium text-oxford mt-2">{request.title}</p>
+                                                {request.authors && <p className="text-xs text-oxford/50">Authors: {request.authors}</p>}
+                                                {request.isbn && <p className="text-xs text-oxford/50">ISBN: {request.isbn}</p>}
+                                                {request.description && <p className="text-xs text-oxford/50 mt-1">{request.description}</p>}
+                                                {request.link && <a href={request.link} target="_blank" rel="noopener noreferrer" className="text-xs text-gold hover:underline">View Source</a>}
+                                            </div>
+                                            {request.status === 'PENDING' && (
+                                                <div className="flex gap-2">
+                                                    <Button size="sm" className="bg-green-500 hover:bg-green-600" onClick={() => handleRequestAction(request, 'APPROVED')}>
+                                                        <Check size={14} />
+                                                    </Button>
+                                                    <Button size="sm" variant="destructive" onClick={() => handleRequestAction(request, 'REJECTED')}>
+                                                        <X size={14} />
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                                {uploadRequests.length === 0 && (
+                                    <p className="p-8 text-center text-oxford/50">No upload requests</p>
+                                )}
+                            </div>
                         </div>
                     </div>
                 )}

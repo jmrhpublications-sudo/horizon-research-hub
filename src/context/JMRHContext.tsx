@@ -6,6 +6,8 @@ export type UserRole = 'ADMIN' | 'PROFESSOR' | 'USER';
 export type UserStatus = 'ACTIVE' | 'BANNED';
 export type PaperStatus = 'SUBMITTED' | 'UNDER_REVIEW' | 'REVISION_REQUIRED' | 'ACCEPTED' | 'REJECTED' | 'PUBLISHED' | 'ARCHIVED';
 export type PaperType = 'JOURNAL' | 'BOOK';
+export type RequestType = 'JOURNAL' | 'BOOK';
+export type RequestStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 export interface User {
     id: string;
@@ -50,6 +52,61 @@ export interface Review {
     updatedAt: string;
 }
 
+export interface PublishedJournal {
+    id: string;
+    title: string;
+    authors: string;
+    abstract?: string;
+    discipline: string;
+    keywords?: string;
+    volume?: string;
+    issue?: string;
+    pages?: string;
+    doi?: string;
+    publicationDate: string;
+    coverImage?: string;
+    pdfUrl?: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface PublishedBook {
+    id: string;
+    title: string;
+    authors: string;
+    editors?: string;
+    isbn?: string;
+    publisher?: string;
+    description?: string;
+    discipline: string;
+    keywords?: string;
+    edition?: string;
+    publicationYear?: string;
+    coverImage?: string;
+    pdfUrl?: string;
+    purchaseLink?: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface UploadRequest {
+    id: string;
+    userId: string;
+    requestType: RequestType;
+    title: string;
+    authors?: string;
+    description?: string;
+    isbn?: string;
+    publisher?: string;
+    link?: string;
+    status: RequestStatus;
+    adminNotes?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
 // Helper to cast supabase client for untyped tables
 const db = supabase as any;
 
@@ -57,6 +114,9 @@ interface JMRHContextType {
     users: User[];
     papers: Paper[];
     reviews: Review[];
+    publishedJournals: PublishedJournal[];
+    publishedBooks: PublishedBook[];
+    uploadRequests: UploadRequest[];
     currentUser: User | null;
     isLoading: boolean;
     setCurrentUser: (user: User | null) => void;
@@ -75,6 +135,15 @@ interface JMRHContextType {
     deleteReview: (reviewId: string) => Promise<void>;
     logout: () => Promise<void>;
     refreshData: () => Promise<void>;
+    createPublishedJournal: (data: Partial<PublishedJournal>) => Promise<void>;
+    updatePublishedJournal: (id: string, data: Partial<PublishedJournal>) => Promise<void>;
+    deletePublishedJournal: (id: string) => Promise<void>;
+    createPublishedBook: (data: Partial<PublishedBook>) => Promise<void>;
+    updatePublishedBook: (id: string, data: Partial<PublishedBook>) => Promise<void>;
+    deletePublishedBook: (id: string) => Promise<void>;
+    createUploadRequest: (data: Partial<UploadRequest>) => Promise<void>;
+    updateUploadRequest: (id: string, data: Partial<UploadRequest>) => Promise<void>;
+    deleteUploadRequest: (id: string) => Promise<void>;
 }
 
 const JMRHContext = createContext<JMRHContextType | undefined>(undefined);
@@ -122,10 +191,68 @@ const mapReview = (r: any): Review => ({
     updatedAt: r.updated_at || '',
 });
 
+const mapPublishedJournal = (j: any): PublishedJournal => ({
+    id: j.id,
+    title: j.title || '',
+    authors: j.authors || '',
+    abstract: j.abstract,
+    discipline: j.discipline || '',
+    keywords: j.keywords,
+    volume: j.volume,
+    issue: j.issue,
+    pages: j.pages,
+    doi: j.doi,
+    publicationDate: j.publication_date || '',
+    coverImage: j.cover_image,
+    pdfUrl: j.pdf_url,
+    status: j.status || 'PUBLISHED',
+    createdAt: j.created_at || '',
+    updatedAt: j.updated_at || '',
+});
+
+const mapPublishedBook = (b: any): PublishedBook => ({
+    id: b.id,
+    title: b.title || '',
+    authors: b.authors || '',
+    editors: b.editors,
+    isbn: b.isbn,
+    publisher: b.publisher,
+    description: b.description,
+    discipline: b.discipline || '',
+    keywords: b.keywords,
+    edition: b.edition,
+    publicationYear: b.publication_year,
+    coverImage: b.cover_image,
+    pdfUrl: b.pdf_url,
+    purchaseLink: b.purchase_link,
+    status: b.status || 'PUBLISHED',
+    createdAt: b.created_at || '',
+    updatedAt: b.updated_at || '',
+});
+
+const mapUploadRequest = (r: any): UploadRequest => ({
+    id: r.id,
+    userId: r.user_id,
+    requestType: r.request_type as RequestType,
+    title: r.title || '',
+    authors: r.authors,
+    description: r.description,
+    isbn: r.isbn,
+    publisher: r.publisher,
+    link: r.link,
+    status: r.status as RequestStatus,
+    adminNotes: r.admin_notes,
+    createdAt: r.created_at || '',
+    updatedAt: r.updated_at || '',
+});
+
 export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     const [users, setUsers] = useState<User[]>([]);
     const [papers, setPapers] = useState<Paper[]>([]);
     const [reviews, setReviews] = useState<Review[]>([]);
+    const [publishedJournals, setPublishedJournals] = useState<PublishedJournal[]>([]);
+    const [publishedBooks, setPublishedBooks] = useState<PublishedBook[]>([]);
+    const [uploadRequests, setUploadRequests] = useState<UploadRequest[]>([]);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const { toast } = useToast();
@@ -169,15 +296,21 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     const refreshData = async () => {
-        const [profilesRes, papersRes, reviewsRes] = await Promise.all([
+        const [profilesRes, papersRes, reviewsRes, journalsRes, booksRes, requestsRes] = await Promise.all([
             db.from('profiles').select('*'),
             db.from('papers').select('*'),
             db.from('reviews').select('*'),
+            db.from('published_journals').select('*').eq('status', 'PUBLISHED'),
+            db.from('published_books').select('*').eq('status', 'PUBLISHED'),
+            db.from('upload_requests').select('*'),
         ]);
 
         if (profilesRes.data) setUsers(profilesRes.data.map(mapProfile));
         if (papersRes.data) setPapers(papersRes.data.map(mapPaper));
         if (reviewsRes.data) setReviews(reviewsRes.data.map(mapReview));
+        if (journalsRes.data) setPublishedJournals(journalsRes.data.map(mapPublishedJournal));
+        if (booksRes.data) setPublishedBooks(booksRes.data.map(mapPublishedBook));
+        if (requestsRes.data) setUploadRequests(requestsRes.data.map(mapUploadRequest));
     };
 
     const signIn = async (email: string, pass: string) => {
@@ -352,11 +485,143 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         await refreshData();
     };
 
+    const createPublishedJournal = async (data: Partial<PublishedJournal>) => {
+        const { error } = await db.from('published_journals').insert({
+            title: data.title,
+            authors: data.authors,
+            abstract: data.abstract,
+            discipline: data.discipline,
+            keywords: data.keywords,
+            volume: data.volume,
+            issue: data.issue,
+            pages: data.pages,
+            doi: data.doi,
+            publication_date: data.publicationDate,
+            cover_image: data.coverImage,
+            pdf_url: data.pdfUrl,
+            status: 'PUBLISHED'
+        });
+        if (error) throw error;
+        toast({ title: "Journal Published", description: "Journal article has been published successfully." });
+        await refreshData();
+    };
+
+    const updatePublishedJournal = async (id: string, data: Partial<PublishedJournal>) => {
+        const { error } = await db.from('published_journals').update({
+            title: data.title,
+            authors: data.authors,
+            abstract: data.abstract,
+            discipline: data.discipline,
+            keywords: data.keywords,
+            volume: data.volume,
+            issue: data.issue,
+            pages: data.pages,
+            doi: data.doi,
+            publication_date: data.publicationDate,
+            cover_image: data.coverImage,
+            pdf_url: data.pdfUrl,
+        }).eq('id', id);
+        if (error) throw error;
+        await refreshData();
+    };
+
+    const deletePublishedJournal = async (id: string) => {
+        const { error } = await db.from('published_journals').delete().eq('id', id);
+        if (error) throw error;
+        toast({ title: "Deleted", description: "Journal article has been removed." });
+        await refreshData();
+    };
+
+    const createPublishedBook = async (data: Partial<PublishedBook>) => {
+        const { error } = await db.from('published_books').insert({
+            title: data.title,
+            authors: data.authors,
+            editors: data.editors,
+            isbn: data.isbn,
+            publisher: data.publisher,
+            description: data.description,
+            discipline: data.discipline,
+            keywords: data.keywords,
+            edition: data.edition,
+            publication_year: data.publicationYear,
+            cover_image: data.coverImage,
+            pdf_url: data.pdfUrl,
+            purchase_link: data.purchaseLink,
+            status: 'PUBLISHED'
+        });
+        if (error) throw error;
+        toast({ title: "Book Published", description: "Book has been published successfully." });
+        await refreshData();
+    };
+
+    const updatePublishedBook = async (id: string, data: Partial<PublishedBook>) => {
+        const { error } = await db.from('published_books').update({
+            title: data.title,
+            authors: data.authors,
+            editors: data.editors,
+            isbn: data.isbn,
+            publisher: data.publisher,
+            description: data.description,
+            discipline: data.discipline,
+            keywords: data.keywords,
+            edition: data.edition,
+            publication_year: data.publicationYear,
+            cover_image: data.coverImage,
+            pdf_url: data.pdfUrl,
+            purchase_link: data.purchaseLink,
+        }).eq('id', id);
+        if (error) throw error;
+        await refreshData();
+    };
+
+    const deletePublishedBook = async (id: string) => {
+        const { error } = await db.from('published_books').delete().eq('id', id);
+        if (error) throw error;
+        toast({ title: "Deleted", description: "Book has been removed." });
+        await refreshData();
+    };
+
+    const createUploadRequest = async (data: Partial<UploadRequest>) => {
+        if (!currentUser) return;
+        const { error } = await db.from('upload_requests').insert({
+            user_id: currentUser.id,
+            request_type: data.requestType,
+            title: data.title,
+            authors: data.authors,
+            description: data.description,
+            isbn: data.isbn,
+            publisher: data.publisher,
+            link: data.link,
+            status: 'PENDING'
+        });
+        if (error) throw error;
+        toast({ title: "Request Submitted", description: "Your request has been submitted for review." });
+        await refreshData();
+    };
+
+    const updateUploadRequest = async (id: string, data: Partial<UploadRequest>) => {
+        const { error } = await db.from('upload_requests').update({
+            status: data.status,
+            admin_notes: data.adminNotes,
+        }).eq('id', id);
+        if (error) throw error;
+        await refreshData();
+    };
+
+    const deleteUploadRequest = async (id: string) => {
+        const { error } = await db.from('upload_requests').delete().eq('id', id);
+        if (error) throw error;
+        await refreshData();
+    };
+
     return (
         <JMRHContext.Provider value={{
-            users, papers, reviews, currentUser, isLoading, setCurrentUser, signIn, signUp, updateUser,
+            users, papers, reviews, publishedJournals, publishedBooks, uploadRequests, currentUser, isLoading, setCurrentUser, signIn, signUp, updateUser,
             banUser, unbanUser, createUser, assignPaper,
-            submitPaper, updatePaper, updatePaperStatus, publishPaper, addReview, deleteReview, logout, refreshData
+            submitPaper, updatePaper, updatePaperStatus, publishPaper, addReview, deleteReview, logout, refreshData,
+            createPublishedJournal, updatePublishedJournal, deletePublishedJournal,
+            createPublishedBook, updatePublishedBook, deletePublishedBook,
+            createUploadRequest, updateUploadRequest, deleteUploadRequest
         }}>
             {children}
         </JMRHContext.Provider>
