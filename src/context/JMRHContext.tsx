@@ -8,6 +8,7 @@ export type PaperStatus = 'SUBMITTED' | 'UNDER_REVIEW' | 'REVISION_REQUIRED' | '
 export type PaperType = 'JOURNAL' | 'BOOK';
 export type RequestType = 'JOURNAL' | 'BOOK';
 export type RequestStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+export type SubmissionSource = 'ADMIN' | 'PROFESSOR';
 
 export interface User {
     id: string;
@@ -107,6 +108,36 @@ export interface UploadRequest {
     updatedAt: string;
 }
 
+export interface ProfessorSubmission {
+    id: string;
+    professorId: string;
+    professorName: string;
+    submissionType: 'JOURNAL' | 'BOOK';
+    title: string;
+    authors: string;
+    abstract?: string;
+    discipline: string;
+    keywords?: string;
+    volume?: string;
+    issue?: string;
+    pages?: string;
+    doi?: string;
+    editors?: string;
+    isbn?: string;
+    publisher?: string;
+    description?: string;
+    edition?: string;
+    publicationYear?: string;
+    publicationDate?: string;
+    coverImage?: string;
+    pdfUrl?: string;
+    purchaseLink?: string;
+    status: RequestStatus;
+    adminNotes?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
 // Helper to cast supabase client for untyped tables
 const db = supabase as any;
 
@@ -117,6 +148,7 @@ interface JMRHContextType {
     publishedJournals: PublishedJournal[];
     publishedBooks: PublishedBook[];
     uploadRequests: UploadRequest[];
+    professorSubmissions: ProfessorSubmission[];
     currentUser: User | null;
     isLoading: boolean;
     setCurrentUser: (user: User | null) => void;
@@ -144,6 +176,10 @@ interface JMRHContextType {
     createUploadRequest: (data: Partial<UploadRequest>) => Promise<void>;
     updateUploadRequest: (id: string, data: Partial<UploadRequest>) => Promise<void>;
     deleteUploadRequest: (id: string) => Promise<void>;
+    createProfessorSubmission: (data: Partial<ProfessorSubmission>) => Promise<void>;
+    updateProfessorSubmission: (id: string, data: Partial<ProfessorSubmission>) => Promise<void>;
+    deleteProfessorSubmission: (id: string) => Promise<void>;
+    approveProfessorSubmission: (submission: ProfessorSubmission) => Promise<void>;
 }
 
 const JMRHContext = createContext<JMRHContextType | undefined>(undefined);
@@ -246,6 +282,36 @@ const mapUploadRequest = (r: any): UploadRequest => ({
     updatedAt: r.updated_at || '',
 });
 
+const mapProfessorSubmission = (s: any): ProfessorSubmission => ({
+    id: s.id,
+    professorId: s.professor_id,
+    professorName: s.professor_name || '',
+    submissionType: s.submission_type as 'JOURNAL' | 'BOOK',
+    title: s.title || '',
+    authors: s.authors || '',
+    abstract: s.abstract,
+    discipline: s.discipline || '',
+    keywords: s.keywords,
+    volume: s.volume,
+    issue: s.issue,
+    pages: s.pages,
+    doi: s.doi,
+    editors: s.editors,
+    isbn: s.isbn,
+    publisher: s.publisher,
+    description: s.description,
+    edition: s.edition,
+    publicationYear: s.publication_year,
+    publicationDate: s.publication_date,
+    coverImage: s.cover_image,
+    pdfUrl: s.pdf_url,
+    purchaseLink: s.purchase_link,
+    status: s.status as RequestStatus,
+    adminNotes: s.admin_notes,
+    createdAt: s.created_at || '',
+    updatedAt: s.updated_at || '',
+});
+
 export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     const [users, setUsers] = useState<User[]>([]);
     const [papers, setPapers] = useState<Paper[]>([]);
@@ -253,6 +319,7 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     const [publishedJournals, setPublishedJournals] = useState<PublishedJournal[]>([]);
     const [publishedBooks, setPublishedBooks] = useState<PublishedBook[]>([]);
     const [uploadRequests, setUploadRequests] = useState<UploadRequest[]>([]);
+    const [professorSubmissions, setProfessorSubmissions] = useState<ProfessorSubmission[]>([]);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const { toast } = useToast();
@@ -296,13 +363,14 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     const refreshData = async () => {
-        const [profilesRes, papersRes, reviewsRes, journalsRes, booksRes, requestsRes] = await Promise.all([
+        const [profilesRes, papersRes, reviewsRes, journalsRes, booksRes, requestsRes, professorSubsRes] = await Promise.all([
             db.from('profiles').select('*'),
             db.from('papers').select('*'),
             db.from('reviews').select('*'),
             db.from('published_journals').select('*').eq('status', 'PUBLISHED'),
             db.from('published_books').select('*').eq('status', 'PUBLISHED'),
             db.from('upload_requests').select('*'),
+            db.from('professor_submissions').select('*'),
         ]);
 
         if (profilesRes.data) setUsers(profilesRes.data.map(mapProfile));
@@ -311,6 +379,7 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         if (journalsRes.data) setPublishedJournals(journalsRes.data.map(mapPublishedJournal));
         if (booksRes.data) setPublishedBooks(booksRes.data.map(mapPublishedBook));
         if (requestsRes.data) setUploadRequests(requestsRes.data.map(mapUploadRequest));
+        if (professorSubsRes.data) setProfessorSubmissions(professorSubsRes.data.map(mapProfessorSubmission));
     };
 
     const signIn = async (email: string, pass: string) => {
@@ -614,14 +683,119 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         await refreshData();
     };
 
+    const createProfessorSubmission = async (data: Partial<ProfessorSubmission>) => {
+        if (!currentUser) return;
+        const { error } = await db.from('professor_submissions').insert({
+            professor_id: currentUser.id,
+            professor_name: currentUser.name,
+            submission_type: data.submissionType,
+            title: data.title,
+            authors: data.authors,
+            abstract: data.abstract,
+            discipline: data.discipline,
+            keywords: data.keywords,
+            volume: data.volume,
+            issue: data.issue,
+            pages: data.pages,
+            doi: data.doi,
+            editors: data.editors,
+            isbn: data.isbn,
+            publisher: data.publisher,
+            description: data.description,
+            edition: data.edition,
+            publication_year: data.publicationYear,
+            publication_date: data.publicationDate,
+            cover_image: data.coverImage,
+            pdf_url: data.pdfUrl,
+            purchase_link: data.purchaseLink,
+            status: 'PENDING'
+        });
+        if (error) throw error;
+        toast({ title: "Submission Sent", description: "Your submission is pending admin approval." });
+        await refreshData();
+    };
+
+    const updateProfessorSubmission = async (id: string, data: Partial<ProfessorSubmission>) => {
+        const { error } = await db.from('professor_submissions').update({
+            title: data.title,
+            authors: data.authors,
+            abstract: data.abstract,
+            discipline: data.discipline,
+            keywords: data.keywords,
+            volume: data.volume,
+            issue: data.issue,
+            pages: data.pages,
+            doi: data.doi,
+            editors: data.editors,
+            isbn: data.isbn,
+            publisher: data.publisher,
+            description: data.description,
+            edition: data.edition,
+            publication_year: data.publicationYear,
+            publication_date: data.publicationDate,
+            cover_image: data.coverImage,
+            pdf_url: data.pdfUrl,
+            purchase_link: data.purchaseLink,
+        }).eq('id', id);
+        if (error) throw error;
+        await refreshData();
+    };
+
+    const deleteProfessorSubmission = async (id: string) => {
+        const { error } = await db.from('professor_submissions').delete().eq('id', id);
+        if (error) throw error;
+        await refreshData();
+    };
+
+    const approveProfessorSubmission = async (submission: ProfessorSubmission) => {
+        // Create the published entry
+        if (submission.submissionType === 'JOURNAL') {
+            await createPublishedJournal({
+                title: submission.title,
+                authors: submission.authors,
+                abstract: submission.abstract,
+                discipline: submission.discipline,
+                keywords: submission.keywords,
+                volume: submission.volume,
+                issue: submission.issue,
+                pages: submission.pages,
+                doi: submission.doi,
+                publicationDate: submission.publicationDate || new Date().toISOString().split('T')[0],
+                coverImage: submission.coverImage,
+                pdfUrl: submission.pdfUrl,
+            });
+        } else {
+            await createPublishedBook({
+                title: submission.title,
+                authors: submission.authors,
+                editors: submission.editors,
+                isbn: submission.isbn,
+                publisher: submission.publisher,
+                description: submission.description,
+                discipline: submission.discipline,
+                keywords: submission.keywords,
+                edition: submission.edition,
+                publicationYear: submission.publicationYear,
+                coverImage: submission.coverImage,
+                pdfUrl: submission.pdfUrl,
+                purchaseLink: submission.purchaseLink,
+            });
+        }
+
+        // Update submission status to approved
+        await updateProfessorSubmission(submission.id, { status: 'APPROVED' as RequestStatus });
+        toast({ title: "Submission Approved", description: "Content is now visible to all users." });
+    };
+
     return (
         <JMRHContext.Provider value={{
-            users, papers, reviews, publishedJournals, publishedBooks, uploadRequests, currentUser, isLoading, setCurrentUser, signIn, signUp, updateUser,
+            users, papers, reviews, publishedJournals, publishedBooks, uploadRequests, professorSubmissions, currentUser, isLoading, setCurrentUser, signIn, signUp, updateUser,
             banUser, unbanUser, createUser, assignPaper,
             submitPaper, updatePaper, updatePaperStatus, publishPaper, addReview, deleteReview, logout, refreshData,
             createPublishedJournal, updatePublishedJournal, deletePublishedJournal,
             createPublishedBook, updatePublishedBook, deletePublishedBook,
-            createUploadRequest, updateUploadRequest, deleteUploadRequest
+            createUploadRequest, updateUploadRequest, deleteUploadRequest,
+            createProfessorSubmission, updateProfessorSubmission, deleteProfessorSubmission, approveProfessorSubmission
         }}>
             {children}
         </JMRHContext.Provider>

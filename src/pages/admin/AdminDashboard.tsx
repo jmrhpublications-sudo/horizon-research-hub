@@ -1,7 +1,7 @@
 import { memo, useState, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import { useJMRH, UserRole, PublishedJournal, PublishedBook, UploadRequest, Paper } from "@/context/JMRHContext";
+import { useJMRH, UserRole, PublishedJournal, PublishedBook, UploadRequest, Paper, ProfessorSubmission } from "@/context/JMRHContext";
 import { supabase } from "@/integrations/supabase/client";
 import {
     Users,
@@ -56,10 +56,11 @@ import { useToast } from "@/hooks/use-toast";
 const AdminDashboard = memo(() => {
     const { 
         users, papers, professors, assignPaper, updatePaperStatus, publishPaper, createUser,
-        publishedJournals, publishedBooks, uploadRequests,
+        publishedJournals, publishedBooks, uploadRequests, professorSubmissions,
         createPublishedJournal, updatePublishedJournal, deletePublishedJournal,
         createPublishedBook, updatePublishedBook, deletePublishedBook,
-        updateUploadRequest, deleteUploadRequest, banUser, unbanUser, refreshData
+        updateUploadRequest, deleteUploadRequest, banUser, unbanUser, refreshData,
+        approveProfessorSubmission, updateProfessorSubmission
     } = useJMRH();
     const [activeTab, setActiveTab] = useState<"papers" | "users" | "professors" | "upload" | "overview">("overview");
     const [isCreateUserOpen, setIsCreateUserOpen] = useState(false);
@@ -372,6 +373,20 @@ const AdminDashboard = memo(() => {
         await updateUploadRequest(request.id, { status, adminNotes: status === 'APPROVED' ? 'Approved by admin' : 'Rejected by admin' });
         toast({ title: status === 'APPROVED' ? "Request Approved" : "Request Rejected", description: `Request for "${request.title}" has been ${status.toLowerCase()}.` });
     };
+
+    const handleProfessorSubmissionAction = async (submission: ProfessorSubmission, action: 'approve' | 'reject') => {
+        if (action === 'approve') {
+            await approveProfessorSubmission(submission);
+            toast({ title: "Submission Approved", description: `"${submission.title}" is now published.` });
+        } else {
+            await updateProfessorSubmission(submission.id, { status: 'REJECTED' });
+            toast({ title: "Submission Rejected", description: `"${submission.title}" has been rejected.` });
+        }
+    };
+
+    // Professor submissions
+    const pendingProfessorSubmissions = professorSubmissions.filter(s => s.status === 'PENDING');
+    const approvedProfessorSubmissions = professorSubmissions.filter(s => s.status === 'APPROVED');
 
     return (
         <DashboardLayout role="ADMIN">
@@ -1023,6 +1038,61 @@ const AdminDashboard = memo(() => {
                                         <p className="p-4 text-center text-oxford/50 text-sm">No books published yet</p>
                                     )}
                                 </div>
+                            </div>
+                        </div>
+
+                        {/* Professor Submissions */}
+                        <div className="bg-white border border-black/5">
+                            <div className="p-4 border-b border-black/5 flex justify-between items-center">
+                                <h3 className="font-bold text-oxford">Professor Submissions ({pendingProfessorSubmissions.length} pending)</h3>
+                            </div>
+                            <div className="divide-y divide-black/5">
+                                {professorSubmissions.map(submission => (
+                                    <div key={submission.id} className="p-4 hover:bg-oxford/5">
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className={`px-2 py-0.5 text-xs font-bold uppercase ${
+                                                        submission.submissionType === 'JOURNAL' ? 'bg-gold/10 text-gold' : 'bg-teal-500/10 text-teal-600'
+                                                    }`}>
+                                                        {submission.submissionType}
+                                                    </span>
+                                                    <span className={`px-2 py-0.5 text-xs font-bold uppercase ${
+                                                        submission.status === 'PENDING' ? 'bg-orange-100 text-orange-600' :
+                                                        submission.status === 'APPROVED' ? 'bg-green-100 text-green-600' :
+                                                        'bg-red-100 text-red-600'
+                                                    }`}>
+                                                        {submission.status}
+                                                    </span>
+                                                </div>
+                                                <p className="font-medium text-oxford">{submission.title}</p>
+                                                <p className="text-xs text-oxford/50">By: {submission.professorName}</p>
+                                                <p className="text-xs text-oxford/50">Authors: {submission.authors}</p>
+                                                {submission.discipline && <p className="text-xs text-oxford/50">Discipline: {submission.discipline}</p>}
+                                                {submission.keywords && <p className="text-xs text-oxford/50">Keywords: {submission.keywords}</p>}
+                                                {submission.abstract && <p className="text-xs text-oxford/50 mt-1 line-clamp-2">{submission.abstract}</p>}
+                                                {submission.pdfUrl && (
+                                                    <a href={submission.pdfUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-gold hover:underline flex items-center gap-1 mt-2">
+                                                        <ExternalLink size={12} /> View PDF
+                                                    </a>
+                                                )}
+                                            </div>
+                                            {submission.status === 'PENDING' && (
+                                                <div className="flex gap-2 ml-4">
+                                                    <Button size="sm" className="bg-green-500 hover:bg-green-600" onClick={() => handleProfessorSubmissionAction(submission, 'approve')}>
+                                                        <Check size={14} className="mr-1" /> Approve & Publish
+                                                    </Button>
+                                                    <Button size="sm" variant="destructive" onClick={() => handleProfessorSubmissionAction(submission, 'reject')}>
+                                                        <X size={14} />
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                                {professorSubmissions.length === 0 && (
+                                    <p className="p-8 text-center text-oxford/50">No professor submissions</p>
+                                )}
                             </div>
                         </div>
 
