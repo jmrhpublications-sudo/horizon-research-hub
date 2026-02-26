@@ -55,7 +55,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const AdminDashboard = memo(() => {
     const { 
-        users, papers, professors, assignPaper, updatePaperStatus, publishPaper, createUser,
+        users, papers, assignPaper, updatePaperStatus, publishPaper, createUser,
         publishedJournals, publishedBooks, uploadRequests, professorSubmissions,
         createPublishedJournal, updatePublishedJournal, deletePublishedJournal,
         createPublishedBook, updatePublishedBook, deletePublishedBook,

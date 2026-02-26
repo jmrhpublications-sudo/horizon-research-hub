@@ -106,7 +106,7 @@ const AuthPage = memo(() => {
     if (verificationSent) {
         return (
             <div className="min-h-screen bg-white flex flex-col font-sans">
-                <SEOHead title="Verification Email Sent | JMRH Publications" canonical="/auth" />
+                <SEOHead title="Verification Email Sent | JMRH Publications" description="Please verify your email to complete registration." canonical="/auth" />
                 <Header />
                 <main className="flex-1 pt-24 pb-16 flex items-center justify-center p-6">
                     <div className="w-full max-w-md text-center space-y-6">

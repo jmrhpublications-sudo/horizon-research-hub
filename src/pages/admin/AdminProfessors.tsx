@@ -22,7 +22,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 const AdminProfessors = memo(() => {
-    const { users, createProfessor, banUser, unbanUser, updateUser } = useJMRH();
+    const { users, createUser, banUser, unbanUser, updateUser } = useJMRH();
     const { toast } = useToast();
 
     // Create State
@@ -55,14 +55,11 @@ const AdminProfessors = memo(() => {
 
     const handleCreate = (e: FormEvent) => {
         e.preventDefault();
-        createProfessor(name, email, {
-            phoneNumber: phone,
-            address: address,
+        createUser(name, email, 'defaultPass123!', 'PROFESSOR', {
+            phone: phone,
             department: dept,
-            university: university,
+            affiliation: university,
             degree: degree,
-            specialization: specialization,
-            bio: bio
         });
 
         // Reset Form
@@ -77,13 +74,13 @@ const AdminProfessors = memo(() => {
         setEditingProf(prof.id);
         setEditName(prof.name);
         setEditEmail(prof.email);
-        setEditPhone(prof.phoneNumber || "");
-        setEditAddress(prof.address || "");
+        setEditPhone(prof.phone || "");
+        setEditAddress("");
         setEditDept(prof.department || "");
-        setEditUniversity(prof.university || "");
+        setEditUniversity(prof.affiliation || "");
         setEditDegree(prof.degree || "");
-        setEditSpecialization(prof.specialization || "");
-        setEditBio(prof.bio || "");
+        setEditSpecialization("");
+        setEditBio("");
     };
 
     const handleUpdate = (e: FormEvent) => {
@@ -93,13 +90,10 @@ const AdminProfessors = memo(() => {
         updateUser(editingProf, {
             name: editName,
             email: editEmail,
-            phoneNumber: editPhone,
-            address: editAddress,
+            phone: editPhone,
             department: editDept,
-            university: editUniversity,
+            affiliation: editUniversity,
             degree: editDegree,
-            specialization: editSpecialization,
-            bio: editBio
         });
 
         setEditingProf(null);
@@ -239,8 +233,8 @@ const AdminProfessors = memo(() => {
                                 </div>
                                 <div className="space-y-1">
                                     <h3 className="font-serif text-2xl font-bold text-white group-hover:text-gold transition-colors">{prof.name}</h3>
-                                    <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">{prof.degree} • {prof.university}</p>
-                                    <p className="text-[10px] italic text-teal-400/80">{prof.department} | {prof.specialization}</p>
+                                    <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">{prof.degree} • {prof.affiliation}</p>
+                                    <p className="text-[10px] italic text-teal-400/80">{prof.department}</p>
                                 </div>
                             </div>
 

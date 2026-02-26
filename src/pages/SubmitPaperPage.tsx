@@ -22,7 +22,7 @@ import {
     Loader2,
     AlertCircle,
     Check,
-    File,
+    FileIcon,
     Image,
     Trash2,
     Download,
@@ -37,7 +37,7 @@ import {
     ChevronRight,
     ChevronDown,
     Expand,
-    Collapse
+    ChevronUp
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -602,7 +602,7 @@ const SubmitPaperPage = memo(() => {
         if (file.type.startsWith('image/')) return <Image className="w-8 h-8 text-purple-500" />;
         if (file.name.endsWith('.pdf')) return <FileText className="w-8 h-8 text-red-500" />;
         if (file.name.endsWith('.doc') || file.name.endsWith('.docx')) return <FileText className="w-8 h-8 text-blue-500" />;
-        return <File className="w-8 h-8 text-gray-500" />;
+        return <FileIcon className="w-8 h-8 text-gray-500" />;
     };
 
     const formatFileSize = (bytes: number) => {
@@ -915,7 +915,7 @@ const SubmitPaperPage = memo(() => {
                                             onClick={() => setShowAbstractBuilder(!showAbstractBuilder)}
                                             className="text-xs text-gold hover:underline flex items-center gap-1"
                                         >
-                                            {showAbstractBuilder ? <Collapse size={14} /> : <Expand size={14} />}
+                                            {showAbstractBuilder ? <ChevronUp size={14} /> : <Expand size={14} />}
                                             {showAbstractBuilder ? 'Hide Builder' : 'Use Structured Builder'}
                                         </button>
                                     </div>

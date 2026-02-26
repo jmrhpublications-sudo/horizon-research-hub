@@ -20,7 +20,7 @@ import SEOHead from "@/components/seo/SEOHead";
 import { pageSEO } from "@/lib/seo-data";
 
 const ReviewsPage = memo(() => {
-    const { reviews, currentUser, addReview, updateReview, deleteReview } = useJMRH();
+    const { reviews, currentUser, addReview, deleteReview } = useJMRH();
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [editingReview, setEditingReview] = useState<Review | null>(null);
@@ -63,7 +63,9 @@ const ReviewsPage = memo(() => {
             toast({ title: "Too Long", description: "Review must be under 2000 characters.", variant: "destructive" });
             return;
         }
-        updateReview(editingReview.id, trimmed, rating);
+        // updateReview not available - delete and re-add
+        deleteReview(editingReview.id);
+        addReview(trimmed, rating);
         setEditingReview(null);
         setContent("");
         setRating(5);

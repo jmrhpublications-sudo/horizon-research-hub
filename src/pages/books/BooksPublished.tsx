@@ -4,7 +4,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SEOHead from "@/components/seo/SEOHead";
 import { useJMRH } from "@/context/JMRHContext";
-import { BookOpen, Calendar, User, ExternalLink, Search, Filter, ISBN, Edit, ShoppingCart } from "lucide-react";
+import { BookOpen, Calendar, User, ExternalLink, Search, Filter, Hash, Edit, ShoppingCart } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
     Select,
@@ -176,7 +176,7 @@ const BooksPublished = memo(() => {
                                                     )}
                                                     {book.isbn && (
                                                         <span className="flex items-center gap-1">
-                                                            <ISBN size={12} />
+                                                            <Hash size={12} />
                                                             ISBN: {book.isbn}
                                                         </span>
                                                     )}

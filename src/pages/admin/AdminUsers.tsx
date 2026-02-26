@@ -96,13 +96,13 @@ const AdminUsers = memo(() => {
                                                     <h4 className="text-teal-400 uppercase tracking-widest text-xs font-bold border-b border-white/10 pb-2">Personal Identity</h4>
                                                     <div className="space-y-4">
                                                         <div className="space-y-1"><label className="text-[10px] uppercase text-white/40 font-bold">Email</label><p className="font-serif text-lg">{user.email}</p></div>
-                                                        <div className="space-y-1"><label className="text-[10px] uppercase text-white/40 font-bold">Contact</label><p className="font-serif text-lg">{user.phoneNumber || "N/A"}</p></div>
+                                                        <div className="space-y-1"><label className="text-[10px] uppercase text-white/40 font-bold">Contact</label><p className="font-serif text-lg">{user.phone || "N/A"}</p></div>
                                                     </div>
                                                 </div>
                                                 <div className="space-y-6">
                                                     <h4 className="text-teal-400 uppercase tracking-widest text-xs font-bold border-b border-white/10 pb-2">Institutional Status</h4>
                                                     <div className="space-y-4">
-                                                        <div className="space-y-1"><label className="text-[10px] uppercase text-white/40 font-bold">University</label><p className="font-serif text-lg">{user.university || "N/A"}</p></div>
+                                                        <div className="space-y-1"><label className="text-[10px] uppercase text-white/40 font-bold">University</label><p className="font-serif text-lg">{user.affiliation || "N/A"}</p></div>
                                                         <div className="space-y-1"><label className="text-[10px] uppercase text-white/40 font-bold">Department</label><p className="font-serif text-lg">{user.department || "N/A"}</p></div>
                                                     </div>
                                                 </div>

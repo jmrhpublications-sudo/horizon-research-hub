@@ -35,8 +35,8 @@ const AdminPapers = memo(() => {
     );
 
     const handleAssign = (paperId: string, professorId: string) => {
-        assignPaper(paperId, professorId);
         const prof = professors.find(p => p.id === professorId);
+        assignPaper(paperId, professorId, prof?.name || 'Unknown');
         toast({ title: "Manuscript Assigned", description: `Review protocol initiated with ${prof?.name}` });
     };
 
