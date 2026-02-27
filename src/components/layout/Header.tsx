@@ -30,6 +30,7 @@ const navLinks = [
     ]
   },
   { label: "Call for Chapters", href: "/call-for-chapters" },
+  { label: "Reviews", href: "/reviews" },
   { label: "Policies", href: "/policies" },
   { label: "About", href: "/about-us" },
   { label: "Contact", href: "/contact" }

@@ -21,6 +21,7 @@ export type Database = {
           attachments: string[] | null
           author_id: string
           author_name: string
+          author_email: string
           created_at: string
           discipline: string
           id: string
@@ -36,6 +37,7 @@ export type Database = {
           attachments?: string[] | null
           author_id: string
           author_name?: string
+          author_email?: string
           created_at?: string
           discipline?: string
           id?: string
@@ -51,6 +53,7 @@ export type Database = {
           attachments?: string[] | null
           author_id?: string
           author_name?: string
+          author_email?: string
           created_at?: string
           discipline?: string
           id?: string

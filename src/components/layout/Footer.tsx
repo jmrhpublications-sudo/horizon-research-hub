@@ -113,6 +113,12 @@ const Footer = memo(() => {
                 </Link>
               </li>
               <li>
+                <Link to="/reviews" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Reviews
+                </Link>
+              </li>
+              <li>
                 <Link to="/policies" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
                   <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                   Policies

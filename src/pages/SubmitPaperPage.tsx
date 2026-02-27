@@ -1233,21 +1233,29 @@ const SubmitPaperPage = memo(() => {
                                                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                                                     className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
                                                 />
-                                                Submitting...
+                                                Processing...
                                             </span>
                                         ) : (
                                             <span className="flex items-center gap-2">
-                                                <Mail size={16} />
-                                                Submit via Email
+                                                <Send size={16} />
+                                                Submit Manuscript
                                             </span>
                                         )}
                                     </Button>
                                 </div>
 
-                                <p className="text-xs text-oxford/50 text-center">
-                                    Clicking submit will upload your files and open your email application with all details pre-filled.
-                                    Please attach your manuscript file and send the email.
-                                </p>
+                                <div className="bg-gold/10 border border-gold/30 p-4">
+                                    <p className="text-sm font-bold text-oxford mb-2">📧 Email Submission Instructions:</p>
+                                    <ol className="text-xs text-oxford/70 space-y-1 list-decimal list-inside">
+                                        <li>Click "Submit Manuscript" button below</li>
+                                        <li>Your email app will open with subject & body pre-filled</li>
+                                        <li><strong>Attach your manuscript file(s)</strong> to the email</li>
+                                        <li>Send the email to complete submission</li>
+                                    </ol>
+                                    <p className="text-xs text-oxford/50 mt-2">
+                                        Submission ID will be generated after sending email.
+                                    </p>
+                                </div>
                             </motion.div>
                         )}
                     </form>

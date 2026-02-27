@@ -131,9 +131,17 @@ const App = () => (
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/login" element={<AuthPage />} />
 
-              {/* User Secure Routes - Submit Paper publicly viewable, action blocked at page level */}
-              <Route path="/submit-paper" element={<SubmitPaperPage />} />
-              <Route path="/submit-paper/:id" element={<SubmitPaperPage />} />
+              {/* User Secure Routes - Submit Paper requires login */}
+              <Route path="/submit-paper" element={
+                <ProtectedRoute allowedRoles={['USER', 'PROFESSOR', 'ADMIN']}>
+                  <SubmitPaperPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/submit-paper/:id" element={
+                <ProtectedRoute allowedRoles={['USER', 'PROFESSOR', 'ADMIN']}>
+                  <SubmitPaperPage />
+                </ProtectedRoute>
+              } />
               <Route path="/request-upload" element={<RequestUploadPage />} />
               <Route path="/account" element={
                 <ProtectedRoute allowedRoles={['USER']}>

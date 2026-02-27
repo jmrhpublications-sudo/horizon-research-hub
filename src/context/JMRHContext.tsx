@@ -164,6 +164,7 @@ interface JMRHContextType {
     updatePaperStatus: (paperId: string, status: PaperStatus, comments?: string) => Promise<void>;
     publishPaper: (paperId: string) => Promise<void>;
     addReview: (content: string, rating: number) => Promise<void>;
+    updateReview: (reviewId: string, content: string, rating: number) => Promise<void>;
     deleteReview: (reviewId: string) => Promise<void>;
     logout: () => Promise<void>;
     refreshData: () => Promise<void>;
@@ -548,6 +549,16 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         await refreshData();
     };
 
+    const updateReview = async (reviewId: string, content: string, rating: number) => {
+        const { error } = await db.from('reviews').update({
+            content,
+            rating,
+            updated_at: new Date().toISOString(),
+        }).eq('id', reviewId);
+        if (error) throw error;
+        await refreshData();
+    };
+
     const deleteReview = async (reviewId: string) => {
         const { error } = await db.from('reviews').delete().eq('id', reviewId);
         if (error) throw error;
@@ -791,7 +802,7 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         <JMRHContext.Provider value={{
             users, papers, reviews, publishedJournals, publishedBooks, uploadRequests, professorSubmissions, currentUser, isLoading, setCurrentUser, signIn, signUp, updateUser,
             banUser, unbanUser, createUser, assignPaper,
-            submitPaper, updatePaper, updatePaperStatus, publishPaper, addReview, deleteReview, logout, refreshData,
+            submitPaper, updatePaper, updatePaperStatus, publishPaper, addReview, updateReview, deleteReview, logout, refreshData,
             createPublishedJournal, updatePublishedJournal, deletePublishedJournal,
             createPublishedBook, updatePublishedBook, deletePublishedBook,
             createUploadRequest, updateUploadRequest, deleteUploadRequest,

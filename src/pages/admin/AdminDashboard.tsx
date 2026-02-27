@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useJMRH, UserRole, PublishedJournal, PublishedBook, UploadRequest, Paper, ProfessorSubmission } from "@/context/JMRHContext";
 import { supabase } from "@/integrations/supabase/client";
+import AdminReviews from "@/components/sections/AdminReviews";
 import {
     Users,
     BookOpen,
@@ -31,7 +32,8 @@ import {
     AlertCircle,
     RefreshCw,
     Ban,
-    Unlock
+    Unlock,
+    Star
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,7 +64,7 @@ const AdminDashboard = memo(() => {
         updateUploadRequest, deleteUploadRequest, banUser, unbanUser, refreshData,
         approveProfessorSubmission, updateProfessorSubmission
     } = useJMRH();
-    const [activeTab, setActiveTab] = useState<"papers" | "users" | "professors" | "upload" | "overview">("overview");
+    const [activeTab, setActiveTab] = useState<"papers" | "users" | "professors" | "upload" | "overview" | "reviews">("overview");
     const [isCreateUserOpen, setIsCreateUserOpen] = useState(false);
     const [isAssignOpen, setIsAssignOpen] = useState(false);
     const [isUploadJournalOpen, setIsUploadJournalOpen] = useState(false);
@@ -448,7 +450,17 @@ const AdminDashboard = memo(() => {
                     >
                         Upload & Requests
                     </button>
+                    <button
+                        onClick={() => setActiveTab("reviews")}
+                        className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === "reviews" ? "border-gold text-oxford" : "border-transparent text-oxford/50"}`}
+                    >
+                        Reviews
+                    </button>
                 </div>
+                {/* Reviews Tab */}
+                {activeTab === "reviews" && (
+                    <AdminReviews />
+                )}
 
                 {/* Overview Tab */}
                 {activeTab === "overview" && (

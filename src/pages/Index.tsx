@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SEOHead from "@/components/seo/SEOHead";
+import ReviewForm from "@/components/sections/ReviewForm";
+import ReviewList from "@/components/sections/ReviewList";
 import { ArrowRight, BookOpen, Send, FileText, ShieldCheck, Globe, CheckCircle } from "lucide-react";
 
 const Index = memo(() => {
@@ -255,6 +257,29 @@ const Index = memo(() => {
                   <p className="text-white font-bold text-sm">{benefit}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ==================== REVIEWS SECTION ==================== */}
+        <section className="py-24 bg-oxford/5">
+          <div className="container max-w-[1200px] mx-auto px-6">
+            <div className="text-center mb-16">
+              <h2 className="font-serif text-4xl md:text-5xl font-black text-oxford mb-4">
+                What Our Authors Say
+              </h2>
+              <p className="text-oxford/60 max-w-2xl mx-auto">
+                Reviews from researchers who have published with JMRH Publications
+              </p>
+            </div>
+            
+            <div className="grid lg:grid-cols-2 gap-8">
+              <div>
+                <ReviewList maxReviews={5} />
+              </div>
+              <div>
+                <ReviewForm />
+              </div>
             </div>
           </div>
         </section>
