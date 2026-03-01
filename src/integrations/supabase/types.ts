@@ -188,6 +188,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      professor_can_view_manuscript: {
+        Args: { file_name: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "professor" | "user"

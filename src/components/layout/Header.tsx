@@ -186,7 +186,7 @@ const Header = memo(() => {
               <div className="flex justify-between items-center mb-8 sm:mb-12 border-b border-black/5 pb-4 sm:pb-6">
                 <span className="font-serif text-xl sm:text-2xl font-bold italic text-oxford">Menu</span>
                 <button onClick={() => setIsMenuOpen(false)} className="p-2.5 sm:p-3 bg-oxford text-white hover:bg-gold transition-colors">
-                  <X size={18} sm:size={20} />
+                  <X size={20} />
                 </button>
               </div>
 
@@ -200,7 +200,7 @@ const Header = memo(() => {
                           className="w-full font-serif text-xl sm:text-2xl italic transition-all flex items-center justify-between py-3 sm:py-4 text-oxford min-h-[52px] touch-manipulation"
                         >
                           {link.label}
-                          <ChevronRight size={18} sm:size={20} className={`transition-transform duration-300 ${openDropdown === link.label ? "rotate-90" : ""}`} />
+                          <ChevronRight size={20} className={`transition-transform duration-300 ${openDropdown === link.label ? "rotate-90" : ""}`} />
                         </button>
                         <AnimatePresence>
                           {openDropdown === link.label && (
@@ -233,7 +233,7 @@ const Header = memo(() => {
                           ${isActive(link.href) ? "text-gold" : "text-oxford/60 hover:text-gold"}`}
                       >
                         {link.label}
-                        <ChevronRight size={18} sm:size={20} className={isActive(link.href) ? "text-gold" : "text-oxford/20"} />
+                        <ChevronRight size={20} className={isActive(link.href) ? "text-gold" : "text-oxford/20"} />
                       </PreloadLink>
                     )}
                   </div>
