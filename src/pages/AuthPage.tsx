@@ -10,12 +10,11 @@ import {
     ShieldCheck,
     Eye,
     EyeOff,
-    Zap,
     Loader2,
-    CheckCircle,
-    ArrowRight
+    ArrowRight,
+    CheckCircle
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -32,12 +31,6 @@ const DEPARTMENTS = [
 
 const DEGREES = [
     "B.Com", "BBA", "BCA", "B.Sc", "B.A", "M.Com", "MBA", "MCA", "M.Sc", "M.A", "PhD"
-];
-
-const DEMO_ACCOUNTS = [
-    { email: "admin@jmrh.com", password: "admin123", role: "Admin" },
-    { email: "professor@jmrh.com", password: "professor123", role: "Professor" },
-    { email: "user@jmrh.com", password: "user123", role: "Researcher" },
 ];
 
 const STORAGE_REMEMBER_KEY = "jmrh_remember_email";
@@ -77,16 +70,8 @@ const AuthPage = memo(() => {
         }
     }, []);
 
-    const quickLogin = async (demoAccount: typeof DEMO_ACCOUNTS[0]) => {
-        setEmail(demoAccount.email);
-        setPassword(demoAccount.password);
-        setRememberMe(true);
-        
-        await handleLogin(demoAccount.email, demoAccount.password);
-    };
-
-    const handleLogin = async (loginEmail: string, loginPassword: string) => {
-        if (!loginEmail || !loginPassword) {
+    const handleLogin = async () => {
+        if (!email || !password) {
             toast({ 
                 title: "Missing Information", 
                 description: "Please enter both email and password.", 
@@ -98,10 +83,10 @@ const AuthPage = memo(() => {
         setLoading(true);
 
         try {
-            await signIn(loginEmail, loginPassword);
+            await signIn(email, password);
             
             if (rememberMe) {
-                localStorage.setItem(STORAGE_EMAIL_KEY, loginEmail);
+                localStorage.setItem(STORAGE_EMAIL_KEY, email);
                 localStorage.setItem(STORAGE_REMEMBER_KEY, "true");
             } else {
                 localStorage.removeItem(STORAGE_EMAIL_KEY);
@@ -128,7 +113,7 @@ const AuthPage = memo(() => {
 
         try {
             if (isLogin) {
-                await handleLogin(email, password);
+                await handleLogin();
                 return;
             } else {
                 if (regPass.length < 6) {
@@ -225,7 +210,7 @@ const AuthPage = memo(() => {
             <Header />
             
             <main className="flex-1 pt-24 pb-16 flex items-center justify-center p-6">
-                <div className="w-full max-w-lg">
+                <div className="w-full max-w-md">
                     <motion.div 
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -243,39 +228,12 @@ const AuthPage = memo(() => {
                         </p>
                     </motion.div>
 
-                    {isLogin && (
-                        <motion.div 
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.1 }}
-                            className="mb-6 p-4 bg-gradient-to-r from-gold/10 to-oxford/5 border border-gold/20 rounded-lg"
-                        >
-                            <p className="text-xs font-bold uppercase tracking-wider text-oxford/60 mb-3">Quick Demo Login</p>
-                            <div className="flex flex-wrap gap-2">
-                                {DEMO_ACCOUNTS.map((account) => (
-                                    <motion.button
-                                        key={account.email}
-                                        type="button"
-                                        onClick={() => quickLogin(account)}
-                                        disabled={loading}
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        className="flex items-center gap-2 px-3 py-2 bg-white border border-gold/20 rounded-md text-xs font-semibold text-oxford hover:border-gold hover:bg-gold/5 transition-all disabled:opacity-50"
-                                    >
-                                        <Zap size={12} className="text-gold" />
-                                        {account.role}
-                                    </motion.button>
-                                ))}
-                            </div>
-                        </motion.div>
-                    )}
-
                     <motion.form 
                         onSubmit={handleAuth}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.15 }}
-                        className="bg-white border border-black/[0.05] shadow-[0_8px_40px_rgb(0,0,0,0.06)] p-8 space-y-5"
+                        transition={{ delay: 0.1 }}
+                        className="bg-white border border-black/[0.05] shadow-[0_8px_40px_rgb(0,0,0,0.06)] p-6 sm:p-8 space-y-5"
                     >
                         {isLogin ? (
                             <div className="space-y-4">
@@ -289,7 +247,7 @@ const AuthPage = memo(() => {
                                             placeholder="your@email.com"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            className="h-12 pl-10 border-black/10 focus:border-gold"
+                                            className="h-11 pl-10 border-black/10 focus:border-gold"
                                             autoComplete="email"
                                         />
                                     </div>
@@ -305,7 +263,7 @@ const AuthPage = memo(() => {
                                             placeholder="Enter your password"
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
-                                            className="h-12 pl-10 pr-10 border-black/10 focus:border-gold"
+                                            className="h-11 pl-10 pr-10 border-black/10 focus:border-gold"
                                             autoComplete="current-password"
                                         />
                                         <button
@@ -344,7 +302,7 @@ const AuthPage = memo(() => {
                                             placeholder="Your full name"
                                             value={regName}
                                             onChange={(e) => setRegName(e.target.value)}
-                                            className="h-12 pl-10 border-black/10 focus:border-gold"
+                                            className="h-11 pl-10 border-black/10 focus:border-gold"
                                         />
                                     </div>
                                 </div>
@@ -359,12 +317,12 @@ const AuthPage = memo(() => {
                                             placeholder="your@email.com"
                                             value={regEmail}
                                             onChange={(e) => setRegEmail(e.target.value)}
-                                            className="h-12 pl-10 border-black/10 focus:border-gold"
+                                            className="h-11 pl-10 border-black/10 focus:border-gold"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 gap-3">
                                     <div className="space-y-2">
                                         <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Password *</label>
                                         <div className="relative">
@@ -375,7 +333,7 @@ const AuthPage = memo(() => {
                                                 placeholder="Min 6 chars"
                                                 value={regPass}
                                                 onChange={(e) => setRegPass(e.target.value)}
-                                                className="h-12 pl-10 border-black/10 focus:border-gold"
+                                                className="h-11 pl-10 border-black/10 focus:border-gold"
                                             />
                                         </div>
                                     </div>
@@ -387,7 +345,7 @@ const AuthPage = memo(() => {
                                                 placeholder="+91 XXXXX"
                                                 value={regPhone}
                                                 onChange={(e) => setRegPhone(e.target.value)}
-                                                className="h-12 pl-10 border-black/10 focus:border-gold"
+                                                className="h-11 pl-10 border-black/10 focus:border-gold"
                                             />
                                         </div>
                                     </div>
@@ -402,16 +360,16 @@ const AuthPage = memo(() => {
                                             placeholder="University / College / Organization"
                                             value={regAffiliation}
                                             onChange={(e) => setRegAffiliation(e.target.value)}
-                                            className="h-12 pl-10 border-black/10 focus:border-gold"
+                                            className="h-11 pl-10 border-black/10 focus:border-gold"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 gap-3">
                                     <div className="space-y-2">
                                         <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Department</label>
                                         <Select onValueChange={setRegDepartment} value={regDepartment}>
-                                            <SelectTrigger className="h-12 border-black/10 focus:border-gold">
+                                            <SelectTrigger className="h-11 border-black/10 focus:border-gold">
                                                 <SelectValue placeholder="Select" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -422,7 +380,7 @@ const AuthPage = memo(() => {
                                     <div className="space-y-2">
                                         <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Degree</label>
                                         <Select onValueChange={setRegDegree} value={regDegree}>
-                                            <SelectTrigger className="h-12 border-black/10 focus:border-gold">
+                                            <SelectTrigger className="h-11 border-black/10 focus:border-gold">
                                                 <SelectValue placeholder="Select" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -437,20 +395,22 @@ const AuthPage = memo(() => {
                         <Button
                             type="submit"
                             disabled={loading}
-                            className="w-full h-12 bg-oxford text-white hover:bg-gold transition-colors font-bold tracking-wider uppercase text-xs relative overflow-hidden"
+                            className="w-full h-11 bg-oxford text-white hover:bg-gold transition-colors font-bold tracking-wider uppercase text-xs"
                         >
-                            <span className={`flex items-center justify-center gap-2 ${loading ? 'opacity-0' : ''}`}>
-                                {isLogin ? "Sign In" : "Create Account"}
-                                <ArrowRight size={16} />
-                            </span>
-                            {loading && (
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <Loader2 className="w-5 h-5 animate-spin text-white" />
-                                </div>
+                            {loading ? (
+                                <span className="flex items-center gap-2">
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    Please wait...
+                                </span>
+                            ) : (
+                                <span className="flex items-center gap-2">
+                                    {isLogin ? "Sign In" : "Create Account"}
+                                    <ArrowRight size={16} />
+                                </span>
                             )}
                         </Button>
 
-                        <div className="text-center pt-4 border-t border-black/[0.05]">
+                        <div className="text-center pt-3 border-t border-black/[0.05]">
                             <p className="text-oxford/50 text-sm">
                                 {isLogin ? "Don't have an account?" : "Already have an account?"}
                                 <button
@@ -467,8 +427,8 @@ const AuthPage = memo(() => {
                     <motion.div 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3 }}
-                        className="mt-6 p-4 bg-oxford/5 border border-black/5"
+                        transition={{ delay: 0.2 }}
+                        className="mt-5 p-4 bg-oxford/5 border border-black/5"
                     >
                         <p className="text-xs text-oxford/60 text-center">
                             <strong>Note:</strong> You can also submit manuscripts without registration by using our 
