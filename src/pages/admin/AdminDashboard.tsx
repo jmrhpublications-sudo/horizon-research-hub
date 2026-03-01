@@ -156,12 +156,12 @@ const AdminDashboard = memo(() => {
     ];
 
     const stats = [
-        { label: "Total Users", value: users.length, icon: Users, color: "text-blue-400", sub: `${admins.length} admins, ${professorsList.length} professors` },
-        { label: "Total Papers", value: papers.length, icon: FileText, color: "text-purple-400", sub: `${submittedPapers.length} submitted` },
+        { label: "Total Users", value: users.length, icon: Users, color: "text-blue-600", sub: `${admins.length} admins, ${professorsList.length} professors` },
+        { label: "Total Papers", value: papers.length, icon: FileText, color: "text-purple-600", sub: `${submittedPapers.length} submitted` },
         { label: "Published Journals", value: publishedJournals.length + journalPapers.length, icon: Library, color: "text-gold", sub: "Articles online" },
-        { label: "Published Books", value: publishedBooks.length + bookPapers.length, icon: BookOpen, color: "text-teal-400", sub: "Books available" },
-        { label: "Pending Review", value: submittedPapers.length, icon: Clock, color: "text-orange-400", sub: "Awaiting action" },
-        { label: "Upload Requests", value: pendingRequests.length, icon: Inbox, color: "text-purple-400", sub: "Pending approval" },
+        { label: "Published Books", value: publishedBooks.length + bookPapers.length, icon: BookOpen, color: "text-teal-600", sub: "Books available" },
+        { label: "Pending Review", value: submittedPapers.length, icon: Clock, color: "text-orange-600", sub: "Awaiting action" },
+        { label: "Upload Requests", value: pendingRequests.length, icon: Inbox, color: "text-purple-600", sub: "Pending approval" },
     ];
 
     const filteredPapers = papers.filter(paper => {
@@ -394,7 +394,7 @@ const AdminDashboard = memo(() => {
         <DashboardLayout role="ADMIN">
             <div className="space-y-8">
                 {/* Header */}
-                <div className="flex justify-between items-end border-b border-white/5 pb-6">
+                <div className="flex justify-between items-end border-b border-black/5 pb-6">
                     <div className="space-y-2">
                         <p className="section-label">Admin Control Panel</p>
                         <h1 className="text-4xl font-serif font-bold text-oxford">Dashboard</h1>

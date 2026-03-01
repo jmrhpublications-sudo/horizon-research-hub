@@ -246,43 +246,54 @@ const ProfessorDashboard = memo(() => {
             });
             setIsUploadBookOpen(false);
             setBookForm({
-                title: "", authors: "", editors: "", isbn: "", publisher: "",
-                description: "", discipline: "", keywords: "", edition: "",
-                publicationYear: "", pdfUrl: "", coverImage: "", purchaseLink: ""
+                title: "",
+                authors: "",
+                editors: "",
+                isbn: "",
+                publisher: "",
+                description: "",
+                discipline: "",
+                keywords: "",
+                edition: "",
+                publicationYear: "",
+                pdfUrl: "",
+                coverImage: "",
+                purchaseLink: ""
             });
-            toast({ title: "Book Submitted", description: "Waiting for admin approval" });
+            setIsSubmitting(false);
         } catch (error) {
-            toast({ title: "Error", description: "Failed to submit", variant: "destructive" });
+            console.error("Error creating book submission:", error);
+        } finally {
+            setIsSubmitting(false);
         }
-        setIsSubmitting(false);
-    };
+    }
 
     return (
         <DashboardLayout role="PROFESSOR">
             <div className="max-w-7xl mx-auto space-y-10">
                 {/* Executive Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-white/5 pb-10">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-black/5 pb-10">
                     <div className="space-y-3">
                         <div className="flex items-center gap-3">
                             <span className="h-px w-8 bg-gold" />
                             <p className="section-label text-gold uppercase tracking-[0.3em] text-[10px] font-bold">Editorial Workspace</p>
                         </div>
-                        <h1 className="text-6xl font-serif font-bold italic text-white leading-tight tracking-tight">Peer Review Console</h1>
+                        <h1 className="text-6xl font-serif font-bold italic text-oxford leading-tight tracking-tight">Peer Review Console</h1>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-8 bg-white/5 p-6 rounded-2xl border border-white/10 backdrop-blur-sm">
+                    <div className="grid grid-cols-2 gap-8 bg-white border border-black/5 p-6 rounded-2xl shadow-sm">
                         <div className="space-y-1">
-                            <p className="text-[9px] uppercase font-bold text-white/40 tracking-widest">Active Queue</p>
+                            <p className="text-[9px] uppercase font-bold text-oxford/40 tracking-widest">Active Queue</p>
                             <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-orange-400 animate-pulse" />
-                                <p className="text-2xl font-serif italic font-bold text-white">{pendingReviews.length}</p>
+                                <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                                <p className="text-2xl font-serif italic font-bold text-oxford">{pendingReviews.length}</p>
                             </div>
                         </div>
-                        <div className="space-y-1 border-l border-white/10 pl-8">
-                            <p className="text-[9px] uppercase font-bold text-white/40 tracking-widest">Completed</p>
+                        <div className="space-y-1 border-l border-black/5 pl-8">
+                            <p className="text-[9px] uppercase font-bold text-oxford/40 tracking-widest">Completed</p>
                             <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-teal-400" />
-                                <p className="text-2xl font-serif italic font-bold text-white">{completedReviews.length}</p>
+                                <div className="w-2 h-2 rounded-full bg-teal-500" />
+                                <p className="text-2xl font-serif italic font-bold text-oxford">{completedReviews.length}</p>
                             </div>
                         </div>
                     </div>
@@ -291,7 +302,7 @@ const ProfessorDashboard = memo(() => {
                 {/* Quick Actions - Upload Section */}
                 <div className="grid md:grid-cols-2 gap-6">
                     <div 
-                        className="bg-white/5 border border-white/10 p-6 rounded-2xl cursor-pointer hover:border-gold/40 transition-all"
+                        className="bg-white border border-black/5 p-6 rounded-2xl cursor-pointer hover:border-gold/40 transition-all shadow-sm hover:shadow-md"
                         onClick={() => setIsUploadJournalOpen(true)}
                     >
                         <div className="flex items-center gap-4">
@@ -299,13 +310,13 @@ const ProfessorDashboard = memo(() => {
                                 <Library className="w-6 h-6 text-gold" />
                             </div>
                             <div>
-                                <h3 className="font-bold text-white">Submit Journal Article</h3>
-                                <p className="text-xs text-white/40">Upload for admin approval</p>
+                                <h3 className="font-bold text-oxford">Submit Journal Article</h3>
+                                <p className="text-xs text-oxford/40">Upload for admin approval</p>
                             </div>
                         </div>
                     </div>
                     <div 
-                        className="bg-white/5 border border-white/10 p-6 rounded-2xl cursor-pointer hover:border-gold/40 transition-all"
+                        className="bg-white border border-black/5 p-6 rounded-2xl cursor-pointer hover:border-gold/40 transition-all shadow-sm hover:shadow-md"
                         onClick={() => setIsUploadBookOpen(true)}
                     >
                         <div className="flex items-center gap-4">
@@ -313,8 +324,8 @@ const ProfessorDashboard = memo(() => {
                                 <BookOpen className="w-6 h-6 text-teal-500" />
                             </div>
                             <div>
-                                <h3 className="font-bold text-white">Submit Book</h3>
-                                <p className="text-xs text-white/40">Upload for admin approval</p>
+                                <h3 className="font-bold text-oxford">Submit Book</h3>
+                                <p className="text-xs text-oxford/40">Upload for admin approval</p>
                             </div>
                         </div>
                     </div>
@@ -322,20 +333,20 @@ const ProfessorDashboard = memo(() => {
 
                 {/* My Submissions Status */}
                 {(pendingMySubmissions.length > 0 || approvedMySubmissions.length > 0) && (
-                    <div className="bg-white/5 border border-white/10 p-6 rounded-2xl">
-                        <h3 className="font-bold text-white mb-4">My Submissions Status</h3>
+                    <div className="bg-white border border-black/5 p-6 rounded-2xl shadow-sm">
+                        <h3 className="font-bold text-oxford mb-4">My Submissions Status</h3>
                         <div className="grid md:grid-cols-3 gap-4">
-                            <div className="bg-orange-500/10 border border-orange-500/20 p-4">
-                                <p className="text-orange-400 font-bold">{pendingMySubmissions.length}</p>
-                                <p className="text-xs text-white/40">Pending Approval</p>
+                            <div className="bg-orange-50 border border-orange-200 p-4">
+                                <p className="text-orange-600 font-bold">{pendingMySubmissions.length}</p>
+                                <p className="text-xs text-oxford/40">Pending Approval</p>
                             </div>
-                            <div className="bg-green-500/10 border border-green-500/20 p-4">
-                                <p className="text-green-400 font-bold">{approvedMySubmissions.length}</p>
-                                <p className="text-xs text-white/40">Approved & Published</p>
+                            <div className="bg-green-50 border border-green-200 p-4">
+                                <p className="text-green-600 font-bold">{approvedMySubmissions.length}</p>
+                                <p className="text-xs text-oxford/40">Approved & Published</p>
                             </div>
-                            <div className="bg-red-500/10 border border-red-500/20 p-4">
-                                <p className="text-red-400 font-bold">{rejectedMySubmissions.length}</p>
-                                <p className="text-xs text-white/40">Rejected</p>
+                            <div className="bg-red-50 border border-red-200 p-4">
+                                <p className="text-red-600 font-bold">{rejectedMySubmissions.length}</p>
+                                <p className="text-xs text-oxford/40">Rejected</p>
                             </div>
                         </div>
                     </div>
@@ -343,17 +354,17 @@ const ProfessorDashboard = memo(() => {
 
                 {/* Search & Filter Bar */}
                 <div className="relative group">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-gold transition-colors" size={18} />
+                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-oxford/20 group-focus-within:text-gold transition-colors" size={18} />
                     <Input
                         placeholder="Search by title, author, or discipline..."
-                        className="h-16 pl-16 bg-white/5 border-white/10 text-white font-serif italic text-lg focus:ring-gold/20 focus:border-gold/50 rounded-2xl transition-all"
+                        className="h-16 pl-16 bg-white border border-black/10 text-oxford font-serif italic text-lg focus:ring-gold/20 focus:border-gold/50 rounded-2xl transition-all"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
 
                 <Tabs defaultValue="pending" className="space-y-8">
-                    <TabsList className="bg-white/5 border border-white/10 p-1 rounded-xl h-14">
+                    <TabsList className="bg-white border border-black/10 p-1 rounded-xl h-14">
                         <TabsTrigger value="pending" className="rounded-lg px-8 font-bold tracking-widest text-[10px] uppercase data-[state=active]:bg-gold data-[state=active]:text-oxford">
                             Pending Evaluations ({pendingReviews.length})
                         </TabsTrigger>
@@ -368,17 +379,17 @@ const ProfessorDashboard = memo(() => {
                     <TabsContent value="pending" className="space-y-6 outline-none">
                         {pendingReviews.length > 0 ? (
                             pendingReviews.map((paper) => (
-                                <div key={paper.id} className="p-8 bg-white/5 rounded-[32px] border border-white/10 hover:border-gold/40 transition-all duration-500 group">
+                                <div key={paper.id} className="p-8 bg-white rounded-2xl border border-black/5 hover:border-gold/40 transition-all duration-500 group shadow-sm hover:shadow-md">
                                     <div className="flex flex-col lg:flex-row justify-between gap-8">
                                         <div className="space-y-6 flex-1">
                                             <div className="space-y-2">
                                                 <div className="flex items-center gap-4">
                                                     <span className="text-[10px] uppercase tracking-widest text-gold font-bold">Protocol {paper.id.slice(0, 8)}</span>
-                                                    <span className="h-1 w-1 rounded-full bg-white/20" />
-                                                    <span className="text-[10px] uppercase tracking-widest text-white/40 font-bold">{paper.discipline}</span>
+                                                    <span className="h-1 w-1 rounded-full bg-oxford/20" />
+                                                    <span className="text-[10px] uppercase tracking-widest text-oxford/40 font-bold">{paper.discipline}</span>
                                                 </div>
-                                                <h4 className="font-serif text-3xl font-bold text-white group-hover:text-gold transition-colors leading-snug">{paper.title}</h4>
-                                                <p className="text-white/40 font-ui text-sm italic flex items-center gap-2">
+                                                <h4 className="font-serif text-3xl font-bold text-oxford group-hover:text-gold transition-colors leading-snug">{paper.title}</h4>
+                                                <p className="text-oxford/40 font-ui text-sm italic flex items-center gap-2">
                                                     <FileText size={14} className="text-gold/50" /> Submitted by {paper.authorName}
                                                 </p>
                                             </div>
@@ -387,20 +398,20 @@ const ProfessorDashboard = memo(() => {
                                         <div className="flex items-center gap-4">
                                             <Dialog>
                                                 <DialogTrigger asChild>
-                                                    <Button variant="outline" className="h-14 rounded-xl border-white/10 text-white/60 hover:text-white hover:bg-white/5 px-6 text-[10px] uppercase font-bold tracking-widest">
+                                                    <Button variant="outline" className="h-14 rounded-xl border-black/10 text-oxford/60 hover:text-oxford hover:bg-oxford/5 px-6 text-[10px] uppercase font-bold tracking-widest">
                                                         <Eye size={16} className="mr-2" /> Preview
                                                     </Button>
                                                 </DialogTrigger>
-                                                <DialogContent className="bg-oxford border-white/10 text-white max-w-4xl h-[80vh] flex flex-col">
+                                                <DialogContent className="bg-white border-black/10 text-oxford max-w-4xl h-[80vh] flex flex-col">
                                                     <DialogHeader>
                                                         <DialogTitle className="font-serif italic text-3xl text-gold">{paper.title}</DialogTitle>
-                                                        <DialogDescription className="text-white/40 uppercase tracking-widest text-[10px] font-bold">Manuscript Preview Mode</DialogDescription>
+                                                        <DialogDescription className="text-oxford/40 uppercase tracking-widest text-[10px] font-bold">Manuscript Preview Mode</DialogDescription>
                                                     </DialogHeader>
-                                                    <div className="flex-1 bg-white/5 rounded-xl p-8 overflow-y-auto font-serif italic text-lg leading-relaxed text-white/80 border border-white/5">
+                                                    <div className="flex-1 bg-oxford/5 rounded-xl p-8 overflow-y-auto font-serif italic text-lg leading-relaxed text-oxford/80 border border-black/5">
                                                         {paper.abstract || "The full manuscript content is currently being processed for secure viewing. Please refer to the downloaded PDF for complete technical details and citations."}
                                                     </div>
-                                                    <DialogFooter className="pt-4 border-t border-white/5">
-                                                        <Button onClick={() => handleDownload(paper)} className="bg-white/10 hover:bg-white/20 text-white border-none rounded-lg">
+                                                    <DialogFooter className="pt-4 border-t border-black/5">
+                                                        <Button onClick={() => handleDownload(paper)} className="bg-oxford hover:bg-gold text-white border-none rounded-lg">
                                                             <Download size={16} className="mr-2" /> Download Full PDF
                                                         </Button>
                                                     </DialogFooter>
@@ -409,23 +420,23 @@ const ProfessorDashboard = memo(() => {
 
                                             <Dialog>
                                                 <DialogTrigger asChild>
-                                                    <Button className="h-14 rounded-xl bg-gold text-oxford px-8 font-bold tracking-widest hover:bg-white transition-all shadow-xl group border-none text-[10px] uppercase">
+                                                    <Button className="h-14 rounded-xl bg-gold text-oxford px-8 font-bold tracking-widest hover:bg-oxford hover:text-white transition-all shadow-md group border-none text-[10px] uppercase">
                                                         Submit Decision <ArrowRight size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />
                                                     </Button>
                                                 </DialogTrigger>
-                                                <DialogContent className="bg-oxford border-white/10 text-white max-w-2xl">
+                                                <DialogContent className="bg-white border-black/10 text-oxford max-w-2xl">
                                                     <DialogHeader>
                                                         <DialogTitle className="font-serif italic text-3xl text-gold mb-2">Reviewer's Transmittal</DialogTitle>
-                                                        <p className="text-white/40 text-xs font-ui">Final evaluation for: <span className="text-white italic">{paper.title}</span></p>
+                                                        <p className="text-oxford/40 text-xs font-ui">Final evaluation for: <span className="text-oxford italic">{paper.title}</span></p>
                                                     </DialogHeader>
                                                     <div className="space-y-8 pt-6">
                                                         <div className="space-y-4">
-                                                            <label className="text-[10px] uppercase tracking-widest font-bold text-teal-400 flex items-center gap-3">
+                                                            <label className="text-[10px] uppercase tracking-widest font-bold text-teal-500 flex items-center gap-3">
                                                                 <MessageSquare size={14} /> Academic Commentary
                                                             </label>
                                                             <Textarea
                                                                 placeholder="Provide rigorous feedback for the author..."
-                                                                className="bg-white/5 border-white/10 text-white font-serif italic h-48 focus:border-gold rounded-xl resize-none"
+                                                                className="bg-white border border-black/10 text-oxford font-serif italic h-48 focus:border-gold rounded-xl resize-none"
                                                                 value={reviewComments}
                                                                 onChange={(e) => setReviewComments(e.target.value)}
                                                             />
@@ -454,53 +465,53 @@ const ProfessorDashboard = memo(() => {
                                 </div>
                             ))
                         ) : (
-                            <div className="py-32 text-center border-2 border-dashed border-white/5 rounded-[40px] flex flex-col items-center justify-center space-y-6">
-                                <div className="p-6 bg-white/5 rounded-full">
-                                    <CheckCircle size={40} className="text-teal-400/40" />
+                            <div className="py-32 text-center border-2 border-dashed border-black/5 rounded-2xl flex flex-col items-center justify-center space-y-6">
+                                <div className="p-6 bg-oxford/5 rounded-full">
+                                    <CheckCircle size={40} className="text-teal-500/40" />
                                 </div>
                                 <div className="space-y-2">
-                                    <p className="font-serif italic text-white/40 text-2xl">Queue Cleared</p>
-                                    <p className="text-white/20 text-xs uppercase tracking-[0.2em] font-bold">No manuscripts currently awaiting your command.</p>
+                                    <p className="font-serif italic text-oxford/40 text-2xl">Queue Cleared</p>
+                                    <p className="text-oxford/20 text-xs uppercase tracking-[0.2em] font-bold">No manuscripts currently awaiting your command.</p>
                                 </div>
                             </div>
                         )}
                     </TabsContent>
 
                     <TabsContent value="history" className="outline-none">
-                        <div className="bg-white/5 rounded-[32px] border border-white/5 overflow-hidden">
+                        <div className="bg-white rounded-2xl border border-black/5 overflow-hidden shadow-sm">
                             <div className="overflow-x-auto">
                                 <table className="w-full">
                                     <thead>
-                                        <tr className="border-b border-white/5 text-[10px] uppercase tracking-widest text-white/40 text-left">
+                                        <tr className="border-b border-black/5 text-[10px] uppercase tracking-widest text-oxford/40 text-left">
                                             <th className="p-8 font-bold">Manuscript Details</th>
                                             <th className="p-8 font-bold">Status</th>
                                             <th className="p-8 font-bold text-right">Archive Date</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-white/5">
+                                    <tbody className="divide-y divide-black/5">
                                         {completedReviews.map((paper) => (
-                                            <tr key={paper.id} className="group hover:bg-white/[0.02] transition-colors">
+                                            <tr key={paper.id} className="group hover:bg-oxford/5 transition-colors">
                                                 <td className="p-8">
                                                     <div className="space-y-1">
-                                                        <p className="font-serif italic text-xl text-white font-bold group-hover:text-gold transition-colors">{paper.title}</p>
+                                                        <p className="font-serif italic text-xl text-oxford font-bold group-hover:text-gold transition-colors">{paper.title}</p>
 
-                                                        <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-white/20 font-bold">
+                                                        <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-oxford/20 font-bold">
                                                             <span>{paper.authorName}</span>
-                                                            <span className="w-1 h-1 rounded-full bg-white/10" />
+                                                            <span className="w-1 h-1 rounded-full bg-oxford/10" />
                                                             <span>{paper.discipline}</span>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="p-8">
-                                                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${paper.status === 'ACCEPTED' ? 'bg-teal-500/10 text-teal-400' :
-                                                            paper.status === 'REJECTED' ? 'bg-red-500/10 text-red-400' :
-                                                                'bg-orange-500/10 text-orange-400'
+                                                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${paper.status === 'ACCEPTED' ? 'bg-teal-500/10 text-teal-500' :
+                                                            paper.status === 'REJECTED' ? 'bg-red-500/10 text-red-500' :
+                                                                'bg-orange-500/10 text-orange-500'
                                                         }`}>
                                                         {paper.status.replace('_', ' ')}
                                                     </span>
                                                 </td>
                                                 <td className="p-8 text-right">
-                                                    <p className="text-white/40 text-[10px] uppercase tracking-widest font-bold">
+                                                    <p className="text-oxford/40 text-[10px] uppercase tracking-widest font-bold">
                                                         {new Date(paper.submissionDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                                     </p>
                                                 </td>
@@ -513,12 +524,12 @@ const ProfessorDashboard = memo(() => {
                     </TabsContent>
 
                     <TabsContent value="submissions" className="outline-none">
-                        <div className="bg-white/5 rounded-[32px] border border-white/5 overflow-hidden">
+                        <div className="bg-white rounded-2xl border border-black/5 overflow-hidden shadow-sm">
                             {mySubmissions.length > 0 ? (
                                 <div className="overflow-x-auto">
                                     <table className="w-full">
                                         <thead>
-                                            <tr className="border-b border-white/5 text-[10px] uppercase tracking-widest text-white/40 text-left">
+                                            <tr className="border-b border-black/5 text-[10px] uppercase tracking-widest text-oxford/40 text-left">
                                                 <th className="p-8 font-bold">Content</th>
                                                 <th className="p-8 font-bold">Type</th>
                                                 <th className="p-8 font-bold">Status</th>
@@ -526,13 +537,13 @@ const ProfessorDashboard = memo(() => {
                                                 <th className="p-8 font-bold text-right">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-white/5">
+                                        <tbody className="divide-y divide-black/5">
                                             {mySubmissions.map((sub) => (
-                                                <tr key={sub.id} className="group hover:bg-white/[0.02] transition-colors">
+                                                <tr key={sub.id} className="group hover:bg-oxford/5 transition-colors">
                                                     <td className="p-8">
                                                         <div className="space-y-1">
-                                                            <p className="font-serif italic text-xl text-white font-bold group-hover:text-gold transition-colors">{sub.title}</p>
-                                                            <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-white/20 font-bold">
+                                                            <p className="font-serif italic text-xl text-oxford font-bold group-hover:text-gold transition-colors">{sub.title}</p>
+                                                            <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-oxford/20 font-bold">
                                                                 <span>{sub.authors}</span>
                                                             </div>
                                                         </div>
@@ -543,15 +554,15 @@ const ProfessorDashboard = memo(() => {
                                                         </span>
                                                     </td>
                                                     <td className="p-8">
-                                                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${sub.status === 'APPROVED' ? 'bg-green-500/10 text-green-400' :
-                                                                sub.status === 'REJECTED' ? 'bg-red-500/10 text-red-400' :
-                                                                    'bg-orange-500/10 text-orange-400'
+                                                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${sub.status === 'APPROVED' ? 'bg-green-500/10 text-green-500' :
+                                                                sub.status === 'REJECTED' ? 'bg-red-500/10 text-red-500' :
+                                                                    'bg-orange-500/10 text-orange-500'
                                                             }`}>
                                                             {sub.status}
                                                         </span>
                                                     </td>
                                                     <td className="p-8 text-right">
-                                                        <p className="text-white/40 text-[10px] uppercase tracking-widest font-bold">
+                                                        <p className="text-oxford/40 text-[10px] uppercase tracking-widest font-bold">
                                                             {new Date(sub.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                                         </p>
                                                     </td>
@@ -560,7 +571,7 @@ const ProfessorDashboard = memo(() => {
                                                             <Button 
                                                                 size="sm" 
                                                                 variant="ghost" 
-                                                                className="text-red-400 hover:text-red-300"
+                                                                className="text-red-500 hover:text-red-600"
                                                                 onClick={() => deleteProfessorSubmission(sub.id)}
                                                             >
                                                                 <Trash2 size={14} />
@@ -573,13 +584,13 @@ const ProfessorDashboard = memo(() => {
                                     </table>
                                 </div>
                             ) : (
-                                <div className="py-32 text-center border-2 border-dashed border-white/5 rounded-[40px] flex flex-col items-center justify-center space-y-6">
-                                    <div className="p-6 bg-white/5 rounded-full">
-                                        <Upload size={40} className="text-white/20" />
+                                <div className="py-32 text-center border-2 border-dashed border-black/5 rounded-2xl flex flex-col items-center justify-center space-y-6">
+                                    <div className="p-6 bg-oxford/5 rounded-full">
+                                        <Upload size={40} className="text-oxford/20" />
                                     </div>
                                     <div className="space-y-2">
-                                        <p className="font-serif italic text-white/40 text-2xl">No Submissions Yet</p>
-                                        <p className="text-white/20 text-xs uppercase tracking-[0.2em] font-bold">Use the buttons above to submit journals or books.</p>
+                                        <p className="font-serif italic text-oxford/40 text-2xl">No Submissions Yet</p>
+                                        <p className="text-oxford/20 text-xs uppercase tracking-[0.2em] font-bold">Use the buttons above to submit journals or books.</p>
                                     </div>
                                 </div>
                             )}

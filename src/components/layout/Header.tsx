@@ -1,5 +1,6 @@
 import { useState, useEffect, memo } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import PreloadLink from "@/components/ui/LinkPreloader";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, BookOpen, Send, ChevronRight, ShieldCheck, User as UserIcon, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -63,7 +64,7 @@ const Header = memo(() => {
       <div className="container max-w-[1800px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-4 group">
+          <PreloadLink to="/" className="flex items-center gap-4 group">
             <div className="w-12 h-12 bg-oxford flex items-center justify-center rotate-45 group-hover:rotate-90 transition-transform duration-700">
               <BookOpen size={20} className="text-gold -rotate-45 group-hover:-rotate-90 transition-transform duration-700" />
             </div>
@@ -73,7 +74,7 @@ const Header = memo(() => {
               </span>
               <span className="text-[9px] uppercase tracking-[0.4em] text-oxford/50 font-bold font-ui mt-0.5">Publications</span>
             </div>
-          </Link>
+          </PreloadLink>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-2" aria-label="Main navigation">
@@ -95,21 +96,21 @@ const Header = memo(() => {
                       onMouseLeave={() => setOpenDropdown(null)}
                     >
                       <div className="bg-white border border-black/5 shadow-2xl rounded-sm py-2 min-w-[200px]">
-                        {link.children.map((child) => (
-                          <Link
-                            key={child.label}
-                            to={child.href}
-                            className={`block text-[10px] uppercase tracking-[0.1em] font-bold px-4 py-2.5 transition-all duration-300 hover:bg-gold/5 hover:text-gold
-                              ${isActive(child.href) ? "text-gold bg-gold/5" : "text-oxford/60"}`}
-                          >
-                            {child.label}
-                          </Link>
-                        ))}
+                            {link.children.map((child) => (
+                            <PreloadLink
+                              key={child.label}
+                              to={child.href}
+                              className={`block text-[10px] uppercase tracking-[0.1em] font-bold px-4 py-2.5 transition-all duration-300 hover:bg-gold/5 hover:text-gold
+                                ${isActive(child.href) ? "text-gold bg-gold/5" : "text-oxford/60"}`}
+                            >
+                              {child.label}
+                            </PreloadLink>
+                          ))}
                       </div>
                     </div>
                   </>
                 ) : (
-                  <Link
+                  <PreloadLink
                     to={link.href}
                     className={`text-[10px] uppercase tracking-[0.15em] font-bold transition-all duration-300 hover:text-gold relative py-2 px-3
                       ${isActive(link.href) ? "text-gold" : "text-oxford/70"}`}
@@ -118,7 +119,7 @@ const Header = memo(() => {
                     <span className={`absolute -bottom-1 left-3 right-3 h-[1.5px] bg-gold transition-all duration-300 rounded-full
                       ${isActive(link.href) ? "w-auto" : "w-0 group-hover:w-auto"}`}
                     />
-                  </Link>
+                  </PreloadLink>
                 )}
               </div>
             ))}
@@ -130,10 +131,10 @@ const Header = memo(() => {
               <div className="flex items-center gap-3 px-4 py-2 bg-gold/5 border border-gold/10 rounded-full">
                 <ShieldCheck size={12} className="text-gold" />
                 <span className="text-[9px] uppercase tracking-[0.2em] font-black text-gold/60">Trial Access</span>
-                <Link to="/auth" className="text-[9px] uppercase tracking-[0.3em] font-black text-oxford hover:text-gold transition-colors ml-2 underline underline-offset-4">Sign In</Link>
+                <PreloadLink to="/auth" className="text-[9px] uppercase tracking-[0.3em] font-black text-oxford hover:text-gold transition-colors ml-2 underline underline-offset-4">Sign In</PreloadLink>
               </div>
             ) : (
-              <Link to="/account" className="flex items-center gap-3 group">
+              <PreloadLink to="/account" className="flex items-center gap-3 group">
                 <div className="w-10 h-10 rounded-full bg-oxford/5 flex items-center justify-center border border-black/5 group-hover:border-gold transition-all">
                   <UserIcon size={16} className="text-oxford" />
                 </div>
@@ -141,10 +142,10 @@ const Header = memo(() => {
                   <span className="text-[10px] uppercase tracking-widest font-black text-oxford">{currentUser.name.split(' ')[0]}</span>
                   <span className={`text-[8px] uppercase tracking-[0.2em] font-bold ${currentUser.role === 'ADMIN' ? 'text-red-500' : 'text-oxford/60'}`}>{currentUser.role}</span>
                 </div>
-              </Link>
+              </PreloadLink>
             )}
 
-            <Link
+            <PreloadLink
               to="/journal/submit"
               className="flex items-center gap-2 bg-oxford text-white px-8 py-3.5 text-[10px] uppercase tracking-[0.25em] font-black hover:bg-gold hover:text-oxford transition-all duration-500 shadow-2xl group relative overflow-hidden"
             >
@@ -152,7 +153,7 @@ const Header = memo(() => {
                 Submit <Send size={12} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </span>
               <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 opacity-10" />
-            </Link>
+            </PreloadLink>
           </div>
 
           {/* Mobile Menu Button */}
@@ -203,21 +204,21 @@ const Header = memo(() => {
                               className="overflow-hidden"
                             >
                               {link.children.map((child) => (
-                                <Link
+                                <PreloadLink
                                   key={child.label}
                                   to={child.href}
                                   onClick={() => setIsMenuOpen(false)}
                                   className="block font-sans text-base text-oxford/60 py-3 pl-6 border-l-2 border-gold/20 hover:border-gold hover:text-gold transition-all"
                                 >
                                   {child.label}
-                                </Link>
+                                </PreloadLink>
                               ))}
                             </motion.div>
                           )}
                         </AnimatePresence>
                       </div>
-                    ) : (
-                      <Link
+                     ) : (
+                      <PreloadLink
                         key={link.label}
                         to={link.href}
                         onClick={() => setIsMenuOpen(false)}
@@ -226,7 +227,7 @@ const Header = memo(() => {
                       >
                         {link.label}
                         <ChevronRight size={20} className={isActive(link.href) ? "text-gold" : "text-oxford/20"} />
-                      </Link>
+                      </PreloadLink>
                     )}
                   </div>
                 ))}
@@ -234,7 +235,7 @@ const Header = memo(() => {
 
               <div className="mt-auto space-y-4 pt-6 border-t border-black/5">
                 <Button asChild className="w-full h-14 rounded-none bg-oxford text-white text-xs font-bold tracking-[0.2em] hover:bg-gold transition-all duration-500 shadow-lg">
-                  <Link to="/journal/submit" onClick={() => setIsMenuOpen(false)}>SUBMIT MANUSCRIPT</Link>
+                  <PreloadLink to="/journal/submit" onClick={() => setIsMenuOpen(false)}>SUBMIT MANUSCRIPT</PreloadLink>
                 </Button>
                 
                 <div className="flex justify-between items-center px-1">

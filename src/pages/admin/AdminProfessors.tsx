@@ -103,62 +103,62 @@ const AdminProfessors = memo(() => {
     return (
         <DashboardLayout role="ADMIN">
             <div className="space-y-12">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-white/5 pb-8">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-black/5 pb-8">
                     <div className="space-y-2">
                         <p className="section-label">Editorial Council</p>
-                        <h1 className="text-5xl font-serif font-bold italic text-white leading-tight">Board Management</h1>
+                        <h1 className="text-5xl font-serif font-bold italic text-oxford leading-tight">Board Management</h1>
                     </div>
 
                     <Dialog open={openCreate} onOpenChange={setOpenCreate}>
                         <DialogTrigger asChild>
-                            <Button className="rounded-none h-14 bg-gold text-oxford px-8 font-bold tracking-widest hover:bg-white transition-all shadow-xl flex items-center gap-3">
+                            <Button className="rounded-none h-14 bg-gold text-oxford px-8 font-bold tracking-widest hover:bg-oxford hover:text-white transition-all shadow-xl flex items-center gap-3">
                                 <Plus size={18} /> INITIALIZE PROFESSOR ACCOUNT
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="bg-oxford border-white/10 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+                        <DialogContent className="bg-white border-black/10 text-oxford max-w-2xl max-h-[90vh] overflow-y-auto">
                             <DialogHeader>
                                 <DialogTitle className="font-serif italic text-2xl text-gold">Assign New Member</DialogTitle>
                             </DialogHeader>
                             <form onSubmit={handleCreate} className="space-y-6 pt-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="col-span-2 space-y-2">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Full Scholarly Name</label>
-                                        <Input required placeholder="Dr. Researcher Name" value={name} onChange={(e) => setName(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                        <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">Full Scholarly Name</label>
+                                        <Input required placeholder="Dr. Researcher Name" value={name} onChange={(e) => setName(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                     </div>
                                     <div className="col-span-2 space-y-2">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Institutional Email</label>
-                                        <Input required type="email" placeholder="scholar@institution.edu" value={email} onChange={(e) => setEmail(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                        <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">Institutional Email</label>
+                                        <Input required type="email" placeholder="scholar@institution.edu" value={email} onChange={(e) => setEmail(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Phone Number</label>
-                                        <Input required placeholder="+1 234..." value={phone} onChange={(e) => setPhone(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                        <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">Phone Number</label>
+                                        <Input required placeholder="+1 234..." value={phone} onChange={(e) => setPhone(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Current Address</label>
-                                        <Input required placeholder="City, Country" value={address} onChange={(e) => setAddress(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                        <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">Current Address</label>
+                                        <Input required placeholder="City, Country" value={address} onChange={(e) => setAddress(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-teal">University / Institution</label>
-                                        <Input required placeholder="University name" value={university} onChange={(e) => setUniversity(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                        <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">University / Institution</label>
+                                        <Input required placeholder="University name" value={university} onChange={(e) => setUniversity(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Department</label>
-                                        <Input required placeholder="e.g. Computer Science" value={dept} onChange={(e) => setDept(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                        <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">Department</label>
+                                        <Input required placeholder="e.g. Computer Science" value={dept} onChange={(e) => setDept(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Academic Degree/Title</label>
-                                        <Input required placeholder="PhD, MSc, etc." value={degree} onChange={(e) => setDegree(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                        <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">Academic Degree/Title</label>
+                                        <Input required placeholder="PhD, MSc, etc." value={degree} onChange={(e) => setDegree(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Specialization</label>
-                                        <Input required placeholder="e.g. AI Ethics" value={specialization} onChange={(e) => setSpecialization(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                        <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">Specialization</label>
+                                        <Input required placeholder="e.g. AI Ethics" value={specialization} onChange={(e) => setSpecialization(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                     </div>
                                     <div className="col-span-2 space-y-2">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Biography</label>
-                                        <Input placeholder="Short professional bio..." value={bio} onChange={(e) => setBio(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                        <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">Biography</label>
+                                        <Input placeholder="Short professional bio..." value={bio} onChange={(e) => setBio(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                     </div>
                                 </div>
-                                <Button type="submit" className="w-full h-12 rounded-none bg-gold text-oxford font-bold tracking-[0.2em] hover:bg-white transition-all">
+                                <Button type="submit" className="w-full h-12 rounded-none bg-gold text-oxford font-bold tracking-[0.2em] hover:bg-oxford hover:text-white transition-all">
                                     CONFIRM ACCOUNT ISSUANCE
                                 </Button>
                             </form>
@@ -168,58 +168,58 @@ const AdminProfessors = memo(() => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
                     {professors.map((prof) => (
-                        <div key={prof.id} className="p-8 bg-white/5 rounded-[40px] border border-white/10 group hover:border-gold/30 transition-all duration-700 relative overflow-hidden flex flex-col justify-between min-h-[300px] shadow-3xl">
+                        <div key={prof.id} className="p-8 bg-white border border-black/5 rounded-2xl group hover:border-gold/30 transition-all duration-700 relative overflow-hidden flex flex-col justify-between min-h-[300px] shadow-sm hover:shadow-md">
                             <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
                                 <Dialog open={editingProf === prof.id} onOpenChange={(open) => !open && setEditingProf(null)}>
                                     <DialogTrigger asChild>
-                                        <button onClick={() => startEdit(prof)} className="text-white/20 hover:text-gold transition-colors">
+                                        <button onClick={() => startEdit(prof)} className="text-oxford/20 hover:text-gold transition-colors">
                                             <CheckCircle size={20} />
                                         </button>
                                     </DialogTrigger>
-                                    <DialogContent className="bg-oxford border-white/10 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+                                    <DialogContent className="bg-white border-black/10 text-oxford max-w-2xl max-h-[90vh] overflow-y-auto">
                                         <DialogHeader>
                                             <DialogTitle className="font-serif italic text-2xl text-gold">Edit Member Profile</DialogTitle>
                                         </DialogHeader>
                                         <form onSubmit={handleUpdate} className="space-y-6 pt-4">
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="col-span-2 space-y-2">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Name</label>
-                                                    <Input required value={editName} onChange={(e) => setEditName(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">Name</label>
+                                                    <Input required value={editName} onChange={(e) => setEditName(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                                 </div>
                                                 <div className="col-span-2 space-y-2">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Email</label>
-                                                    <Input required type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">Email</label>
+                                                    <Input required type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Phone</label>
-                                                    <Input required value={editPhone} onChange={(e) => setEditPhone(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">Phone</label>
+                                                    <Input required value={editPhone} onChange={(e) => setEditPhone(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Address</label>
-                                                    <Input required value={editAddress} onChange={(e) => setEditAddress(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">Address</label>
+                                                    <Input required value={editAddress} onChange={(e) => setEditAddress(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-teal">University</label>
-                                                    <Input required value={editUniversity} onChange={(e) => setEditUniversity(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">University</label>
+                                                    <Input required value={editUniversity} onChange={(e) => setEditUniversity(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Department</label>
-                                                    <Input required value={editDept} onChange={(e) => setEditDept(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">Department</label>
+                                                    <Input required value={editDept} onChange={(e) => setEditDept(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Degree</label>
-                                                    <Input required value={editDegree} onChange={(e) => setEditDegree(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">Degree</label>
+                                                    <Input required value={editDegree} onChange={(e) => setEditDegree(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Specialization</label>
-                                                    <Input required value={editSpecialization} onChange={(e) => setEditSpecialization(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">Specialization</label>
+                                                    <Input required value={editSpecialization} onChange={(e) => setEditSpecialization(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                                 </div>
                                                 <div className="col-span-2 space-y-2">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-teal">Bio</label>
-                                                    <Input value={editBio} onChange={(e) => setEditBio(e.target.value)} className="bg-white/5 border-white/10 text-white italic h-12" />
+                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-oxford/60">Bio</label>
+                                                    <Input value={editBio} onChange={(e) => setEditBio(e.target.value)} className="bg-white border-black/10 text-oxford italic h-12" />
                                                 </div>
                                             </div>
-                                            <Button type="submit" className="w-full h-12 rounded-none bg-gold text-oxford font-bold tracking-[0.2em] hover:bg-white transition-all">
+                                            <Button type="submit" className="w-full h-12 rounded-none bg-gold text-oxford font-bold tracking-[0.2em] hover:bg-oxford hover:text-white transition-all">
                                                 SAVE CHANGES
                                             </Button>
                                         </form>
@@ -228,20 +228,20 @@ const AdminProfessors = memo(() => {
                             </div>
 
                             <div className="space-y-6">
-                                <div className="w-16 h-16 bg-white flex items-center justify-center rounded-2xl group-hover:bg-gold transition-all duration-700">
-                                    <GraduationCap size={32} className="text-teal-400 group-hover:text-oxford" />
+                                <div className="w-16 h-16 bg-oxford/10 flex items-center justify-center rounded-2xl group-hover:bg-gold transition-all duration-700">
+                                    <GraduationCap size={32} className="text-oxford group-hover:text-white" />
                                 </div>
                                 <div className="space-y-1">
-                                    <h3 className="font-serif text-2xl font-bold text-white group-hover:text-gold transition-colors">{prof.name}</h3>
-                                    <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">{prof.degree} • {prof.affiliation}</p>
-                                    <p className="text-[10px] italic text-teal-400/80">{prof.department}</p>
+                                    <h3 className="font-serif text-2xl font-bold text-oxford group-hover:text-gold transition-colors">{prof.name}</h3>
+                                    <p className="text-[10px] uppercase tracking-widest text-oxford/40 font-bold">{prof.degree} • {prof.affiliation}</p>
+                                    <p className="text-[10px] italic text-teal-500/80">{prof.department}</p>
                                 </div>
                             </div>
 
-                            <div className="space-y-6 pt-10 mt-auto border-t border-white/5">
+                            <div className="space-y-6 pt-10 mt-auto border-t border-black/5">
                                 <div className="flex justify-between items-center text-[10px] uppercase tracking-[0.2em] font-bold">
-                                    <span className="text-white/20">Status</span>
-                                    <span className={prof.status === 'ACTIVE' ? "text-teal-400" : "text-red-400"}>{prof.status}</span>
+                                    <span className="text-oxford/20">Status</span>
+                                    <span className={prof.status === 'ACTIVE' ? "text-teal-500" : "text-red-500"}>{prof.status}</span>
                                 </div>
 
                                 <div className="flex gap-4">
@@ -249,7 +249,7 @@ const AdminProfessors = memo(() => {
                                         <Button
                                             variant="ghost"
                                             onClick={() => banUser(prof.id)}
-                                            className="flex-1 rounded-none border border-white/10 text-white/40 hover:text-red-400 hover:bg-red-400/5 transition-all text-[10px] uppercase font-bold tracking-widest h-12"
+                                            className="flex-1 rounded-none border border-black/10 text-oxford/40 hover:text-red-500 hover:bg-red-50 transition-all text-[10px] uppercase font-bold tracking-widest h-12"
                                         >
                                             Deactivate
                                         </Button>
@@ -257,7 +257,7 @@ const AdminProfessors = memo(() => {
                                         <Button
                                             variant="ghost"
                                             onClick={() => unbanUser(prof.id)}
-                                            className="flex-1 rounded-none border border-white/10 text-white/40 hover:text-teal-400 hover:bg-teal-400/5 transition-all text-[10px] uppercase font-bold tracking-widest h-12"
+                                            className="flex-1 rounded-none border border-black/10 text-oxford/40 hover:text-teal-500 hover:bg-teal-50 transition-all text-[10px] uppercase font-bold tracking-widest h-12"
                                         >
                                             Authorize
                                         </Button>
@@ -268,9 +268,9 @@ const AdminProfessors = memo(() => {
                     ))}
 
                     {professors.length === 0 && (
-                        <div className="lg:col-span-3 py-32 text-center border-2 border-dashed border-white/5 rounded-[40px] flex flex-col items-center justify-center space-y-4">
-                            <AlertCircle size={48} className="text-white/10" />
-                            <p className="font-serif italic text-white/20 text-xl tracking-widest">No board members found in the current directive.</p>
+                        <div className="lg:col-span-3 py-32 text-center border-2 border-dashed border-black/5 rounded-2xl flex flex-col items-center justify-center space-y-4">
+                            <AlertCircle size={48} className="text-oxford/10" />
+                            <p className="font-serif italic text-oxford/20 text-xl tracking-widest">No board members found in the current directive.</p>
                         </div>
                     )}
                 </div>

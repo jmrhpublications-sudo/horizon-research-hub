@@ -68,6 +68,36 @@ const Footer = memo(() => {
                   Author Guidelines
                 </Link>
               </li>
+              <li>
+                <Link to="/journal/aims-scope" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Aims & Scope
+                </Link>
+              </li>
+              <li>
+                <Link to="/journal/peer-review" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Peer Review Process
+                </Link>
+              </li>
+              <li>
+                <Link to="/journal/ethics" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Ethics
+                </Link>
+              </li>
+              <li>
+                <Link to="/journal/plagiarism" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Plagiarism Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/journal/open-access" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Open Access
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -134,6 +164,12 @@ const Footer = memo(() => {
                 <Link to="/contact" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
                   <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                   Contact
+                </Link>
+              </li>
+              <li>
+                <Link to="/call-for-papers" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Call for Papers
                 </Link>
               </li>
             </ul>

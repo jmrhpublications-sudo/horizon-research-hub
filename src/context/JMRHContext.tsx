@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
+const USER_STORAGE_KEY = 'jmrh_user';
+
 export type UserRole = 'ADMIN' | 'PROFESSOR' | 'USER';
 export type UserStatus = 'ACTIVE' | 'BANNED';
 export type PaperStatus = 'SUBMITTED' | 'UNDER_REVIEW' | 'REVISION_REQUIRED' | 'ACCEPTED' | 'REJECTED' | 'PUBLISHED' | 'ARCHIVED';
@@ -192,9 +194,9 @@ const mapProfile = (p: any): User => ({
     role: (p.role || 'USER') as UserRole,
     status: (p.status || 'ACTIVE') as UserStatus,
     createdAt: p.created_at || '',
-    phone: p.phone,
-    affiliation: p.affiliation,
-    department: p.department,
+    phone: p.phone_number || p.phone,
+    affiliation: p.university || p.affiliation,
+    department: p.department || p.specialization,
     degree: p.degree,
 });
 
@@ -340,7 +342,14 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
             const { data: { session } } = await supabase.auth.getSession();
             if (session?.user) {
                 const profile = await fetchUserProfile(session.user.id);
-                if (profile) setCurrentUser(profile);
+                if (profile) {
+                    setCurrentUser(profile);
+                    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(profile));
+                }
+            } else {
+                // No valid session - clear any cached data
+                localStorage.removeItem(USER_STORAGE_KEY);
+                setCurrentUser(null);
             }
             setIsLoading(false);
         };
@@ -364,28 +373,46 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     const refreshData = async () => {
-        const [profilesRes, papersRes, reviewsRes, journalsRes, booksRes, requestsRes, professorSubsRes] = await Promise.all([
-            db.from('profiles').select('*'),
-            db.from('papers').select('*'),
-            db.from('reviews').select('*'),
-            db.from('published_journals').select('*').eq('status', 'PUBLISHED'),
-            db.from('published_books').select('*').eq('status', 'PUBLISHED'),
-            db.from('upload_requests').select('*'),
-            db.from('professor_submissions').select('*'),
-        ]);
+        try {
+            const [profilesRes, papersRes, reviewsRes] = await Promise.all([
+                db.from('profiles').select('*'),
+                db.from('papers').select('*'),
+                db.from('reviews').select('*'),
+            ]);
 
-        if (profilesRes.data) setUsers(profilesRes.data.map(mapProfile));
-        if (papersRes.data) setPapers(papersRes.data.map(mapPaper));
-        if (reviewsRes.data) setReviews(reviewsRes.data.map(mapReview));
-        if (journalsRes.data) setPublishedJournals(journalsRes.data.map(mapPublishedJournal));
-        if (booksRes.data) setPublishedBooks(booksRes.data.map(mapPublishedBook));
-        if (requestsRes.data) setUploadRequests(requestsRes.data.map(mapUploadRequest));
-        if (professorSubsRes.data) setProfessorSubmissions(professorSubsRes.data.map(mapProfessorSubmission));
+            if (profilesRes.data) setUsers(profilesRes.data.map(mapProfile));
+            if (papersRes.data) setPapers(papersRes.data.map(mapPaper));
+            if (reviewsRes.data) setReviews(reviewsRes.data.map(mapReview));
+
+            // These tables may not exist yet - fetch gracefully
+            const journalsRes = await db.from('published_journals').select('*').eq('status', 'PUBLISHED');
+            if (journalsRes.data) setPublishedJournals(journalsRes.data.map(mapPublishedJournal));
+
+            const booksRes = await db.from('published_books').select('*').eq('status', 'PUBLISHED');
+            if (booksRes.data) setPublishedBooks(booksRes.data.map(mapPublishedBook));
+
+            const requestsRes = await db.from('upload_requests').select('*');
+            if (requestsRes.data) setUploadRequests(requestsRes.data.map(mapUploadRequest));
+
+            const professorSubsRes = await db.from('professor_submissions').select('*');
+            if (professorSubsRes.data) setProfessorSubmissions(professorSubsRes.data.map(mapProfessorSubmission));
+        } catch (err) {
+            console.warn('Some tables may not exist yet:', err);
+        }
     };
 
     const signIn = async (email: string, pass: string) => {
-        const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
         if (error) throw error;
+        
+        if (data.user) {
+            const profile = await fetchUserProfile(data.user.id);
+            if (profile) {
+                setCurrentUser(profile);
+                localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(profile));
+            }
+        }
+        
         toast({ title: "Authentication Success", description: "Welcome back to JMRH" });
     };
 
@@ -409,6 +436,7 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         const { error } = await supabase.auth.signOut();
         if (error) throw error;
         setCurrentUser(null);
+        localStorage.removeItem(USER_STORAGE_KEY);
     };
 
     const updateUser = async (userId: string, updates: Partial<User>) => {
@@ -416,8 +444,8 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         if (updates.name !== undefined) dbUpdates.name = updates.name;
         if (updates.email !== undefined) dbUpdates.email = updates.email;
         if (updates.status !== undefined) dbUpdates.status = updates.status;
-        if (updates.phone !== undefined) dbUpdates.phone = updates.phone;
-        if (updates.affiliation !== undefined) dbUpdates.affiliation = updates.affiliation;
+        if (updates.phone !== undefined) dbUpdates.phone_number = updates.phone;
+        if (updates.affiliation !== undefined) dbUpdates.university = updates.affiliation;
         if (updates.department !== undefined) dbUpdates.department = updates.department;
         if (updates.degree !== undefined) dbUpdates.degree = updates.degree;
 
@@ -447,8 +475,8 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
                 name, 
                 email, 
                 status: 'ACTIVE',
-                phone: details?.phone,
-                affiliation: details?.affiliation,
+                phone_number: details?.phone,
+                university: details?.affiliation,
                 department: details?.department,
                 degree: details?.degree
             }).eq('id', data.user.id);
