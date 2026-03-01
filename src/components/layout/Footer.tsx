@@ -10,10 +10,8 @@ const Footer = memo(() => {
 
           {/* Brand */}
           <div className="md:col-span-4 space-y-8">
-            <Link to="/" className="flex items-center gap-4 group">
-              <div className="w-12 h-12 bg-oxford flex items-center justify-center rotate-45 group-hover:rotate-90 transition-transform duration-700">
-                <BookOpen size={20} className="text-gold -rotate-45 group-hover:-rotate-90 transition-transform duration-700" />
-              </div>
+            <Link to="/" className="flex items-center gap-3 group">
+              <img src="/logo.png" alt="JMRH Logo" className="w-12 h-12 object-contain" />
               <span className="font-serif text-2xl font-black text-oxford tracking-tighter">JMRH<span className="text-gold">.</span></span>
             </Link>
 

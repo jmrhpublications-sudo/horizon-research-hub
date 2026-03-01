@@ -64,10 +64,8 @@ const Header = memo(() => {
       <div className="container max-w-[1800px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
-          <PreloadLink to="/" className="flex items-center gap-4 group">
-            <div className="w-12 h-12 bg-oxford flex items-center justify-center rotate-45 group-hover:rotate-90 transition-transform duration-700">
-              <BookOpen size={20} className="text-gold -rotate-45 group-hover:-rotate-90 transition-transform duration-700" />
-            </div>
+          <PreloadLink to="/" className="flex items-center gap-3 group">
+            <img src="/logo.png" alt="JMRH Logo" className="w-12 h-12 object-contain" />
             <div className="flex flex-col">
               <span className="font-serif text-xl font-black text-oxford tracking-tighter leading-none">
                 JMRH<span className="text-gold">.</span>
