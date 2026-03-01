@@ -70,50 +70,32 @@ const AuthPage = memo(() => {
         }
     }, []);
 
-    const handleLogin = async () => {
-        if (!email || !password) {
-            toast({ 
-                title: "Missing Information", 
-                description: "Please enter both email and password.", 
-                variant: "destructive" 
-            });
-            return;
-        }
-
-        setLoading(true);
-
-        try {
-            await signIn(email, password);
-            
-            if (rememberMe) {
-                localStorage.setItem(STORAGE_EMAIL_KEY, email);
-                localStorage.setItem(STORAGE_REMEMBER_KEY, "true");
-            } else {
-                localStorage.removeItem(STORAGE_EMAIL_KEY);
-                localStorage.removeItem(STORAGE_REMEMBER_KEY);
-            }
-            
-            toast({ title: "Welcome Back!", description: "Login successful." });
-            navigate(location.state?.from?.pathname || '/');
-        } catch (error: any) {
-            console.error("Login error:", error);
-            toast({ 
-                title: "Login Failed", 
-                description: error.message || "Invalid email or password.", 
-                variant: "destructive" 
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
-
     const handleAuth = async (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
         try {
             if (isLogin) {
-                await handleLogin();
+                if (!email || !password) {
+                    toast({ 
+                        title: "Missing Information", 
+                        description: "Please enter both email and password.", 
+                        variant: "destructive" 
+                    });
+                    return;
+                }
+
+                await signIn(email, password);
+                
+                if (rememberMe) {
+                    localStorage.setItem(STORAGE_EMAIL_KEY, email);
+                    localStorage.setItem(STORAGE_REMEMBER_KEY, "true");
+                } else {
+                    localStorage.removeItem(STORAGE_EMAIL_KEY);
+                    localStorage.removeItem(STORAGE_REMEMBER_KEY);
+                }
+                
+                navigate(location.state?.from?.pathname || '/', { replace: true });
                 return;
             } else {
                 if (regPass.length < 6) {
