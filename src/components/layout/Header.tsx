@@ -50,31 +50,43 @@ const Header = memo(() => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMenuOpen]);
+
   const isActive = (href: string) => {
     if (href === "/") return location.pathname === "/";
     return location.pathname.startsWith(href);
   };
 
-  // Light background for homepage, white for other pages
   const isHomePage = location.pathname === "/";
   const headerBg = !isHomePage || scrolled ? "bg-white/95 backdrop-blur-2xl border-b border-black/5" : "bg-white";
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${headerBg}`}>
-      <div className="container max-w-[1800px] mx-auto px-6 lg:px-10">
-        <div className="flex items-center justify-between py-4">
-          {/* Logo */}
-          <PreloadLink to="/" className="flex items-center gap-3 group">
-            <img src="/logo.png" alt="JMRH Logo" className="w-16 h-16 object-contain" width="64" height="64" />
+      <div className="container max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="flex items-center justify-between py-3 lg:py-4">
+          <PreloadLink to="/" className="flex items-center gap-2 lg:gap-3 group">
+            <img src="/logo.png" alt="JMRH Logo" className="w-10 h-10 lg:w-16 lg:h-16 object-contain" width="64" height="64" />
             <div className="flex flex-col">
-              <span className="font-serif text-xl font-black text-oxford tracking-tighter leading-none">
+              <span className="font-serif text-lg lg:text-xl font-black text-oxford tracking-tighter leading-none">
                 JMRH<span className="text-gold">.</span>
               </span>
-              <span className="text-[9px] uppercase tracking-[0.4em] text-oxford/50 font-bold font-ui mt-0.5">Publications</span>
+              <span className="text-[7px] lg:text-[9px] uppercase tracking-[0.3em] lg:tracking-[0.4em] text-oxford/50 font-bold font-ui mt-0.5">Publications</span>
             </div>
           </PreloadLink>
 
-          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-2" aria-label="Main navigation">
             {navLinks.map((link) => (
               <div key={link.label} className="relative group">
@@ -88,22 +100,21 @@ const Header = memo(() => {
                       {link.label}
                       <ChevronDown size={10} className={`transition-transform duration-300 ${openDropdown === link.label ? "rotate-180" : ""}`} />
                     </button>
-                    {/* Dropdown Menu */}
                     <div 
                       className={`absolute top-full left-0 pt-2 transition-all duration-300 ${openDropdown === link.label ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-2"}`}
                       onMouseLeave={() => setOpenDropdown(null)}
                     >
                       <div className="bg-white border border-black/5 shadow-2xl rounded-sm py-2 min-w-[200px]">
-                            {link.children.map((child) => (
-                            <PreloadLink
-                              key={child.label}
-                              to={child.href}
-                              className={`block text-[10px] uppercase tracking-[0.1em] font-bold px-4 py-2.5 transition-all duration-300 hover:bg-gold/5 hover:text-gold
-                                ${isActive(child.href) ? "text-gold bg-gold/5" : "text-oxford/60"}`}
-                            >
-                              {child.label}
-                            </PreloadLink>
-                          ))}
+                        {link.children.map((child) => (
+                          <PreloadLink
+                            key={child.label}
+                            to={child.href}
+                            className={`block text-[10px] uppercase tracking-[0.1em] font-bold px-4 py-2.5 transition-all duration-300 hover:bg-gold/5 hover:text-gold
+                              ${isActive(child.href) ? "text-gold bg-gold/5" : "text-oxford/60"}`}
+                          >
+                            {child.label}
+                          </PreloadLink>
+                        ))}
                       </div>
                     </div>
                   </>
@@ -123,7 +134,6 @@ const Header = memo(() => {
             ))}
           </nav>
 
-          {/* CTA Buttons & Profile */}
           <div className="hidden lg:flex items-center gap-6">
             {!currentUser ? (
               <div className="flex items-center gap-3 px-4 py-2 bg-gold/5 border border-gold/10 rounded-full">
@@ -154,44 +164,43 @@ const Header = memo(() => {
             </PreloadLink>
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden w-12 h-12 flex items-center justify-center text-oxford border border-black/5 hover:border-gold transition-colors"
+            className="lg:hidden w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-oxford border border-black/5 hover:border-gold transition-colors bg-white"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Navigation */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-50 lg:hidden bg-white px-6 pt-24 pb-12 flex flex-col"
+            className="fixed inset-0 z-50 lg:hidden bg-white px-4 sm:px-6 pt-20 pb-8 sm:pt-24 sm:pb-12 flex flex-col"
           >
-            <div className="container mx-auto h-full flex flex-col">
-              <div className="flex justify-between items-center mb-12 border-b border-black/5 pb-6">
-                <span className="font-serif text-2xl font-bold italic text-oxford">Menu</span>
-                <button onClick={() => setIsMenuOpen(false)} className="p-3 bg-oxford text-white hover:bg-gold transition-colors">
-                  <X size={20} />
+            <div className="container mx-auto h-full flex flex-col max-w-lg mx-auto">
+              <div className="flex justify-between items-center mb-8 sm:mb-12 border-b border-black/5 pb-4 sm:pb-6">
+                <span className="font-serif text-xl sm:text-2xl font-bold italic text-oxford">Menu</span>
+                <button onClick={() => setIsMenuOpen(false)} className="p-2.5 sm:p-3 bg-oxford text-white hover:bg-gold transition-colors">
+                  <X size={18} sm:size={20} />
                 </button>
               </div>
 
-              <nav className="flex flex-col gap-2 flex-1 overflow-y-auto">
+              <nav className="flex flex-col gap-1 flex-1 overflow-y-auto -mx-4 sm:-mx-6 px-4 sm:px-6">
                 {navLinks.map((link) => (
                   <div key={link.label}>
                     {link.children ? (
                       <div className="border-b border-black/5">
                         <button
                           onClick={() => setOpenDropdown(openDropdown === link.label ? null : link.label)}
-                          className="w-full font-serif text-2xl italic transition-all flex items-center justify-between py-4 text-oxford"
+                          className="w-full font-serif text-xl sm:text-2xl italic transition-all flex items-center justify-between py-3 sm:py-4 text-oxford min-h-[52px] touch-manipulation"
                         >
                           {link.label}
-                          <ChevronRight size={20} className={`transition-transform duration-300 ${openDropdown === link.label ? "rotate-90" : ""}`} />
+                          <ChevronRight size={18} sm:size={20} className={`transition-transform duration-300 ${openDropdown === link.label ? "rotate-90" : ""}`} />
                         </button>
                         <AnimatePresence>
                           {openDropdown === link.label && (
@@ -206,7 +215,7 @@ const Header = memo(() => {
                                   key={child.label}
                                   to={child.href}
                                   onClick={() => setIsMenuOpen(false)}
-                                  className="block font-sans text-base text-oxford/60 py-3 pl-6 border-l-2 border-gold/20 hover:border-gold hover:text-gold transition-all"
+                                  className="block font-sans text-base text-oxford/60 py-3 pl-4 sm:pl-6 border-l-2 border-gold/20 hover:border-gold hover:text-gold transition-all min-h-[44px] touch-manipulation"
                                 >
                                   {child.label}
                                 </PreloadLink>
@@ -215,16 +224,16 @@ const Header = memo(() => {
                           )}
                         </AnimatePresence>
                       </div>
-                     ) : (
+                    ) : (
                       <PreloadLink
                         key={link.label}
                         to={link.href}
                         onClick={() => setIsMenuOpen(false)}
-                        className={`font-serif text-2xl italic transition-all flex items-center justify-between border-b border-black/5 py-4
+                        className={`font-serif text-xl sm:text-2xl italic transition-all flex items-center justify-between border-b border-black/5 py-3 sm:py-4 min-h-[52px] touch-manipulation
                           ${isActive(link.href) ? "text-gold" : "text-oxford/60 hover:text-gold"}`}
                       >
                         {link.label}
-                        <ChevronRight size={20} className={isActive(link.href) ? "text-gold" : "text-oxford/20"} />
+                        <ChevronRight size={18} sm:size={20} className={isActive(link.href) ? "text-gold" : "text-oxford/20"} />
                       </PreloadLink>
                     )}
                   </div>
@@ -232,7 +241,7 @@ const Header = memo(() => {
               </nav>
 
               <div className="mt-auto space-y-4 pt-6 border-t border-black/5">
-                <Button asChild className="w-full h-14 rounded-none bg-oxford text-white text-xs font-bold tracking-[0.2em] hover:bg-gold transition-all duration-500 shadow-lg">
+                <Button asChild className="w-full h-12 sm:h-14 rounded-none bg-oxford text-white text-xs font-bold tracking-[0.2em] hover:bg-gold transition-all duration-500 shadow-lg">
                   <PreloadLink to="/journal/submit" onClick={() => setIsMenuOpen(false)}>SUBMIT MANUSCRIPT</PreloadLink>
                 </Button>
                 
