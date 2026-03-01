@@ -2,6 +2,7 @@ import { memo, useState, useMemo, useRef } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useJMRH, PaperStatus, Paper, ProfessorSubmission } from "@/context/JMRHContext";
 import { supabase } from "@/integrations/supabase/client";
+import { getSignedFileUrl } from "@/lib/storage-utils";
 import {
     BookOpen,
     CheckCircle,
@@ -160,10 +161,18 @@ const ProfessorDashboard = memo(() => {
         });
     };
 
-    const handleDownload = (paper: Paper) => {
+    const handleDownload = async (paper: Paper) => {
+        if (paper.attachments?.length) {
+            const url = await getSignedFileUrl('manuscripts', paper.attachments[0]);
+            if (url) {
+                window.open(url, '_blank');
+                return;
+            }
+        }
         toast({
-            title: "Accessing Archive",
-            description: `Downloading manuscript: ${paper.title}`
+            title: "No File Available",
+            description: `No downloadable manuscript found for: ${paper.title}`,
+            variant: "destructive"
         });
     };
 
@@ -178,11 +187,8 @@ const ProfessorDashboard = memo(() => {
             return null;
         }
         
-        const { data: { publicUrl } } = supabase.storage
-            .from('publications')
-            .getPublicUrl(fileName);
-        
-        return publicUrl;
+        // Store path only; generate signed URLs on demand for downloads
+        return fileName;
     };
 
     const handleJournalFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

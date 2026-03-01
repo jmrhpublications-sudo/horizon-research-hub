@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.4"
+    PostgrestVersion: "14.1"
   }
   public: {
     Tables: {
@@ -18,18 +18,12 @@ export type Database = {
         Row: {
           abstract: string
           assigned_professor_id: string | null
-          assigned_professor_name: string | null
           attachments: string[] | null
-          author_email: string | null
-          author_id: string | null
+          author_id: string
           author_name: string
-          co_authors: string | null
           created_at: string
           discipline: string
           id: string
-          keywords: string | null
-          manuscript_type: string | null
-          paper_type: string
           revision_comments: string | null
           status: string
           submission_date: string
@@ -39,18 +33,12 @@ export type Database = {
         Insert: {
           abstract?: string
           assigned_professor_id?: string | null
-          assigned_professor_name?: string | null
           attachments?: string[] | null
-          author_email?: string | null
-          author_id?: string | null
+          author_id: string
           author_name?: string
-          co_authors?: string | null
           created_at?: string
           discipline?: string
           id?: string
-          keywords?: string | null
-          manuscript_type?: string | null
-          paper_type?: string
           revision_comments?: string | null
           status?: string
           submission_date?: string
@@ -60,18 +48,12 @@ export type Database = {
         Update: {
           abstract?: string
           assigned_professor_id?: string | null
-          assigned_professor_name?: string | null
           attachments?: string[] | null
-          author_email?: string | null
-          author_id?: string | null
+          author_id?: string
           author_name?: string
-          co_authors?: string | null
           created_at?: string
           discipline?: string
           id?: string
-          keywords?: string | null
-          manuscript_type?: string | null
-          paper_type?: string
           revision_comments?: string | null
           status?: string
           submission_date?: string
@@ -80,252 +62,69 @@ export type Database = {
         }
         Relationships: []
       }
-      professor_submissions: {
-        Row: {
-          abstract: string | null
-          admin_notes: string | null
-          authors: string
-          cover_image: string | null
-          created_at: string
-          description: string | null
-          discipline: string
-          doi: string | null
-          edition: string | null
-          editors: string | null
-          id: string
-          isbn: string | null
-          issue: string | null
-          keywords: string | null
-          pages: string | null
-          pdf_url: string | null
-          professor_id: string
-          professor_name: string
-          publication_date: string | null
-          publication_year: string | null
-          publisher: string | null
-          purchase_link: string | null
-          status: string
-          submission_type: string
-          title: string
-          updated_at: string
-          volume: string | null
-        }
-        Insert: {
-          abstract?: string | null
-          admin_notes?: string | null
-          authors?: string
-          cover_image?: string | null
-          created_at?: string
-          description?: string | null
-          discipline?: string
-          doi?: string | null
-          edition?: string | null
-          editors?: string | null
-          id?: string
-          isbn?: string | null
-          issue?: string | null
-          keywords?: string | null
-          pages?: string | null
-          pdf_url?: string | null
-          professor_id: string
-          professor_name?: string
-          publication_date?: string | null
-          publication_year?: string | null
-          publisher?: string | null
-          purchase_link?: string | null
-          status?: string
-          submission_type?: string
-          title: string
-          updated_at?: string
-          volume?: string | null
-        }
-        Update: {
-          abstract?: string | null
-          admin_notes?: string | null
-          authors?: string
-          cover_image?: string | null
-          created_at?: string
-          description?: string | null
-          discipline?: string
-          doi?: string | null
-          edition?: string | null
-          editors?: string | null
-          id?: string
-          isbn?: string | null
-          issue?: string | null
-          keywords?: string | null
-          pages?: string | null
-          pdf_url?: string | null
-          professor_id?: string
-          professor_name?: string
-          publication_date?: string | null
-          publication_year?: string | null
-          publisher?: string | null
-          purchase_link?: string | null
-          status?: string
-          submission_type?: string
-          title?: string
-          updated_at?: string
-          volume?: string | null
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
+          address: string | null
+          age: string | null
+          bio: string | null
+          city: string | null
+          college: string | null
           created_at: string
           degree: string | null
           department: string | null
+          dob: string | null
           email: string
           id: string
           name: string
           phone_number: string | null
+          pincode: string | null
           specialization: string | null
           status: string
+          study_type: string | null
           university: string | null
           updated_at: string
         }
         Insert: {
+          address?: string | null
+          age?: string | null
+          bio?: string | null
+          city?: string | null
+          college?: string | null
           created_at?: string
           degree?: string | null
           department?: string | null
+          dob?: string | null
           email?: string
           id: string
           name?: string
           phone_number?: string | null
+          pincode?: string | null
           specialization?: string | null
           status?: string
+          study_type?: string | null
           university?: string | null
           updated_at?: string
         }
         Update: {
+          address?: string | null
+          age?: string | null
+          bio?: string | null
+          city?: string | null
+          college?: string | null
           created_at?: string
           degree?: string | null
           department?: string | null
+          dob?: string | null
           email?: string
           id?: string
           name?: string
           phone_number?: string | null
+          pincode?: string | null
           specialization?: string | null
           status?: string
+          study_type?: string | null
           university?: string | null
           updated_at?: string
-        }
-        Relationships: []
-      }
-      published_books: {
-        Row: {
-          authors: string
-          cover_image: string | null
-          created_at: string
-          description: string | null
-          discipline: string
-          edition: string | null
-          editors: string | null
-          id: string
-          isbn: string | null
-          keywords: string | null
-          pdf_url: string | null
-          publication_year: string | null
-          publisher: string | null
-          purchase_link: string | null
-          status: string
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          authors?: string
-          cover_image?: string | null
-          created_at?: string
-          description?: string | null
-          discipline?: string
-          edition?: string | null
-          editors?: string | null
-          id?: string
-          isbn?: string | null
-          keywords?: string | null
-          pdf_url?: string | null
-          publication_year?: string | null
-          publisher?: string | null
-          purchase_link?: string | null
-          status?: string
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          authors?: string
-          cover_image?: string | null
-          created_at?: string
-          description?: string | null
-          discipline?: string
-          edition?: string | null
-          editors?: string | null
-          id?: string
-          isbn?: string | null
-          keywords?: string | null
-          pdf_url?: string | null
-          publication_year?: string | null
-          publisher?: string | null
-          purchase_link?: string | null
-          status?: string
-          title?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      published_journals: {
-        Row: {
-          abstract: string | null
-          authors: string
-          cover_image: string | null
-          created_at: string
-          discipline: string
-          doi: string | null
-          id: string
-          issue: string | null
-          keywords: string | null
-          pages: string | null
-          pdf_url: string | null
-          publication_date: string | null
-          status: string
-          title: string
-          updated_at: string
-          volume: string | null
-        }
-        Insert: {
-          abstract?: string | null
-          authors?: string
-          cover_image?: string | null
-          created_at?: string
-          discipline?: string
-          doi?: string | null
-          id?: string
-          issue?: string | null
-          keywords?: string | null
-          pages?: string | null
-          pdf_url?: string | null
-          publication_date?: string | null
-          status?: string
-          title: string
-          updated_at?: string
-          volume?: string | null
-        }
-        Update: {
-          abstract?: string | null
-          authors?: string
-          cover_image?: string | null
-          created_at?: string
-          discipline?: string
-          doi?: string | null
-          id?: string
-          issue?: string | null
-          keywords?: string | null
-          pages?: string | null
-          pdf_url?: string | null
-          publication_date?: string | null
-          status?: string
-          title?: string
-          updated_at?: string
-          volume?: string | null
         }
         Relationships: []
       }
@@ -343,7 +142,7 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
-          rating?: number
+          rating: number
           updated_at?: string
           user_id: string
           user_name?: string
@@ -359,54 +158,6 @@ export type Database = {
         }
         Relationships: []
       }
-      upload_requests: {
-        Row: {
-          admin_notes: string | null
-          authors: string | null
-          created_at: string
-          description: string | null
-          id: string
-          isbn: string | null
-          link: string | null
-          publisher: string | null
-          request_type: string
-          status: string
-          title: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          admin_notes?: string | null
-          authors?: string | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          isbn?: string | null
-          link?: string | null
-          publisher?: string | null
-          request_type?: string
-          status?: string
-          title: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          admin_notes?: string | null
-          authors?: string | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          isbn?: string | null
-          link?: string | null
-          publisher?: string | null
-          request_type?: string
-          status?: string
-          title?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       user_roles: {
         Row: {
           id: string
@@ -415,7 +166,7 @@ export type Database = {
         }
         Insert: {
           id?: string
-          role?: Database["public"]["Enums"]["app_role"]
+          role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Update: {

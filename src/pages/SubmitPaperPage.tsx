@@ -301,11 +301,17 @@ const SubmitPaperPage = memo(() => {
             return null;
         }
         
-        const { data: { publicUrl } } = supabase.storage
+        // Use signed URLs for private bucket - never expose via getPublicUrl
+        const { data: signedData, error: signedError } = await supabase.storage
             .from('manuscripts')
-            .getPublicUrl(fileName);
+            .createSignedUrl(fileName, 3600); // 1 hour expiry
         
-        return publicUrl;
+        if (signedError || !signedData?.signedUrl) {
+            console.error('Signed URL error:', signedError);
+            return fileName; // Return path as fallback for DB storage
+        }
+        
+        return fileName; // Store the path, generate signed URLs on demand
     };
 
     const handleAutoSave = async () => {
