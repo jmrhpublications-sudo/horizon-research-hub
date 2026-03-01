@@ -65,7 +65,7 @@ const Header = memo(() => {
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
           <PreloadLink to="/" className="flex items-center gap-3 group">
-            <img src="/logo.png" alt="JMRH Logo" className="w-12 h-12 object-contain" />
+            <img src="/logo.png" alt="JMRH Logo" className="w-16 h-16 object-contain" width="64" height="64" />
             <div className="flex flex-col">
               <span className="font-serif text-xl font-black text-oxford tracking-tighter leading-none">
                 JMRH<span className="text-gold">.</span>

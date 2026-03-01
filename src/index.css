@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=Source+Sans+3:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=Source+Sans+3:wght@400;600&display=swap&text=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,!?-:;()&');
 
 @tailwind base;
 @tailwind components;
@@ -258,5 +258,31 @@
 
   .text-text-muted {
     color: hsl(var(--text-muted));
+  }
+}
+
+/* Performance: GPU acceleration & smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeSpeed;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+img, video {
+  content-visibility: auto;
+}
+
+/* Reduce motion for low-end devices */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

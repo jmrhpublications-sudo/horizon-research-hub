@@ -11,7 +11,7 @@ const Footer = memo(() => {
           {/* Brand */}
           <div className="md:col-span-4 space-y-8">
             <Link to="/" className="flex items-center gap-3 group">
-              <img src="/logo.png" alt="JMRH Logo" className="w-12 h-12 object-contain" />
+              <img src="/logo.png" alt="JMRH Logo" className="w-16 h-16 object-contain" width="64" height="64" />
               <span className="font-serif text-2xl font-black text-oxford tracking-tighter">JMRH<span className="text-gold">.</span></span>
             </Link>
 
