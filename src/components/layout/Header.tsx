@@ -43,13 +43,13 @@ const dropdownVariants = {
     opacity: 1, 
     y: 0, 
     scale: 1,
-    transition: { duration: 0.2, ease: "easeOut" }
+    transition: { duration: 0.2, ease: [0.0, 0.0, 0.2, 1] as const }
   },
   exit: { 
     opacity: 0, 
     y: -8, 
     scale: 0.98,
-    transition: { duration: 0.15, ease: "easeIn" }
+    transition: { duration: 0.15, ease: [0.4, 0.0, 1, 1] as const }
   }
 };
 
