@@ -1,20 +1,21 @@
-import { useState, memo, FormEvent } from "react";
+import { useState, memo, FormEvent, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useJMRH } from "@/context/JMRHContext";
 import {
     User as UserIcon,
     Lock,
     Mail,
-    ArrowRight,
     Phone,
     Building2,
     ShieldCheck,
     Eye,
     EyeOff,
+    Zap,
+    Loader2,
     CheckCircle,
-    AlertCircle
+    ArrowRight
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -33,17 +34,25 @@ const DEGREES = [
     "B.Com", "BBA", "BCA", "B.Sc", "B.A", "M.Com", "MBA", "MCA", "M.Sc", "M.A", "PhD"
 ];
 
+const DEMO_ACCOUNTS = [
+    { email: "admin@jmrh.com", password: "admin123", role: "Admin" },
+    { email: "professor@jmrh.com", password: "professor123", role: "Professor" },
+    { email: "user@jmrh.com", password: "user123", role: "Researcher" },
+];
+
+const STORAGE_REMEMBER_KEY = "jmrh_remember_email";
+const STORAGE_EMAIL_KEY = "jmrh_saved_email";
+
 const AuthPage = memo(() => {
     const [isLogin, setIsLogin] = useState(true);
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [verificationSent, setVerificationSent] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
 
-    // Login State
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    // Registration State
     const [regName, setRegName] = useState("");
     const [regEmail, setRegEmail] = useState("");
     const [regPass, setRegPass] = useState("");
@@ -58,15 +67,69 @@ const AuthPage = memo(() => {
     const location = useLocation();
     const { toast } = useToast();
 
+    useEffect(() => {
+        const savedEmail = localStorage.getItem(STORAGE_EMAIL_KEY);
+        const remembered = localStorage.getItem(STORAGE_REMEMBER_KEY);
+        
+        if (savedEmail && remembered) {
+            setEmail(savedEmail);
+            setRememberMe(true);
+        }
+    }, []);
+
+    const quickLogin = async (demoAccount: typeof DEMO_ACCOUNTS[0]) => {
+        setEmail(demoAccount.email);
+        setPassword(demoAccount.password);
+        setRememberMe(true);
+        
+        await handleLogin(demoAccount.email, demoAccount.password);
+    };
+
+    const handleLogin = async (loginEmail: string, loginPassword: string) => {
+        if (!loginEmail || !loginPassword) {
+            toast({ 
+                title: "Missing Information", 
+                description: "Please enter both email and password.", 
+                variant: "destructive" 
+            });
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            await signIn(loginEmail, loginPassword);
+            
+            if (rememberMe) {
+                localStorage.setItem(STORAGE_EMAIL_KEY, loginEmail);
+                localStorage.setItem(STORAGE_REMEMBER_KEY, "true");
+            } else {
+                localStorage.removeItem(STORAGE_EMAIL_KEY);
+                localStorage.removeItem(STORAGE_REMEMBER_KEY);
+            }
+            
+            toast({ title: "Welcome Back!", description: "Login successful." });
+            navigate(location.state?.from?.pathname || '/');
+        } catch (error: any) {
+            console.error("Login error:", error);
+            toast({ 
+                title: "Login Failed", 
+                description: error.message || "Invalid email or password.", 
+                variant: "destructive" 
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleAuth = async (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
         try {
             if (isLogin) {
-                await signIn(email, password);
-                toast({ title: "Login Successful!", description: "Welcome back to JMRH Publications." });
-                navigate(location.state?.from?.pathname || '/');
+                await handleLogin(email, password);
+                return;
             } else {
                 if (regPass.length < 6) {
                     toast({ title: "Validation Error", description: "Password must be at least 6 characters.", variant: "destructive" });
@@ -87,7 +150,6 @@ const AuthPage = memo(() => {
                     role: regRole
                 });
                 
-                // Show verification message
                 setVerificationSent(true);
                 toast({ 
                     title: "Verification Email Sent!", 
@@ -102,17 +164,25 @@ const AuthPage = memo(() => {
         }
     };
 
-    // If verification email was sent, show success screen
     if (verificationSent) {
         return (
             <div className="min-h-screen bg-white flex flex-col font-sans">
                 <SEOHead title="Verification Email Sent | JMRH Publications" description="Please verify your email to complete registration." canonical="/auth" />
                 <Header />
                 <main className="flex-1 pt-24 pb-16 flex items-center justify-center p-6">
-                    <div className="w-full max-w-md text-center space-y-6">
-                        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                            <Mail className="w-10 h-10 text-green-600" />
-                        </div>
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="w-full max-w-md text-center space-y-6"
+                    >
+                        <motion.div 
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                            className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto"
+                        >
+                            <CheckCircle className="w-10 h-10 text-green-600" />
+                        </motion.div>
                         <h1 className="font-serif text-3xl font-bold text-oxford">Check Your Email</h1>
                         <p className="text-oxford/60">
                             We've sent a verification link to <strong>{regEmail}</strong>. 
@@ -138,7 +208,7 @@ const AuthPage = memo(() => {
                         }} className="w-full bg-oxford hover:bg-gold">
                             Back to Login
                         </Button>
-                    </div>
+                    </motion.div>
                 </main>
                 <Footer />
             </div>
@@ -156,8 +226,11 @@ const AuthPage = memo(() => {
             
             <main className="flex-1 pt-24 pb-16 flex items-center justify-center p-6">
                 <div className="w-full max-w-lg">
-                    {/* Header */}
-                    <div className="text-center mb-8">
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-center mb-8"
+                    >
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-oxford/5 border border-gold/20 rounded-full mb-4">
                             <ShieldCheck className="text-gold" size={12} />
                             <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-oxford">Secure Access</span>
@@ -168,12 +241,43 @@ const AuthPage = memo(() => {
                         <p className="text-oxford/50 mt-2">
                             {isLogin ? "Sign in to submit your manuscripts" : "Register to start publishing with JMRH"}
                         </p>
-                    </div>
+                    </motion.div>
 
-                    {/* Form */}
-                    <form onSubmit={handleAuth} className="bg-white border border-black/5 shadow-xl p-8 space-y-6">
+                    {isLogin && (
+                        <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1 }}
+                            className="mb-6 p-4 bg-gradient-to-r from-gold/10 to-oxford/5 border border-gold/20 rounded-lg"
+                        >
+                            <p className="text-xs font-bold uppercase tracking-wider text-oxford/60 mb-3">Quick Demo Login</p>
+                            <div className="flex flex-wrap gap-2">
+                                {DEMO_ACCOUNTS.map((account) => (
+                                    <motion.button
+                                        key={account.email}
+                                        type="button"
+                                        onClick={() => quickLogin(account)}
+                                        disabled={loading}
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        className="flex items-center gap-2 px-3 py-2 bg-white border border-gold/20 rounded-md text-xs font-semibold text-oxford hover:border-gold hover:bg-gold/5 transition-all disabled:opacity-50"
+                                    >
+                                        <Zap size={12} className="text-gold" />
+                                        {account.role}
+                                    </motion.button>
+                                ))}
+                            </div>
+                        </motion.div>
+                    )}
+
+                    <motion.form 
+                        onSubmit={handleAuth}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.15 }}
+                        className="bg-white border border-black/[0.05] shadow-[0_8px_40px_rgb(0,0,0,0.06)] p-8 space-y-5"
+                    >
                         {isLogin ? (
-                            // Login Form
                             <div className="space-y-4">
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Email Address</label>
@@ -186,6 +290,7 @@ const AuthPage = memo(() => {
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             className="h-12 pl-10 border-black/10 focus:border-gold"
+                                            autoComplete="email"
                                         />
                                     </div>
                                 </div>
@@ -201,19 +306,34 @@ const AuthPage = memo(() => {
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                             className="h-12 pl-10 pr-10 border-black/10 focus:border-gold"
+                                            autoComplete="current-password"
                                         />
                                         <button
                                             type="button"
                                             onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-3 top-3 text-oxford/30 hover:text-oxford"
+                                            className="absolute right-3 top-3 text-oxford/30 hover:text-oxford transition-colors"
                                         >
                                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                         </button>
                                     </div>
                                 </div>
+
+                                <div className="flex items-center justify-between">
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                        <input 
+                                            type="checkbox" 
+                                            checked={rememberMe}
+                                            onChange={(e) => setRememberMe(e.target.checked)}
+                                            className="w-4 h-4 rounded border-black/20 text-gold focus:ring-gold"
+                                        />
+                                        <span className="text-xs text-oxford/60">Remember me</span>
+                                    </label>
+                                    <Link to="/auth/forgot-password" className="text-xs text-gold hover:text-oxford font-semibold">
+                                        Forgot password?
+                                    </Link>
+                                </div>
                             </div>
                         ) : (
-                            // Registration Form
                             <div className="space-y-4">
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Full Name *</label>
@@ -314,37 +434,47 @@ const AuthPage = memo(() => {
                             </div>
                         )}
 
-                        {/* Submit Button */}
                         <Button
                             type="submit"
                             disabled={loading}
-                            className="w-full h-12 bg-oxford text-white hover:bg-gold transition-colors font-bold tracking-wider uppercase text-xs"
+                            className="w-full h-12 bg-oxford text-white hover:bg-gold transition-colors font-bold tracking-wider uppercase text-xs relative overflow-hidden"
                         >
-                            {loading ? "Please wait..." : (isLogin ? "Sign In" : "Create Account")}
+                            <span className={`flex items-center justify-center gap-2 ${loading ? 'opacity-0' : ''}`}>
+                                {isLogin ? "Sign In" : "Create Account"}
+                                <ArrowRight size={16} />
+                            </span>
+                            {loading && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <Loader2 className="w-5 h-5 animate-spin text-white" />
+                                </div>
+                            )}
                         </Button>
 
-                        {/* Toggle */}
-                        <div className="text-center pt-4 border-t border-black/5">
+                        <div className="text-center pt-4 border-t border-black/[0.05]">
                             <p className="text-oxford/50 text-sm">
                                 {isLogin ? "Don't have an account?" : "Already have an account?"}
                                 <button
                                     type="button"
                                     onClick={() => setIsLogin(!isLogin)}
-                                    className="text-gold font-bold ml-2 hover:text-oxford"
+                                    className="text-gold font-bold ml-2 hover:text-oxford transition-colors"
                                 >
                                     {isLogin ? "Register" : "Sign In"}
                                 </button>
                             </p>
                         </div>
-                    </form>
+                    </motion.form>
 
-                    {/* Info Box */}
-                    <div className="mt-6 p-4 bg-oxford/5 border border-black/5">
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="mt-6 p-4 bg-oxford/5 border border-black/5"
+                    >
                         <p className="text-xs text-oxford/60 text-center">
                             <strong>Note:</strong> You can also submit manuscripts without registration by using our 
-                            <Link to="/submit-paper" className="text-gold font-bold ml-1">online submission form</Link>.
+                            <Link to="/submit-paper" className="text-gold font-bold ml-1 hover:text-oxford">online submission form</Link>.
                         </p>
-                    </div>
+                    </motion.div>
                 </div>
             </main>
             <Footer />
