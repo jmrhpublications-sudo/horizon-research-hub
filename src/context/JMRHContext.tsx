@@ -374,30 +374,26 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
 
     const refreshData = async () => {
         try {
-            const [profilesRes, papersRes, reviewsRes] = await Promise.all([
+            // Fetch all data in parallel - non-existent tables return error gracefully
+            const [profilesRes, papersRes, reviewsRes, journalsRes, booksRes, requestsRes, professorSubsRes] = await Promise.all([
                 db.from('profiles').select('*'),
                 db.from('papers').select('*'),
                 db.from('reviews').select('*'),
+                db.from('published_journals').select('*').eq('status', 'PUBLISHED').then((r: any) => r).catch(() => ({ data: null })),
+                db.from('published_books').select('*').eq('status', 'PUBLISHED').then((r: any) => r).catch(() => ({ data: null })),
+                db.from('upload_requests').select('*').then((r: any) => r).catch(() => ({ data: null })),
+                db.from('professor_submissions').select('*').then((r: any) => r).catch(() => ({ data: null })),
             ]);
 
             if (profilesRes.data) setUsers(profilesRes.data.map(mapProfile));
             if (papersRes.data) setPapers(papersRes.data.map(mapPaper));
             if (reviewsRes.data) setReviews(reviewsRes.data.map(mapReview));
-
-            // These tables may not exist yet - fetch gracefully
-            const journalsRes = await db.from('published_journals').select('*').eq('status', 'PUBLISHED');
-            if (journalsRes.data) setPublishedJournals(journalsRes.data.map(mapPublishedJournal));
-
-            const booksRes = await db.from('published_books').select('*').eq('status', 'PUBLISHED');
-            if (booksRes.data) setPublishedBooks(booksRes.data.map(mapPublishedBook));
-
-            const requestsRes = await db.from('upload_requests').select('*');
-            if (requestsRes.data) setUploadRequests(requestsRes.data.map(mapUploadRequest));
-
-            const professorSubsRes = await db.from('professor_submissions').select('*');
-            if (professorSubsRes.data) setProfessorSubmissions(professorSubsRes.data.map(mapProfessorSubmission));
+            if (journalsRes?.data) setPublishedJournals(journalsRes.data.map(mapPublishedJournal));
+            if (booksRes?.data) setPublishedBooks(booksRes.data.map(mapPublishedBook));
+            if (requestsRes?.data) setUploadRequests(requestsRes.data.map(mapUploadRequest));
+            if (professorSubsRes?.data) setProfessorSubmissions(professorSubsRes.data.map(mapProfessorSubmission));
         } catch (err) {
-            console.warn('Some tables may not exist yet:', err);
+            console.warn('Data refresh error:', err);
         }
     };
 
