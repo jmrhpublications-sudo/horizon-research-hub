@@ -43,6 +43,8 @@ const DashboardSidebar = memo(({ role }: DashboardSidebarProps) => {
         { label: "Researchers", icon: Users, href: "/secure/admin/users", badge: 0 },
         { label: "Professors", icon: GraduationCap, href: "/secure/admin/professors", badge: 0 },
         { label: "Manuscripts", icon: FileText, href: "/secure/admin/papers", badge: pendingPapers },
+        { label: "Publications", icon: Library, href: "/secure/admin/publications", badge: 0 },
+        { label: "Upload Requests", icon: Inbox, href: "/secure/admin/requests", badge: pendingRequests },
     ];
 
     const professorLinks = [
