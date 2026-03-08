@@ -422,7 +422,6 @@ const AdminDashboard = memo(() => {
                             <p className="text-[10px] text-muted-foreground/60">{stat.sub}</p>
                         </motion.div>
                     ))}
-                    ))}
                 </div>
 
                 {/* Tabs */}
