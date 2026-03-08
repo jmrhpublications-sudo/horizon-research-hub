@@ -23,6 +23,15 @@ export interface User {
     affiliation?: string;
     department?: string;
     degree?: string;
+    address?: string;
+    city?: string;
+    pincode?: string;
+    age?: string;
+    dob?: string;
+    bio?: string;
+    college?: string;
+    specialization?: string;
+    studyType?: string;
 }
 
 export interface Paper {
@@ -200,6 +209,15 @@ const mapProfile = (p: any): User => ({
     affiliation: p.university || p.affiliation,
     department: p.department || p.specialization,
     degree: p.degree,
+    address: p.address,
+    city: p.city,
+    pincode: p.pincode,
+    age: p.age,
+    dob: p.dob,
+    bio: p.bio,
+    college: p.college,
+    specialization: p.specialization,
+    studyType: p.study_type,
 });
 
 const mapPaper = (p: any): Paper => ({
@@ -446,6 +464,15 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         if (updates.affiliation !== undefined) dbUpdates.university = updates.affiliation;
         if (updates.department !== undefined) dbUpdates.department = updates.department;
         if (updates.degree !== undefined) dbUpdates.degree = updates.degree;
+        if (updates.address !== undefined) dbUpdates.address = updates.address;
+        if (updates.city !== undefined) dbUpdates.city = updates.city;
+        if (updates.pincode !== undefined) dbUpdates.pincode = updates.pincode;
+        if (updates.age !== undefined) dbUpdates.age = updates.age;
+        if (updates.dob !== undefined) dbUpdates.dob = updates.dob;
+        if (updates.bio !== undefined) dbUpdates.bio = updates.bio;
+        if (updates.college !== undefined) dbUpdates.college = updates.college;
+        if (updates.specialization !== undefined) dbUpdates.specialization = updates.specialization;
+        if (updates.studyType !== undefined) dbUpdates.study_type = updates.studyType;
 
         const { error } = await db.from('profiles').update(dbUpdates).eq('id', userId);
         if (error) throw error;

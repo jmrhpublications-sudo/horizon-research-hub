@@ -45,7 +45,7 @@ Deno.serve(async (req) => {
     const { action, ...payload } = await req.json();
 
     if (action === "create") {
-      const { email, password, name, role, phone, department, affiliation, degree } = payload;
+      const { email, password, name, role, phone, department, affiliation, degree, address, city, pincode, dob, bio, specialization, college } = payload;
       
       // Create auth user with admin API (won't affect caller's session)
       const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
@@ -58,12 +58,11 @@ Deno.serve(async (req) => {
 
       // Set role
       const dbRole = (role || "user").toLowerCase();
-      // The trigger creates default 'user' role, so update if different
       if (dbRole !== "user") {
         await adminClient.from("user_roles").update({ role: dbRole }).eq("user_id", newUser.user.id);
       }
 
-      // Update profile with extra details
+      // Update profile with all details
       await adminClient.from("profiles").update({
         name: name || "",
         email,
@@ -71,6 +70,13 @@ Deno.serve(async (req) => {
         department: department || null,
         university: affiliation || null,
         degree: degree || null,
+        address: address || null,
+        city: city || null,
+        pincode: pincode || null,
+        dob: dob || null,
+        bio: bio || null,
+        specialization: specialization || null,
+        college: college || null,
         status: "ACTIVE",
       }).eq("id", newUser.user.id);
 
