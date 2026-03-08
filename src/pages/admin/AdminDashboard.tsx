@@ -691,7 +691,7 @@ const AdminDashboard = memo(() => {
                         <div className="flex justify-end">
                             <Dialog open={isCreateUserOpen} onOpenChange={setIsCreateUserOpen}>
                                 <DialogTrigger asChild>
-                                    <Button className="bg-oxford hover:bg-gold">
+                                    <Button className="bg-foreground text-background hover:bg-accent hover:text-accent-foreground">
                                         <Plus size={16} className="mr-2" /> Create User
                                     </Button>
                                 </DialogTrigger>
