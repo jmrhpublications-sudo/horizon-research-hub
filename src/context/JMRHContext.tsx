@@ -209,6 +209,15 @@ const mapProfile = (p: any): User => ({
     affiliation: p.university || p.affiliation,
     department: p.department || p.specialization,
     degree: p.degree,
+    address: p.address,
+    city: p.city,
+    pincode: p.pincode,
+    age: p.age,
+    dob: p.dob,
+    bio: p.bio,
+    college: p.college,
+    specialization: p.specialization,
+    studyType: p.study_type,
 });
 
 const mapPaper = (p: any): Paper => ({
