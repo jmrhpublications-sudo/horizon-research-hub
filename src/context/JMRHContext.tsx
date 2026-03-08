@@ -23,6 +23,15 @@ export interface User {
     affiliation?: string;
     department?: string;
     degree?: string;
+    address?: string;
+    city?: string;
+    pincode?: string;
+    age?: string;
+    dob?: string;
+    bio?: string;
+    college?: string;
+    specialization?: string;
+    studyType?: string;
 }
 
 export interface Paper {
