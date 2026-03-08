@@ -417,43 +417,23 @@ const AdminDashboard = memo(() => {
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-2 border-b border-black/10 overflow-x-auto">
-                    <button
-                        onClick={() => setActiveTab("overview")}
-                        className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === "overview" ? "border-gold text-oxford" : "border-transparent text-oxford/50"}`}
-                    >
-                        Overview
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("papers")}
-                        className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === "papers" ? "border-gold text-oxford" : "border-transparent text-oxford/50"}`}
-                    >
-                        Papers
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("users")}
-                        className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === "users" ? "border-gold text-oxford" : "border-transparent text-oxford/50"}`}
-                    >
-                        Users
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("professors")}
-                        className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === "professors" ? "border-gold text-oxford" : "border-transparent text-oxford/50"}`}
-                    >
-                        Professors
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("upload")}
-                        className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === "upload" ? "border-gold text-oxford" : "border-transparent text-oxford/50"}`}
-                    >
-                        Upload & Requests
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("reviews")}
-                        className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === "reviews" ? "border-gold text-oxford" : "border-transparent text-oxford/50"}`}
-                    >
-                        Reviews
-                    </button>
+                <div className="flex gap-2 border-b border-border overflow-x-auto">
+                    {[
+                        { key: "overview", label: "Overview" },
+                        { key: "papers", label: "Papers" },
+                        { key: "users", label: "Users" },
+                        { key: "professors", label: "Professors" },
+                        { key: "upload", label: "Upload & Requests" },
+                        { key: "reviews", label: "Reviews" },
+                    ].map(tab => (
+                        <button
+                            key={tab.key}
+                            onClick={() => setActiveTab(tab.key as any)}
+                            className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === tab.key ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
                 </div>
                 {/* Reviews Tab */}
                 {activeTab === "reviews" && (
