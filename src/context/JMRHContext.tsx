@@ -46,6 +46,12 @@ export interface Paper {
     manuscriptType?: string;
     keywords?: string;
     coAuthors?: string;
+    phone?: string;
+    affiliation?: string;
+    designation?: string;
+    orcid?: string;
+    coverLetter?: string;
+    additionalNotes?: string;
     status: PaperStatus;
     assignedProfessorId?: string;
     assignedProfessorName?: string;
