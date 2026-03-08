@@ -425,19 +425,19 @@ const AdminDashboard = memo(() => {
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-2 border-b border-border overflow-x-auto">
+                <div className="flex gap-1 sm:gap-2 border-b border-border overflow-x-auto pb-px -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-none">
                     {[
                         { key: "overview", label: "Overview" },
                         { key: "papers", label: "Papers" },
                         { key: "users", label: "Users" },
                         { key: "professors", label: "Professors" },
-                        { key: "upload", label: "Upload & Requests" },
+                        { key: "upload", label: "Uploads" },
                         { key: "reviews", label: "Reviews" },
                     ].map(tab => (
                         <button
                             key={tab.key}
                             onClick={() => setActiveTab(tab.key as any)}
-                            className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === tab.key ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+                            className={`px-3 sm:px-4 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.key ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}
                         >
                             {tab.label}
                         </button>
