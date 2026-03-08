@@ -157,12 +157,12 @@ const AdminDashboard = memo(() => {
     ];
 
     const stats = [
-        { label: "Total Users", value: users.length, icon: Users, color: "text-blue-600", sub: `${admins.length} admins, ${professorsList.length} professors` },
-        { label: "Total Papers", value: papers.length, icon: FileText, color: "text-purple-600", sub: `${submittedPapers.length} submitted` },
-        { label: "Published Journals", value: publishedJournals.length + journalPapers.length, icon: Library, color: "text-gold", sub: "Articles online" },
-        { label: "Published Books", value: publishedBooks.length + bookPapers.length, icon: BookOpen, color: "text-teal-600", sub: "Books available" },
-        { label: "Pending Review", value: submittedPapers.length, icon: Clock, color: "text-orange-600", sub: "Awaiting action" },
-        { label: "Upload Requests", value: pendingRequests.length, icon: Inbox, color: "text-purple-600", sub: "Pending approval" },
+        { label: "Total Users", value: users.length, icon: Users, color: "text-secondary", sub: `${admins.length} admins, ${professorsList.length} professors` },
+        { label: "Total Papers", value: papers.length, icon: FileText, color: "text-accent", sub: `${submittedPapers.length} submitted` },
+        { label: "Published Journals", value: publishedJournals.length + journalPapers.length, icon: Library, color: "text-accent", sub: "Articles online" },
+        { label: "Published Books", value: publishedBooks.length + bookPapers.length, icon: BookOpen, color: "text-secondary", sub: "Books available" },
+        { label: "Pending Review", value: submittedPapers.length, icon: Clock, color: "text-orange-500", sub: "Awaiting action" },
+        { label: "Upload Requests", value: pendingRequests.length, icon: Inbox, color: "text-accent", sub: "Pending approval" },
     ];
 
     const filteredPapers = papers.filter(paper => {
