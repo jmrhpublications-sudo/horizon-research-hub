@@ -207,7 +207,7 @@ const AdminUsers = memo(() => {
                                 {/* Personal Info */}
                                 <div className="space-y-3">
                                     <h4 className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent border-b border-border pb-2">Personal Information</h4>
-                                    <div className="grid grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                         <div className="space-y-1">
                                             <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Phone</label>
                                             <Input placeholder="+91 ..." value={newPhone} onChange={(e) => setNewPhone(e.target.value)} className="h-11" />
@@ -220,7 +220,7 @@ const AdminUsers = memo(() => {
                                             <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">City</label>
                                             <Input placeholder="City" value={newCity} onChange={(e) => setNewCity(e.target.value)} className="h-11" />
                                         </div>
-                                        <div className="col-span-2 space-y-1">
+                                        <div className="sm:col-span-2 space-y-1">
                                             <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Address</label>
                                             <Input placeholder="Full address" value={newAddress} onChange={(e) => setNewAddress(e.target.value)} className="h-11" />
                                         </div>
