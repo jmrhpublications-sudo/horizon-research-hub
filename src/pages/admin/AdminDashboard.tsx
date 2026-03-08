@@ -659,8 +659,6 @@ const AdminDashboard = memo(() => {
                         )}
                     </div>
                 )}
-                    </div>
-                )}
                 {/* Papers Tab */}
                 {activeTab === "papers" && (
                     <div className="space-y-4">
