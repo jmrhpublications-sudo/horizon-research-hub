@@ -182,6 +182,7 @@ interface JMRHContextType {
     updatePaper: (paperId: string, updates: Partial<Paper>) => Promise<void>;
     updatePaperStatus: (paperId: string, status: PaperStatus, comments?: string) => Promise<void>;
     publishPaper: (paperId: string) => Promise<void>;
+    deletePaper: (paperId: string) => Promise<void>;
     addReview: (content: string, rating: number) => Promise<void>;
     updateReview: (reviewId: string, content: string, rating: number) => Promise<void>;
     deleteReview: (reviewId: string) => Promise<void>;
