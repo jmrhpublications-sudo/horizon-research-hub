@@ -653,7 +653,7 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         await refreshData();
     };
 
-
+    const addReview = async (content: string, rating: number) => {
         if (!currentUser) return;
         const { error } = await db.from('reviews').insert({
             user_id: currentUser.id,
