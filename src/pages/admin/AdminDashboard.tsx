@@ -520,7 +520,8 @@ const AdminDashboard = memo(() => {
                                     )}
                                 </div>
                             </div>
-                        )}
+                    </div>
+                )}
 
                 {/* Papers Tab */}
                 {activeTab === "papers" && (
