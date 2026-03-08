@@ -175,6 +175,16 @@ const App = () => (
                   <AdminPapers />
                 </ProtectedRoute>
               } />
+              <Route path="/secure/admin/publications" element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminPublications />
+                </ProtectedRoute>
+              } />
+              <Route path="/secure/admin/requests" element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminRequests />
+                </ProtectedRoute>
+              } />
 
               {/* Secure Professor Console */}
               <Route path="/secure/professor/login" element={<SecureLoginPage role="PROFESSOR" />} />
