@@ -46,6 +46,12 @@ export interface Paper {
     manuscriptType?: string;
     keywords?: string;
     coAuthors?: string;
+    phone?: string;
+    affiliation?: string;
+    designation?: string;
+    orcid?: string;
+    coverLetter?: string;
+    additionalNotes?: string;
     status: PaperStatus;
     assignedProfessorId?: string;
     assignedProfessorName?: string;
@@ -176,6 +182,7 @@ interface JMRHContextType {
     updatePaper: (paperId: string, updates: Partial<Paper>) => Promise<void>;
     updatePaperStatus: (paperId: string, status: PaperStatus, comments?: string) => Promise<void>;
     publishPaper: (paperId: string) => Promise<void>;
+    deletePaper: (paperId: string) => Promise<void>;
     addReview: (content: string, rating: number) => Promise<void>;
     updateReview: (reviewId: string, content: string, rating: number) => Promise<void>;
     deleteReview: (reviewId: string) => Promise<void>;
@@ -232,6 +239,12 @@ const mapPaper = (p: any): Paper => ({
     manuscriptType: p.manuscript_type,
     keywords: p.keywords,
     coAuthors: p.co_authors,
+    phone: p.phone,
+    affiliation: p.affiliation,
+    designation: p.designation,
+    orcid: p.orcid,
+    coverLetter: p.cover_letter,
+    additionalNotes: p.additional_notes,
     status: p.status as PaperStatus,
     assignedProfessorId: p.assigned_professor_id,
     assignedProfessorName: p.assigned_professor_name,
@@ -624,6 +637,22 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         await refreshData();
     };
 
+    const deletePaper = async (paperId: string) => {
+        // Find paper to get attachments for cleanup
+        const paper = papers.find(p => p.id === paperId);
+        
+        // Delete attachments from storage
+        if (paper?.attachments && paper.attachments.length > 0) {
+            await supabase.storage.from('papers').remove(paper.attachments);
+        }
+        
+        const { error } = await db.from('papers').delete().eq('id', paperId);
+        if (error) throw error;
+        
+        toast({ title: "Paper Deleted", description: "Submission and all attachments have been removed." });
+        await refreshData();
+    };
+
     const addReview = async (content: string, rating: number) => {
         if (!currentUser) return;
         const { error } = await db.from('reviews').insert({
@@ -889,7 +918,7 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         <JMRHContext.Provider value={{
             users, papers, reviews, publishedJournals, publishedBooks, uploadRequests, professorSubmissions, currentUser, isLoading, setCurrentUser, signIn, signUp, updateUser,
             banUser, unbanUser, createUser, deleteUser, updateUserRole, assignPaper,
-            submitPaper, updatePaper, updatePaperStatus, publishPaper, addReview, updateReview, deleteReview, logout, refreshData,
+            submitPaper, updatePaper, updatePaperStatus, publishPaper, deletePaper, addReview, updateReview, deleteReview, logout, refreshData,
             createPublishedJournal, updatePublishedJournal, deletePublishedJournal,
             createPublishedBook, updatePublishedBook, deletePublishedBook,
             createUploadRequest, updateUploadRequest, deleteUploadRequest,
