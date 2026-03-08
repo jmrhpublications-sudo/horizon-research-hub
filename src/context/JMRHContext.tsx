@@ -637,7 +637,23 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         await refreshData();
     };
 
-    const addReview = async (content: string, rating: number) => {
+    const deletePaper = async (paperId: string) => {
+        // Find paper to get attachments for cleanup
+        const paper = papers.find(p => p.id === paperId);
+        
+        // Delete attachments from storage
+        if (paper?.attachments && paper.attachments.length > 0) {
+            await supabase.storage.from('papers').remove(paper.attachments);
+        }
+        
+        const { error } = await db.from('papers').delete().eq('id', paperId);
+        if (error) throw error;
+        
+        toast({ title: "Paper Deleted", description: "Submission and all attachments have been removed." });
+        await refreshData();
+    };
+
+
         if (!currentUser) return;
         const { error } = await db.from('reviews').insert({
             user_id: currentUser.id,
