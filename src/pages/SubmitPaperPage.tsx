@@ -288,9 +288,10 @@ const SubmitPaperPage = memo(() => {
     };
 
     const uploadFileToStorage = async (file: File, submissionId: string): Promise<string | null> => {
-        const fileName = `${submissionId}/${Date.now()}_${file.name}`;
+        if (!currentUser) return null;
+        const fileName = `${currentUser.id}/${Date.now()}_${file.name}`;
         const { data, error } = await supabase.storage
-            .from('manuscripts')
+            .from('papers')
             .upload(fileName, file, {
                 cacheControl: '3600',
                 upsert: false
