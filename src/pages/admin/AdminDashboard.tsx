@@ -962,122 +962,120 @@ const AdminDashboard = memo(() => {
 
                         {/* Published Content */}
                         <div className="grid md:grid-cols-2 gap-6">
-                            {/* Published Journals */}
-                            <div className="bg-white border border-black/5">
-                                <div className="p-4 border-b border-black/5">
-                                    <h3 className="font-bold text-oxford">Published Journals ({publishedJournals.length})</h3>
+                            <div className="bg-card border border-border">
+                                <div className="p-4 border-b border-border">
+                                    <h3 className="font-bold text-foreground">Published Journals ({publishedJournals.length})</h3>
                                 </div>
-                                <div className="divide-y divide-black/5 max-h-80 overflow-y-auto">
+                                <div className="divide-y divide-border max-h-80 overflow-y-auto">
                                     {publishedJournals.map(journal => (
-                                        <div key={journal.id} className="p-4 hover:bg-oxford/5">
-                                            <p className="font-medium text-oxford line-clamp-1">{journal.title}</p>
-                                            <p className="text-xs text-oxford/50">{journal.authors}</p>
+                                        <div key={journal.id} className="p-4 hover:bg-muted transition-colors">
+                                            <p className="font-medium text-foreground line-clamp-1">{journal.title}</p>
+                                            <p className="text-xs text-muted-foreground">{journal.authors}</p>
                                             <div className="flex gap-2 mt-2">
                                                 {journal.pdfUrl && (
                                                     <button onClick={async () => {
                                                         const url = await getSignedFileUrl('publications', journal.pdfUrl!);
                                                         if (url) window.open(url, '_blank');
-                                                    }} className="text-xs text-gold hover:underline flex items-center gap-1">
+                                                    }} className="text-xs text-accent hover:underline flex items-center gap-1">
                                                         <ExternalLink size={12} /> View
                                                     </button>
                                                 )}
-                                                <button onClick={() => openEditJournal(journal)} className="text-xs text-blue-500 hover:underline flex items-center gap-1">
+                                                <button onClick={() => openEditJournal(journal)} className="text-xs text-secondary hover:underline flex items-center gap-1">
                                                     <Edit size={12} /> Edit
                                                 </button>
-                                                <button onClick={() => deletePublishedJournal(journal.id)} className="text-xs text-red-500 hover:underline flex items-center gap-1">
+                                                <button onClick={() => deletePublishedJournal(journal.id)} className="text-xs text-destructive hover:underline flex items-center gap-1">
                                                     <Trash2 size={12} /> Delete
                                                 </button>
                                             </div>
                                         </div>
                                     ))}
                                     {publishedJournals.length === 0 && (
-                                        <p className="p-4 text-center text-oxford/50 text-sm">No journals published yet</p>
+                                        <p className="p-4 text-center text-muted-foreground text-sm">No journals published yet</p>
                                     )}
                                 </div>
                             </div>
 
-                            {/* Published Books */}
-                            <div className="bg-white border border-black/5">
-                                <div className="p-4 border-b border-black/5">
-                                    <h3 className="font-bold text-oxford">Published Books ({publishedBooks.length})</h3>
+                            <div className="bg-card border border-border">
+                                <div className="p-4 border-b border-border">
+                                    <h3 className="font-bold text-foreground">Published Books ({publishedBooks.length})</h3>
                                 </div>
-                                <div className="divide-y divide-black/5 max-h-80 overflow-y-auto">
+                                <div className="divide-y divide-border max-h-80 overflow-y-auto">
                                     {publishedBooks.map(book => (
-                                        <div key={book.id} className="p-4 hover:bg-oxford/5">
-                                            <p className="font-medium text-oxford line-clamp-1">{book.title}</p>
-                                            <p className="text-xs text-oxford/50">{book.authors} {book.isbn && `(ISBN: ${book.isbn})`}</p>
+                                        <div key={book.id} className="p-4 hover:bg-muted transition-colors">
+                                            <p className="font-medium text-foreground line-clamp-1">{book.title}</p>
+                                            <p className="text-xs text-muted-foreground">{book.authors} {book.isbn && `(ISBN: ${book.isbn})`}</p>
                                             <div className="flex gap-2 mt-2">
                                                 {book.pdfUrl && (
                                                     <button onClick={async () => {
                                                         const url = await getSignedFileUrl('publications', book.pdfUrl!);
                                                         if (url) window.open(url, '_blank');
-                                                    }} className="text-xs text-gold hover:underline flex items-center gap-1">
+                                                    }} className="text-xs text-accent hover:underline flex items-center gap-1">
                                                         <ExternalLink size={12} /> View
                                                     </button>
                                                 )}
                                                 {book.purchaseLink && (
-                                                    <a href={book.purchaseLink} target="_blank" rel="noopener noreferrer" className="text-xs text-teal-500 hover:underline flex items-center gap-1">
+                                                    <a href={book.purchaseLink} target="_blank" rel="noopener noreferrer" className="text-xs text-secondary hover:underline flex items-center gap-1">
                                                         <ExternalLink size={12} /> Purchase
                                                     </a>
                                                 )}
-                                                <button onClick={() => openEditBook(book)} className="text-xs text-blue-500 hover:underline flex items-center gap-1">
+                                                <button onClick={() => openEditBook(book)} className="text-xs text-secondary hover:underline flex items-center gap-1">
                                                     <Edit size={12} /> Edit
                                                 </button>
-                                                <button onClick={() => deletePublishedBook(book.id)} className="text-xs text-red-500 hover:underline flex items-center gap-1">
+                                                <button onClick={() => deletePublishedBook(book.id)} className="text-xs text-destructive hover:underline flex items-center gap-1">
                                                     <Trash2 size={12} /> Delete
                                                 </button>
                                             </div>
                                         </div>
                                     ))}
                                     {publishedBooks.length === 0 && (
-                                        <p className="p-4 text-center text-oxford/50 text-sm">No books published yet</p>
+                                        <p className="p-4 text-center text-muted-foreground text-sm">No books published yet</p>
                                     )}
                                 </div>
                             </div>
                         </div>
 
                         {/* Professor Submissions */}
-                        <div className="bg-white border border-black/5">
-                            <div className="p-4 border-b border-black/5 flex justify-between items-center">
-                                <h3 className="font-bold text-oxford">Professor Submissions ({pendingProfessorSubmissions.length} pending)</h3>
+                        <div className="bg-card border border-border">
+                            <div className="p-4 border-b border-border flex justify-between items-center">
+                                <h3 className="font-bold text-foreground">Professor Submissions ({pendingProfessorSubmissions.length} pending)</h3>
                             </div>
-                            <div className="divide-y divide-black/5">
+                            <div className="divide-y divide-border">
                                 {professorSubmissions.map(submission => (
-                                    <div key={submission.id} className="p-4 hover:bg-oxford/5">
+                                    <div key={submission.id} className="p-4 hover:bg-muted transition-colors">
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-2 mb-2">
                                                     <span className={`px-2 py-0.5 text-xs font-bold uppercase ${
-                                                        submission.submissionType === 'JOURNAL' ? 'bg-gold/10 text-gold' : 'bg-teal-500/10 text-teal-600'
+                                                        submission.submissionType === 'JOURNAL' ? 'bg-accent/10 text-accent' : 'bg-secondary/10 text-secondary'
                                                     }`}>
                                                         {submission.submissionType}
                                                     </span>
                                                     <span className={`px-2 py-0.5 text-xs font-bold uppercase ${
                                                         submission.status === 'PENDING' ? 'bg-orange-100 text-orange-600' :
                                                         submission.status === 'APPROVED' ? 'bg-green-100 text-green-600' :
-                                                        'bg-red-100 text-red-600'
+                                                        'bg-destructive/10 text-destructive'
                                                     }`}>
                                                         {submission.status}
                                                     </span>
                                                 </div>
-                                                <p className="font-medium text-oxford">{submission.title}</p>
-                                                <p className="text-xs text-oxford/50">By: {submission.professorName}</p>
-                                                <p className="text-xs text-oxford/50">Authors: {submission.authors}</p>
-                                                {submission.discipline && <p className="text-xs text-oxford/50">Discipline: {submission.discipline}</p>}
-                                                {submission.keywords && <p className="text-xs text-oxford/50">Keywords: {submission.keywords}</p>}
-                                                {submission.abstract && <p className="text-xs text-oxford/50 mt-1 line-clamp-2">{submission.abstract}</p>}
+                                                <p className="font-medium text-foreground">{submission.title}</p>
+                                                <p className="text-xs text-muted-foreground">By: {submission.professorName}</p>
+                                                <p className="text-xs text-muted-foreground">Authors: {submission.authors}</p>
+                                                {submission.discipline && <p className="text-xs text-muted-foreground">Discipline: {submission.discipline}</p>}
+                                                {submission.keywords && <p className="text-xs text-muted-foreground">Keywords: {submission.keywords}</p>}
+                                                {submission.abstract && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{submission.abstract}</p>}
                                                 {submission.pdfUrl && (
                                                     <button onClick={async () => {
                                                         const url = await getSignedFileUrl('publications', submission.pdfUrl!);
                                                         if (url) window.open(url, '_blank');
-                                                    }} className="text-xs text-gold hover:underline flex items-center gap-1 mt-2">
+                                                    }} className="text-xs text-accent hover:underline flex items-center gap-1 mt-2">
                                                         <ExternalLink size={12} /> View PDF
                                                     </button>
                                                 )}
                                             </div>
                                             {submission.status === 'PENDING' && (
                                                 <div className="flex gap-2 ml-4">
-                                                    <Button size="sm" className="bg-green-500 hover:bg-green-600" onClick={() => handleProfessorSubmissionAction(submission, 'approve')}>
+                                                    <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => handleProfessorSubmissionAction(submission, 'approve')}>
                                                         <Check size={14} className="mr-1" /> Approve & Publish
                                                     </Button>
                                                     <Button size="sm" variant="destructive" onClick={() => handleProfessorSubmissionAction(submission, 'reject')}>
@@ -1089,44 +1087,44 @@ const AdminDashboard = memo(() => {
                                     </div>
                                 ))}
                                 {professorSubmissions.length === 0 && (
-                                    <p className="p-8 text-center text-oxford/50">No professor submissions</p>
+                                    <p className="p-8 text-center text-muted-foreground">No professor submissions</p>
                                 )}
                             </div>
                         </div>
 
-                        {/* Upload Requests from Users */}
-                        <div className="bg-white border border-black/5">
-                            <div className="p-4 border-b border-black/5">
-                                <h3 className="font-bold text-oxford">User Upload Requests ({pendingRequests.length} pending)</h3>
+                        {/* Upload Requests */}
+                        <div className="bg-card border border-border">
+                            <div className="p-4 border-b border-border">
+                                <h3 className="font-bold text-foreground">User Upload Requests ({pendingRequests.length} pending)</h3>
                             </div>
-                            <div className="divide-y divide-black/5">
+                            <div className="divide-y divide-border">
                                 {uploadRequests.map(request => (
-                                    <div key={request.id} className="p-4 hover:bg-oxford/5">
+                                    <div key={request.id} className="p-4 hover:bg-muted transition-colors">
                                         <div className="flex items-start justify-between">
                                             <div>
                                                 <div className="flex items-center gap-2">
                                                     <span className={`px-2 py-0.5 text-xs font-bold uppercase ${
-                                                        request.requestType === 'JOURNAL' ? 'bg-gold/10 text-gold' : 'bg-teal-500/10 text-teal-600'
+                                                        request.requestType === 'JOURNAL' ? 'bg-accent/10 text-accent' : 'bg-secondary/10 text-secondary'
                                                     }`}>
                                                         {request.requestType}
                                                     </span>
                                                     <span className={`px-2 py-0.5 text-xs font-bold uppercase ${
                                                         request.status === 'PENDING' ? 'bg-orange-100 text-orange-600' :
                                                         request.status === 'APPROVED' ? 'bg-green-100 text-green-600' :
-                                                        'bg-red-100 text-red-600'
+                                                        'bg-destructive/10 text-destructive'
                                                     }`}>
                                                         {request.status}
                                                     </span>
                                                 </div>
-                                                <p className="font-medium text-oxford mt-2">{request.title}</p>
-                                                {request.authors && <p className="text-xs text-oxford/50">Authors: {request.authors}</p>}
-                                                {request.isbn && <p className="text-xs text-oxford/50">ISBN: {request.isbn}</p>}
-                                                {request.description && <p className="text-xs text-oxford/50 mt-1">{request.description}</p>}
-                                                {request.link && <a href={request.link} target="_blank" rel="noopener noreferrer" className="text-xs text-gold hover:underline">View Source</a>}
+                                                <p className="font-medium text-foreground mt-2">{request.title}</p>
+                                                {request.authors && <p className="text-xs text-muted-foreground">Authors: {request.authors}</p>}
+                                                {request.isbn && <p className="text-xs text-muted-foreground">ISBN: {request.isbn}</p>}
+                                                {request.description && <p className="text-xs text-muted-foreground mt-1">{request.description}</p>}
+                                                {request.link && <a href={request.link} target="_blank" rel="noopener noreferrer" className="text-xs text-accent hover:underline">View Source</a>}
                                             </div>
                                             {request.status === 'PENDING' && (
                                                 <div className="flex gap-2">
-                                                    <Button size="sm" className="bg-green-500 hover:bg-green-600" onClick={() => handleRequestAction(request, 'APPROVED')}>
+                                                    <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => handleRequestAction(request, 'APPROVED')}>
                                                         <Check size={14} />
                                                     </Button>
                                                     <Button size="sm" variant="destructive" onClick={() => handleRequestAction(request, 'REJECTED')}>
@@ -1138,7 +1136,7 @@ const AdminDashboard = memo(() => {
                                     </div>
                                 ))}
                                 {uploadRequests.length === 0 && (
-                                    <p className="p-8 text-center text-oxford/50">No upload requests</p>
+                                    <p className="p-8 text-center text-muted-foreground">No upload requests</p>
                                 )}
                             </div>
                         </div>
@@ -1175,7 +1173,7 @@ const AdminDashboard = memo(() => {
                         </div>
                         <DialogFooter>
                             <Button variant="outline" onClick={() => setIsEditJournalOpen(false)}>Cancel</Button>
-                            <Button className="bg-gold hover:bg-oxford" onClick={handleUpdateJournal}>Save Changes</Button>
+                            <Button className="bg-accent text-accent-foreground hover:bg-foreground hover:text-background" onClick={handleUpdateJournal}>Save Changes</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
@@ -1213,7 +1211,7 @@ const AdminDashboard = memo(() => {
                         </div>
                         <DialogFooter>
                             <Button variant="outline" onClick={() => setIsEditBookOpen(false)}>Cancel</Button>
-                            <Button className="bg-gold hover:bg-oxford" onClick={handleUpdateBook}>Save Changes</Button>
+                            <Button className="bg-accent text-accent-foreground hover:bg-foreground hover:text-background" onClick={handleUpdateBook}>Save Changes</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
