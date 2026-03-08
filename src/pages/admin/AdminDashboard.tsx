@@ -63,7 +63,8 @@ const AdminDashboard = memo(() => {
         createPublishedJournal, updatePublishedJournal, deletePublishedJournal,
         createPublishedBook, updatePublishedBook, deletePublishedBook,
         updateUploadRequest, deleteUploadRequest, banUser, unbanUser, refreshData,
-        approveProfessorSubmission, updateProfessorSubmission
+        approveProfessorSubmission, updateProfessorSubmission,
+        deleteUser, updateUserRole
     } = useJMRH();
     const [activeTab, setActiveTab] = useState<"papers" | "users" | "professors" | "upload" | "overview" | "reviews">("overview");
     const [isCreateUserOpen, setIsCreateUserOpen] = useState(false);
