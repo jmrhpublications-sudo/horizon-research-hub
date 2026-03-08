@@ -34,7 +34,10 @@ import {
     RefreshCw,
     Ban,
     Unlock,
-    Star
+    Star,
+    TrendingUp,
+    Activity,
+    BarChart3
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,6 +58,8 @@ import {
     SelectValue
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
 const AdminDashboard = memo(() => {
     const { 
