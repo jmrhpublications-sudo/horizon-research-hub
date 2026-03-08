@@ -157,12 +157,12 @@ const AdminDashboard = memo(() => {
     ];
 
     const stats = [
-        { label: "Total Users", value: users.length, icon: Users, color: "text-blue-600", sub: `${admins.length} admins, ${professorsList.length} professors` },
-        { label: "Total Papers", value: papers.length, icon: FileText, color: "text-purple-600", sub: `${submittedPapers.length} submitted` },
-        { label: "Published Journals", value: publishedJournals.length + journalPapers.length, icon: Library, color: "text-gold", sub: "Articles online" },
-        { label: "Published Books", value: publishedBooks.length + bookPapers.length, icon: BookOpen, color: "text-teal-600", sub: "Books available" },
-        { label: "Pending Review", value: submittedPapers.length, icon: Clock, color: "text-orange-600", sub: "Awaiting action" },
-        { label: "Upload Requests", value: pendingRequests.length, icon: Inbox, color: "text-purple-600", sub: "Pending approval" },
+        { label: "Total Users", value: users.length, icon: Users, color: "text-secondary", sub: `${admins.length} admins, ${professorsList.length} professors` },
+        { label: "Total Papers", value: papers.length, icon: FileText, color: "text-accent", sub: `${submittedPapers.length} submitted` },
+        { label: "Published Journals", value: publishedJournals.length + journalPapers.length, icon: Library, color: "text-accent", sub: "Articles online" },
+        { label: "Published Books", value: publishedBooks.length + bookPapers.length, icon: BookOpen, color: "text-secondary", sub: "Books available" },
+        { label: "Pending Review", value: submittedPapers.length, icon: Clock, color: "text-orange-500", sub: "Awaiting action" },
+        { label: "Upload Requests", value: pendingRequests.length, icon: Inbox, color: "text-accent", sub: "Pending approval" },
     ];
 
     const filteredPapers = papers.filter(paper => {
@@ -392,10 +392,10 @@ const AdminDashboard = memo(() => {
         <DashboardLayout role="ADMIN">
             <div className="space-y-8">
                 {/* Header */}
-                <div className="flex justify-between items-end border-b border-black/5 pb-6">
+                <div className="flex justify-between items-end border-b border-border pb-6">
                     <div className="space-y-2">
                         <p className="section-label">Admin Control Panel</p>
-                        <h1 className="text-4xl font-serif font-bold text-oxford">Dashboard</h1>
+                        <h1 className="text-4xl font-serif font-bold text-foreground">Dashboard</h1>
                     </div>
                     <Button variant="outline" onClick={() => refreshData()} className="gap-2">
                         <RefreshCw size={16} /> Refresh
@@ -405,55 +405,35 @@ const AdminDashboard = memo(() => {
                 {/* Overview Stats */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                     {stats.map((stat, idx) => (
-                        <div key={idx} className="p-4 bg-white border border-black/5 shadow-sm hover:shadow-md transition-shadow">
+                        <div key={idx} className="p-4 bg-card border border-border shadow-sm hover:shadow-md transition-shadow hover:border-accent/20">
                             <div className="flex items-center justify-between mb-2">
                                 <stat.icon className={`w-5 h-5 ${stat.color}`} />
                             </div>
-                            <p className="text-2xl font-bold text-oxford">{stat.value}</p>
-                            <p className="text-xs text-oxford/50">{stat.label}</p>
-                            <p className="text-xs text-oxford/30">{stat.sub}</p>
+                            <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                            <p className="text-xs text-muted-foreground">{stat.label}</p>
+                            <p className="text-xs text-muted-foreground/60">{stat.sub}</p>
                         </div>
                     ))}
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-2 border-b border-black/10 overflow-x-auto">
-                    <button
-                        onClick={() => setActiveTab("overview")}
-                        className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === "overview" ? "border-gold text-oxford" : "border-transparent text-oxford/50"}`}
-                    >
-                        Overview
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("papers")}
-                        className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === "papers" ? "border-gold text-oxford" : "border-transparent text-oxford/50"}`}
-                    >
-                        Papers
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("users")}
-                        className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === "users" ? "border-gold text-oxford" : "border-transparent text-oxford/50"}`}
-                    >
-                        Users
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("professors")}
-                        className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === "professors" ? "border-gold text-oxford" : "border-transparent text-oxford/50"}`}
-                    >
-                        Professors
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("upload")}
-                        className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === "upload" ? "border-gold text-oxford" : "border-transparent text-oxford/50"}`}
-                    >
-                        Upload & Requests
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("reviews")}
-                        className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === "reviews" ? "border-gold text-oxford" : "border-transparent text-oxford/50"}`}
-                    >
-                        Reviews
-                    </button>
+                <div className="flex gap-2 border-b border-border overflow-x-auto">
+                    {[
+                        { key: "overview", label: "Overview" },
+                        { key: "papers", label: "Papers" },
+                        { key: "users", label: "Users" },
+                        { key: "professors", label: "Professors" },
+                        { key: "upload", label: "Upload & Requests" },
+                        { key: "reviews", label: "Reviews" },
+                    ].map(tab => (
+                        <button
+                            key={tab.key}
+                            onClick={() => setActiveTab(tab.key as any)}
+                            className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === tab.key ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
                 </div>
                 {/* Reviews Tab */}
                 {activeTab === "reviews" && (
@@ -465,23 +445,23 @@ const AdminDashboard = memo(() => {
                     <div className="space-y-6">
                         <div className="grid md:grid-cols-2 gap-6">
                             {/* Recent Papers */}
-                            <div className="bg-white border border-black/5">
-                                <div className="p-4 border-b border-black/5 flex justify-between items-center">
-                                    <h3 className="font-bold text-oxford">Recent Papers</h3>
+                            <div className="bg-card border border-border">
+                                <div className="p-4 border-b border-border flex justify-between items-center">
+                                    <h3 className="font-bold text-foreground">Recent Papers</h3>
                                     <Button variant="ghost" size="sm" onClick={() => setActiveTab("papers")}>View All</Button>
                                 </div>
-                                <div className="divide-y divide-black/5">
+                                <div className="divide-y divide-border">
                                     {papers.slice(0, 5).map(paper => (
-                                        <div key={paper.id} className="p-4 hover:bg-oxford/5">
-                                            <p className="font-medium text-oxford line-clamp-1 text-sm">{paper.title}</p>
+                                        <div key={paper.id} className="p-4 hover:bg-muted transition-colors">
+                                            <p className="font-medium text-foreground line-clamp-1 text-sm">{paper.title}</p>
                                             <div className="flex items-center gap-2 mt-1">
-                                                <span className="text-xs text-oxford/50">{paper.authorName}</span>
+                                                <span className="text-xs text-muted-foreground">{paper.authorName}</span>
                                                 <span className={`px-2 py-0.5 text-xs font-bold uppercase ${
                                                     paper.status === 'SUBMITTED' ? 'bg-orange-100 text-orange-600' :
-                                                    paper.status === 'UNDER_REVIEW' ? 'bg-blue-100 text-blue-600' :
+                                                    paper.status === 'UNDER_REVIEW' ? 'bg-secondary/10 text-secondary' :
                                                     paper.status === 'ACCEPTED' ? 'bg-green-100 text-green-600' :
-                                                    paper.status === 'PUBLISHED' ? 'bg-gold/20 text-gold' :
-                                                    'bg-red-100 text-red-600'
+                                                    paper.status === 'PUBLISHED' ? 'bg-accent/10 text-accent' :
+                                                    'bg-destructive/10 text-destructive'
                                                 }`}>
                                                     {paper.status}
                                                 </span>
@@ -489,29 +469,29 @@ const AdminDashboard = memo(() => {
                                         </div>
                                     ))}
                                     {papers.length === 0 && (
-                                        <p className="p-4 text-center text-oxford/50 text-sm">No papers yet</p>
+                                        <p className="p-4 text-center text-muted-foreground text-sm">No papers yet</p>
                                     )}
                                 </div>
                             </div>
 
-                            {/* Quick Stats */}
-                            <div className="bg-white border border-black/5 p-6">
-                                <h3 className="font-bold text-oxford mb-4">Quick Actions</h3>
+                            {/* Quick Actions */}
+                            <div className="bg-card border border-border p-6">
+                                <h3 className="font-bold text-foreground mb-4">Quick Actions</h3>
                                 <div className="grid grid-cols-2 gap-3">
                                     <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setIsUploadJournalOpen(true)}>
-                                        <Upload className="w-6 h-6 text-gold" />
+                                        <Upload className="w-6 h-6 text-accent" />
                                         <span className="text-xs">Upload Journal</span>
                                     </Button>
                                     <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setIsUploadBookOpen(true)}>
-                                        <BookOpen className="w-6 h-6 text-teal-500" />
+                                        <BookOpen className="w-6 h-6 text-secondary" />
                                         <span className="text-xs">Upload Book</span>
                                     </Button>
                                     <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setIsCreateUserOpen(true)}>
-                                        <Plus className="w-6 h-6 text-blue-500" />
+                                        <Plus className="w-6 h-6 text-secondary" />
                                         <span className="text-xs">Add User</span>
                                     </Button>
                                     <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => refreshData()}>
-                                        <RefreshCw className="w-6 h-6 text-purple-500" />
+                                        <RefreshCw className="w-6 h-6 text-accent" />
                                         <span className="text-xs">Refresh Data</span>
                                     </Button>
                                 </div>
@@ -520,21 +500,21 @@ const AdminDashboard = memo(() => {
 
                         {/* Pending Actions */}
                         {(submittedPapers.length > 0 || pendingRequests.length > 0) && (
-                            <div className="bg-orange-50 border border-orange-200 p-6">
-                                <h3 className="font-bold text-orange-800 flex items-center gap-2">
+                            <div className="bg-accent/5 border border-accent/20 p-6">
+                                <h3 className="font-bold text-accent flex items-center gap-2">
                                     <AlertCircle size={20} />
                                     Pending Actions ({submittedPapers.length + pendingRequests.length})
                                 </h3>
                                 <div className="mt-4 grid md:grid-cols-2 gap-4">
                                     {submittedPapers.length > 0 && (
-                                        <div className="bg-white p-4">
-                                            <p className="font-medium text-oxford">{submittedPapers.length} papers awaiting review</p>
+                                        <div className="bg-card p-4 border border-border">
+                                            <p className="font-medium text-foreground">{submittedPapers.length} papers awaiting review</p>
                                             <Button size="sm" className="mt-2" onClick={() => setActiveTab("papers")}>Review Now</Button>
                                         </div>
                                     )}
                                     {pendingRequests.length > 0 && (
-                                        <div className="bg-white p-4">
-                                            <p className="font-medium text-oxford">{pendingRequests.length} upload requests pending</p>
+                                        <div className="bg-card p-4 border border-border">
+                                            <p className="font-medium text-foreground">{pendingRequests.length} upload requests pending</p>
                                             <Button size="sm" className="mt-2" onClick={() => setActiveTab("upload")}>Review Now</Button>
                                         </div>
                                     )}
@@ -543,14 +523,13 @@ const AdminDashboard = memo(() => {
                         )}
                     </div>
                 )}
-
                 {/* Papers Tab */}
                 {activeTab === "papers" && (
                     <div className="space-y-4">
                         {/* Search and Filter */}
                         <div className="flex flex-col md:flex-row gap-4">
                             <div className="flex-1 relative">
-                                <Search className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
+                                <Search className="absolute left-3 top-3 w-5 h-5 text-muted-foreground" />
                                 <Input 
                                     placeholder="Search papers..." 
                                     className="pl-10"
@@ -574,45 +553,45 @@ const AdminDashboard = memo(() => {
                             </Select>
                         </div>
 
-                        <div className="bg-white border border-black/5 overflow-hidden">
+                        <div className="bg-card border border-border overflow-hidden">
                             <table className="w-full">
-                                <thead className="bg-oxford/5">
+                                <thead className="bg-muted">
                                     <tr>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Title</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Type</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Author</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Status</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Date</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Actions</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Title</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Type</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Author</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Status</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Date</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-black/5">
+                                <tbody className="divide-y divide-border">
                                     {filteredPapers.map((paper) => (
-                                        <tr key={paper.id} className="hover:bg-oxford/5 transition-colors">
+                                        <tr key={paper.id} className="hover:bg-muted/50 transition-colors">
                                             <td className="p-4">
-                                                <p className="font-medium text-oxford line-clamp-1 max-w-xs">{paper.title}</p>
-                                                <p className="text-xs text-oxford/50">{paper.discipline}</p>
+                                                <p className="font-medium text-foreground line-clamp-1 max-w-xs">{paper.title}</p>
+                                                <p className="text-xs text-muted-foreground">{paper.discipline}</p>
                                             </td>
                                             <td className="p-4">
-                                                <span className={`px-2 py-1 text-xs font-bold uppercase ${paper.paperType === 'JOURNAL' ? 'bg-gold/10 text-gold' : 'bg-teal-500/10 text-teal-600'}`}>
+                                                <span className={`px-2 py-1 text-xs font-bold uppercase ${paper.paperType === 'JOURNAL' ? 'bg-accent/10 text-accent' : 'bg-secondary/10 text-secondary'}`}>
                                                     {paper.paperType}
                                                 </span>
                                             </td>
-                                            <td className="p-4 text-sm text-oxford/70 max-w-32 line-clamp-1">{paper.authorName}</td>
+                                            <td className="p-4 text-sm text-muted-foreground max-w-32 line-clamp-1">{paper.authorName}</td>
                                             <td className="p-4">
                                                 <span className={`px-2 py-1 text-xs font-bold uppercase ${
                                                     paper.status === 'SUBMITTED' ? 'bg-orange-100 text-orange-600' :
-                                                    paper.status === 'UNDER_REVIEW' ? 'bg-blue-100 text-blue-600' :
-                                                    paper.status === 'REVISION_REQUIRED' ? 'bg-yellow-100 text-yellow-600' :
+                                                    paper.status === 'UNDER_REVIEW' ? 'bg-secondary/10 text-secondary' :
+                                                    paper.status === 'REVISION_REQUIRED' ? 'bg-orange-50 text-orange-500' :
                                                     paper.status === 'ACCEPTED' ? 'bg-green-100 text-green-600' :
-                                                    paper.status === 'REJECTED' ? 'bg-red-100 text-red-600' :
-                                                    paper.status === 'PUBLISHED' ? 'bg-gold/20 text-gold' :
-                                                    'bg-gray-100 text-gray-600'
+                                                    paper.status === 'REJECTED' ? 'bg-destructive/10 text-destructive' :
+                                                    paper.status === 'PUBLISHED' ? 'bg-accent/10 text-accent' :
+                                                    'bg-muted text-muted-foreground'
                                                 }`}>
                                                     {paper.status.replace('_', ' ')}
                                                 </span>
                                             </td>
-                                            <td className="p-4 text-sm text-oxford/50">
+                                            <td className="p-4 text-sm text-muted-foreground">
                                                 {paper.submissionDate}
                                             </td>
                                             <td className="p-4">
@@ -646,7 +625,7 @@ const AdminDashboard = memo(() => {
                                                                     </DialogFooter>
                                                                 </DialogContent>
                                                             </Dialog>
-                                                            <Button size="sm" variant="outline" className="text-orange-600" onClick={() => handleRejectPaper(paper)}>
+                                                            <Button size="sm" variant="outline" className="text-destructive" onClick={() => handleRejectPaper(paper)}>
                                                                 <X size={12} />
                                                             </Button>
                                                         </>
@@ -654,26 +633,26 @@ const AdminDashboard = memo(() => {
                                                     
                                                     {paper.status === 'UNDER_REVIEW' && (
                                                         <>
-                                                            <Button size="sm" className="bg-green-500 hover:bg-green-600" onClick={() => handleAcceptPaper(paper)}>
+                                                            <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => handleAcceptPaper(paper)}>
                                                                 <Check size={12} className="mr-1" /> Accept
                                                             </Button>
-                                                            <Button size="sm" variant="outline" className="text-yellow-600" onClick={() => handleRequestRevision(paper)}>
+                                                            <Button size="sm" variant="outline" className="text-orange-500" onClick={() => handleRequestRevision(paper)}>
                                                                 <RefreshCw size={12} />
                                                             </Button>
-                                                            <Button size="sm" variant="outline" className="text-red-600" onClick={() => handleRejectPaper(paper)}>
+                                                            <Button size="sm" variant="outline" className="text-destructive" onClick={() => handleRejectPaper(paper)}>
                                                                 <X size={12} />
                                                             </Button>
                                                         </>
                                                     )}
                                                     
                                                     {paper.status === 'REVISION_REQUIRED' && (
-                                                        <Button size="sm" className="bg-green-500 hover:bg-green-600" onClick={() => handleAcceptPaper(paper)}>
+                                                        <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => handleAcceptPaper(paper)}>
                                                             <Check size={12} className="mr-1" /> Accept
                                                         </Button>
                                                     )}
                                                     
                                                     {paper.status === 'ACCEPTED' && (
-                                                        <Button size="sm" className="bg-gold hover:bg-gold/80" onClick={() => handlePublishPaper(paper)}>
+                                                        <Button size="sm" className="bg-accent text-accent-foreground hover:bg-accent/80" onClick={() => handlePublishPaper(paper)}>
                                                             <Globe size={12} className="mr-1" /> Publish
                                                         </Button>
                                                     )}
@@ -685,7 +664,7 @@ const AdminDashboard = memo(() => {
                                                     )}
                                                     
                                                     {paper.status === 'REJECTED' && (
-                                                        <span className="text-xs text-red-600 font-bold flex items-center gap-1">
+                                                        <span className="text-xs text-destructive font-bold flex items-center gap-1">
                                                             <X size={14} /> Rejected
                                                         </span>
                                                     )}
@@ -695,7 +674,7 @@ const AdminDashboard = memo(() => {
                                     ))}
                                     {filteredPapers.length === 0 && (
                                         <tr>
-                                            <td colSpan={6} className="p-8 text-center text-oxford/50">
+                                            <td colSpan={6} className="p-8 text-center text-muted-foreground">
                                                 No papers found.
                                             </td>
                                         </tr>
@@ -712,7 +691,7 @@ const AdminDashboard = memo(() => {
                         <div className="flex justify-end">
                             <Dialog open={isCreateUserOpen} onOpenChange={setIsCreateUserOpen}>
                                 <DialogTrigger asChild>
-                                    <Button className="bg-oxford hover:bg-gold">
+                                    <Button className="bg-foreground text-background hover:bg-accent hover:text-accent-foreground">
                                         <Plus size={16} className="mr-2" /> Create User
                                     </Button>
                                 </DialogTrigger>
@@ -741,28 +720,28 @@ const AdminDashboard = memo(() => {
                             </Dialog>
                         </div>
 
-                        <div className="bg-white border border-black/5 overflow-hidden">
+                        <div className="bg-card border border-border overflow-hidden">
                             <table className="w-full">
-                                <thead className="bg-oxford/5">
+                                <thead className="bg-muted">
                                     <tr>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Name</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Email</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Role</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Status</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Papers</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Actions</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Name</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Email</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Role</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Status</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Papers</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-black/5">
+                                <tbody className="divide-y divide-border">
                                     {users.map((user) => (
-                                        <tr key={user.id} className="hover:bg-oxford/5">
-                                            <td className="p-4 font-medium text-oxford">{user.name}</td>
-                                            <td className="p-4 text-sm text-oxford/70">{user.email}</td>
+                                        <tr key={user.id} className="hover:bg-muted/50 transition-colors">
+                                            <td className="p-4 font-medium text-foreground">{user.name}</td>
+                                            <td className="p-4 text-sm text-muted-foreground">{user.email}</td>
                                             <td className="p-4">
                                                 <span className={`px-2 py-1 text-xs font-bold uppercase ${
-                                                    user.role === 'ADMIN' ? 'bg-red-100 text-red-600' :
-                                                    user.role === 'PROFESSOR' ? 'bg-blue-100 text-blue-600' :
-                                                    'bg-gray-100 text-gray-600'
+                                                    user.role === 'ADMIN' ? 'bg-destructive/10 text-destructive' :
+                                                    user.role === 'PROFESSOR' ? 'bg-secondary/10 text-secondary' :
+                                                    'bg-muted text-muted-foreground'
                                                 }`}>
                                                     {user.role}
                                                 </span>
@@ -770,12 +749,12 @@ const AdminDashboard = memo(() => {
                                             <td className="p-4">
                                                 <span className={`px-2 py-1 text-xs font-bold uppercase ${
                                                     user.status === 'ACTIVE' ? 'bg-green-100 text-green-600' :
-                                                    'bg-red-100 text-red-600'
+                                                    'bg-destructive/10 text-destructive'
                                                 }`}>
                                                     {user.status}
                                                 </span>
                                             </td>
-                                            <td className="p-4 text-sm text-oxford/70">
+                                            <td className="p-4 text-sm text-muted-foreground">
                                                 {papers.filter(p => p.authorId === user.id).length}
                                             </td>
                                             <td className="p-4">
@@ -783,7 +762,7 @@ const AdminDashboard = memo(() => {
                                                     size="sm" 
                                                     variant="ghost"
                                                     onClick={() => handleToggleUserBan(user)}
-                                                    className={user.status === 'ACTIVE' ? 'text-red-500' : 'text-green-500'}
+                                                    className={user.status === 'ACTIVE' ? 'text-destructive' : 'text-green-600'}
                                                 >
                                                     {user.status === 'ACTIVE' ? <Ban size={14} /> : <Unlock size={14} />}
                                                 </Button>
@@ -802,7 +781,7 @@ const AdminDashboard = memo(() => {
                         <div className="flex justify-end">
                             <Dialog open={isCreateUserOpen} onOpenChange={setIsCreateUserOpen}>
                                 <DialogTrigger asChild>
-                                    <Button className="bg-oxford hover:bg-gold">
+                                    <Button className="bg-foreground text-background hover:bg-accent hover:text-accent-foreground">
                                         <Plus size={16} className="mr-2" /> Add Professor
                                     </Button>
                                 </DialogTrigger>
@@ -827,26 +806,26 @@ const AdminDashboard = memo(() => {
                             {professorsList.map((prof) => {
                                 const profPapers = papers.filter(p => p.assignedProfessorId === prof.id);
                                 return (
-                                    <div key={prof.id} className="p-6 bg-white border border-black/5 hover:shadow-md transition-shadow">
+                                    <div key={prof.id} className="p-6 bg-card border border-border hover:shadow-md transition-shadow hover:border-accent/20">
                                         <div className="flex items-start gap-4">
-                                            <div className="w-12 h-12 bg-oxford/10 rounded-full flex items-center justify-center">
-                                                <GraduationCap className="w-6 h-6 text-oxford" />
+                                            <div className="w-12 h-12 bg-muted flex items-center justify-center">
+                                                <GraduationCap className="w-6 h-6 text-foreground" />
                                             </div>
                                             <div className="flex-1">
-                                                <h3 className="font-bold text-oxford">{prof.name}</h3>
-                                                <p className="text-sm text-oxford/60">{prof.email}</p>
-                                                <p className="text-xs text-oxford/50 mt-1">{prof.affiliation}</p>
+                                                <h3 className="font-bold text-foreground">{prof.name}</h3>
+                                                <p className="text-sm text-muted-foreground">{prof.email}</p>
+                                                <p className="text-xs text-muted-foreground mt-1">{prof.affiliation}</p>
                                             </div>
                                         </div>
-                                        <div className="mt-4 pt-4 border-t border-black/5 flex justify-between text-sm">
-                                            <span className="text-oxford/60">Papers Assigned:</span>
-                                            <span className="font-bold text-oxford">{profPapers.length}</span>
+                                        <div className="mt-4 pt-4 border-t border-border flex justify-between text-sm">
+                                            <span className="text-muted-foreground">Papers Assigned:</span>
+                                            <span className="font-bold text-foreground">{profPapers.length}</span>
                                         </div>
                                     </div>
                                 );
                             })}
                             {professorsList.length === 0 && (
-                                <div className="col-span-full p-8 text-center text-oxford/50">
+                                <div className="col-span-full p-8 text-center text-muted-foreground">
                                     No professors added yet.
                                 </div>
                             )}
@@ -860,19 +839,19 @@ const AdminDashboard = memo(() => {
                         {/* Upload Section */}
                         <div className="grid md:grid-cols-2 gap-6">
                             {/* Upload Journal */}
-                            <div className="bg-white border border-black/5 p-6">
+                            <div className="bg-card border border-border p-6">
                                 <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center">
-                                        <Library className="w-6 h-6 text-gold" />
+                                    <div className="w-12 h-12 bg-accent/10 flex items-center justify-center">
+                                        <Library className="w-6 h-6 text-accent" />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-oxford">Upload Journal Article</h3>
-                                        <p className="text-xs text-oxford/50">Publish a new journal article</p>
+                                        <h3 className="font-bold text-foreground">Upload Journal Article</h3>
+                                        <p className="text-xs text-muted-foreground">Publish a new journal article</p>
                                     </div>
                                 </div>
                                 <Dialog open={isUploadJournalOpen} onOpenChange={setIsUploadJournalOpen}>
                                     <DialogTrigger asChild>
-                                        <Button className="w-full bg-oxford hover:bg-gold">
+                                        <Button className="w-full bg-foreground text-background hover:bg-accent hover:text-accent-foreground">
                                             <Upload size={16} className="mr-2" /> Upload Journal
                                         </Button>
                                     </DialogTrigger>
@@ -901,7 +880,7 @@ const AdminDashboard = memo(() => {
                                             <Input placeholder="DOI" value={journalForm.doi} onChange={(e) => setJournalForm(prev => ({ ...prev, doi: e.target.value }))} />
                                             <Input type="date" value={journalForm.publicationDate} onChange={(e) => setJournalForm(prev => ({ ...prev, publicationDate: e.target.value }))} />
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold uppercase text-oxford/60">PDF File</label>
+                                                <label className="text-xs font-bold uppercase text-muted-foreground">PDF File</label>
                                                 <input ref={journalFileRef} type="file" accept=".pdf" onChange={handleJournalFileUpload} className="hidden" />
                                                 <div className="flex gap-2">
                                                     <Button type="button" variant="outline" onClick={() => journalFileRef.current?.click()} className="flex-1">
@@ -913,26 +892,26 @@ const AdminDashboard = memo(() => {
                                         </div>
                                         <DialogFooter>
                                             <Button variant="outline" onClick={() => setIsUploadJournalOpen(false)}>Cancel</Button>
-                                            <Button className="bg-gold hover:bg-oxford" onClick={handlePublishJournal}>Publish Journal</Button>
+                                            <Button className="bg-accent text-accent-foreground hover:bg-foreground hover:text-background" onClick={handlePublishJournal}>Publish Journal</Button>
                                         </DialogFooter>
                                     </DialogContent>
                                 </Dialog>
                             </div>
 
                             {/* Upload Book */}
-                            <div className="bg-white border border-black/5 p-6">
+                            <div className="bg-card border border-border p-6">
                                 <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-12 h-12 bg-teal-500/10 rounded-lg flex items-center justify-center">
-                                        <BookOpen className="w-6 h-6 text-teal-500" />
+                                    <div className="w-12 h-12 bg-secondary/10 flex items-center justify-center">
+                                        <BookOpen className="w-6 h-6 text-secondary" />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-oxford">Upload Book</h3>
-                                        <p className="text-xs text-oxford/50">Publish a new book</p>
+                                        <h3 className="font-bold text-foreground">Upload Book</h3>
+                                        <p className="text-xs text-muted-foreground">Publish a new book</p>
                                     </div>
                                 </div>
                                 <Dialog open={isUploadBookOpen} onOpenChange={setIsUploadBookOpen}>
                                     <DialogTrigger asChild>
-                                        <Button className="w-full bg-oxford hover:bg-gold">
+                                        <Button className="w-full bg-foreground text-background hover:bg-accent hover:text-accent-foreground">
                                             <Upload size={16} className="mr-2" /> Upload Book
                                         </Button>
                                     </DialogTrigger>
@@ -964,7 +943,7 @@ const AdminDashboard = memo(() => {
                                             </div>
                                             <Input placeholder="Purchase Link" value={bookForm.purchaseLink} onChange={(e) => setBookForm(prev => ({ ...prev, purchaseLink: e.target.value }))} />
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold uppercase text-oxford/60">PDF File</label>
+                                                <label className="text-xs font-bold uppercase text-muted-foreground">PDF File</label>
                                                 <input ref={bookFileRef} type="file" accept=".pdf" onChange={handleBookFileUpload} className="hidden" />
                                                 <Button type="button" variant="outline" onClick={() => bookFileRef.current?.click()} className="w-full">
                                                     {isUploadingBook ? "Uploading..." : bookForm.pdfUrl ? "PDF Uploaded ✓" : "Choose PDF"}
@@ -974,7 +953,7 @@ const AdminDashboard = memo(() => {
                                         </div>
                                         <DialogFooter>
                                             <Button variant="outline" onClick={() => setIsUploadBookOpen(false)}>Cancel</Button>
-                                            <Button className="bg-gold hover:bg-oxford" onClick={handlePublishBook}>Publish Book</Button>
+                                            <Button className="bg-accent text-accent-foreground hover:bg-foreground hover:text-background" onClick={handlePublishBook}>Publish Book</Button>
                                         </DialogFooter>
                                     </DialogContent>
                                 </Dialog>
@@ -983,122 +962,120 @@ const AdminDashboard = memo(() => {
 
                         {/* Published Content */}
                         <div className="grid md:grid-cols-2 gap-6">
-                            {/* Published Journals */}
-                            <div className="bg-white border border-black/5">
-                                <div className="p-4 border-b border-black/5">
-                                    <h3 className="font-bold text-oxford">Published Journals ({publishedJournals.length})</h3>
+                            <div className="bg-card border border-border">
+                                <div className="p-4 border-b border-border">
+                                    <h3 className="font-bold text-foreground">Published Journals ({publishedJournals.length})</h3>
                                 </div>
-                                <div className="divide-y divide-black/5 max-h-80 overflow-y-auto">
+                                <div className="divide-y divide-border max-h-80 overflow-y-auto">
                                     {publishedJournals.map(journal => (
-                                        <div key={journal.id} className="p-4 hover:bg-oxford/5">
-                                            <p className="font-medium text-oxford line-clamp-1">{journal.title}</p>
-                                            <p className="text-xs text-oxford/50">{journal.authors}</p>
+                                        <div key={journal.id} className="p-4 hover:bg-muted transition-colors">
+                                            <p className="font-medium text-foreground line-clamp-1">{journal.title}</p>
+                                            <p className="text-xs text-muted-foreground">{journal.authors}</p>
                                             <div className="flex gap-2 mt-2">
                                                 {journal.pdfUrl && (
                                                     <button onClick={async () => {
                                                         const url = await getSignedFileUrl('publications', journal.pdfUrl!);
                                                         if (url) window.open(url, '_blank');
-                                                    }} className="text-xs text-gold hover:underline flex items-center gap-1">
+                                                    }} className="text-xs text-accent hover:underline flex items-center gap-1">
                                                         <ExternalLink size={12} /> View
                                                     </button>
                                                 )}
-                                                <button onClick={() => openEditJournal(journal)} className="text-xs text-blue-500 hover:underline flex items-center gap-1">
+                                                <button onClick={() => openEditJournal(journal)} className="text-xs text-secondary hover:underline flex items-center gap-1">
                                                     <Edit size={12} /> Edit
                                                 </button>
-                                                <button onClick={() => deletePublishedJournal(journal.id)} className="text-xs text-red-500 hover:underline flex items-center gap-1">
+                                                <button onClick={() => deletePublishedJournal(journal.id)} className="text-xs text-destructive hover:underline flex items-center gap-1">
                                                     <Trash2 size={12} /> Delete
                                                 </button>
                                             </div>
                                         </div>
                                     ))}
                                     {publishedJournals.length === 0 && (
-                                        <p className="p-4 text-center text-oxford/50 text-sm">No journals published yet</p>
+                                        <p className="p-4 text-center text-muted-foreground text-sm">No journals published yet</p>
                                     )}
                                 </div>
                             </div>
 
-                            {/* Published Books */}
-                            <div className="bg-white border border-black/5">
-                                <div className="p-4 border-b border-black/5">
-                                    <h3 className="font-bold text-oxford">Published Books ({publishedBooks.length})</h3>
+                            <div className="bg-card border border-border">
+                                <div className="p-4 border-b border-border">
+                                    <h3 className="font-bold text-foreground">Published Books ({publishedBooks.length})</h3>
                                 </div>
-                                <div className="divide-y divide-black/5 max-h-80 overflow-y-auto">
+                                <div className="divide-y divide-border max-h-80 overflow-y-auto">
                                     {publishedBooks.map(book => (
-                                        <div key={book.id} className="p-4 hover:bg-oxford/5">
-                                            <p className="font-medium text-oxford line-clamp-1">{book.title}</p>
-                                            <p className="text-xs text-oxford/50">{book.authors} {book.isbn && `(ISBN: ${book.isbn})`}</p>
+                                        <div key={book.id} className="p-4 hover:bg-muted transition-colors">
+                                            <p className="font-medium text-foreground line-clamp-1">{book.title}</p>
+                                            <p className="text-xs text-muted-foreground">{book.authors} {book.isbn && `(ISBN: ${book.isbn})`}</p>
                                             <div className="flex gap-2 mt-2">
                                                 {book.pdfUrl && (
                                                     <button onClick={async () => {
                                                         const url = await getSignedFileUrl('publications', book.pdfUrl!);
                                                         if (url) window.open(url, '_blank');
-                                                    }} className="text-xs text-gold hover:underline flex items-center gap-1">
+                                                    }} className="text-xs text-accent hover:underline flex items-center gap-1">
                                                         <ExternalLink size={12} /> View
                                                     </button>
                                                 )}
                                                 {book.purchaseLink && (
-                                                    <a href={book.purchaseLink} target="_blank" rel="noopener noreferrer" className="text-xs text-teal-500 hover:underline flex items-center gap-1">
+                                                    <a href={book.purchaseLink} target="_blank" rel="noopener noreferrer" className="text-xs text-secondary hover:underline flex items-center gap-1">
                                                         <ExternalLink size={12} /> Purchase
                                                     </a>
                                                 )}
-                                                <button onClick={() => openEditBook(book)} className="text-xs text-blue-500 hover:underline flex items-center gap-1">
+                                                <button onClick={() => openEditBook(book)} className="text-xs text-secondary hover:underline flex items-center gap-1">
                                                     <Edit size={12} /> Edit
                                                 </button>
-                                                <button onClick={() => deletePublishedBook(book.id)} className="text-xs text-red-500 hover:underline flex items-center gap-1">
+                                                <button onClick={() => deletePublishedBook(book.id)} className="text-xs text-destructive hover:underline flex items-center gap-1">
                                                     <Trash2 size={12} /> Delete
                                                 </button>
                                             </div>
                                         </div>
                                     ))}
                                     {publishedBooks.length === 0 && (
-                                        <p className="p-4 text-center text-oxford/50 text-sm">No books published yet</p>
+                                        <p className="p-4 text-center text-muted-foreground text-sm">No books published yet</p>
                                     )}
                                 </div>
                             </div>
                         </div>
 
                         {/* Professor Submissions */}
-                        <div className="bg-white border border-black/5">
-                            <div className="p-4 border-b border-black/5 flex justify-between items-center">
-                                <h3 className="font-bold text-oxford">Professor Submissions ({pendingProfessorSubmissions.length} pending)</h3>
+                        <div className="bg-card border border-border">
+                            <div className="p-4 border-b border-border flex justify-between items-center">
+                                <h3 className="font-bold text-foreground">Professor Submissions ({pendingProfessorSubmissions.length} pending)</h3>
                             </div>
-                            <div className="divide-y divide-black/5">
+                            <div className="divide-y divide-border">
                                 {professorSubmissions.map(submission => (
-                                    <div key={submission.id} className="p-4 hover:bg-oxford/5">
+                                    <div key={submission.id} className="p-4 hover:bg-muted transition-colors">
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-2 mb-2">
                                                     <span className={`px-2 py-0.5 text-xs font-bold uppercase ${
-                                                        submission.submissionType === 'JOURNAL' ? 'bg-gold/10 text-gold' : 'bg-teal-500/10 text-teal-600'
+                                                        submission.submissionType === 'JOURNAL' ? 'bg-accent/10 text-accent' : 'bg-secondary/10 text-secondary'
                                                     }`}>
                                                         {submission.submissionType}
                                                     </span>
                                                     <span className={`px-2 py-0.5 text-xs font-bold uppercase ${
                                                         submission.status === 'PENDING' ? 'bg-orange-100 text-orange-600' :
                                                         submission.status === 'APPROVED' ? 'bg-green-100 text-green-600' :
-                                                        'bg-red-100 text-red-600'
+                                                        'bg-destructive/10 text-destructive'
                                                     }`}>
                                                         {submission.status}
                                                     </span>
                                                 </div>
-                                                <p className="font-medium text-oxford">{submission.title}</p>
-                                                <p className="text-xs text-oxford/50">By: {submission.professorName}</p>
-                                                <p className="text-xs text-oxford/50">Authors: {submission.authors}</p>
-                                                {submission.discipline && <p className="text-xs text-oxford/50">Discipline: {submission.discipline}</p>}
-                                                {submission.keywords && <p className="text-xs text-oxford/50">Keywords: {submission.keywords}</p>}
-                                                {submission.abstract && <p className="text-xs text-oxford/50 mt-1 line-clamp-2">{submission.abstract}</p>}
+                                                <p className="font-medium text-foreground">{submission.title}</p>
+                                                <p className="text-xs text-muted-foreground">By: {submission.professorName}</p>
+                                                <p className="text-xs text-muted-foreground">Authors: {submission.authors}</p>
+                                                {submission.discipline && <p className="text-xs text-muted-foreground">Discipline: {submission.discipline}</p>}
+                                                {submission.keywords && <p className="text-xs text-muted-foreground">Keywords: {submission.keywords}</p>}
+                                                {submission.abstract && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{submission.abstract}</p>}
                                                 {submission.pdfUrl && (
                                                     <button onClick={async () => {
                                                         const url = await getSignedFileUrl('publications', submission.pdfUrl!);
                                                         if (url) window.open(url, '_blank');
-                                                    }} className="text-xs text-gold hover:underline flex items-center gap-1 mt-2">
+                                                    }} className="text-xs text-accent hover:underline flex items-center gap-1 mt-2">
                                                         <ExternalLink size={12} /> View PDF
                                                     </button>
                                                 )}
                                             </div>
                                             {submission.status === 'PENDING' && (
                                                 <div className="flex gap-2 ml-4">
-                                                    <Button size="sm" className="bg-green-500 hover:bg-green-600" onClick={() => handleProfessorSubmissionAction(submission, 'approve')}>
+                                                    <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => handleProfessorSubmissionAction(submission, 'approve')}>
                                                         <Check size={14} className="mr-1" /> Approve & Publish
                                                     </Button>
                                                     <Button size="sm" variant="destructive" onClick={() => handleProfessorSubmissionAction(submission, 'reject')}>
@@ -1110,44 +1087,44 @@ const AdminDashboard = memo(() => {
                                     </div>
                                 ))}
                                 {professorSubmissions.length === 0 && (
-                                    <p className="p-8 text-center text-oxford/50">No professor submissions</p>
+                                    <p className="p-8 text-center text-muted-foreground">No professor submissions</p>
                                 )}
                             </div>
                         </div>
 
-                        {/* Upload Requests from Users */}
-                        <div className="bg-white border border-black/5">
-                            <div className="p-4 border-b border-black/5">
-                                <h3 className="font-bold text-oxford">User Upload Requests ({pendingRequests.length} pending)</h3>
+                        {/* Upload Requests */}
+                        <div className="bg-card border border-border">
+                            <div className="p-4 border-b border-border">
+                                <h3 className="font-bold text-foreground">User Upload Requests ({pendingRequests.length} pending)</h3>
                             </div>
-                            <div className="divide-y divide-black/5">
+                            <div className="divide-y divide-border">
                                 {uploadRequests.map(request => (
-                                    <div key={request.id} className="p-4 hover:bg-oxford/5">
+                                    <div key={request.id} className="p-4 hover:bg-muted transition-colors">
                                         <div className="flex items-start justify-between">
                                             <div>
                                                 <div className="flex items-center gap-2">
                                                     <span className={`px-2 py-0.5 text-xs font-bold uppercase ${
-                                                        request.requestType === 'JOURNAL' ? 'bg-gold/10 text-gold' : 'bg-teal-500/10 text-teal-600'
+                                                        request.requestType === 'JOURNAL' ? 'bg-accent/10 text-accent' : 'bg-secondary/10 text-secondary'
                                                     }`}>
                                                         {request.requestType}
                                                     </span>
                                                     <span className={`px-2 py-0.5 text-xs font-bold uppercase ${
                                                         request.status === 'PENDING' ? 'bg-orange-100 text-orange-600' :
                                                         request.status === 'APPROVED' ? 'bg-green-100 text-green-600' :
-                                                        'bg-red-100 text-red-600'
+                                                        'bg-destructive/10 text-destructive'
                                                     }`}>
                                                         {request.status}
                                                     </span>
                                                 </div>
-                                                <p className="font-medium text-oxford mt-2">{request.title}</p>
-                                                {request.authors && <p className="text-xs text-oxford/50">Authors: {request.authors}</p>}
-                                                {request.isbn && <p className="text-xs text-oxford/50">ISBN: {request.isbn}</p>}
-                                                {request.description && <p className="text-xs text-oxford/50 mt-1">{request.description}</p>}
-                                                {request.link && <a href={request.link} target="_blank" rel="noopener noreferrer" className="text-xs text-gold hover:underline">View Source</a>}
+                                                <p className="font-medium text-foreground mt-2">{request.title}</p>
+                                                {request.authors && <p className="text-xs text-muted-foreground">Authors: {request.authors}</p>}
+                                                {request.isbn && <p className="text-xs text-muted-foreground">ISBN: {request.isbn}</p>}
+                                                {request.description && <p className="text-xs text-muted-foreground mt-1">{request.description}</p>}
+                                                {request.link && <a href={request.link} target="_blank" rel="noopener noreferrer" className="text-xs text-accent hover:underline">View Source</a>}
                                             </div>
                                             {request.status === 'PENDING' && (
                                                 <div className="flex gap-2">
-                                                    <Button size="sm" className="bg-green-500 hover:bg-green-600" onClick={() => handleRequestAction(request, 'APPROVED')}>
+                                                    <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => handleRequestAction(request, 'APPROVED')}>
                                                         <Check size={14} />
                                                     </Button>
                                                     <Button size="sm" variant="destructive" onClick={() => handleRequestAction(request, 'REJECTED')}>
@@ -1159,7 +1136,7 @@ const AdminDashboard = memo(() => {
                                     </div>
                                 ))}
                                 {uploadRequests.length === 0 && (
-                                    <p className="p-8 text-center text-oxford/50">No upload requests</p>
+                                    <p className="p-8 text-center text-muted-foreground">No upload requests</p>
                                 )}
                             </div>
                         </div>
@@ -1196,7 +1173,7 @@ const AdminDashboard = memo(() => {
                         </div>
                         <DialogFooter>
                             <Button variant="outline" onClick={() => setIsEditJournalOpen(false)}>Cancel</Button>
-                            <Button className="bg-gold hover:bg-oxford" onClick={handleUpdateJournal}>Save Changes</Button>
+                            <Button className="bg-accent text-accent-foreground hover:bg-foreground hover:text-background" onClick={handleUpdateJournal}>Save Changes</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
@@ -1234,7 +1211,7 @@ const AdminDashboard = memo(() => {
                         </div>
                         <DialogFooter>
                             <Button variant="outline" onClick={() => setIsEditBookOpen(false)}>Cancel</Button>
-                            <Button className="bg-gold hover:bg-oxford" onClick={handleUpdateBook}>Save Changes</Button>
+                            <Button className="bg-accent text-accent-foreground hover:bg-foreground hover:text-background" onClick={handleUpdateBook}>Save Changes</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
