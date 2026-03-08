@@ -489,7 +489,7 @@ const AdminUsers = memo(() => {
                                         </div>
                                     </div>
                                 </DialogHeader>
-                                <div className="grid grid-cols-2 gap-6 py-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 py-6">
                                     <div className="space-y-4">
                                         <h4 className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent border-b border-border pb-2">Personal Info</h4>
                                         <InfoRow label="Phone" value={viewingUser.phone} />
