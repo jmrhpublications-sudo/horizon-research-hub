@@ -529,7 +529,7 @@ const AdminDashboard = memo(() => {
                         {/* Search and Filter */}
                         <div className="flex flex-col md:flex-row gap-4">
                             <div className="flex-1 relative">
-                                <Search className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
+                                <Search className="absolute left-3 top-3 w-5 h-5 text-muted-foreground" />
                                 <Input 
                                     placeholder="Search papers..." 
                                     className="pl-10"
