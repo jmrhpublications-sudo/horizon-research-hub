@@ -304,7 +304,7 @@ const SubmitPaperPage = memo(() => {
         
         // Use signed URLs for private bucket - never expose via getPublicUrl
         const { data: signedData, error: signedError } = await supabase.storage
-            .from('manuscripts')
+            .from('papers')
             .createSignedUrl(fileName, 3600); // 1 hour expiry
         
         if (signedError || !signedData?.signedUrl) {
