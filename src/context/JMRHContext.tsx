@@ -379,10 +379,10 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
                 db.from('profiles').select('*'),
                 db.from('papers').select('*'),
                 db.from('reviews').select('*'),
-                db.from('published_journals').select('*').eq('status', 'PUBLISHED').then((r: any) => r).catch(() => ({ data: null })),
-                db.from('published_books').select('*').eq('status', 'PUBLISHED').then((r: any) => r).catch(() => ({ data: null })),
-                db.from('upload_requests').select('*').then((r: any) => r).catch(() => ({ data: null })),
-                db.from('professor_submissions').select('*').then((r: any) => r).catch(() => ({ data: null })),
+                db.from('published_journals').select('*'),
+                db.from('published_books').select('*'),
+                db.from('upload_requests').select('*'),
+                db.from('professor_submissions').select('*'),
             ]);
 
             if (profilesRes.data) setUsers(profilesRes.data.map(mapProfile));
