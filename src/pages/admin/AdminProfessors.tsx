@@ -1,81 +1,102 @@
 import { useState, memo, FormEvent } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import { useJMRH } from "@/context/JMRHContext";
+import { useJMRH, User } from "@/context/JMRHContext";
 import {
-    GraduationCap,
-    Plus,
-    Mail,
-    Trash2,
-    CheckCircle,
-    AlertCircle,
+    GraduationCap, Plus, Trash2, Edit, Ban, CheckCircle, Send
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger
+    Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter
 } from "@/components/ui/dialog";
+import {
+    AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+    AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
+import {
+    Select, SelectContent, SelectItem, SelectTrigger, SelectValue
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
 const AdminProfessors = memo(() => {
-    const { users, createUser, banUser, unbanUser, updateUser } = useJMRH();
+    const { users, papers, createUser, banUser, unbanUser, updateUser, deleteUser, assignPaper } = useJMRH();
     const { toast } = useToast();
 
+    const [openCreate, setOpenCreate] = useState(false);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
-    const [openCreate, setOpenCreate] = useState(false);
+    const [password, setPassword] = useState("");
     const [phone, setPhone] = useState("");
-    const [address, setAddress] = useState("");
     const [dept, setDept] = useState("");
     const [university, setUniversity] = useState("");
     const [degree, setDegree] = useState("");
-    const [specialization, setSpecialization] = useState("");
-    const [bio, setBio] = useState("");
 
-    const [editingProf, setEditingProf] = useState<string | null>(null);
+    const [editingProf, setEditingProf] = useState<User | null>(null);
     const [editName, setEditName] = useState("");
-    const [editEmail, setEditEmail] = useState("");
     const [editPhone, setEditPhone] = useState("");
-    const [editAddress, setEditAddress] = useState("");
     const [editDept, setEditDept] = useState("");
     const [editUniversity, setEditUniversity] = useState("");
     const [editDegree, setEditDegree] = useState("");
-    const [editSpecialization, setEditSpecialization] = useState("");
-    const [editBio, setEditBio] = useState("");
+
+    // Assign work
+    const [assignOpen, setAssignOpen] = useState(false);
+    const [assignProfId, setAssignProfId] = useState("");
+    const [assignPaperId, setAssignPaperId] = useState("");
 
     const professors = users.filter(u => u.role === 'PROFESSOR');
+    const unassignedPapers = papers.filter(p => p.status === 'SUBMITTED' && !p.assignedProfessorId);
 
-    const handleCreate = (e: FormEvent) => {
+    const handleCreate = async (e: FormEvent) => {
         e.preventDefault();
-        createUser(name, email, 'defaultPass123!', 'PROFESSOR', {
-            phone, department: dept, affiliation: university, degree,
-        });
-        setName(""); setEmail(""); setPhone(""); setAddress("");
-        setDept(""); setUniversity(""); setDegree(""); setSpecialization(""); setBio("");
-        setOpenCreate(false);
-        toast({ title: "Professor Account Initialized", description: `Access credentials issued for ${name}` });
+        if (!name || !email || !password) {
+            toast({ title: "Error", description: "Name, email, and password are required.", variant: "destructive" });
+            return;
+        }
+        try {
+            await createUser(name, email, password, 'PROFESSOR', {
+                phone, department: dept, affiliation: university, degree,
+            });
+            setName(""); setEmail(""); setPassword(""); setPhone("");
+            setDept(""); setUniversity(""); setDegree("");
+            setOpenCreate(false);
+        } catch (err: any) {
+            toast({ title: "Error", description: err.message, variant: "destructive" });
+        }
     };
 
-    const startEdit = (prof: any) => {
-        setEditingProf(prof.id);
-        setEditName(prof.name); setEditEmail(prof.email);
-        setEditPhone(prof.phone || ""); setEditAddress("");
-        setEditDept(prof.department || ""); setEditUniversity(prof.affiliation || "");
-        setEditDegree(prof.degree || ""); setEditSpecialization(""); setEditBio("");
+    const startEdit = (prof: User) => {
+        setEditingProf(prof);
+        setEditName(prof.name);
+        setEditPhone(prof.phone || "");
+        setEditDept(prof.department || "");
+        setEditUniversity(prof.affiliation || "");
+        setEditDegree(prof.degree || "");
     };
 
-    const handleUpdate = (e: FormEvent) => {
+    const handleUpdate = async (e: FormEvent) => {
         e.preventDefault();
         if (!editingProf) return;
-        updateUser(editingProf, {
-            name: editName, email: editEmail, phone: editPhone,
-            department: editDept, affiliation: editUniversity, degree: editDegree,
-        });
-        setEditingProf(null);
-        toast({ title: "Professor Profile Updated", description: "All changes have been saved." });
+        try {
+            await updateUser(editingProf.id, {
+                name: editName, phone: editPhone, department: editDept,
+                affiliation: editUniversity, degree: editDegree,
+            });
+            toast({ title: "Updated", description: "Professor profile updated." });
+            setEditingProf(null);
+        } catch (err: any) {
+            toast({ title: "Error", description: err.message, variant: "destructive" });
+        }
+    };
+
+    const handleAssign = async () => {
+        if (!assignProfId || !assignPaperId) return;
+        const prof = professors.find(p => p.id === assignProfId);
+        if (prof) {
+            await assignPaper(assignPaperId, prof.id, prof.name);
+            setAssignOpen(false);
+            setAssignProfId("");
+            setAssignPaperId("");
+        }
     };
 
     return (
@@ -85,167 +106,179 @@ const AdminProfessors = memo(() => {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-border pb-8">
                     <div className="space-y-2">
                         <p className="section-label">Editorial Council</p>
-                        <h1 className="text-4xl font-serif font-bold text-foreground leading-tight">Board Management</h1>
+                        <h1 className="text-4xl font-serif font-bold text-foreground leading-tight">Professor Management</h1>
+                        <p className="text-sm text-muted-foreground">{professors.length} professors registered</p>
                     </div>
 
-                    <Dialog open={openCreate} onOpenChange={setOpenCreate}>
-                        <DialogTrigger asChild>
-                            <Button className="h-12 bg-accent text-accent-foreground px-6 font-bold tracking-widest hover:bg-foreground hover:text-background transition-all shadow-md flex items-center gap-2 text-xs uppercase">
-                                <Plus size={18} /> Initialize Professor
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                            <DialogHeader>
-                                <DialogTitle className="font-serif text-2xl text-accent">Assign New Member</DialogTitle>
-                            </DialogHeader>
-                            <form onSubmit={handleCreate} className="space-y-4 pt-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="col-span-2 space-y-1">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Full Scholarly Name</label>
-                                        <Input required placeholder="Dr. Researcher Name" value={name} onChange={(e) => setName(e.target.value)} className="h-11" />
-                                    </div>
-                                    <div className="col-span-2 space-y-1">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Institutional Email</label>
-                                        <Input required type="email" placeholder="scholar@institution.edu" value={email} onChange={(e) => setEmail(e.target.value)} className="h-11" />
+                    <div className="flex gap-3">
+                        {/* Assign Work */}
+                        <Dialog open={assignOpen} onOpenChange={setAssignOpen}>
+                            <DialogTrigger asChild>
+                                <Button variant="outline" className="h-12 px-6 font-bold tracking-widest text-xs uppercase gap-2">
+                                    <Send size={16} /> Assign Work
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle className="font-serif text-2xl text-accent">Assign Paper to Professor</DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-4 py-4">
+                                    <div className="space-y-1">
+                                        <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Select Professor</label>
+                                        <Select onValueChange={setAssignProfId} value={assignProfId}>
+                                            <SelectTrigger className="h-11"><SelectValue placeholder="Choose professor" /></SelectTrigger>
+                                            <SelectContent>
+                                                {professors.map(p => (
+                                                    <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Phone Number</label>
-                                        <Input required placeholder="+1 234..." value={phone} onChange={(e) => setPhone(e.target.value)} className="h-11" />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Current Address</label>
-                                        <Input required placeholder="City, Country" value={address} onChange={(e) => setAddress(e.target.value)} className="h-11" />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">University / Institution</label>
-                                        <Input required placeholder="University name" value={university} onChange={(e) => setUniversity(e.target.value)} className="h-11" />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Department</label>
-                                        <Input required placeholder="e.g. Computer Science" value={dept} onChange={(e) => setDept(e.target.value)} className="h-11" />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Academic Degree/Title</label>
-                                        <Input required placeholder="PhD, MSc, etc." value={degree} onChange={(e) => setDegree(e.target.value)} className="h-11" />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Specialization</label>
-                                        <Input required placeholder="e.g. AI Ethics" value={specialization} onChange={(e) => setSpecialization(e.target.value)} className="h-11" />
-                                    </div>
-                                    <div className="col-span-2 space-y-1">
-                                        <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Biography</label>
-                                        <Input placeholder="Short professional bio..." value={bio} onChange={(e) => setBio(e.target.value)} className="h-11" />
+                                        <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Select Paper</label>
+                                        <Select onValueChange={setAssignPaperId} value={assignPaperId}>
+                                            <SelectTrigger className="h-11"><SelectValue placeholder="Choose paper" /></SelectTrigger>
+                                            <SelectContent>
+                                                {unassignedPapers.map(p => (
+                                                    <SelectItem key={p.id} value={p.id}>{p.title}</SelectItem>
+                                                ))}
+                                                {unassignedPapers.length === 0 && (
+                                                    <SelectItem value="none" disabled>No unassigned papers</SelectItem>
+                                                )}
+                                            </SelectContent>
+                                        </Select>
                                     </div>
                                 </div>
-                                <Button type="submit" className="w-full h-12 bg-accent text-accent-foreground font-bold tracking-[0.2em] hover:bg-foreground hover:text-background transition-all uppercase text-xs">
-                                    Confirm Account Issuance
+                                <DialogFooter>
+                                    <Button variant="outline" onClick={() => setAssignOpen(false)}>Cancel</Button>
+                                    <Button onClick={handleAssign} disabled={!assignProfId || !assignPaperId}>Assign</Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+
+                        {/* Create Professor */}
+                        <Dialog open={openCreate} onOpenChange={setOpenCreate}>
+                            <DialogTrigger asChild>
+                                <Button className="h-12 bg-accent text-accent-foreground px-6 font-bold tracking-widest hover:bg-foreground hover:text-background transition-all text-xs uppercase gap-2">
+                                    <Plus size={18} /> Add Professor
                                 </Button>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                                <DialogHeader>
+                                    <DialogTitle className="font-serif text-2xl text-accent">Create Professor Account</DialogTitle>
+                                </DialogHeader>
+                                <form onSubmit={handleCreate} className="space-y-4 pt-4">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="col-span-2 space-y-1">
+                                            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Full Name *</label>
+                                            <Input required placeholder="Dr. Name" value={name} onChange={(e) => setName(e.target.value)} className="h-11" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Email *</label>
+                                            <Input required type="email" placeholder="professor@university.edu" value={email} onChange={(e) => setEmail(e.target.value)} className="h-11" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Password *</label>
+                                            <Input required type="password" placeholder="Min 6 characters" value={password} onChange={(e) => setPassword(e.target.value)} className="h-11" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Phone</label>
+                                            <Input placeholder="+91 ..." value={phone} onChange={(e) => setPhone(e.target.value)} className="h-11" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">University</label>
+                                            <Input placeholder="University" value={university} onChange={(e) => setUniversity(e.target.value)} className="h-11" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Department</label>
+                                            <Input placeholder="Department" value={dept} onChange={(e) => setDept(e.target.value)} className="h-11" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Degree</label>
+                                            <Input placeholder="PhD, MSc..." value={degree} onChange={(e) => setDegree(e.target.value)} className="h-11" />
+                                        </div>
+                                    </div>
+                                    <Button type="submit" className="w-full h-12 bg-accent text-accent-foreground font-bold tracking-[0.2em] hover:bg-foreground hover:text-background transition-all uppercase text-xs">
+                                        Create Professor Account
+                                    </Button>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
                 </div>
 
                 {/* Professors Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {professors.map((prof) => (
-                        <div key={prof.id} className="p-6 bg-card border border-border group hover:border-accent/30 transition-all duration-500 relative overflow-hidden flex flex-col justify-between min-h-[280px] hover:shadow-md">
-                            <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                                <Dialog open={editingProf === prof.id} onOpenChange={(open) => !open && setEditingProf(null)}>
-                                    <DialogTrigger asChild>
-                                        <button onClick={() => startEdit(prof)} className="text-muted-foreground hover:text-accent transition-colors">
-                                            <CheckCircle size={18} />
-                                        </button>
-                                    </DialogTrigger>
-                                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                                        <DialogHeader>
-                                            <DialogTitle className="font-serif text-2xl text-accent">Edit Member Profile</DialogTitle>
-                                        </DialogHeader>
-                                        <form onSubmit={handleUpdate} className="space-y-4 pt-4">
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div className="col-span-2 space-y-1">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Name</label>
-                                                    <Input required value={editName} onChange={(e) => setEditName(e.target.value)} className="h-11" />
-                                                </div>
-                                                <div className="col-span-2 space-y-1">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Email</label>
-                                                    <Input required type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} className="h-11" />
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Phone</label>
-                                                    <Input required value={editPhone} onChange={(e) => setEditPhone(e.target.value)} className="h-11" />
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Address</label>
-                                                    <Input required value={editAddress} onChange={(e) => setEditAddress(e.target.value)} className="h-11" />
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">University</label>
-                                                    <Input required value={editUniversity} onChange={(e) => setEditUniversity(e.target.value)} className="h-11" />
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Department</label>
-                                                    <Input required value={editDept} onChange={(e) => setEditDept(e.target.value)} className="h-11" />
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Degree</label>
-                                                    <Input required value={editDegree} onChange={(e) => setEditDegree(e.target.value)} className="h-11" />
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Specialization</label>
-                                                    <Input required value={editSpecialization} onChange={(e) => setEditSpecialization(e.target.value)} className="h-11" />
-                                                </div>
-                                                <div className="col-span-2 space-y-1">
-                                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Bio</label>
-                                                    <Input value={editBio} onChange={(e) => setEditBio(e.target.value)} className="h-11" />
-                                                </div>
-                                            </div>
-                                            <Button type="submit" className="w-full h-12 bg-accent text-accent-foreground font-bold tracking-[0.2em] hover:bg-foreground hover:text-background transition-all uppercase text-xs">
-                                                Save Changes
+                    {professors.map((prof) => {
+                        const profPapers = papers.filter(p => p.assignedProfessorId === prof.id);
+                        return (
+                            <div key={prof.id} className="p-6 bg-card border border-border group hover:border-accent/30 transition-all duration-500 relative overflow-hidden flex flex-col justify-between min-h-[280px] hover:shadow-md">
+                                <div className="absolute top-0 right-0 p-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Button size="sm" variant="ghost" onClick={() => startEdit(prof)} title="Edit">
+                                        <Edit size={14} />
+                                    </Button>
+                                    <Button
+                                        size="sm" variant="ghost"
+                                        onClick={() => prof.status === 'ACTIVE' ? banUser(prof.id) : unbanUser(prof.id)}
+                                        className={prof.status === 'ACTIVE' ? 'text-orange-500' : 'text-green-600'}
+                                        title={prof.status === 'ACTIVE' ? 'Deactivate' : 'Reactivate'}
+                                    >
+                                        {prof.status === 'ACTIVE' ? <Ban size={14} /> : <CheckCircle size={14} />}
+                                    </Button>
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button size="sm" variant="ghost" className="text-destructive" title="Delete">
+                                                <Trash2 size={14} />
                                             </Button>
-                                        </form>
-                                    </DialogContent>
-                                </Dialog>
-                            </div>
-
-                            <div className="space-y-5">
-                                <div className="w-14 h-14 bg-muted flex items-center justify-center group-hover:bg-accent transition-all duration-500 border border-border">
-                                    <GraduationCap size={28} className="text-foreground group-hover:text-accent-foreground" />
-                                </div>
-                                <div className="space-y-1">
-                                    <h3 className="font-serif text-xl font-bold text-foreground group-hover:text-accent transition-colors">{prof.name}</h3>
-                                    <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">{prof.degree} • {prof.affiliation}</p>
-                                    <p className="text-[10px] italic text-secondary">{prof.department}</p>
-                                </div>
-                            </div>
-
-                            <div className="space-y-4 pt-6 mt-auto border-t border-border">
-                                <div className="flex justify-between items-center text-[10px] uppercase tracking-[0.15em] font-bold">
-                                    <span className="text-muted-foreground">Status</span>
-                                    <span className={prof.status === 'ACTIVE' ? "text-secondary" : "text-destructive"}>{prof.status}</span>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Delete Professor: {prof.name}?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    This will permanently delete this professor's account and auth credentials.
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction onClick={() => deleteUser(prof.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                                                    Delete
+                                                </AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
                                 </div>
 
-                                <div className="flex gap-3">
-                                    {prof.status === 'ACTIVE' ? (
-                                        <Button
-                                            variant="outline"
-                                            onClick={() => banUser(prof.id)}
-                                            className="flex-1 text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-all text-[10px] uppercase font-bold tracking-widest h-11"
-                                        >
-                                            Deactivate
-                                        </Button>
-                                    ) : (
-                                        <Button
-                                            variant="outline"
-                                            onClick={() => unbanUser(prof.id)}
-                                            className="flex-1 text-muted-foreground hover:text-secondary hover:bg-secondary/5 transition-all text-[10px] uppercase font-bold tracking-widest h-11"
-                                        >
-                                            Reactivate
-                                        </Button>
+                                <div className="space-y-5">
+                                    <div className="w-14 h-14 bg-muted flex items-center justify-center group-hover:bg-accent transition-all duration-500 border border-border">
+                                        <GraduationCap size={28} className="text-foreground group-hover:text-accent-foreground" />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <h3 className="font-serif text-xl font-bold text-foreground group-hover:text-accent transition-colors">{prof.name}</h3>
+                                        <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">{prof.degree} • {prof.affiliation}</p>
+                                        <p className="text-[10px] italic text-secondary">{prof.department}</p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4 pt-6 mt-auto border-t border-border">
+                                    <div className="flex justify-between items-center text-[10px] uppercase tracking-[0.15em] font-bold">
+                                        <span className="text-muted-foreground">Status</span>
+                                        <span className={prof.status === 'ACTIVE' ? "text-secondary" : "text-destructive"}>{prof.status}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-[10px] uppercase tracking-[0.15em] font-bold">
+                                        <span className="text-muted-foreground">Papers Assigned</span>
+                                        <span className="text-foreground">{profPapers.length}</span>
+                                    </div>
+                                    {profPapers.length > 0 && (
+                                        <div className="space-y-1 max-h-24 overflow-y-auto">
+                                            {profPapers.map(p => (
+                                                <p key={p.id} className="text-[9px] text-muted-foreground truncate">• {p.title} ({p.status})</p>
+                                            ))}
+                                        </div>
                                     )}
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
 
                     {professors.length === 0 && (
                         <div className="col-span-full py-24 text-center border-2 border-dashed border-border flex flex-col items-center justify-center space-y-4">
@@ -254,6 +287,45 @@ const AdminProfessors = memo(() => {
                         </div>
                     )}
                 </div>
+
+                {/* Edit Professor Dialog */}
+                <Dialog open={!!editingProf} onOpenChange={(open) => !open && setEditingProf(null)}>
+                    <DialogContent className="max-w-lg">
+                        <DialogHeader>
+                            <DialogTitle className="font-serif text-2xl text-accent">Edit: {editingProf?.name}</DialogTitle>
+                        </DialogHeader>
+                        <form onSubmit={handleUpdate} className="space-y-4 pt-4">
+                            <div className="space-y-1">
+                                <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Name</label>
+                                <Input required value={editName} onChange={(e) => setEditName(e.target.value)} className="h-11" />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Phone</label>
+                                    <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} className="h-11" />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Degree</label>
+                                    <Input value={editDegree} onChange={(e) => setEditDegree(e.target.value)} className="h-11" />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">University</label>
+                                    <Input value={editUniversity} onChange={(e) => setEditUniversity(e.target.value)} className="h-11" />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Department</label>
+                                    <Input value={editDept} onChange={(e) => setEditDept(e.target.value)} className="h-11" />
+                                </div>
+                            </div>
+                            <DialogFooter>
+                                <Button type="button" variant="outline" onClick={() => setEditingProf(null)}>Cancel</Button>
+                                <Button type="submit" className="bg-accent text-accent-foreground hover:bg-foreground hover:text-background">Save Changes</Button>
+                            </DialogFooter>
+                        </form>
+                    </DialogContent>
+                </Dialog>
             </div>
         </DashboardLayout>
     );
