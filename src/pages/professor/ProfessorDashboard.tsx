@@ -276,94 +276,94 @@ const ProfessorDashboard = memo(() => {
 
     return (
         <DashboardLayout role="PROFESSOR">
-            <div className="max-w-7xl mx-auto space-y-10">
-                {/* Executive Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-black/5 pb-10">
+            <div className="max-w-7xl mx-auto space-y-8">
+                {/* Header */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-border pb-8">
                     <div className="space-y-3">
                         <div className="flex items-center gap-3">
-                            <span className="h-px w-8 bg-gold" />
-                            <p className="section-label text-gold uppercase tracking-[0.3em] text-[10px] font-bold">Editorial Workspace</p>
+                            <span className="h-px w-8 bg-accent" />
+                            <p className="section-label">Editorial Workspace</p>
                         </div>
-                        <h1 className="text-6xl font-serif font-bold italic text-oxford leading-tight tracking-tight">Peer Review Console</h1>
+                        <h1 className="text-4xl lg:text-5xl font-serif font-bold text-foreground leading-tight tracking-tight">Peer Review Console</h1>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-8 bg-white border border-black/5 p-6 rounded-2xl shadow-sm">
+                    <div className="grid grid-cols-2 gap-6 bg-card border border-border p-5 shadow-sm">
                         <div className="space-y-1">
-                            <p className="text-[9px] uppercase font-bold text-oxford/40 tracking-widest">Active Queue</p>
+                            <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-widest">Active Queue</p>
                             <div className="flex items-center gap-2">
                                 <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-                                <p className="text-2xl font-serif italic font-bold text-oxford">{pendingReviews.length}</p>
+                                <p className="text-2xl font-serif italic font-bold text-foreground">{pendingReviews.length}</p>
                             </div>
                         </div>
-                        <div className="space-y-1 border-l border-black/5 pl-8">
-                            <p className="text-[9px] uppercase font-bold text-oxford/40 tracking-widest">Completed</p>
+                        <div className="space-y-1 border-l border-border pl-6">
+                            <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-widest">Completed</p>
                             <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-teal-500" />
-                                <p className="text-2xl font-serif italic font-bold text-oxford">{completedReviews.length}</p>
+                                <div className="w-2 h-2 rounded-full bg-secondary" />
+                                <p className="text-2xl font-serif italic font-bold text-foreground">{completedReviews.length}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Quick Actions - Upload Section */}
-                <div className="grid md:grid-cols-2 gap-6">
+                {/* Quick Actions */}
+                <div className="grid md:grid-cols-2 gap-4">
                     <div 
-                        className="bg-white border border-black/5 p-6 rounded-2xl cursor-pointer hover:border-gold/40 transition-all shadow-sm hover:shadow-md"
+                        className="bg-card border border-border p-5 cursor-pointer hover:border-accent/40 transition-all shadow-sm hover:shadow-md"
                         onClick={() => setIsUploadJournalOpen(true)}
                     >
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center">
-                                <Library className="w-6 h-6 text-gold" />
+                            <div className="w-11 h-11 bg-accent/10 flex items-center justify-center">
+                                <Library className="w-5 h-5 text-accent" />
                             </div>
                             <div>
-                                <h3 className="font-bold text-oxford">Submit Journal Article</h3>
-                                <p className="text-xs text-oxford/40">Upload for admin approval</p>
+                                <h3 className="font-bold text-foreground">Submit Journal Article</h3>
+                                <p className="text-xs text-muted-foreground">Upload for admin approval</p>
                             </div>
                         </div>
                     </div>
                     <div 
-                        className="bg-white border border-black/5 p-6 rounded-2xl cursor-pointer hover:border-gold/40 transition-all shadow-sm hover:shadow-md"
+                        className="bg-card border border-border p-5 cursor-pointer hover:border-accent/40 transition-all shadow-sm hover:shadow-md"
                         onClick={() => setIsUploadBookOpen(true)}
                     >
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-teal-500/10 rounded-xl flex items-center justify-center">
-                                <BookOpen className="w-6 h-6 text-teal-500" />
+                            <div className="w-11 h-11 bg-secondary/10 flex items-center justify-center">
+                                <BookOpen className="w-5 h-5 text-secondary" />
                             </div>
                             <div>
-                                <h3 className="font-bold text-oxford">Submit Book</h3>
-                                <p className="text-xs text-oxford/40">Upload for admin approval</p>
+                                <h3 className="font-bold text-foreground">Submit Book</h3>
+                                <p className="text-xs text-muted-foreground">Upload for admin approval</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* My Submissions Status */}
+                {/* Submissions Status */}
                 {(pendingMySubmissions.length > 0 || approvedMySubmissions.length > 0) && (
-                    <div className="bg-white border border-black/5 p-6 rounded-2xl shadow-sm">
-                        <h3 className="font-bold text-oxford mb-4">My Submissions Status</h3>
+                    <div className="bg-card border border-border p-5 shadow-sm">
+                        <h3 className="font-bold text-foreground mb-4">My Submissions Status</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className="bg-orange-50 border border-orange-200 p-4">
                                 <p className="text-orange-600 font-bold">{pendingMySubmissions.length}</p>
-                                <p className="text-xs text-oxford/40">Pending Approval</p>
+                                <p className="text-xs text-muted-foreground">Pending Approval</p>
                             </div>
                             <div className="bg-green-50 border border-green-200 p-4">
                                 <p className="text-green-600 font-bold">{approvedMySubmissions.length}</p>
-                                <p className="text-xs text-oxford/40">Approved & Published</p>
+                                <p className="text-xs text-muted-foreground">Approved & Published</p>
                             </div>
-                            <div className="bg-red-50 border border-red-200 p-4">
-                                <p className="text-red-600 font-bold">{rejectedMySubmissions.length}</p>
-                                <p className="text-xs text-oxford/40">Rejected</p>
+                            <div className="bg-destructive/5 border border-destructive/20 p-4">
+                                <p className="text-destructive font-bold">{rejectedMySubmissions.length}</p>
+                                <p className="text-xs text-muted-foreground">Rejected</p>
                             </div>
                         </div>
                     </div>
                 )}
 
-                {/* Search & Filter Bar */}
+                {/* Search */}
                 <div className="relative group">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-oxford/20 group-focus-within:text-gold transition-colors" size={18} />
+                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-accent transition-colors" size={18} />
                     <Input
                         placeholder="Search by title, author, or discipline..."
-                        className="h-16 pl-16 bg-white border border-black/10 text-oxford font-serif italic text-lg focus:ring-gold/20 focus:border-gold/50 rounded-2xl transition-all"
+                        className="h-14 pl-14 bg-card border border-border text-foreground font-serif italic text-base focus:ring-accent/20 focus:border-accent/50 transition-all"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
