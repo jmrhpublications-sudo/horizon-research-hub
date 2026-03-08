@@ -573,7 +573,6 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         const { error } = await db.from('papers').update({ 
             status: 'UNDER_REVIEW', 
             assigned_professor_id: professorId,
-            assigned_professor_name: professorName
         }).eq('id', paperId);
         if (error) throw error;
         toast({ title: "Paper Assigned", description: `Assigned to ${professorName}` });
