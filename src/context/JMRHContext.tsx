@@ -160,6 +160,8 @@ interface JMRHContextType {
     banUser: (userId: string) => Promise<void>;
     unbanUser: (userId: string) => Promise<void>;
     createUser: (name: string, email: string, password: string, role: UserRole, details?: any) => Promise<void>;
+    deleteUser: (userId: string) => Promise<void>;
+    updateUserRole: (userId: string, role: UserRole) => Promise<void>;
     assignPaper: (paperId: string, professorId: string, professorName: string) => Promise<void>;
     submitPaper: (title: string, abstract: string, discipline: string, paperType: PaperType, authorName: string, authorEmail?: string, manuscriptType?: string, keywords?: string, coAuthors?: string, attachments?: string[]) => Promise<void>;
     updatePaper: (paperId: string, updates: Partial<Paper>) => Promise<void>;
