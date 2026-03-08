@@ -546,7 +546,13 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         manuscriptType?: string,
         keywords?: string,
         coAuthors?: string,
-        attachments?: string[]
+        attachments?: string[],
+        phone?: string,
+        affiliation?: string,
+        designation?: string,
+        orcid?: string,
+        coverLetter?: string,
+        additionalNotes?: string
     ) => {
         if (!currentUser) return;
         
@@ -558,14 +564,29 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
             abstract, 
             discipline,
             paper_type: paperType,
-            manuscript_type: manuscriptType,
-            keywords,
-            co_authors: coAuthors,
+            manuscript_type: manuscriptType || '',
+            keywords: keywords || '',
+            co_authors: coAuthors || '',
+            phone: phone || '',
+            affiliation: affiliation || '',
+            designation: designation || '',
+            orcid: orcid || '',
+            cover_letter: coverLetter || '',
+            additional_notes: additionalNotes || '',
             status: 'SUBMITTED',
             submission_date: new Date().toISOString().split('T')[0],
             attachments
         });
         if (error) throw error;
+        
+        // Notify admin via edge function
+        try {
+            await supabase.functions.invoke('notify-admin-submission', {
+                body: { title, authorName, authorEmail: authorEmail || currentUser.email, discipline, paperType }
+            });
+        } catch (notifyErr) {
+            console.warn('Admin notification failed (non-critical):', notifyErr);
+        }
         
         toast({ title: "Submission Received", description: "Your manuscript has been submitted for review." });
         await refreshData();
