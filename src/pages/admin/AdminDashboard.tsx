@@ -448,12 +448,132 @@ const AdminDashboard = memo(() => {
 
                 {/* Overview Tab */}
                 {activeTab === "overview" && (
-                    <div className="space-y-6">
+                    <div className="space-y-8">
+                        {/* Charts Row */}
+                        <div className="grid md:grid-cols-3 gap-6">
+                            {/* Paper Status Chart */}
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+                                className="bg-card border border-border p-6">
+                                <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                    <BarChart3 size={16} className="text-accent" /> Paper Status
+                                </h3>
+                                <ResponsiveContainer width="100%" height={200}>
+                                    <PieChart>
+                                        <Pie
+                                            data={[
+                                                { name: 'Submitted', value: submittedPapers.length, color: 'hsl(35, 40%, 50%)' },
+                                                { name: 'Under Review', value: underReviewPapers.length, color: 'hsl(200, 10%, 40%)' },
+                                                { name: 'Accepted', value: acceptedPapers.length, color: 'hsl(142, 60%, 40%)' },
+                                                { name: 'Published', value: publishedPapers.length, color: 'hsl(35, 50%, 60%)' },
+                                                { name: 'Rejected', value: rejectedPapers.length, color: 'hsl(0, 84%, 60%)' },
+                                            ].filter(d => d.value > 0)}
+                                            cx="50%" cy="50%" innerRadius={50} outerRadius={80}
+                                            dataKey="value" paddingAngle={3} strokeWidth={0}
+                                        >
+                                            {[
+                                                { color: 'hsl(35, 40%, 50%)' },
+                                                { color: 'hsl(200, 10%, 40%)' },
+                                                { color: 'hsl(142, 60%, 40%)' },
+                                                { color: 'hsl(35, 50%, 60%)' },
+                                                { color: 'hsl(0, 84%, 60%)' },
+                                            ].map((entry, index) => (
+                                                <Cell key={index} fill={entry.color} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip />
+                                        <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </motion.div>
+
+                            {/* User Roles Chart */}
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                                className="bg-card border border-border p-6">
+                                <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                    <Users size={16} className="text-secondary" /> User Distribution
+                                </h3>
+                                <ResponsiveContainer width="100%" height={200}>
+                                    <BarChart data={[
+                                        { name: 'Users', count: regularUsers.length },
+                                        { name: 'Professors', count: professorsList.length },
+                                        { name: 'Admins', count: admins.length },
+                                    ]}>
+                                        <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+                                        <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
+                                        <Tooltip />
+                                        <Bar dataKey="count" fill="hsl(35, 40%, 50%)" radius={[2, 2, 0, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </motion.div>
+
+                            {/* Activity Summary */}
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+                                className="bg-card border border-border p-6">
+                                <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                    <Activity size={16} className="text-accent" /> Activity Summary
+                                </h3>
+                                <div className="space-y-4">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-xs text-muted-foreground">Pending Papers</span>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-24 h-2 bg-muted overflow-hidden">
+                                                <div className="h-full bg-accent transition-all" style={{ width: `${papers.length ? (submittedPapers.length / papers.length) * 100 : 0}%` }} />
+                                            </div>
+                                            <span className="text-xs font-bold text-foreground">{submittedPapers.length}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-xs text-muted-foreground">Under Review</span>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-24 h-2 bg-muted overflow-hidden">
+                                                <div className="h-full bg-secondary transition-all" style={{ width: `${papers.length ? (underReviewPapers.length / papers.length) * 100 : 0}%` }} />
+                                            </div>
+                                            <span className="text-xs font-bold text-foreground">{underReviewPapers.length}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-xs text-muted-foreground">Published</span>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-24 h-2 bg-muted overflow-hidden">
+                                                <div className="h-full bg-green-500 transition-all" style={{ width: `${papers.length ? (publishedPapers.length / papers.length) * 100 : 0}%` }} />
+                                            </div>
+                                            <span className="text-xs font-bold text-foreground">{publishedPapers.length}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-xs text-muted-foreground">Prof Submissions</span>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-24 h-2 bg-muted overflow-hidden">
+                                                <div className="h-full bg-accent transition-all" style={{ width: `${professorSubmissions.length ? (pendingProfessorSubmissions.length / professorSubmissions.length) * 100 : 0}%` }} />
+                                            </div>
+                                            <span className="text-xs font-bold text-foreground">{pendingProfessorSubmissions.length}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-xs text-muted-foreground">Upload Requests</span>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-24 h-2 bg-muted overflow-hidden">
+                                                <div className="h-full bg-accent transition-all" style={{ width: `${uploadRequests.length ? (pendingRequests.length / uploadRequests.length) * 100 : 0}%` }} />
+                                            </div>
+                                            <span className="text-xs font-bold text-foreground">{pendingRequests.length}</span>
+                                        </div>
+                                    </div>
+                                    <div className="pt-3 border-t border-border flex justify-between text-xs font-bold">
+                                        <span className="text-muted-foreground">Active Users</span>
+                                        <span className="text-green-600">{users.filter(u => u.status === 'ACTIVE').length} / {users.length}</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </div>
+
                         <div className="grid md:grid-cols-2 gap-6">
                             {/* Recent Papers */}
-                            <div className="bg-card border border-border">
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
+                                className="bg-card border border-border">
                                 <div className="p-4 border-b border-border flex justify-between items-center">
-                                    <h3 className="font-bold text-foreground">Recent Papers</h3>
+                                    <h3 className="font-bold text-foreground flex items-center gap-2">
+                                        <FileText size={16} className="text-accent" /> Recent Papers
+                                    </h3>
                                     <Button variant="ghost" size="sm" onClick={() => setActiveTab("papers")}>View All</Button>
                                 </div>
                                 <div className="divide-y divide-border">
@@ -462,8 +582,8 @@ const AdminDashboard = memo(() => {
                                             <p className="font-medium text-foreground line-clamp-1 text-sm">{paper.title}</p>
                                             <div className="flex items-center gap-2 mt-1">
                                                 <span className="text-xs text-muted-foreground">{paper.authorName}</span>
-                                                <span className={`px-2 py-0.5 text-xs font-bold uppercase ${
-                                                    paper.status === 'SUBMITTED' ? 'bg-orange-100 text-orange-600' :
+                                                <span className={`px-2 py-0.5 text-[9px] font-bold uppercase ${
+                                                    paper.status === 'SUBMITTED' ? 'bg-accent/10 text-accent' :
                                                     paper.status === 'UNDER_REVIEW' ? 'bg-secondary/10 text-secondary' :
                                                     paper.status === 'ACCEPTED' ? 'bg-green-100 text-green-600' :
                                                     paper.status === 'PUBLISHED' ? 'bg-accent/10 text-accent' :
@@ -478,55 +598,67 @@ const AdminDashboard = memo(() => {
                                         <p className="p-4 text-center text-muted-foreground text-sm">No papers yet</p>
                                     )}
                                 </div>
-                            </div>
+                            </motion.div>
 
                             {/* Quick Actions */}
-                            <div className="bg-card border border-border p-6">
-                                <h3 className="font-bold text-foreground mb-4">Quick Actions</h3>
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
+                                className="bg-card border border-border p-6">
+                                <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+                                    <TrendingUp size={16} className="text-secondary" /> Quick Actions
+                                </h3>
                                 <div className="grid grid-cols-2 gap-3">
-                                    <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setIsUploadJournalOpen(true)}>
+                                    <Button variant="outline" className="h-auto py-4 flex-col gap-2 hover:border-accent/40 transition-all" onClick={() => setIsUploadJournalOpen(true)}>
                                         <Upload className="w-6 h-6 text-accent" />
                                         <span className="text-xs">Upload Journal</span>
                                     </Button>
-                                    <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setIsUploadBookOpen(true)}>
+                                    <Button variant="outline" className="h-auto py-4 flex-col gap-2 hover:border-secondary/40 transition-all" onClick={() => setIsUploadBookOpen(true)}>
                                         <BookOpen className="w-6 h-6 text-secondary" />
                                         <span className="text-xs">Upload Book</span>
                                     </Button>
-                                    <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setIsCreateUserOpen(true)}>
-                                        <Plus className="w-6 h-6 text-secondary" />
+                                    <Button variant="outline" className="h-auto py-4 flex-col gap-2 hover:border-accent/40 transition-all" onClick={() => setIsCreateUserOpen(true)}>
+                                        <Plus className="w-6 h-6 text-accent" />
                                         <span className="text-xs">Add User</span>
                                     </Button>
-                                    <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => refreshData()}>
-                                        <RefreshCw className="w-6 h-6 text-accent" />
+                                    <Button variant="outline" className="h-auto py-4 flex-col gap-2 hover:border-secondary/40 transition-all" onClick={() => refreshData()}>
+                                        <RefreshCw className="w-6 h-6 text-secondary" />
                                         <span className="text-xs">Refresh Data</span>
                                     </Button>
                                 </div>
-                            </div>
+                            </motion.div>
                         </div>
 
                         {/* Pending Actions */}
-                        {(submittedPapers.length > 0 || pendingRequests.length > 0) && (
-                            <div className="bg-accent/5 border border-accent/20 p-6">
-                                <h3 className="font-bold text-accent flex items-center gap-2">
+                        {(submittedPapers.length > 0 || pendingRequests.length > 0 || pendingProfessorSubmissions.length > 0) && (
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
+                                className="bg-accent/5 border border-accent/20 p-6">
+                                <h3 className="font-bold text-accent flex items-center gap-2 mb-4">
                                     <AlertCircle size={20} />
-                                    Pending Actions ({submittedPapers.length + pendingRequests.length})
+                                    Pending Actions ({submittedPapers.length + pendingRequests.length + pendingProfessorSubmissions.length})
                                 </h3>
-                                <div className="mt-4 grid md:grid-cols-2 gap-4">
+                                <div className="grid md:grid-cols-3 gap-4">
                                     {submittedPapers.length > 0 && (
                                         <div className="bg-card p-4 border border-border">
-                                            <p className="font-medium text-foreground">{submittedPapers.length} papers awaiting review</p>
+                                            <p className="font-medium text-foreground text-sm">{submittedPapers.length} papers awaiting review</p>
                                             <Button size="sm" className="mt-2" onClick={() => setActiveTab("papers")}>Review Now</Button>
+                                        </div>
+                                    )}
+                                    {pendingProfessorSubmissions.length > 0 && (
+                                        <div className="bg-card p-4 border border-border">
+                                            <p className="font-medium text-foreground text-sm">{pendingProfessorSubmissions.length} professor submissions</p>
+                                            <Button size="sm" className="mt-2" onClick={() => setActiveTab("upload")}>Review Now</Button>
                                         </div>
                                     )}
                                     {pendingRequests.length > 0 && (
                                         <div className="bg-card p-4 border border-border">
-                                            <p className="font-medium text-foreground">{pendingRequests.length} upload requests pending</p>
+                                            <p className="font-medium text-foreground text-sm">{pendingRequests.length} upload requests</p>
                                             <Button size="sm" className="mt-2" onClick={() => setActiveTab("upload")}>Review Now</Button>
                                         </div>
                                     )}
                                 </div>
-                            </div>
+                            </motion.div>
                         )}
+                    </div>
+                )}
                     </div>
                 )}
                 {/* Papers Tab */}
