@@ -344,20 +344,20 @@ const ProfessorDashboard = memo(() => {
                                                                     onChange={(e) => setReviewComments(e.target.value)}
                                                                 />
                                                             </div>
-                                                            <div className="grid grid-cols-3 gap-2">
-                                                                <Button onClick={() => handleSubmitReview(paper.id, 'ACCEPTED')}
-                                                                    className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">
-                                                                    Accept
-                                                                </Button>
-                                                                <Button onClick={() => handleSubmitReview(paper.id, 'REVISION_REQUIRED')}
-                                                                    className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold">
-                                                                    Revision
-                                                                </Button>
-                                                                <Button onClick={() => handleSubmitReview(paper.id, 'REJECTED')}
-                                                                    variant="destructive" className="text-xs font-bold">
-                                                                    Reject
-                                                                </Button>
-                                                            </div>
+                                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                                <Button onClick={() => handleSubmitReview(paper.id, 'ACCEPTED')}
+                                                    className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">
+                                                    Accept
+                                                </Button>
+                                                <Button onClick={() => handleSubmitReview(paper.id, 'REVISION_REQUIRED')}
+                                                    className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold">
+                                                    Revision
+                                                </Button>
+                                                <Button onClick={() => handleSubmitReview(paper.id, 'REJECTED')}
+                                                    variant="destructive" className="text-xs font-bold">
+                                                    Reject
+                                                </Button>
+                                            </div>
                                                         </div>
                                                     </DialogContent>
                                                 </Dialog>
