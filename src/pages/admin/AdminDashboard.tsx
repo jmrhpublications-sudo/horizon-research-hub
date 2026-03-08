@@ -396,29 +396,32 @@ const AdminDashboard = memo(() => {
 
     return (
         <DashboardLayout role="ADMIN">
-            <div className="space-y-8">
+            <div className="space-y-6">
                 {/* Header */}
-                <div className="flex justify-between items-end border-b border-border pb-6">
-                    <div className="space-y-2">
-                        <p className="section-label">Admin Control Panel</p>
-                        <h1 className="text-4xl font-serif font-bold text-foreground">Dashboard</h1>
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-6 border-b border-border">
+                    <div className="space-y-1">
+                        <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent">Admin Console</p>
+                        <h1 className="text-3xl font-serif font-bold text-foreground">Dashboard</h1>
+                        <p className="text-sm text-muted-foreground">{users.length} users • {papers.length} papers • {publishedJournals.length} journals</p>
                     </div>
-                    <Button variant="outline" onClick={() => refreshData()} className="gap-2">
-                        <RefreshCw size={16} /> Refresh
+                    <Button variant="outline" size="sm" onClick={() => refreshData()} className="gap-2">
+                        <RefreshCw size={14} /> Refresh
                     </Button>
                 </div>
 
-                {/* Overview Stats */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                {/* Stats */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
                     {stats.map((stat, idx) => (
-                        <div key={idx} className="p-4 bg-card border border-border shadow-sm hover:shadow-md transition-shadow hover:border-accent/20">
+                        <motion.div key={idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.03 }}
+                            className="p-4 bg-card border border-border rounded-lg hover:shadow-sm transition-shadow hover:border-accent/20">
                             <div className="flex items-center justify-between mb-2">
                                 <stat.icon className={`w-5 h-5 ${stat.color}`} />
                             </div>
                             <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                             <p className="text-xs text-muted-foreground">{stat.label}</p>
-                            <p className="text-xs text-muted-foreground/60">{stat.sub}</p>
-                        </div>
+                            <p className="text-[10px] text-muted-foreground/60">{stat.sub}</p>
+                        </motion.div>
+                    ))}
                     ))}
                 </div>
 
