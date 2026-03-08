@@ -181,7 +181,7 @@ const AdminUsers = memo(() => {
                                 {/* Account Info */}
                                 <div className="space-y-3">
                                     <h4 className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent border-b border-border pb-2">Account Credentials</h4>
-                                    <div className="grid grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                         <div className="space-y-1">
                                             <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Full Name *</label>
                                             <Input required placeholder="Full name" value={newName} onChange={(e) => setNewName(e.target.value)} className="h-11" />
@@ -190,7 +190,7 @@ const AdminUsers = memo(() => {
                                             <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Email *</label>
                                             <Input required type="email" placeholder="email@example.com" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} className="h-11" />
                                         </div>
-                                        <div className="space-y-1">
+                                        <div className="space-y-1 sm:col-span-2 lg:col-span-1">
                                             <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Password *</label>
                                             <Input required type="password" placeholder="Min 6 characters" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="h-11" />
                                         </div>
