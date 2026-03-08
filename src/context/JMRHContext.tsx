@@ -371,20 +371,27 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     };
 
     useEffect(() => {
-        const init = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session?.user) {
-                const profile = await fetchUserProfile(session.user.id);
-                if (profile) {
-                    setCurrentUser(profile);
-                    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(profile));
+    const init = async () => {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session?.user) {
+                    const profile = await fetchUserProfile(session.user.id);
+                    if (profile) {
+                        setCurrentUser(profile);
+                        localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(profile));
+                    }
+                } else {
+                    // No valid session - clear any cached data
+                    localStorage.removeItem(USER_STORAGE_KEY);
+                    setCurrentUser(null);
                 }
-            } else {
-                // No valid session - clear any cached data
+            } catch (err) {
+                console.warn('Init auth error:', err);
                 localStorage.removeItem(USER_STORAGE_KEY);
                 setCurrentUser(null);
+            } finally {
+                setIsLoading(false);
             }
-            setIsLoading(false);
         };
 
         init();
