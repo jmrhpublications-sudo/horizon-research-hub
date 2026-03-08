@@ -289,7 +289,7 @@ const AdminProfessors = memo(() => {
                                     <div className="absolute top-0 right-0 w-24 h-24 bg-accent/5 rounded-bl-[80px] -mr-12 -mt-12 transition-all group-hover:bg-accent/10" />
 
                                     {/* Actions */}
-                                    <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                    <div className="absolute top-3 right-3 flex gap-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity z-10">
                                         <Button size="sm" variant="ghost" onClick={() => setViewingProf(prof)} title="View"><Eye size={14} /></Button>
                                         <Button size="sm" variant="ghost" onClick={() => startEdit(prof)} title="Edit"><Edit size={14} /></Button>
                                         <Button size="sm" variant="ghost"
