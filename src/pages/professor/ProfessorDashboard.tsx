@@ -4,103 +4,59 @@ import { useJMRH, PaperStatus, Paper, ProfessorSubmission } from "@/context/JMRH
 import { supabase } from "@/integrations/supabase/client";
 import { getSignedFileUrl } from "@/lib/storage-utils";
 import {
-    BookOpen,
-    CheckCircle,
-    Clock,
-    FileText,
-    Send,
-    ArrowRight,
-    AlertCircle,
-    MessageSquare,
-    Search,
-    Filter,
-    Download,
-    Eye,
-    Upload,
-    Library,
-    Plus,
-    Trash2,
-    Edit,
-    ExternalLink,
-    Check,
-    X,
-    User,
-    Calendar
+    BookOpen, CheckCircle, Clock, FileText, Send, ArrowRight, AlertCircle,
+    MessageSquare, Search, Download, Eye, Upload, Library, Plus, Trash2,
+    User, Calendar, GraduationCap, RefreshCw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-    DialogDescription,
-    DialogFooter
+    Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
+    DialogDescription, DialogFooter
 } from "@/components/ui/dialog";
 import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger
-} from "@/components/ui/tabs";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
+    Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { motion, AnimatePresence } from "framer-motion";
+
+const statusColors: Record<string, string> = {
+    SUBMITTED: "bg-orange-100 text-orange-700",
+    UNDER_REVIEW: "bg-blue-100 text-blue-700",
+    REVISION_REQUIRED: "bg-yellow-100 text-yellow-700",
+    ACCEPTED: "bg-emerald-100 text-emerald-700",
+    REJECTED: "bg-red-100 text-red-700",
+    PUBLISHED: "bg-green-100 text-green-700",
+    PENDING: "bg-orange-100 text-orange-700",
+    APPROVED: "bg-emerald-100 text-emerald-700",
+};
 
 const ProfessorDashboard = memo(() => {
     const { 
-        papers, 
-        currentUser, 
-        updatePaperStatus, 
-        professorSubmissions,
-        createProfessorSubmission,
-        deleteProfessorSubmission
+        papers, currentUser, updatePaperStatus, refreshData,
+        professorSubmissions, createProfessorSubmission, deleteProfessorSubmission
     } = useJMRH();
     const [reviewComments, setReviewComments] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
-    const [selectedPaper, setSelectedPaper] = useState<Paper | null>(null);
+    const [activeTab, setActiveTab] = useState<"reviews" | "history" | "submissions">("reviews");
     const [isUploadJournalOpen, setIsUploadJournalOpen] = useState(false);
     const [isUploadBookOpen, setIsUploadBookOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { toast } = useToast();
 
-    // Form states
     const [journalForm, setJournalForm] = useState({
-        title: "",
-        authors: "",
-        abstract: "",
-        discipline: "",
-        keywords: "",
-        volume: "",
-        issue: "",
-        pages: "",
-        doi: "",
-        publicationDate: new Date().toISOString().split('T')[0],
-        pdfUrl: "",
-        coverImage: ""
+        title: "", authors: "", abstract: "", discipline: "", keywords: "",
+        volume: "", issue: "", pages: "", doi: "",
+        publicationDate: new Date().toISOString().split('T')[0], pdfUrl: "", coverImage: ""
     });
 
     const [bookForm, setBookForm] = useState({
-        title: "",
-        authors: "",
-        editors: "",
-        isbn: "",
-        publisher: "",
-        description: "",
-        discipline: "",
-        keywords: "",
-        edition: "",
-        publicationYear: "",
-        pdfUrl: "",
-        coverImage: "",
-        purchaseLink: ""
+        title: "", authors: "", editors: "", isbn: "", publisher: "",
+        description: "", discipline: "", keywords: "", edition: "",
+        publicationYear: "", pdfUrl: "", coverImage: "", purchaseLink: ""
     });
 
     const journalFileRef = useRef<HTMLInputElement>(null);
@@ -109,522 +65,410 @@ const ProfessorDashboard = memo(() => {
     const [isUploadingBook, setIsUploadingBook] = useState(false);
 
     const disciplines = [
-        "Commerce and Management",
-        "Economics and Finance", 
-        "Education and Psychology",
-        "Social Sciences and Humanities",
-        "Science and Technology",
-        "Environmental Studies and Sustainability",
-        "Digital Transformation and Information Systems",
-        "Entrepreneurship and Innovation",
-        "Public Policy and Governance",
-        "Other"
+        "Commerce and Management", "Economics and Finance", "Education and Psychology",
+        "Social Sciences and Humanities", "Science and Technology",
+        "Environmental Studies and Sustainability", "Digital Transformation and Information Systems",
+        "Entrepreneurship and Innovation", "Public Policy and Governance", "Other"
     ];
 
     const assignedPapers = useMemo(() =>
-        papers.filter(p => p.assignedProfessorId === currentUser?.id),
-        [papers, currentUser]);
+        papers.filter(p => p.assignedProfessorId === currentUser?.id), [papers, currentUser]);
 
     const mySubmissions = useMemo(() =>
-        professorSubmissions.filter(s => s.professorId === currentUser?.id),
-        [professorSubmissions, currentUser]);
+        professorSubmissions.filter(s => s.professorId === currentUser?.id), [professorSubmissions, currentUser]);
 
-    const pendingMySubmissions = mySubmissions.filter(s => s.status === 'PENDING');
-    const approvedMySubmissions = mySubmissions.filter(s => s.status === 'APPROVED');
-    const rejectedMySubmissions = mySubmissions.filter(s => s.status === 'REJECTED');
-
-    const filteredPapers = useMemo(() => {
-        return assignedPapers.filter(p =>
+    const filteredPapers = useMemo(() =>
+        assignedPapers.filter(p =>
             p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            p.authorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            p.discipline.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-    }, [assignedPapers, searchTerm]);
+            p.authorName.toLowerCase().includes(searchTerm.toLowerCase())
+        ), [assignedPapers, searchTerm]);
 
-    const pendingReviews = filteredPapers.filter(p => p.status === 'UNDER_REVIEW');
+    const pendingReviews = filteredPapers.filter(p => p.status === 'UNDER_REVIEW' || p.status === 'SUBMITTED');
     const completedReviews = filteredPapers.filter(p => p.status !== 'UNDER_REVIEW' && p.status !== 'SUBMITTED');
 
     const handleSubmitReview = (paperId: string, decision: PaperStatus) => {
         if (!reviewComments.trim()) {
-            toast({
-                title: "Feedback Required",
-                description: "Please provide academic commentary before submitting your decision.",
-                variant: "destructive"
-            });
+            toast({ title: "Feedback Required", description: "Please provide comments before submitting.", variant: "destructive" });
             return;
         }
         updatePaperStatus(paperId, decision, reviewComments);
         setReviewComments("");
-        toast({
-            title: "Review Transmitted",
-            description: `Institutional decision of ${decision.replace('_', ' ')} recorded.`
-        });
+        toast({ title: "Review Submitted", description: `Decision: ${decision.replace('_', ' ')}` });
     };
 
     const handleDownload = async (paper: Paper) => {
         if (paper.attachments?.length) {
-            const url = await getSignedFileUrl('manuscripts', paper.attachments[0]);
-            if (url) {
-                window.open(url, '_blank');
-                return;
-            }
+            const { data, error } = await supabase.storage.from('papers').createSignedUrl(paper.attachments[0], 3600);
+            if (data?.signedUrl) { window.open(data.signedUrl, '_blank'); return; }
         }
-        toast({
-            title: "No File Available",
-            description: `No downloadable manuscript found for: ${paper.title}`,
-            variant: "destructive"
-        });
+        toast({ title: "No File", description: "No downloadable manuscript found.", variant: "destructive" });
     };
 
     const uploadFile = async (file: File, folder: string): Promise<string | null> => {
         const fileName = `${folder}/${Date.now()}_${file.name}`;
-        const { data, error } = await supabase.storage
-            .from('publications')
-            .upload(fileName, file, { cacheControl: '3600', upsert: false });
-        
-        if (error) {
-            console.error('Upload error:', error);
-            return null;
-        }
-        
-        // Store path only; generate signed URLs on demand for downloads
+        const { error } = await supabase.storage.from('publications').upload(fileName, file, { cacheControl: '3600', upsert: false });
+        if (error) { console.error('Upload error:', error); return null; }
         return fileName;
     };
 
     const handleJournalFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files?.[0]) {
-            setIsUploadingJournal(true);
-            const url = await uploadFile(e.target.files[0], 'journals');
-            if (url) {
-                setJournalForm(prev => ({ ...prev, pdfUrl: url }));
-                toast({ title: "File Uploaded", description: "PDF uploaded successfully" });
-            }
-            setIsUploadingJournal(false);
-        }
+        if (!e.target.files?.[0]) return;
+        setIsUploadingJournal(true);
+        const url = await uploadFile(e.target.files[0], 'journals');
+        if (url) { setJournalForm(prev => ({ ...prev, pdfUrl: url })); toast({ title: "Uploaded", description: "PDF ready" }); }
+        setIsUploadingJournal(false);
     };
 
     const handleBookFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files?.[0]) {
-            setIsUploadingBook(true);
-            const url = await uploadFile(e.target.files[0], 'books');
-            if (url) {
-                setBookForm(prev => ({ ...prev, pdfUrl: url }));
-                toast({ title: "File Uploaded", description: "PDF uploaded successfully" });
-            }
-            setIsUploadingBook(false);
-        }
+        if (!e.target.files?.[0]) return;
+        setIsUploadingBook(true);
+        const url = await uploadFile(e.target.files[0], 'books');
+        if (url) { setBookForm(prev => ({ ...prev, pdfUrl: url })); toast({ title: "Uploaded", description: "PDF ready" }); }
+        setIsUploadingBook(false);
     };
 
     const handleSubmitJournal = async () => {
         if (!journalForm.title || !journalForm.authors || !journalForm.discipline) {
-            toast({ title: "Error", description: "Please fill required fields", variant: "destructive" });
-            return;
+            toast({ title: "Error", description: "Fill required fields", variant: "destructive" }); return;
         }
         setIsSubmitting(true);
         try {
-            await createProfessorSubmission({
-                submissionType: 'JOURNAL',
-                ...journalForm
-            });
+            await createProfessorSubmission({ submissionType: 'JOURNAL', ...journalForm });
             setIsUploadJournalOpen(false);
-            setJournalForm({
-                title: "", authors: "", abstract: "", discipline: "", keywords: "",
-                volume: "", issue: "", pages: "", doi: "", publicationDate: new Date().toISOString().split('T')[0],
-                pdfUrl: "", coverImage: ""
-            });
-            toast({ title: "Journal Submitted", description: "Waiting for admin approval" });
-        } catch (error) {
-            toast({ title: "Error", description: "Failed to submit", variant: "destructive" });
-        }
+            setJournalForm({ title: "", authors: "", abstract: "", discipline: "", keywords: "", volume: "", issue: "", pages: "", doi: "", publicationDate: new Date().toISOString().split('T')[0], pdfUrl: "", coverImage: "" });
+            toast({ title: "Submitted", description: "Awaiting admin approval" });
+        } catch { toast({ title: "Error", description: "Submission failed", variant: "destructive" }); }
         setIsSubmitting(false);
     };
 
     const handleSubmitBook = async () => {
         if (!bookForm.title || !bookForm.authors || !bookForm.discipline) {
-            toast({ title: "Error", description: "Please fill required fields", variant: "destructive" });
-            return;
+            toast({ title: "Error", description: "Fill required fields", variant: "destructive" }); return;
         }
         setIsSubmitting(true);
         try {
-            await createProfessorSubmission({
-                submissionType: 'BOOK',
-                ...bookForm
-            });
+            await createProfessorSubmission({ submissionType: 'BOOK', ...bookForm });
             setIsUploadBookOpen(false);
-            setBookForm({
-                title: "",
-                authors: "",
-                editors: "",
-                isbn: "",
-                publisher: "",
-                description: "",
-                discipline: "",
-                keywords: "",
-                edition: "",
-                publicationYear: "",
-                pdfUrl: "",
-                coverImage: "",
-                purchaseLink: ""
-            });
-            setIsSubmitting(false);
-        } catch (error) {
-            console.error("Error creating book submission:", error);
-        } finally {
-            setIsSubmitting(false);
-        }
-    }
+            setBookForm({ title: "", authors: "", editors: "", isbn: "", publisher: "", description: "", discipline: "", keywords: "", edition: "", publicationYear: "", pdfUrl: "", coverImage: "", purchaseLink: "" });
+            toast({ title: "Submitted", description: "Awaiting admin approval" });
+        } catch { toast({ title: "Error", description: "Submission failed", variant: "destructive" }); }
+        setIsSubmitting(false);
+    };
+
+    const tabs = [
+        { key: "reviews", label: "Pending Reviews", count: pendingReviews.length },
+        { key: "history", label: "Review History", count: completedReviews.length },
+        { key: "submissions", label: "My Submissions", count: mySubmissions.length },
+    ];
 
     return (
         <DashboardLayout role="PROFESSOR">
-            <div className="max-w-7xl mx-auto space-y-8">
+            <div className="space-y-6">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-border pb-8">
-                    <div className="space-y-3">
-                        <div className="flex items-center gap-3">
-                            <span className="h-px w-8 bg-accent" />
-                            <p className="section-label">Editorial Workspace</p>
-                        </div>
-                        <h1 className="text-4xl lg:text-5xl font-serif font-bold text-foreground leading-tight tracking-tight">Peer Review Console</h1>
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-6 border-b border-border">
+                    <div className="space-y-1">
+                        <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent">Professor Portal</p>
+                        <h1 className="text-3xl font-serif font-bold text-foreground">Peer Review Console</h1>
+                        <p className="text-sm text-muted-foreground">Welcome back, {currentUser?.name}</p>
                     </div>
+                    <Button variant="outline" size="sm" onClick={() => refreshData()} className="gap-2">
+                        <RefreshCw size={14} /> Refresh
+                    </Button>
+                </div>
 
-                    <div className="grid grid-cols-2 gap-6 bg-card border border-border p-5 shadow-sm">
-                        <div className="space-y-1">
-                            <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-widest">Active Queue</p>
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-                                <p className="text-2xl font-serif italic font-bold text-foreground">{pendingReviews.length}</p>
+                {/* Stats Cards */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                        className="bg-card border border-border p-4 rounded-lg">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                                <Clock size={18} className="text-orange-600" />
+                            </div>
+                            <div>
+                                <p className="text-2xl font-bold text-foreground">{pendingReviews.length}</p>
+                                <p className="text-xs text-muted-foreground">Pending Reviews</p>
                             </div>
                         </div>
-                        <div className="space-y-1 border-l border-border pl-6">
-                            <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-widest">Completed</p>
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-secondary" />
-                                <p className="text-2xl font-serif italic font-bold text-foreground">{completedReviews.length}</p>
+                    </motion.div>
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
+                        className="bg-card border border-border p-4 rounded-lg">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                <CheckCircle size={18} className="text-emerald-600" />
+                            </div>
+                            <div>
+                                <p className="text-2xl font-bold text-foreground">{completedReviews.length}</p>
+                                <p className="text-xs text-muted-foreground">Completed</p>
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+                        className="bg-card border border-border p-4 rounded-lg">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
+                                <Library size={18} className="text-accent" />
+                            </div>
+                            <div>
+                                <p className="text-2xl font-bold text-foreground">{mySubmissions.filter(s => s.status === 'APPROVED').length}</p>
+                                <p className="text-xs text-muted-foreground">Published</p>
+                            </div>
+                        </div>
+                    </motion.div>
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+                        className="bg-card border border-border p-4 rounded-lg">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <BookOpen size={18} className="text-blue-600" />
+                            </div>
+                            <div>
+                                <p className="text-2xl font-bold text-foreground">{assignedPapers.length}</p>
+                                <p className="text-xs text-muted-foreground">Total Assigned</p>
+                            </div>
+                        </div>
+                    </motion.div>
                 </div>
 
                 {/* Quick Actions */}
-                <div className="grid md:grid-cols-2 gap-4">
-                    <div 
-                        className="bg-card border border-border p-5 cursor-pointer hover:border-accent/40 transition-all shadow-sm hover:shadow-md"
-                        onClick={() => setIsUploadJournalOpen(true)}
-                    >
-                        <div className="flex items-center gap-4">
-                            <div className="w-11 h-11 bg-accent/10 flex items-center justify-center">
-                                <Library className="w-5 h-5 text-accent" />
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-foreground">Submit Journal Article</h3>
-                                <p className="text-xs text-muted-foreground">Upload for admin approval</p>
-                            </div>
+                <div className="grid md:grid-cols-2 gap-3">
+                    <button onClick={() => setIsUploadJournalOpen(true)}
+                        className="bg-card border border-border p-4 rounded-lg flex items-center gap-4 hover:border-accent/40 hover:shadow-sm transition-all text-left">
+                        <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center shrink-0">
+                            <Library size={18} className="text-accent" />
                         </div>
-                    </div>
-                    <div 
-                        className="bg-card border border-border p-5 cursor-pointer hover:border-accent/40 transition-all shadow-sm hover:shadow-md"
-                        onClick={() => setIsUploadBookOpen(true)}
-                    >
-                        <div className="flex items-center gap-4">
-                            <div className="w-11 h-11 bg-secondary/10 flex items-center justify-center">
-                                <BookOpen className="w-5 h-5 text-secondary" />
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-foreground">Submit Book</h3>
-                                <p className="text-xs text-muted-foreground">Upload for admin approval</p>
-                            </div>
+                        <div>
+                            <p className="font-semibold text-foreground text-sm">Submit Journal Article</p>
+                            <p className="text-xs text-muted-foreground">Upload for admin approval</p>
                         </div>
-                    </div>
+                    </button>
+                    <button onClick={() => setIsUploadBookOpen(true)}
+                        className="bg-card border border-border p-4 rounded-lg flex items-center gap-4 hover:border-accent/40 hover:shadow-sm transition-all text-left">
+                        <div className="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center shrink-0">
+                            <BookOpen size={18} className="text-secondary" />
+                        </div>
+                        <div>
+                            <p className="font-semibold text-foreground text-sm">Submit Book</p>
+                            <p className="text-xs text-muted-foreground">Upload for admin approval</p>
+                        </div>
+                    </button>
                 </div>
 
-                {/* Submissions Status */}
-                {(pendingMySubmissions.length > 0 || approvedMySubmissions.length > 0) && (
-                    <div className="bg-card border border-border p-5 shadow-sm">
-                        <h3 className="font-bold text-foreground mb-4">My Submissions Status</h3>
-                        <div className="grid md:grid-cols-3 gap-4">
-                            <div className="bg-orange-50 border border-orange-200 p-4">
-                                <p className="text-orange-600 font-bold">{pendingMySubmissions.length}</p>
-                                <p className="text-xs text-muted-foreground">Pending Approval</p>
+                {/* Search */}
+                <div className="relative">
+                    <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    <Input placeholder="Search papers..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-12 h-11" />
+                </div>
+
+                {/* Tabs */}
+                <div className="flex gap-1 border-b border-border overflow-x-auto">
+                    {tabs.map(tab => (
+                        <button key={tab.key} onClick={() => setActiveTab(tab.key as any)}
+                            className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.key ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
+                            {tab.label} ({tab.count})
+                        </button>
+                    ))}
+                </div>
+
+                {/* Pending Reviews Tab */}
+                {activeTab === "reviews" && (
+                    <AnimatePresence>
+                        {pendingReviews.length > 0 ? (
+                            <div className="space-y-4">
+                                {pendingReviews.map((paper) => (
+                                    <motion.div key={paper.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                                        className="bg-card border border-border rounded-lg p-5 hover:border-accent/30 hover:shadow-sm transition-all">
+                                        <div className="flex flex-col lg:flex-row justify-between gap-4">
+                                            <div className="space-y-2 flex-1 min-w-0">
+                                                <div className="flex items-center gap-2">
+                                                    <Badge variant="outline" className={`text-[9px] uppercase ${statusColors[paper.status] || ''}`}>
+                                                        {paper.status.replace('_', ' ')}
+                                                    </Badge>
+                                                    <span className="text-[10px] text-muted-foreground">{paper.discipline}</span>
+                                                </div>
+                                                <h3 className="font-serif text-xl font-bold text-foreground leading-tight">{paper.title}</h3>
+                                                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                                    <span className="flex items-center gap-1"><User size={12} /> {paper.authorName}</span>
+                                                    <span className="flex items-center gap-1"><Calendar size={12} /> {paper.submissionDate}</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-2 shrink-0">
+                                                {/* Preview */}
+                                                <Dialog>
+                                                    <DialogTrigger asChild>
+                                                        <Button variant="outline" size="sm" className="gap-1 text-xs"><Eye size={14} /> Preview</Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent className="max-w-3xl max-h-[80vh] flex flex-col">
+                                                        <DialogHeader>
+                                                            <DialogTitle className="font-serif text-xl">{paper.title}</DialogTitle>
+                                                            <DialogDescription className="text-xs">by {paper.authorName} • {paper.discipline}</DialogDescription>
+                                                        </DialogHeader>
+                                                        <div className="flex-1 bg-muted/50 rounded-lg p-6 overflow-y-auto text-sm text-foreground/80 leading-relaxed border border-border">
+                                                            <p className="font-bold text-xs uppercase text-accent mb-2">Abstract</p>
+                                                            <p className="whitespace-pre-wrap">{paper.abstract || "No abstract provided."}</p>
+                                                            {paper.keywords && (
+                                                                <div className="mt-4 pt-4 border-t border-border">
+                                                                    <p className="font-bold text-xs uppercase text-accent mb-1">Keywords</p>
+                                                                    <p className="text-muted-foreground">{paper.keywords}</p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <DialogFooter className="pt-3 border-t border-border">
+                                                            <Button variant="outline" onClick={() => handleDownload(paper)} className="gap-1">
+                                                                <Download size={14} /> Download PDF
+                                                            </Button>
+                                                        </DialogFooter>
+                                                    </DialogContent>
+                                                </Dialog>
+
+                                                {/* Review Decision */}
+                                                <Dialog>
+                                                    <DialogTrigger asChild>
+                                                        <Button size="sm" className="gap-1 text-xs bg-accent text-accent-foreground hover:bg-foreground hover:text-background">
+                                                            <Send size={14} /> Review
+                                                        </Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent className="max-w-lg">
+                                                        <DialogHeader>
+                                                            <DialogTitle className="font-serif">Submit Review</DialogTitle>
+                                                            <DialogDescription className="text-xs">for: {paper.title}</DialogDescription>
+                                                        </DialogHeader>
+                                                        <div className="space-y-4 pt-2">
+                                                            <div className="space-y-2">
+                                                                <label className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-2">
+                                                                    <MessageSquare size={12} /> Your Feedback
+                                                                </label>
+                                                                <Textarea
+                                                                    placeholder="Provide detailed academic feedback..."
+                                                                    className="h-36 resize-none"
+                                                                    value={reviewComments}
+                                                                    onChange={(e) => setReviewComments(e.target.value)}
+                                                                />
+                                                            </div>
+                                                            <div className="grid grid-cols-3 gap-2">
+                                                                <Button onClick={() => handleSubmitReview(paper.id, 'ACCEPTED')}
+                                                                    className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">
+                                                                    Accept
+                                                                </Button>
+                                                                <Button onClick={() => handleSubmitReview(paper.id, 'REVISION_REQUIRED')}
+                                                                    className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold">
+                                                                    Revision
+                                                                </Button>
+                                                                <Button onClick={() => handleSubmitReview(paper.id, 'REJECTED')}
+                                                                    variant="destructive" className="text-xs font-bold">
+                                                                    Reject
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                    </DialogContent>
+                                                </Dialog>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                ))}
                             </div>
-                            <div className="bg-green-50 border border-green-200 p-4">
-                                <p className="text-green-600 font-bold">{approvedMySubmissions.length}</p>
-                                <p className="text-xs text-muted-foreground">Approved & Published</p>
+                        ) : (
+                            <div className="py-20 text-center border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center space-y-3">
+                                <CheckCircle size={36} className="text-muted-foreground/30" />
+                                <p className="font-serif text-muted-foreground text-lg">No pending reviews</p>
+                                <p className="text-xs text-muted-foreground/60">All caught up!</p>
                             </div>
-                            <div className="bg-destructive/5 border border-destructive/20 p-4">
-                                <p className="text-destructive font-bold">{rejectedMySubmissions.length}</p>
-                                <p className="text-xs text-muted-foreground">Rejected</p>
+                        )}
+                    </AnimatePresence>
+                )}
+
+                {/* History Tab */}
+                {activeTab === "history" && (
+                    <div className="bg-card border border-border rounded-lg overflow-hidden">
+                        {completedReviews.length > 0 ? (
+                            <div className="divide-y divide-border">
+                                {completedReviews.map((paper) => (
+                                    <div key={paper.id} className="p-4 hover:bg-muted/50 transition-colors flex items-center justify-between">
+                                        <div className="min-w-0 flex-1">
+                                            <p className="font-semibold text-foreground text-sm truncate">{paper.title}</p>
+                                            <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                                                <span>{paper.authorName}</span>
+                                                <span>•</span>
+                                                <span>{paper.discipline}</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3 shrink-0">
+                                            <Badge variant="outline" className={`text-[9px] uppercase ${statusColors[paper.status] || ''}`}>
+                                                {paper.status.replace('_', ' ')}
+                                            </Badge>
+                                            <span className="text-[10px] text-muted-foreground">
+                                                {new Date(paper.submissionDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                        </div>
+                        ) : (
+                            <div className="py-16 text-center">
+                                <p className="text-muted-foreground text-sm">No review history yet</p>
+                            </div>
+                        )}
                     </div>
                 )}
 
-                {/* Search */}
-                <div className="relative group">
-                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-accent transition-colors" size={18} />
-                    <Input
-                        placeholder="Search by title, author, or discipline..."
-                        className="h-14 pl-14 bg-card border border-border text-foreground font-serif italic text-base focus:ring-accent/20 focus:border-accent/50 transition-all"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </div>
-
-                <Tabs defaultValue="pending" className="space-y-8">
-                    <TabsList className="bg-white border border-black/10 p-1 rounded-xl h-14">
-                        <TabsTrigger value="pending" className="rounded-lg px-8 font-bold tracking-widest text-[10px] uppercase data-[state=active]:bg-gold data-[state=active]:text-oxford">
-                            Pending Evaluations ({pendingReviews.length})
-                        </TabsTrigger>
-                        <TabsTrigger value="history" className="rounded-lg px-8 font-bold tracking-widest text-[10px] uppercase data-[state=active]:bg-gold data-[state=active]:text-oxford">
-                            Scholarly Record ({completedReviews.length})
-                        </TabsTrigger>
-                        <TabsTrigger value="submissions" className="rounded-lg px-8 font-bold tracking-widest text-[10px] uppercase data-[state=active]:bg-gold data-[state=active]:text-oxford">
-                            My Submissions ({mySubmissions.length})
-                        </TabsTrigger>
-                    </TabsList>
-
-                    <TabsContent value="pending" className="space-y-6 outline-none">
-                        {pendingReviews.length > 0 ? (
-                            pendingReviews.map((paper) => (
-                                <div key={paper.id} className="p-8 bg-white rounded-2xl border border-black/5 hover:border-gold/40 transition-all duration-500 group shadow-sm hover:shadow-md">
-                                    <div className="flex flex-col lg:flex-row justify-between gap-8">
-                                        <div className="space-y-6 flex-1">
-                                            <div className="space-y-2">
-                                                <div className="flex items-center gap-4">
-                                                    <span className="text-[10px] uppercase tracking-widest text-gold font-bold">Protocol {paper.id.slice(0, 8)}</span>
-                                                    <span className="h-1 w-1 rounded-full bg-oxford/20" />
-                                                    <span className="text-[10px] uppercase tracking-widest text-oxford/40 font-bold">{paper.discipline}</span>
-                                                </div>
-                                                <h4 className="font-serif text-3xl font-bold text-oxford group-hover:text-gold transition-colors leading-snug">{paper.title}</h4>
-                                                <p className="text-oxford/40 font-ui text-sm italic flex items-center gap-2">
-                                                    <FileText size={14} className="text-gold/50" /> Submitted by {paper.authorName}
-                                                </p>
+                {/* Submissions Tab */}
+                {activeTab === "submissions" && (
+                    <div className="bg-card border border-border rounded-lg overflow-hidden">
+                        {mySubmissions.length > 0 ? (
+                            <div className="divide-y divide-border">
+                                {mySubmissions.map((sub) => (
+                                    <div key={sub.id} className="p-4 hover:bg-muted/50 transition-colors flex items-center justify-between">
+                                        <div className="min-w-0 flex-1">
+                                            <p className="font-semibold text-foreground text-sm truncate">{sub.title}</p>
+                                            <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                                                <span>{sub.authors}</span>
                                             </div>
                                         </div>
-
-                                        <div className="flex items-center gap-4">
-                                            <Dialog>
-                                                <DialogTrigger asChild>
-                                                    <Button variant="outline" className="h-14 rounded-xl border-black/10 text-oxford/60 hover:text-oxford hover:bg-oxford/5 px-6 text-[10px] uppercase font-bold tracking-widest">
-                                                        <Eye size={16} className="mr-2" /> Preview
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent className="bg-white border-black/10 text-oxford max-w-4xl h-[80vh] flex flex-col">
-                                                    <DialogHeader>
-                                                        <DialogTitle className="font-serif italic text-3xl text-gold">{paper.title}</DialogTitle>
-                                                        <DialogDescription className="text-oxford/40 uppercase tracking-widest text-[10px] font-bold">Manuscript Preview Mode</DialogDescription>
-                                                    </DialogHeader>
-                                                    <div className="flex-1 bg-oxford/5 rounded-xl p-8 overflow-y-auto font-serif italic text-lg leading-relaxed text-oxford/80 border border-black/5">
-                                                        {paper.abstract || "The full manuscript content is currently being processed for secure viewing. Please refer to the downloaded PDF for complete technical details and citations."}
-                                                    </div>
-                                                    <DialogFooter className="pt-4 border-t border-black/5">
-                                                        <Button onClick={() => handleDownload(paper)} className="bg-oxford hover:bg-gold text-white border-none rounded-lg">
-                                                            <Download size={16} className="mr-2" /> Download Full PDF
-                                                        </Button>
-                                                    </DialogFooter>
-                                                </DialogContent>
-                                            </Dialog>
-
-                                            <Dialog>
-                                                <DialogTrigger asChild>
-                                                    <Button className="h-14 rounded-xl bg-gold text-oxford px-8 font-bold tracking-widest hover:bg-oxford hover:text-white transition-all shadow-md group border-none text-[10px] uppercase">
-                                                        Submit Decision <ArrowRight size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent className="bg-white border-black/10 text-oxford max-w-2xl">
-                                                    <DialogHeader>
-                                                        <DialogTitle className="font-serif italic text-3xl text-gold mb-2">Reviewer's Transmittal</DialogTitle>
-                                                        <p className="text-oxford/40 text-xs font-ui">Final evaluation for: <span className="text-oxford italic">{paper.title}</span></p>
-                                                    </DialogHeader>
-                                                    <div className="space-y-8 pt-6">
-                                                        <div className="space-y-4">
-                                                            <label className="text-[10px] uppercase tracking-widest font-bold text-teal-500 flex items-center gap-3">
-                                                                <MessageSquare size={14} /> Academic Commentary
-                                                            </label>
-                                                            <Textarea
-                                                                placeholder="Provide rigorous feedback for the author..."
-                                                                className="bg-white border border-black/10 text-oxford font-serif italic h-48 focus:border-gold rounded-xl resize-none"
-                                                                value={reviewComments}
-                                                                onChange={(e) => setReviewComments(e.target.value)}
-                                                            />
-                                                        </div>
-
-                                                        <div className="grid grid-cols-3 gap-4 pb-2">
-                                                            {[
-                                                                { label: "Accept", status: 'ACCEPTED', color: 'bg-teal-500' },
-                                                                { label: "Revision", status: 'REVISION_REQUIRED', color: 'bg-orange-500' },
-                                                                { label: "Reject", status: 'REJECTED', color: 'bg-red-500' }
-                                                            ].map((opt) => (
-                                                                <Button
-                                                                    key={opt.status}
-                                                                    onClick={() => handleSubmitReview(paper.id, opt.status as PaperStatus)}
-                                                                    className={`h-14 rounded-xl font-bold tracking-widest text-[10px] uppercase shadow-lg border-none ${opt.color} text-white hover:opacity-80 transition-all`}
-                                                                >
-                                                                    {opt.label}
-                                                                </Button>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                </DialogContent>
-                                            </Dialog>
+                                        <div className="flex items-center gap-3 shrink-0">
+                                            <Badge variant="outline" className={`text-[9px] uppercase ${sub.submissionType === 'JOURNAL' ? 'bg-accent/10 text-accent' : 'bg-secondary/10 text-secondary'}`}>
+                                                {sub.submissionType}
+                                            </Badge>
+                                            <Badge variant="outline" className={`text-[9px] uppercase ${statusColors[sub.status] || ''}`}>
+                                                {sub.status}
+                                            </Badge>
+                                            {sub.status === 'PENDING' && (
+                                                <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive h-8 w-8 p-0"
+                                                    onClick={() => deleteProfessorSubmission(sub.id)}>
+                                                    <Trash2 size={14} />
+                                                </Button>
+                                            )}
                                         </div>
                                     </div>
-                                </div>
-                            ))
+                                ))}
+                            </div>
                         ) : (
-                            <div className="py-32 text-center border-2 border-dashed border-black/5 rounded-2xl flex flex-col items-center justify-center space-y-6">
-                                <div className="p-6 bg-oxford/5 rounded-full">
-                                    <CheckCircle size={40} className="text-teal-500/40" />
-                                </div>
-                                <div className="space-y-2">
-                                    <p className="font-serif italic text-oxford/40 text-2xl">Queue Cleared</p>
-                                    <p className="text-oxford/20 text-xs uppercase tracking-[0.2em] font-bold">No manuscripts currently awaiting your command.</p>
-                                </div>
+                            <div className="py-16 text-center space-y-2">
+                                <Upload size={32} className="text-muted-foreground/30 mx-auto" />
+                                <p className="text-muted-foreground text-sm">No submissions yet</p>
+                                <p className="text-xs text-muted-foreground/60">Use the buttons above to submit journals or books.</p>
                             </div>
                         )}
-                    </TabsContent>
-
-                    <TabsContent value="history" className="outline-none">
-                        <div className="bg-white rounded-2xl border border-black/5 overflow-hidden shadow-sm">
-                            <div className="overflow-x-auto">
-                                <table className="w-full">
-                                    <thead>
-                                        <tr className="border-b border-black/5 text-[10px] uppercase tracking-widest text-oxford/40 text-left">
-                                            <th className="p-8 font-bold">Manuscript Details</th>
-                                            <th className="p-8 font-bold">Status</th>
-                                            <th className="p-8 font-bold text-right">Archive Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-black/5">
-                                        {completedReviews.map((paper) => (
-                                            <tr key={paper.id} className="group hover:bg-oxford/5 transition-colors">
-                                                <td className="p-8">
-                                                    <div className="space-y-1">
-                                                        <p className="font-serif italic text-xl text-oxford font-bold group-hover:text-gold transition-colors">{paper.title}</p>
-
-                                                        <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-oxford/20 font-bold">
-                                                            <span>{paper.authorName}</span>
-                                                            <span className="w-1 h-1 rounded-full bg-oxford/10" />
-                                                            <span>{paper.discipline}</span>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="p-8">
-                                                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${paper.status === 'ACCEPTED' ? 'bg-teal-500/10 text-teal-500' :
-                                                            paper.status === 'REJECTED' ? 'bg-red-500/10 text-red-500' :
-                                                                'bg-orange-500/10 text-orange-500'
-                                                        }`}>
-                                                        {paper.status.replace('_', ' ')}
-                                                    </span>
-                                                </td>
-                                                <td className="p-8 text-right">
-                                                    <p className="text-oxford/40 text-[10px] uppercase tracking-widest font-bold">
-                                                        {new Date(paper.submissionDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                                                    </p>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </TabsContent>
-
-                    <TabsContent value="submissions" className="outline-none">
-                        <div className="bg-white rounded-2xl border border-black/5 overflow-hidden shadow-sm">
-                            {mySubmissions.length > 0 ? (
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
-                                        <thead>
-                                            <tr className="border-b border-black/5 text-[10px] uppercase tracking-widest text-oxford/40 text-left">
-                                                <th className="p-8 font-bold">Content</th>
-                                                <th className="p-8 font-bold">Type</th>
-                                                <th className="p-8 font-bold">Status</th>
-                                                <th className="p-8 font-bold text-right">Submitted</th>
-                                                <th className="p-8 font-bold text-right">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-black/5">
-                                            {mySubmissions.map((sub) => (
-                                                <tr key={sub.id} className="group hover:bg-oxford/5 transition-colors">
-                                                    <td className="p-8">
-                                                        <div className="space-y-1">
-                                                            <p className="font-serif italic text-xl text-oxford font-bold group-hover:text-gold transition-colors">{sub.title}</p>
-                                                            <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-oxford/20 font-bold">
-                                                                <span>{sub.authors}</span>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="p-8">
-                                                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${sub.submissionType === 'JOURNAL' ? 'bg-gold/10 text-gold' : 'bg-teal-500/10 text-teal-500'}`}>
-                                                            {sub.submissionType}
-                                                        </span>
-                                                    </td>
-                                                    <td className="p-8">
-                                                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${sub.status === 'APPROVED' ? 'bg-green-500/10 text-green-500' :
-                                                                sub.status === 'REJECTED' ? 'bg-red-500/10 text-red-500' :
-                                                                    'bg-orange-500/10 text-orange-500'
-                                                            }`}>
-                                                            {sub.status}
-                                                        </span>
-                                                    </td>
-                                                    <td className="p-8 text-right">
-                                                        <p className="text-oxford/40 text-[10px] uppercase tracking-widest font-bold">
-                                                            {new Date(sub.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                                                        </p>
-                                                    </td>
-                                                    <td className="p-8 text-right">
-                                                        {sub.status === 'PENDING' && (
-                                                            <Button 
-                                                                size="sm" 
-                                                                variant="ghost" 
-                                                                className="text-red-500 hover:text-red-600"
-                                                                onClick={() => deleteProfessorSubmission(sub.id)}
-                                                            >
-                                                                <Trash2 size={14} />
-                                                            </Button>
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            ) : (
-                                <div className="py-32 text-center border-2 border-dashed border-black/5 rounded-2xl flex flex-col items-center justify-center space-y-6">
-                                    <div className="p-6 bg-oxford/5 rounded-full">
-                                        <Upload size={40} className="text-oxford/20" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <p className="font-serif italic text-oxford/40 text-2xl">No Submissions Yet</p>
-                                        <p className="text-oxford/20 text-xs uppercase tracking-[0.2em] font-bold">Use the buttons above to submit journals or books.</p>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </TabsContent>
-                </Tabs>
+                    </div>
+                )}
 
                 {/* Upload Journal Dialog */}
                 <Dialog open={isUploadJournalOpen} onOpenChange={setIsUploadJournalOpen}>
                     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
-                            <DialogTitle>Submit Journal Article</DialogTitle>
-                            <DialogDescription>Your submission will require admin approval before being published.</DialogDescription>
+                            <DialogTitle className="font-serif">Submit Journal Article</DialogTitle>
+                            <DialogDescription>Requires admin approval before publishing.</DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                             <Input placeholder="Article Title *" value={journalForm.title} onChange={(e) => setJournalForm(prev => ({ ...prev, title: e.target.value }))} />
                             <Input placeholder="Authors *" value={journalForm.authors} onChange={(e) => setJournalForm(prev => ({ ...prev, authors: e.target.value }))} />
                             <Textarea placeholder="Abstract" value={journalForm.abstract} onChange={(e) => setJournalForm(prev => ({ ...prev, abstract: e.target.value }))} />
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-3">
                                 <Select onValueChange={(v) => setJournalForm(prev => ({ ...prev, discipline: v }))} value={journalForm.discipline}>
                                     <SelectTrigger><SelectValue placeholder="Discipline *" /></SelectTrigger>
-                                    <SelectContent>
-                                        {disciplines.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-                                    </SelectContent>
+                                    <SelectContent>{disciplines.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
                                 </Select>
                                 <Input placeholder="Keywords" value={journalForm.keywords} onChange={(e) => setJournalForm(prev => ({ ...prev, keywords: e.target.value }))} />
                             </div>
-                            <div className="grid grid-cols-3 gap-4">
+                            <div className="grid grid-cols-3 gap-3">
                                 <Input placeholder="Volume" value={journalForm.volume} onChange={(e) => setJournalForm(prev => ({ ...prev, volume: e.target.value }))} />
                                 <Input placeholder="Issue" value={journalForm.issue} onChange={(e) => setJournalForm(prev => ({ ...prev, issue: e.target.value }))} />
                                 <Input placeholder="Pages" value={journalForm.pages} onChange={(e) => setJournalForm(prev => ({ ...prev, pages: e.target.value }))} />
@@ -632,17 +476,16 @@ const ProfessorDashboard = memo(() => {
                             <Input placeholder="DOI" value={journalForm.doi} onChange={(e) => setJournalForm(prev => ({ ...prev, doi: e.target.value }))} />
                             <Input type="date" value={journalForm.publicationDate} onChange={(e) => setJournalForm(prev => ({ ...prev, publicationDate: e.target.value }))} />
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase text-oxford/60">PDF File (Optional)</label>
+                                <label className="text-xs font-bold uppercase text-muted-foreground">PDF File</label>
                                 <input ref={journalFileRef} type="file" accept=".pdf" onChange={handleJournalFileUpload} className="hidden" />
                                 <Button type="button" variant="outline" onClick={() => journalFileRef.current?.click()} className="w-full">
                                     {isUploadingJournal ? "Uploading..." : journalForm.pdfUrl ? "PDF Uploaded ✓" : "Choose PDF"}
                                 </Button>
                             </div>
-                            <Input placeholder="PDF URL (if already hosted)" value={journalForm.pdfUrl} onChange={(e) => setJournalForm(prev => ({ ...prev, pdfUrl: e.target.value }))} />
                         </div>
                         <DialogFooter>
                             <Button variant="outline" onClick={() => setIsUploadJournalOpen(false)}>Cancel</Button>
-                            <Button className="bg-gold hover:bg-oxford" onClick={handleSubmitJournal} disabled={isSubmitting}>
+                            <Button onClick={handleSubmitJournal} disabled={isSubmitting}>
                                 {isSubmitting ? "Submitting..." : "Submit for Approval"}
                             </Button>
                         </DialogFooter>
@@ -653,44 +496,41 @@ const ProfessorDashboard = memo(() => {
                 <Dialog open={isUploadBookOpen} onOpenChange={setIsUploadBookOpen}>
                     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
-                            <DialogTitle>Submit Book</DialogTitle>
-                            <DialogDescription>Your submission will require admin approval before being published.</DialogDescription>
+                            <DialogTitle className="font-serif">Submit Book</DialogTitle>
+                            <DialogDescription>Requires admin approval before publishing.</DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                             <Input placeholder="Book Title *" value={bookForm.title} onChange={(e) => setBookForm(prev => ({ ...prev, title: e.target.value }))} />
                             <Input placeholder="Authors *" value={bookForm.authors} onChange={(e) => setBookForm(prev => ({ ...prev, authors: e.target.value }))} />
                             <Input placeholder="Editors" value={bookForm.editors} onChange={(e) => setBookForm(prev => ({ ...prev, editors: e.target.value }))} />
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-3">
                                 <Input placeholder="ISBN" value={bookForm.isbn} onChange={(e) => setBookForm(prev => ({ ...prev, isbn: e.target.value }))} />
                                 <Input placeholder="Publisher" value={bookForm.publisher} onChange={(e) => setBookForm(prev => ({ ...prev, publisher: e.target.value }))} />
                             </div>
                             <Textarea placeholder="Description" value={bookForm.description} onChange={(e) => setBookForm(prev => ({ ...prev, description: e.target.value }))} />
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-3">
                                 <Select onValueChange={(v) => setBookForm(prev => ({ ...prev, discipline: v }))} value={bookForm.discipline}>
                                     <SelectTrigger><SelectValue placeholder="Discipline *" /></SelectTrigger>
-                                    <SelectContent>
-                                        {disciplines.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-                                    </SelectContent>
+                                    <SelectContent>{disciplines.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
                                 </Select>
                                 <Input placeholder="Keywords" value={bookForm.keywords} onChange={(e) => setBookForm(prev => ({ ...prev, keywords: e.target.value }))} />
                             </div>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-3">
                                 <Input placeholder="Edition" value={bookForm.edition} onChange={(e) => setBookForm(prev => ({ ...prev, edition: e.target.value }))} />
                                 <Input placeholder="Publication Year" value={bookForm.publicationYear} onChange={(e) => setBookForm(prev => ({ ...prev, publicationYear: e.target.value }))} />
                             </div>
                             <Input placeholder="Purchase Link" value={bookForm.purchaseLink} onChange={(e) => setBookForm(prev => ({ ...prev, purchaseLink: e.target.value }))} />
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase text-oxford/60">PDF File (Optional)</label>
+                                <label className="text-xs font-bold uppercase text-muted-foreground">PDF File</label>
                                 <input ref={bookFileRef} type="file" accept=".pdf" onChange={handleBookFileUpload} className="hidden" />
                                 <Button type="button" variant="outline" onClick={() => bookFileRef.current?.click()} className="w-full">
                                     {isUploadingBook ? "Uploading..." : bookForm.pdfUrl ? "PDF Uploaded ✓" : "Choose PDF"}
                                 </Button>
                             </div>
-                            <Input placeholder="PDF URL (if already hosted)" value={bookForm.pdfUrl} onChange={(e) => setBookForm(prev => ({ ...prev, pdfUrl: e.target.value }))} />
                         </div>
                         <DialogFooter>
                             <Button variant="outline" onClick={() => setIsUploadBookOpen(false)}>Cancel</Button>
-                            <Button className="bg-gold hover:bg-oxford" onClick={handleSubmitBook} disabled={isSubmitting}>
+                            <Button onClick={handleSubmitBook} disabled={isSubmitting}>
                                 {isSubmitting ? "Submitting..." : "Submit for Approval"}
                             </Button>
                         </DialogFooter>
