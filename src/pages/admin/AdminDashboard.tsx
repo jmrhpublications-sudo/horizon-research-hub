@@ -63,7 +63,8 @@ const AdminDashboard = memo(() => {
         createPublishedJournal, updatePublishedJournal, deletePublishedJournal,
         createPublishedBook, updatePublishedBook, deletePublishedBook,
         updateUploadRequest, deleteUploadRequest, banUser, unbanUser, refreshData,
-        approveProfessorSubmission, updateProfessorSubmission
+        approveProfessorSubmission, updateProfessorSubmission,
+        deleteUser, updateUserRole
     } = useJMRH();
     const [activeTab, setActiveTab] = useState<"papers" | "users" | "professors" | "upload" | "overview" | "reviews">("overview");
     const [isCreateUserOpen, setIsCreateUserOpen] = useState(false);
@@ -758,14 +759,28 @@ const AdminDashboard = memo(() => {
                                                 {papers.filter(p => p.authorId === user.id).length}
                                             </td>
                                             <td className="p-4">
-                                                <Button 
-                                                    size="sm" 
-                                                    variant="ghost"
-                                                    onClick={() => handleToggleUserBan(user)}
-                                                    className={user.status === 'ACTIVE' ? 'text-destructive' : 'text-green-600'}
-                                                >
-                                                    {user.status === 'ACTIVE' ? <Ban size={14} /> : <Unlock size={14} />}
-                                                </Button>
+                                                <div className="flex gap-1">
+                                                    <Button 
+                                                        size="sm" 
+                                                        variant="ghost"
+                                                        onClick={() => handleToggleUserBan(user)}
+                                                        className={user.status === 'ACTIVE' ? 'text-destructive' : 'text-green-600'}
+                                                    >
+                                                        {user.status === 'ACTIVE' ? <Ban size={14} /> : <Unlock size={14} />}
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        className="text-destructive"
+                                                        onClick={async () => {
+                                                            if (confirm(`Delete ${user.name}? This cannot be undone.`)) {
+                                                                await deleteUser(user.id);
+                                                            }
+                                                        }}
+                                                    >
+                                                        <Trash2 size={14} />
+                                                    </Button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

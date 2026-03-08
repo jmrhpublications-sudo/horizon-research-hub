@@ -1,34 +1,108 @@
-import { memo, useState } from "react";
+import { memo, useState, FormEvent } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import { useJMRH } from "@/context/JMRHContext";
+import { useJMRH, User } from "@/context/JMRHContext";
 import {
-    Search, Mail, GraduationCap, User as UserIcon,
-    Ban, CheckCircle, UserPlus
+    Search, Mail, User as UserIcon, Ban, CheckCircle, UserPlus, Trash2, Edit, GraduationCap
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger
+    Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter
 } from "@/components/ui/dialog";
+import {
+    AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+    AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 
 const AdminUsers = memo(() => {
-    const { users, papers, updateUser, banUser, unbanUser } = useJMRH();
+    const { users, papers, updateUser, banUser, unbanUser, createUser, deleteUser, updateUserRole } = useJMRH();
     const [searchTerm, setSearchTerm] = useState("");
+    const [roleFilter, setRoleFilter] = useState<"ALL" | "USER" | "PROFESSOR" | "ADMIN">("ALL");
     const { toast } = useToast();
 
-    const scholarUsers = users.filter(u => u.role === 'USER' && (
-        u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.email.toLowerCase().includes(searchTerm.toLowerCase())
-    ));
+    // Create user state
+    const [openCreate, setOpenCreate] = useState(false);
+    const [newName, setNewName] = useState("");
+    const [newEmail, setNewEmail] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [newRole, setNewRole] = useState<"USER" | "PROFESSOR">("USER");
+    const [newPhone, setNewPhone] = useState("");
+    const [newDept, setNewDept] = useState("");
+    const [newUniversity, setNewUniversity] = useState("");
+    const [newDegree, setNewDegree] = useState("");
+
+    // Edit user state
+    const [editingUser, setEditingUser] = useState<User | null>(null);
+    const [editName, setEditName] = useState("");
+    const [editPhone, setEditPhone] = useState("");
+    const [editDept, setEditDept] = useState("");
+    const [editUniversity, setEditUniversity] = useState("");
+    const [editDegree, setEditDegree] = useState("");
+
+    const filteredUsers = users.filter(u => {
+        const matchesSearch = u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            u.email.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesRole = roleFilter === "ALL" || u.role === roleFilter;
+        return matchesSearch && matchesRole;
+    });
+
+    const handleCreate = async (e: FormEvent) => {
+        e.preventDefault();
+        if (!newName || !newEmail || !newPassword) {
+            toast({ title: "Error", description: "Please fill all required fields.", variant: "destructive" });
+            return;
+        }
+        try {
+            await createUser(newName, newEmail, newPassword, newRole, {
+                phone: newPhone, department: newDept, affiliation: newUniversity, degree: newDegree
+            });
+            setOpenCreate(false);
+            setNewName(""); setNewEmail(""); setNewPassword(""); setNewRole("USER");
+            setNewPhone(""); setNewDept(""); setNewUniversity(""); setNewDegree("");
+        } catch (err: any) {
+            toast({ title: "Error", description: err.message, variant: "destructive" });
+        }
+    };
+
+    const startEdit = (user: User) => {
+        setEditingUser(user);
+        setEditName(user.name);
+        setEditPhone(user.phone || "");
+        setEditDept(user.department || "");
+        setEditUniversity(user.affiliation || "");
+        setEditDegree(user.degree || "");
+    };
+
+    const handleUpdate = async (e: FormEvent) => {
+        e.preventDefault();
+        if (!editingUser) return;
+        try {
+            await updateUser(editingUser.id, {
+                name: editName, phone: editPhone, department: editDept,
+                affiliation: editUniversity, degree: editDegree,
+            });
+            toast({ title: "Updated", description: "User profile updated." });
+            setEditingUser(null);
+        } catch (err: any) {
+            toast({ title: "Error", description: err.message, variant: "destructive" });
+        }
+    };
+
+    const handleDelete = async (userId: string) => {
+        try {
+            await deleteUser(userId);
+        } catch (err: any) {
+            toast({ title: "Error", description: err.message, variant: "destructive" });
+        }
+    };
 
     const handlePromote = async (userId: string) => {
-        await updateUser(userId, { role: 'PROFESSOR' });
-        toast({ title: "Scholar Promoted", description: "The user is now a Professor/Reviewer." });
+        try {
+            await updateUserRole(userId, "PROFESSOR");
+        } catch (err: any) {
+            toast({ title: "Error", description: err.message, variant: "destructive" });
+        }
     };
 
     return (
@@ -38,7 +112,8 @@ const AdminUsers = memo(() => {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-border pb-8">
                     <div className="space-y-2">
                         <p className="section-label">Institutional Registry</p>
-                        <h1 className="text-4xl font-serif font-bold text-foreground leading-tight">Registered Scholars</h1>
+                        <h1 className="text-4xl font-serif font-bold text-foreground leading-tight">User Management</h1>
+                        <p className="text-sm text-muted-foreground">{users.length} total accounts</p>
                     </div>
 
                     <div className="flex w-full md:w-auto gap-3">
@@ -51,125 +126,232 @@ const AdminUsers = memo(() => {
                                 className="pl-12 h-12"
                             />
                         </div>
+                        <Dialog open={openCreate} onOpenChange={setOpenCreate}>
+                            <DialogTrigger asChild>
+                                <Button className="h-12 bg-accent text-accent-foreground px-6 font-bold tracking-widest hover:bg-foreground hover:text-background transition-all text-xs uppercase gap-2">
+                                    <UserPlus size={18} /> Create Account
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                                <DialogHeader>
+                                    <DialogTitle className="font-serif text-2xl text-accent">Create New Account</DialogTitle>
+                                </DialogHeader>
+                                <form onSubmit={handleCreate} className="space-y-4 pt-4">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="col-span-2 space-y-1">
+                                            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Full Name *</label>
+                                            <Input required placeholder="Full name" value={newName} onChange={(e) => setNewName(e.target.value)} className="h-11" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Email *</label>
+                                            <Input required type="email" placeholder="email@example.com" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} className="h-11" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Password *</label>
+                                            <Input required type="password" placeholder="Min 6 characters" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="h-11" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Role</label>
+                                            <select
+                                                value={newRole}
+                                                onChange={(e) => setNewRole(e.target.value as "USER" | "PROFESSOR")}
+                                                className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+                                            >
+                                                <option value="USER">Scholar (User)</option>
+                                                <option value="PROFESSOR">Professor / Reviewer</option>
+                                            </select>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Phone</label>
+                                            <Input placeholder="+91 ..." value={newPhone} onChange={(e) => setNewPhone(e.target.value)} className="h-11" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">University</label>
+                                            <Input placeholder="University name" value={newUniversity} onChange={(e) => setNewUniversity(e.target.value)} className="h-11" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Department</label>
+                                            <Input placeholder="Department" value={newDept} onChange={(e) => setNewDept(e.target.value)} className="h-11" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Degree</label>
+                                            <Input placeholder="PhD, MSc..." value={newDegree} onChange={(e) => setNewDegree(e.target.value)} className="h-11" />
+                                        </div>
+                                    </div>
+                                    <Button type="submit" className="w-full h-12 bg-accent text-accent-foreground font-bold tracking-[0.2em] hover:bg-foreground hover:text-background transition-all uppercase text-xs">
+                                        Create Account
+                                    </Button>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
                     </div>
                 </div>
 
-                {/* Users Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {scholarUsers.map(user => (
-                        <div key={user.id} className="bg-card border border-border p-6 hover:border-accent/30 transition-all duration-500 group relative overflow-hidden hover:shadow-md">
-                            {/* Accent Corner */}
-                            <div className="absolute top-0 right-0 w-24 h-24 bg-accent/5 rounded-bl-[80px] -mr-12 -mt-12 transition-all group-hover:bg-accent/10" />
+                {/* Role Filter */}
+                <div className="flex gap-2">
+                    {(["ALL", "USER", "PROFESSOR", "ADMIN"] as const).map(role => (
+                        <button
+                            key={role}
+                            onClick={() => setRoleFilter(role)}
+                            className={`px-4 py-2 text-[10px] uppercase font-bold tracking-widest border transition-all ${
+                                roleFilter === role
+                                    ? "bg-accent text-accent-foreground border-accent"
+                                    : "bg-card text-muted-foreground border-border hover:border-accent/30"
+                            }`}
+                        >
+                            {role === "ALL" ? `All (${users.length})` : `${role}s (${users.filter(u => u.role === role).length})`}
+                        </button>
+                    ))}
+                </div>
 
-                            <div className="relative z-10 space-y-5">
-                                <div className="flex items-start justify-between">
-                                    <div className="w-14 h-14 bg-muted flex items-center justify-center text-accent text-xl font-serif italic border border-border">
-                                        {user.name.charAt(0)}
-                                    </div>
-                                    <div className={`px-3 py-1 text-[9px] uppercase font-bold tracking-widest border ${user.status === 'ACTIVE' ? 'border-secondary/30 text-secondary' : 'border-destructive/30 text-destructive'}`}>
-                                        {user.status}
-                                    </div>
-                                </div>
-
-                                <div className="space-y-1">
-                                    <h3 className="text-lg font-serif font-bold text-foreground group-hover:text-accent transition-colors">{user.name}</h3>
-                                    <div className="flex items-center gap-2 text-muted-foreground text-xs overflow-hidden text-ellipsis">
-                                        <Mail size={12} /> {user.email}
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-2 pt-4 border-t border-border">
-                                    <Dialog>
-                                        <DialogTrigger asChild>
-                                            <Button variant="outline" className="h-10 text-[9px] uppercase font-bold tracking-widest">
-                                                Registry Details
+                {/* Users Table */}
+                <div className="bg-card border border-border overflow-hidden">
+                    <table className="w-full">
+                        <thead className="bg-muted">
+                            <tr>
+                                <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Name</th>
+                                <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Email</th>
+                                <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Role</th>
+                                <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Status</th>
+                                <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Papers</th>
+                                <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-border">
+                            {filteredUsers.map((user) => (
+                                <tr key={user.id} className="hover:bg-muted/50 transition-colors">
+                                    <td className="p-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-9 h-9 bg-muted flex items-center justify-center text-accent text-sm font-serif italic border border-border">
+                                                {user.name.charAt(0)}
+                                            </div>
+                                            <div>
+                                                <p className="font-medium text-foreground">{user.name}</p>
+                                                {user.affiliation && <p className="text-[10px] text-muted-foreground">{user.affiliation}</p>}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="p-4 text-sm text-muted-foreground">{user.email}</td>
+                                    <td className="p-4">
+                                        <span className={`px-2 py-1 text-[9px] font-bold uppercase tracking-widest ${
+                                            user.role === 'ADMIN' ? 'bg-destructive/10 text-destructive' :
+                                            user.role === 'PROFESSOR' ? 'bg-secondary/10 text-secondary' :
+                                            'bg-muted text-muted-foreground'
+                                        }`}>
+                                            {user.role}
+                                        </span>
+                                    </td>
+                                    <td className="p-4">
+                                        <span className={`px-2 py-1 text-[9px] font-bold uppercase tracking-widest ${
+                                            user.status === 'ACTIVE' ? 'bg-green-100 text-green-600' : 'bg-destructive/10 text-destructive'
+                                        }`}>
+                                            {user.status}
+                                        </span>
+                                    </td>
+                                    <td className="p-4 text-sm text-muted-foreground">
+                                        {papers.filter(p => p.authorId === user.id || p.assignedProfessorId === user.id).length}
+                                    </td>
+                                    <td className="p-4">
+                                        <div className="flex gap-1">
+                                            {/* Edit */}
+                                            <Button size="sm" variant="ghost" onClick={() => startEdit(user)} title="Edit">
+                                                <Edit size={14} />
                                             </Button>
-                                        </DialogTrigger>
-                                        <DialogContent className="max-h-[90vh] overflow-y-auto">
-                                            <DialogHeader>
-                                                <DialogTitle className="font-serif text-3xl text-accent">{user.name}</DialogTitle>
-                                            </DialogHeader>
 
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
-                                                <div className="space-y-4">
-                                                    <h4 className="text-secondary uppercase tracking-widest text-xs font-bold border-b border-border pb-2">Personal Identity</h4>
-                                                    <div className="space-y-3">
-                                                        <div className="space-y-1"><label className="text-[10px] uppercase text-muted-foreground font-bold">Email</label><p className="font-serif text-base">{user.email}</p></div>
-                                                        <div className="space-y-1"><label className="text-[10px] uppercase text-muted-foreground font-bold">Contact</label><p className="font-serif text-base">{user.phone || "N/A"}</p></div>
-                                                    </div>
-                                                </div>
-                                                <div className="space-y-4">
-                                                    <h4 className="text-secondary uppercase tracking-widest text-xs font-bold border-b border-border pb-2">Institutional Status</h4>
-                                                    <div className="space-y-3">
-                                                        <div className="space-y-1"><label className="text-[10px] uppercase text-muted-foreground font-bold">University</label><p className="font-serif text-base">{user.affiliation || "N/A"}</p></div>
-                                                        <div className="space-y-1"><label className="text-[10px] uppercase text-muted-foreground font-bold">Department</label><p className="font-serif text-base">{user.department || "N/A"}</p></div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            {/* Promote to Professor (only for USER role) */}
+                                            {user.role === 'USER' && (
+                                                <Button size="sm" variant="ghost" className="text-secondary" onClick={() => handlePromote(user.id)} title="Promote to Professor">
+                                                    <GraduationCap size={14} />
+                                                </Button>
+                                            )}
 
-                                            {/* Submission Portfolio */}
-                                            <div className="py-4 border-t border-border">
-                                                <h4 className="text-secondary uppercase tracking-widest text-xs font-bold mb-3">Submission Portfolio</h4>
-                                                <div className="space-y-2">
-                                                    {papers.filter(p => p.authorId === user.id).length > 0 ? (
-                                                        papers.filter(p => p.authorId === user.id).map(p => (
-                                                            <div key={p.id} className="p-3 bg-muted border border-border flex justify-between items-center group/paper hover:bg-accent/5 transition-all">
-                                                                <div>
-                                                                    <p className="text-sm font-serif font-bold group-hover/paper:text-accent transition-colors">{p.title}</p>
-                                                                    <p className="text-[9px] uppercase tracking-widest text-muted-foreground font-bold">{p.discipline} | Filed: {p.submissionDate}</p>
-                                                                </div>
-                                                                <span className={`text-[8px] px-2 py-0.5 border border-border font-black uppercase tracking-widest ${p.status === 'PUBLISHED' ? 'text-secondary' : 'text-accent'}`}>
-                                                                    {p.status}
-                                                                </span>
-                                                            </div>
-                                                        ))
-                                                    ) : (
-                                                        <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold italic">No manuscripts filed to date.</p>
-                                                    )}
-                                                </div>
-                                            </div>
+                                            {/* Ban/Unban */}
+                                            <Button 
+                                                size="sm" 
+                                                variant="ghost"
+                                                onClick={() => user.status === 'ACTIVE' ? banUser(user.id) : unbanUser(user.id)}
+                                                className={user.status === 'ACTIVE' ? 'text-orange-500' : 'text-green-600'}
+                                                title={user.status === 'ACTIVE' ? 'Ban' : 'Unban'}
+                                            >
+                                                {user.status === 'ACTIVE' ? <Ban size={14} /> : <CheckCircle size={14} />}
+                                            </Button>
 
-                                            <div className="pt-4 border-t border-border">
-                                                <h4 className="text-accent uppercase tracking-widest text-xs font-bold mb-3">Actions</h4>
-                                                <div className="flex flex-wrap gap-3">
-                                                    <Button onClick={() => handlePromote(user.id)} variant="outline" className="h-11 px-5 text-[10px] font-black tracking-widest uppercase gap-2 border-secondary/30 text-secondary hover:bg-secondary hover:text-secondary-foreground">
-                                                        <UserPlus size={14} /> Promote to Professor
+                                            {/* Delete */}
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button size="sm" variant="ghost" className="text-destructive" title="Delete">
+                                                        <Trash2 size={14} />
                                                     </Button>
-                                                    {user.status === 'ACTIVE' ? (
-                                                        <Button onClick={() => banUser(user.id)} variant="outline" className="h-11 px-5 text-[10px] font-black tracking-widest uppercase gap-2 border-destructive/30 text-destructive hover:bg-destructive hover:text-destructive-foreground">
-                                                            <Ban size={14} /> Ban Scholar
-                                                        </Button>
-                                                    ) : (
-                                                        <Button onClick={() => unbanUser(user.id)} variant="outline" className="h-11 px-5 text-[10px] font-black tracking-widest uppercase gap-2 border-green-500/30 text-green-600 hover:bg-green-500 hover:text-white">
-                                                            <CheckCircle size={14} /> Restore access
-                                                        </Button>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </DialogContent>
-                                    </Dialog>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>Delete User: {user.name}?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            This will permanently delete the user account, their profile, and authentication credentials. This action cannot be undone.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                        <AlertDialogAction onClick={() => handleDelete(user.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                                                            Delete Permanently
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            {filteredUsers.length === 0 && (
+                                <tr>
+                                    <td colSpan={6} className="p-12 text-center">
+                                        <UserIcon size={48} className="text-muted-foreground/30 mx-auto mb-4" />
+                                        <p className="font-serif italic text-muted-foreground text-lg">No users matching your query.</p>
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
 
-                                    {user.status === 'ACTIVE' ? (
-                                        <Button onClick={() => banUser(user.id)} variant="outline" className="h-10 text-destructive/60 hover:bg-destructive hover:text-destructive-foreground border-destructive/10 text-[9px] uppercase font-bold tracking-widest">
-                                            Terminate
-                                        </Button>
-                                    ) : (
-                                        <Button onClick={() => unbanUser(user.id)} variant="outline" className="h-10 text-green-600/60 hover:bg-green-500 hover:text-white border-green-500/10 text-[9px] uppercase font-bold tracking-widest">
-                                            Restore
-                                        </Button>
-                                    )}
+                {/* Edit User Dialog */}
+                <Dialog open={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)}>
+                    <DialogContent className="max-w-lg">
+                        <DialogHeader>
+                            <DialogTitle className="font-serif text-2xl text-accent">Edit User: {editingUser?.name}</DialogTitle>
+                        </DialogHeader>
+                        <form onSubmit={handleUpdate} className="space-y-4 pt-4">
+                            <div className="space-y-1">
+                                <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Name</label>
+                                <Input required value={editName} onChange={(e) => setEditName(e.target.value)} className="h-11" />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Phone</label>
+                                    <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} className="h-11" />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Degree</label>
+                                    <Input value={editDegree} onChange={(e) => setEditDegree(e.target.value)} className="h-11" />
                                 </div>
                             </div>
-                        </div>
-                    ))}
-
-                    {scholarUsers.length === 0 && (
-                        <div className="col-span-full py-24 text-center border-2 border-dashed border-border flex flex-col items-center justify-center space-y-4">
-                            <UserIcon size={48} className="text-muted-foreground/30" />
-                            <p className="font-serif italic text-muted-foreground text-xl">No scholars matching your query.</p>
-                        </div>
-                    )}
-                </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">University</label>
+                                    <Input value={editUniversity} onChange={(e) => setEditUniversity(e.target.value)} className="h-11" />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Department</label>
+                                    <Input value={editDept} onChange={(e) => setEditDept(e.target.value)} className="h-11" />
+                                </div>
+                            </div>
+                            <DialogFooter>
+                                <Button type="button" variant="outline" onClick={() => setEditingUser(null)}>Cancel</Button>
+                                <Button type="submit" className="bg-accent text-accent-foreground hover:bg-foreground hover:text-background">Save Changes</Button>
+                            </DialogFooter>
+                        </form>
+                    </DialogContent>
+                </Dialog>
             </div>
         </DashboardLayout>
     );

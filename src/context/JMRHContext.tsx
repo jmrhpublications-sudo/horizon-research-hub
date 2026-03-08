@@ -160,6 +160,8 @@ interface JMRHContextType {
     banUser: (userId: string) => Promise<void>;
     unbanUser: (userId: string) => Promise<void>;
     createUser: (name: string, email: string, password: string, role: UserRole, details?: any) => Promise<void>;
+    deleteUser: (userId: string) => Promise<void>;
+    updateUserRole: (userId: string, role: UserRole) => Promise<void>;
     assignPaper: (paperId: string, professorId: string, professorName: string) => Promise<void>;
     submitPaper: (title: string, abstract: string, discipline: string, paperType: PaperType, authorName: string, authorEmail?: string, manuscriptType?: string, keywords?: string, coAuthors?: string, attachments?: string[]) => Promise<void>;
     updatePaper: (paperId: string, updates: Partial<Paper>) => Promise<void>;
@@ -454,32 +456,45 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     const unbanUser = async (userId: string) => updateUser(userId, { status: 'ACTIVE' });
 
     const createUser = async (name: string, email: string, password: string, role: UserRole, details?: any) => {
-        // Create auth user
-        const { data, error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: { data: { name, ...details } }
+        const { data, error } = await supabase.functions.invoke('admin-manage-user', {
+            body: {
+                action: 'create',
+                email,
+                password,
+                name,
+                role: role.toLowerCase(),
+                phone: details?.phone,
+                department: details?.department,
+                affiliation: details?.affiliation,
+                degree: details?.degree,
+            }
         });
         if (error) throw error;
+        if (data?.error) throw new Error(data.error);
         
-        if (data.user) {
-            // Set role
-            await db.from('user_roles').insert({ user_id: data.user.id, role });
-            
-            // Update profile
-            await db.from('profiles').update({ 
-                name, 
-                email, 
-                status: 'ACTIVE',
-                phone_number: details?.phone,
-                university: details?.affiliation,
-                department: details?.department,
-                degree: details?.degree
-            }).eq('id', data.user.id);
-            
-            toast({ title: "User Created", description: `${role} account created successfully.` });
-        }
+        toast({ title: "User Created", description: `${role} account created successfully.` });
+        await refreshData();
+    };
+
+    const deleteUser = async (userId: string) => {
+        const { data, error } = await supabase.functions.invoke('admin-manage-user', {
+            body: { action: 'delete', userId }
+        });
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
         
+        toast({ title: "User Deleted", description: "User account has been permanently removed." });
+        await refreshData();
+    };
+
+    const updateUserRole = async (userId: string, role: UserRole) => {
+        const { data, error } = await supabase.functions.invoke('admin-manage-user', {
+            body: { action: 'update_role', userId, role: role.toLowerCase() }
+        });
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+        
+        toast({ title: "Role Updated", description: `User role changed to ${role}.` });
         await refreshData();
     };
 
@@ -825,7 +840,7 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     return (
         <JMRHContext.Provider value={{
             users, papers, reviews, publishedJournals, publishedBooks, uploadRequests, professorSubmissions, currentUser, isLoading, setCurrentUser, signIn, signUp, updateUser,
-            banUser, unbanUser, createUser, assignPaper,
+            banUser, unbanUser, createUser, deleteUser, updateUserRole, assignPaper,
             submitPaper, updatePaper, updatePaperStatus, publishPaper, addReview, updateReview, deleteReview, logout, refreshData,
             createPublishedJournal, updatePublishedJournal, deletePublishedJournal,
             createPublishedBook, updatePublishedBook, deletePublishedBook,
