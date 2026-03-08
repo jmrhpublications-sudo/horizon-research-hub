@@ -840,7 +840,7 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     return (
         <JMRHContext.Provider value={{
             users, papers, reviews, publishedJournals, publishedBooks, uploadRequests, professorSubmissions, currentUser, isLoading, setCurrentUser, signIn, signUp, updateUser,
-            banUser, unbanUser, createUser, assignPaper,
+            banUser, unbanUser, createUser, deleteUser, updateUserRole, assignPaper,
             submitPaper, updatePaper, updatePaperStatus, publishPaper, addReview, updateReview, deleteReview, logout, refreshData,
             createPublishedJournal, updatePublishedJournal, deletePublishedJournal,
             createPublishedBook, updatePublishedBook, deletePublishedBook,
