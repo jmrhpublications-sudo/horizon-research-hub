@@ -60,6 +60,8 @@ const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
 const AdminProfessors = lazy(() => import("./pages/admin/AdminProfessors"));
 const AdminPapers = lazy(() => import("./pages/admin/AdminPapers"));
+const AdminPublications = lazy(() => import("./pages/admin/AdminPublications"));
+const AdminRequests = lazy(() => import("./pages/admin/AdminRequests"));
 
 // Professor Dashboard
 const ProfessorDashboard = lazy(() => import("./pages/professor/ProfessorDashboard"));
