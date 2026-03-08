@@ -17,13 +17,24 @@ export type Database = {
       papers: {
         Row: {
           abstract: string
+          additional_notes: string | null
+          affiliation: string | null
           assigned_professor_id: string | null
           attachments: string[] | null
+          author_email: string | null
           author_id: string
           author_name: string
+          co_authors: string | null
+          cover_letter: string | null
           created_at: string
+          designation: string | null
           discipline: string
           id: string
+          keywords: string | null
+          manuscript_type: string | null
+          orcid: string | null
+          paper_type: string | null
+          phone: string | null
           revision_comments: string | null
           status: string
           submission_date: string
@@ -32,13 +43,24 @@ export type Database = {
         }
         Insert: {
           abstract?: string
+          additional_notes?: string | null
+          affiliation?: string | null
           assigned_professor_id?: string | null
           attachments?: string[] | null
+          author_email?: string | null
           author_id: string
           author_name?: string
+          co_authors?: string | null
+          cover_letter?: string | null
           created_at?: string
+          designation?: string | null
           discipline?: string
           id?: string
+          keywords?: string | null
+          manuscript_type?: string | null
+          orcid?: string | null
+          paper_type?: string | null
+          phone?: string | null
           revision_comments?: string | null
           status?: string
           submission_date?: string
@@ -47,13 +69,24 @@ export type Database = {
         }
         Update: {
           abstract?: string
+          additional_notes?: string | null
+          affiliation?: string | null
           assigned_professor_id?: string | null
           attachments?: string[] | null
+          author_email?: string | null
           author_id?: string
           author_name?: string
+          co_authors?: string | null
+          cover_letter?: string | null
           created_at?: string
+          designation?: string | null
           discipline?: string
           id?: string
+          keywords?: string | null
+          manuscript_type?: string | null
+          orcid?: string | null
+          paper_type?: string | null
+          phone?: string | null
           revision_comments?: string | null
           status?: string
           submission_date?: string
