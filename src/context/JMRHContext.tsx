@@ -172,7 +172,7 @@ interface JMRHContextType {
     deleteUser: (userId: string) => Promise<void>;
     updateUserRole: (userId: string, role: UserRole) => Promise<void>;
     assignPaper: (paperId: string, professorId: string, professorName: string) => Promise<void>;
-    submitPaper: (title: string, abstract: string, discipline: string, paperType: PaperType, authorName: string, authorEmail?: string, manuscriptType?: string, keywords?: string, coAuthors?: string, attachments?: string[]) => Promise<void>;
+    submitPaper: (title: string, abstract: string, discipline: string, paperType: PaperType, authorName: string, authorEmail?: string, manuscriptType?: string, keywords?: string, coAuthors?: string, attachments?: string[], phone?: string, affiliation?: string, designation?: string, orcid?: string, coverLetter?: string, additionalNotes?: string) => Promise<void>;
     updatePaper: (paperId: string, updates: Partial<Paper>) => Promise<void>;
     updatePaperStatus: (paperId: string, status: PaperStatus, comments?: string) => Promise<void>;
     publishPaper: (paperId: string) => Promise<void>;
