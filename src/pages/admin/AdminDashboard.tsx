@@ -520,7 +520,6 @@ const AdminDashboard = memo(() => {
                                     )}
                                 </div>
                             </div>
-                            </div>
                         )}
                     </div>
                 )}
