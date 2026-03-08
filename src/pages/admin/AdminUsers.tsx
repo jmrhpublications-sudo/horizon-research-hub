@@ -234,7 +234,7 @@ const AdminUsers = memo(() => {
                                 {/* Academic Info */}
                                 <div className="space-y-3">
                                     <h4 className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent border-b border-border pb-2">Academic Details</h4>
-                                    <div className="grid grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                         <div className="space-y-1">
                                             <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">University</label>
                                             <Input placeholder="University" value={newUniversity} onChange={(e) => setNewUniversity(e.target.value)} className="h-11" />
