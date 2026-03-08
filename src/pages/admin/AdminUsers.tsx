@@ -181,7 +181,7 @@ const AdminUsers = memo(() => {
                                 {/* Account Info */}
                                 <div className="space-y-3">
                                     <h4 className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent border-b border-border pb-2">Account Credentials</h4>
-                                    <div className="grid grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                         <div className="space-y-1">
                                             <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Full Name *</label>
                                             <Input required placeholder="Full name" value={newName} onChange={(e) => setNewName(e.target.value)} className="h-11" />
@@ -190,7 +190,7 @@ const AdminUsers = memo(() => {
                                             <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Email *</label>
                                             <Input required type="email" placeholder="email@example.com" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} className="h-11" />
                                         </div>
-                                        <div className="space-y-1">
+                                        <div className="space-y-1 sm:col-span-2 lg:col-span-1">
                                             <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Password *</label>
                                             <Input required type="password" placeholder="Min 6 characters" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="h-11" />
                                         </div>
@@ -207,7 +207,7 @@ const AdminUsers = memo(() => {
                                 {/* Personal Info */}
                                 <div className="space-y-3">
                                     <h4 className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent border-b border-border pb-2">Personal Information</h4>
-                                    <div className="grid grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                         <div className="space-y-1">
                                             <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Phone</label>
                                             <Input placeholder="+91 ..." value={newPhone} onChange={(e) => setNewPhone(e.target.value)} className="h-11" />
@@ -220,7 +220,7 @@ const AdminUsers = memo(() => {
                                             <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">City</label>
                                             <Input placeholder="City" value={newCity} onChange={(e) => setNewCity(e.target.value)} className="h-11" />
                                         </div>
-                                        <div className="col-span-2 space-y-1">
+                                        <div className="sm:col-span-2 space-y-1">
                                             <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Address</label>
                                             <Input placeholder="Full address" value={newAddress} onChange={(e) => setNewAddress(e.target.value)} className="h-11" />
                                         </div>
@@ -234,7 +234,7 @@ const AdminUsers = memo(() => {
                                 {/* Academic Info */}
                                 <div className="space-y-3">
                                     <h4 className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent border-b border-border pb-2">Academic Details</h4>
-                                    <div className="grid grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                         <div className="space-y-1">
                                             <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">University</label>
                                             <Input placeholder="University" value={newUniversity} onChange={(e) => setNewUniversity(e.target.value)} className="h-11" />
@@ -335,8 +335,8 @@ const AdminUsers = memo(() => {
                     transition={{ delay: 0.3 }}
                     className="bg-card border border-border overflow-hidden shadow-sm"
                 >
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
+                    <div className="overflow-x-auto -mx-4 sm:mx-0">
+                        <table className="w-full min-w-[700px]">
                             <thead className="bg-muted/80">
                                 <tr>
                                     {[
@@ -489,7 +489,7 @@ const AdminUsers = memo(() => {
                                         </div>
                                     </div>
                                 </DialogHeader>
-                                <div className="grid grid-cols-2 gap-6 py-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 py-6">
                                     <div className="space-y-4">
                                         <h4 className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent border-b border-border pb-2">Personal Info</h4>
                                         <InfoRow label="Phone" value={viewingUser.phone} />

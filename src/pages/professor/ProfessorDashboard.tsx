@@ -344,20 +344,20 @@ const ProfessorDashboard = memo(() => {
                                                                     onChange={(e) => setReviewComments(e.target.value)}
                                                                 />
                                                             </div>
-                                                            <div className="grid grid-cols-3 gap-2">
-                                                                <Button onClick={() => handleSubmitReview(paper.id, 'ACCEPTED')}
-                                                                    className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">
-                                                                    Accept
-                                                                </Button>
-                                                                <Button onClick={() => handleSubmitReview(paper.id, 'REVISION_REQUIRED')}
-                                                                    className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold">
-                                                                    Revision
-                                                                </Button>
-                                                                <Button onClick={() => handleSubmitReview(paper.id, 'REJECTED')}
-                                                                    variant="destructive" className="text-xs font-bold">
-                                                                    Reject
-                                                                </Button>
-                                                            </div>
+                                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                                <Button onClick={() => handleSubmitReview(paper.id, 'ACCEPTED')}
+                                                    className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">
+                                                    Accept
+                                                </Button>
+                                                <Button onClick={() => handleSubmitReview(paper.id, 'REVISION_REQUIRED')}
+                                                    className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold">
+                                                    Revision
+                                                </Button>
+                                                <Button onClick={() => handleSubmitReview(paper.id, 'REJECTED')}
+                                                    variant="destructive" className="text-xs font-bold">
+                                                    Reject
+                                                </Button>
+                                            </div>
                                                         </div>
                                                     </DialogContent>
                                                 </Dialog>
@@ -461,14 +461,14 @@ const ProfessorDashboard = memo(() => {
                             <Input placeholder="Article Title *" value={journalForm.title} onChange={(e) => setJournalForm(prev => ({ ...prev, title: e.target.value }))} />
                             <Input placeholder="Authors *" value={journalForm.authors} onChange={(e) => setJournalForm(prev => ({ ...prev, authors: e.target.value }))} />
                             <Textarea placeholder="Abstract" value={journalForm.abstract} onChange={(e) => setJournalForm(prev => ({ ...prev, abstract: e.target.value }))} />
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <Select onValueChange={(v) => setJournalForm(prev => ({ ...prev, discipline: v }))} value={journalForm.discipline}>
                                     <SelectTrigger><SelectValue placeholder="Discipline *" /></SelectTrigger>
                                     <SelectContent>{disciplines.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
                                 </Select>
                                 <Input placeholder="Keywords" value={journalForm.keywords} onChange={(e) => setJournalForm(prev => ({ ...prev, keywords: e.target.value }))} />
                             </div>
-                            <div className="grid grid-cols-3 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 <Input placeholder="Volume" value={journalForm.volume} onChange={(e) => setJournalForm(prev => ({ ...prev, volume: e.target.value }))} />
                                 <Input placeholder="Issue" value={journalForm.issue} onChange={(e) => setJournalForm(prev => ({ ...prev, issue: e.target.value }))} />
                                 <Input placeholder="Pages" value={journalForm.pages} onChange={(e) => setJournalForm(prev => ({ ...prev, pages: e.target.value }))} />
@@ -503,19 +503,19 @@ const ProfessorDashboard = memo(() => {
                             <Input placeholder="Book Title *" value={bookForm.title} onChange={(e) => setBookForm(prev => ({ ...prev, title: e.target.value }))} />
                             <Input placeholder="Authors *" value={bookForm.authors} onChange={(e) => setBookForm(prev => ({ ...prev, authors: e.target.value }))} />
                             <Input placeholder="Editors" value={bookForm.editors} onChange={(e) => setBookForm(prev => ({ ...prev, editors: e.target.value }))} />
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <Input placeholder="ISBN" value={bookForm.isbn} onChange={(e) => setBookForm(prev => ({ ...prev, isbn: e.target.value }))} />
                                 <Input placeholder="Publisher" value={bookForm.publisher} onChange={(e) => setBookForm(prev => ({ ...prev, publisher: e.target.value }))} />
                             </div>
                             <Textarea placeholder="Description" value={bookForm.description} onChange={(e) => setBookForm(prev => ({ ...prev, description: e.target.value }))} />
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <Select onValueChange={(v) => setBookForm(prev => ({ ...prev, discipline: v }))} value={bookForm.discipline}>
                                     <SelectTrigger><SelectValue placeholder="Discipline *" /></SelectTrigger>
                                     <SelectContent>{disciplines.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
                                 </Select>
                                 <Input placeholder="Keywords" value={bookForm.keywords} onChange={(e) => setBookForm(prev => ({ ...prev, keywords: e.target.value }))} />
                             </div>
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <Input placeholder="Edition" value={bookForm.edition} onChange={(e) => setBookForm(prev => ({ ...prev, edition: e.target.value }))} />
                                 <Input placeholder="Publication Year" value={bookForm.publicationYear} onChange={(e) => setBookForm(prev => ({ ...prev, publicationYear: e.target.value }))} />
                             </div>

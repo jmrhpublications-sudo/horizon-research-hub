@@ -425,19 +425,19 @@ const AdminDashboard = memo(() => {
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-2 border-b border-border overflow-x-auto">
+                <div className="flex gap-1 sm:gap-2 border-b border-border overflow-x-auto pb-px -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-none">
                     {[
                         { key: "overview", label: "Overview" },
                         { key: "papers", label: "Papers" },
                         { key: "users", label: "Users" },
                         { key: "professors", label: "Professors" },
-                        { key: "upload", label: "Upload & Requests" },
+                        { key: "upload", label: "Uploads" },
                         { key: "reviews", label: "Reviews" },
                     ].map(tab => (
                         <button
                             key={tab.key}
                             onClick={() => setActiveTab(tab.key as any)}
-                            className={`px-4 py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${activeTab === tab.key ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+                            className={`px-3 sm:px-4 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.key ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}
                         >
                             {tab.label}
                         </button>
@@ -691,8 +691,8 @@ const AdminDashboard = memo(() => {
                             </Select>
                         </div>
 
-                        <div className="bg-card border border-border overflow-hidden">
-                            <table className="w-full">
+                        <div className="bg-card border border-border overflow-hidden overflow-x-auto -mx-4 sm:mx-0">
+                            <table className="w-full min-w-[700px]">
                                 <thead className="bg-muted">
                                     <tr>
                                         <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Title</th>
@@ -858,8 +858,8 @@ const AdminDashboard = memo(() => {
                             </Dialog>
                         </div>
 
-                        <div className="bg-card border border-border overflow-hidden">
-                            <table className="w-full">
+                        <div className="bg-card border border-border overflow-hidden overflow-x-auto -mx-4 sm:mx-0">
+                            <table className="w-full min-w-[640px]">
                                 <thead className="bg-muted">
                                     <tr>
                                         <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Name</th>
@@ -1015,7 +1015,7 @@ const AdminDashboard = memo(() => {
                                             <Input placeholder="Article Title *" value={journalForm.title} onChange={(e) => setJournalForm(prev => ({ ...prev, title: e.target.value }))} />
                                             <Input placeholder="Authors *" value={journalForm.authors} onChange={(e) => setJournalForm(prev => ({ ...prev, authors: e.target.value }))} />
                                             <Textarea placeholder="Abstract" value={journalForm.abstract} onChange={(e) => setJournalForm(prev => ({ ...prev, abstract: e.target.value }))} />
-                                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <Select onValueChange={(v) => setJournalForm(prev => ({ ...prev, discipline: v }))} value={journalForm.discipline}>
                                                     <SelectTrigger><SelectValue placeholder="Discipline *" /></SelectTrigger>
                                                     <SelectContent>
@@ -1024,7 +1024,7 @@ const AdminDashboard = memo(() => {
                                                 </Select>
                                                 <Input placeholder="Keywords" value={journalForm.keywords} onChange={(e) => setJournalForm(prev => ({ ...prev, keywords: e.target.value }))} />
                                             </div>
-                                            <div className="grid grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                                 <Input placeholder="Volume" value={journalForm.volume} onChange={(e) => setJournalForm(prev => ({ ...prev, volume: e.target.value }))} />
                                                 <Input placeholder="Issue" value={journalForm.issue} onChange={(e) => setJournalForm(prev => ({ ...prev, issue: e.target.value }))} />
                                                 <Input placeholder="Pages" value={journalForm.pages} onChange={(e) => setJournalForm(prev => ({ ...prev, pages: e.target.value }))} />
@@ -1075,12 +1075,12 @@ const AdminDashboard = memo(() => {
                                             <Input placeholder="Book Title *" value={bookForm.title} onChange={(e) => setBookForm(prev => ({ ...prev, title: e.target.value }))} />
                                             <Input placeholder="Authors *" value={bookForm.authors} onChange={(e) => setBookForm(prev => ({ ...prev, authors: e.target.value }))} />
                                             <Input placeholder="Editors" value={bookForm.editors} onChange={(e) => setBookForm(prev => ({ ...prev, editors: e.target.value }))} />
-                                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <Input placeholder="ISBN" value={bookForm.isbn} onChange={(e) => setBookForm(prev => ({ ...prev, isbn: e.target.value }))} />
                                                 <Input placeholder="Publisher" value={bookForm.publisher} onChange={(e) => setBookForm(prev => ({ ...prev, publisher: e.target.value }))} />
                                             </div>
                                             <Textarea placeholder="Description" value={bookForm.description} onChange={(e) => setBookForm(prev => ({ ...prev, description: e.target.value }))} />
-                                            <div className="grid grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <Select onValueChange={(v) => setBookForm(prev => ({ ...prev, discipline: v }))} value={bookForm.discipline}>
                                                     <SelectTrigger><SelectValue placeholder="Discipline *" /></SelectTrigger>
                                                     <SelectContent>
@@ -1089,7 +1089,7 @@ const AdminDashboard = memo(() => {
                                                 </Select>
                                                 <Input placeholder="Keywords" value={bookForm.keywords} onChange={(e) => setBookForm(prev => ({ ...prev, keywords: e.target.value }))} />
                                             </div>
-                                            <div className="grid grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <Input placeholder="Edition" value={bookForm.edition} onChange={(e) => setBookForm(prev => ({ ...prev, edition: e.target.value }))} />
                                                 <Input placeholder="Publication Year" value={bookForm.publicationYear} onChange={(e) => setBookForm(prev => ({ ...prev, publicationYear: e.target.value }))} />
                                             </div>

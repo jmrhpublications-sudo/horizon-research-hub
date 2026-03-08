@@ -195,7 +195,7 @@ const AdminProfessors = memo(() => {
                                 <form onSubmit={handleCreate} className="space-y-6 pt-4">
                                     <div className="space-y-3">
                                         <h4 className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent border-b border-border pb-2">Credentials</h4>
-                                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                             <div className="space-y-1">
                                                 <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Name *</label>
                                                 <Input required placeholder="Dr. Name" value={name} onChange={(e) => setName(e.target.value)} className="h-11" />
@@ -204,7 +204,7 @@ const AdminProfessors = memo(() => {
                                                 <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Email *</label>
                                                 <Input required type="email" placeholder="email@univ.edu" value={email} onChange={(e) => setEmail(e.target.value)} className="h-11" />
                                             </div>
-                                            <div className="space-y-1">
+                                            <div className="space-y-1 sm:col-span-2 lg:col-span-1">
                                                 <label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Password *</label>
                                                 <Input required type="password" placeholder="Min 6 chars" value={password} onChange={(e) => setPassword(e.target.value)} className="h-11" />
                                             </div>
@@ -289,7 +289,7 @@ const AdminProfessors = memo(() => {
                                     <div className="absolute top-0 right-0 w-24 h-24 bg-accent/5 rounded-bl-[80px] -mr-12 -mt-12 transition-all group-hover:bg-accent/10" />
 
                                     {/* Actions */}
-                                    <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                    <div className="absolute top-3 right-3 flex gap-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity z-10">
                                         <Button size="sm" variant="ghost" onClick={() => setViewingProf(prof)} title="View"><Eye size={14} /></Button>
                                         <Button size="sm" variant="ghost" onClick={() => startEdit(prof)} title="Edit"><Edit size={14} /></Button>
                                         <Button size="sm" variant="ghost"
@@ -384,7 +384,7 @@ const AdminProfessors = memo(() => {
                                         </div>
                                     </div>
                                 </DialogHeader>
-                                <div className="grid grid-cols-2 gap-6 py-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 py-6">
                                     <div className="space-y-3">
                                         <h4 className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent border-b border-border pb-2">Contact</h4>
                                         <InfoRow label="Phone" value={viewingProf.phone} />
