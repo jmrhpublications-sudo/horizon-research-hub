@@ -839,19 +839,19 @@ const AdminDashboard = memo(() => {
                         {/* Upload Section */}
                         <div className="grid md:grid-cols-2 gap-6">
                             {/* Upload Journal */}
-                            <div className="bg-white border border-black/5 p-6">
+                            <div className="bg-card border border-border p-6">
                                 <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center">
-                                        <Library className="w-6 h-6 text-gold" />
+                                    <div className="w-12 h-12 bg-accent/10 flex items-center justify-center">
+                                        <Library className="w-6 h-6 text-accent" />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-oxford">Upload Journal Article</h3>
-                                        <p className="text-xs text-oxford/50">Publish a new journal article</p>
+                                        <h3 className="font-bold text-foreground">Upload Journal Article</h3>
+                                        <p className="text-xs text-muted-foreground">Publish a new journal article</p>
                                     </div>
                                 </div>
                                 <Dialog open={isUploadJournalOpen} onOpenChange={setIsUploadJournalOpen}>
                                     <DialogTrigger asChild>
-                                        <Button className="w-full bg-oxford hover:bg-gold">
+                                        <Button className="w-full bg-foreground text-background hover:bg-accent hover:text-accent-foreground">
                                             <Upload size={16} className="mr-2" /> Upload Journal
                                         </Button>
                                     </DialogTrigger>
@@ -880,7 +880,7 @@ const AdminDashboard = memo(() => {
                                             <Input placeholder="DOI" value={journalForm.doi} onChange={(e) => setJournalForm(prev => ({ ...prev, doi: e.target.value }))} />
                                             <Input type="date" value={journalForm.publicationDate} onChange={(e) => setJournalForm(prev => ({ ...prev, publicationDate: e.target.value }))} />
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold uppercase text-oxford/60">PDF File</label>
+                                                <label className="text-xs font-bold uppercase text-muted-foreground">PDF File</label>
                                                 <input ref={journalFileRef} type="file" accept=".pdf" onChange={handleJournalFileUpload} className="hidden" />
                                                 <div className="flex gap-2">
                                                     <Button type="button" variant="outline" onClick={() => journalFileRef.current?.click()} className="flex-1">
@@ -892,26 +892,26 @@ const AdminDashboard = memo(() => {
                                         </div>
                                         <DialogFooter>
                                             <Button variant="outline" onClick={() => setIsUploadJournalOpen(false)}>Cancel</Button>
-                                            <Button className="bg-gold hover:bg-oxford" onClick={handlePublishJournal}>Publish Journal</Button>
+                                            <Button className="bg-accent text-accent-foreground hover:bg-foreground hover:text-background" onClick={handlePublishJournal}>Publish Journal</Button>
                                         </DialogFooter>
                                     </DialogContent>
                                 </Dialog>
                             </div>
 
                             {/* Upload Book */}
-                            <div className="bg-white border border-black/5 p-6">
+                            <div className="bg-card border border-border p-6">
                                 <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-12 h-12 bg-teal-500/10 rounded-lg flex items-center justify-center">
-                                        <BookOpen className="w-6 h-6 text-teal-500" />
+                                    <div className="w-12 h-12 bg-secondary/10 flex items-center justify-center">
+                                        <BookOpen className="w-6 h-6 text-secondary" />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-oxford">Upload Book</h3>
-                                        <p className="text-xs text-oxford/50">Publish a new book</p>
+                                        <h3 className="font-bold text-foreground">Upload Book</h3>
+                                        <p className="text-xs text-muted-foreground">Publish a new book</p>
                                     </div>
                                 </div>
                                 <Dialog open={isUploadBookOpen} onOpenChange={setIsUploadBookOpen}>
                                     <DialogTrigger asChild>
-                                        <Button className="w-full bg-oxford hover:bg-gold">
+                                        <Button className="w-full bg-foreground text-background hover:bg-accent hover:text-accent-foreground">
                                             <Upload size={16} className="mr-2" /> Upload Book
                                         </Button>
                                     </DialogTrigger>
@@ -943,7 +943,7 @@ const AdminDashboard = memo(() => {
                                             </div>
                                             <Input placeholder="Purchase Link" value={bookForm.purchaseLink} onChange={(e) => setBookForm(prev => ({ ...prev, purchaseLink: e.target.value }))} />
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold uppercase text-oxford/60">PDF File</label>
+                                                <label className="text-xs font-bold uppercase text-muted-foreground">PDF File</label>
                                                 <input ref={bookFileRef} type="file" accept=".pdf" onChange={handleBookFileUpload} className="hidden" />
                                                 <Button type="button" variant="outline" onClick={() => bookFileRef.current?.click()} className="w-full">
                                                     {isUploadingBook ? "Uploading..." : bookForm.pdfUrl ? "PDF Uploaded ✓" : "Choose PDF"}
@@ -953,7 +953,7 @@ const AdminDashboard = memo(() => {
                                         </div>
                                         <DialogFooter>
                                             <Button variant="outline" onClick={() => setIsUploadBookOpen(false)}>Cancel</Button>
-                                            <Button className="bg-gold hover:bg-oxford" onClick={handlePublishBook}>Publish Book</Button>
+                                            <Button className="bg-accent text-accent-foreground hover:bg-foreground hover:text-background" onClick={handlePublishBook}>Publish Book</Button>
                                         </DialogFooter>
                                     </DialogContent>
                                 </Dialog>
