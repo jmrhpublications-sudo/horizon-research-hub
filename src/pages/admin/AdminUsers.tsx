@@ -335,8 +335,8 @@ const AdminUsers = memo(() => {
                     transition={{ delay: 0.3 }}
                     className="bg-card border border-border overflow-hidden shadow-sm"
                 >
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
+                    <div className="overflow-x-auto -mx-4 sm:mx-0">
+                        <table className="w-full min-w-[700px]">
                             <thead className="bg-muted/80">
                                 <tr>
                                     {[

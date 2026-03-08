@@ -858,8 +858,8 @@ const AdminDashboard = memo(() => {
                             </Dialog>
                         </div>
 
-                        <div className="bg-card border border-border overflow-hidden">
-                            <table className="w-full">
+                        <div className="bg-card border border-border overflow-hidden overflow-x-auto -mx-4 sm:mx-0">
+                            <table className="w-full min-w-[640px]">
                                 <thead className="bg-muted">
                                     <tr>
                                         <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Name</th>
