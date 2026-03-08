@@ -408,8 +408,9 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     const refreshData = async () => {
         try {
             // Fetch all data in parallel - non-existent tables return error gracefully
-            const [profilesRes, papersRes, reviewsRes, journalsRes, booksRes, requestsRes, professorSubsRes] = await Promise.all([
+            const [profilesRes, rolesRes, papersRes, reviewsRes, journalsRes, booksRes, requestsRes, professorSubsRes] = await Promise.all([
                 db.from('profiles').select('*'),
+                db.from('user_roles').select('*'),
                 db.from('papers').select('*'),
                 db.from('reviews').select('*'),
                 db.from('published_journals').select('*'),
@@ -418,8 +419,38 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
                 db.from('professor_submissions').select('*'),
             ]);
 
-            if (profilesRes.data) setUsers(profilesRes.data.map(mapProfile));
-            if (papersRes.data) setPapers(papersRes.data.map(mapPaper));
+            if (profilesRes.data) {
+                const rolesMap: Record<string, string> = {};
+                if (rolesRes?.data) {
+                    for (const r of rolesRes.data) {
+                        // Store the highest-priority role per user (admin > professor > user)
+                        const current = rolesMap[r.user_id];
+                        const priority: Record<string, number> = { admin: 3, professor: 2, user: 1 };
+                        if (!current || (priority[r.role] || 0) > (priority[current] || 0)) {
+                            rolesMap[r.user_id] = r.role;
+                        }
+                    }
+                }
+                setUsers(profilesRes.data.map((p: any) => ({
+                    ...mapProfile(p),
+                    role: (rolesMap[p.id]?.toUpperCase() || 'USER') as UserRole,
+                })));
+            }
+
+            if (papersRes.data) {
+                // Build a lookup for professor names from profiles
+                const profNames: Record<string, string> = {};
+                if (profilesRes.data) {
+                    for (const p of profilesRes.data) {
+                        profNames[p.id] = p.name || '';
+                    }
+                }
+                setPapers(papersRes.data.map((p: any) => ({
+                    ...mapPaper(p),
+                    assignedProfessorName: p.assigned_professor_id ? (profNames[p.assigned_professor_id] || 'Unknown') : undefined,
+                })));
+            }
+
             if (reviewsRes.data) setReviews(reviewsRes.data.map(mapReview));
             if (journalsRes?.data) setPublishedJournals(journalsRes.data.map(mapPublishedJournal));
             if (booksRes?.data) setPublishedBooks(booksRes.data.map(mapPublishedBook));
