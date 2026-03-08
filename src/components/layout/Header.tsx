@@ -97,14 +97,14 @@ const Header = memo(() => {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${headerBg}`}>
       <div className="container max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+        <div className="flex items-center justify-between h-20 lg:h-24">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
             <PreloadLink to="/" className="flex items-center gap-2 lg:gap-3 group">
-              <img src="/logo.png" alt="JMRH Logo" className="w-10 h-10 lg:w-14 lg:h-14 object-contain" width="56" height="56" />
+              <img src="/logo.png" alt="JMRH Logo" className="w-14 h-14 lg:w-20 lg:h-20 object-contain" width="80" height="80" />
               <div className="flex flex-col">
                 <span className="font-serif text-lg lg:text-xl font-black text-oxford tracking-tighter leading-none">
                   JMRH<span className="text-gold">.</span>
