@@ -529,24 +529,21 @@ const SubmitPaperPage = memo(() => {
                 manuscriptType,
                 keywords,
                 coAuthors,
-                uploadedUrls
+                uploadedUrls,
+                phone,
+                affiliation,
+                designation,
+                orcid,
+                coverLetter,
+                additionalNotes
             );
-
-            const subject = generateEmailSubject();
-            const body = generateEmailBody();
-            const mailtoLink = `mailto:submit.jmrh@gmail.com?subject=${subject}&body=${body}`;
-            const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=submit.jmrh@gmail.com&su=${encodeURIComponent(subject)}&body=${body}`;
-            
-            window.location.href = mailtoLink;
-            window.open(gmailLink, '_blank');
             
             localStorage.removeItem('jmrh_draft');
-            
             setShowReceipt(true);
             
             toast({ 
                 title: "Submission Successful!", 
-                description: `Your manuscript has been submitted. Submission ID: ${newSubmissionId}. Please also send the email with your attachment.` 
+                description: `Your manuscript has been submitted successfully. The editorial team has been notified.` 
             });
             
             setTimeout(() => {
