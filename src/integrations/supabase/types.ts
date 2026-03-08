@@ -62,6 +62,96 @@ export type Database = {
         }
         Relationships: []
       }
+      professor_submissions: {
+        Row: {
+          abstract: string | null
+          admin_notes: string | null
+          authors: string
+          cover_image: string | null
+          created_at: string
+          description: string | null
+          discipline: string
+          doi: string | null
+          edition: string | null
+          editors: string | null
+          id: string
+          isbn: string | null
+          issue: string | null
+          keywords: string | null
+          pages: string | null
+          pdf_url: string | null
+          professor_id: string
+          professor_name: string
+          publication_date: string | null
+          publication_year: string | null
+          publisher: string | null
+          purchase_link: string | null
+          status: string
+          submission_type: string
+          title: string
+          updated_at: string
+          volume: string | null
+        }
+        Insert: {
+          abstract?: string | null
+          admin_notes?: string | null
+          authors?: string
+          cover_image?: string | null
+          created_at?: string
+          description?: string | null
+          discipline?: string
+          doi?: string | null
+          edition?: string | null
+          editors?: string | null
+          id?: string
+          isbn?: string | null
+          issue?: string | null
+          keywords?: string | null
+          pages?: string | null
+          pdf_url?: string | null
+          professor_id: string
+          professor_name?: string
+          publication_date?: string | null
+          publication_year?: string | null
+          publisher?: string | null
+          purchase_link?: string | null
+          status?: string
+          submission_type?: string
+          title: string
+          updated_at?: string
+          volume?: string | null
+        }
+        Update: {
+          abstract?: string | null
+          admin_notes?: string | null
+          authors?: string
+          cover_image?: string | null
+          created_at?: string
+          description?: string | null
+          discipline?: string
+          doi?: string | null
+          edition?: string | null
+          editors?: string | null
+          id?: string
+          isbn?: string | null
+          issue?: string | null
+          keywords?: string | null
+          pages?: string | null
+          pdf_url?: string | null
+          professor_id?: string
+          professor_name?: string
+          publication_date?: string | null
+          publication_year?: string | null
+          publisher?: string | null
+          purchase_link?: string | null
+          status?: string
+          submission_type?: string
+          title?: string
+          updated_at?: string
+          volume?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           address: string | null
@@ -128,6 +218,123 @@ export type Database = {
         }
         Relationships: []
       }
+      published_books: {
+        Row: {
+          authors: string
+          cover_image: string | null
+          created_at: string
+          description: string | null
+          discipline: string
+          edition: string | null
+          editors: string | null
+          id: string
+          isbn: string | null
+          keywords: string | null
+          pdf_url: string | null
+          publication_year: string | null
+          publisher: string | null
+          purchase_link: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          authors?: string
+          cover_image?: string | null
+          created_at?: string
+          description?: string | null
+          discipline?: string
+          edition?: string | null
+          editors?: string | null
+          id?: string
+          isbn?: string | null
+          keywords?: string | null
+          pdf_url?: string | null
+          publication_year?: string | null
+          publisher?: string | null
+          purchase_link?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          authors?: string
+          cover_image?: string | null
+          created_at?: string
+          description?: string | null
+          discipline?: string
+          edition?: string | null
+          editors?: string | null
+          id?: string
+          isbn?: string | null
+          keywords?: string | null
+          pdf_url?: string | null
+          publication_year?: string | null
+          publisher?: string | null
+          purchase_link?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      published_journals: {
+        Row: {
+          abstract: string | null
+          authors: string
+          cover_image: string | null
+          created_at: string
+          discipline: string
+          doi: string | null
+          id: string
+          issue: string | null
+          keywords: string | null
+          pages: string | null
+          pdf_url: string | null
+          publication_date: string | null
+          status: string
+          title: string
+          updated_at: string
+          volume: string | null
+        }
+        Insert: {
+          abstract?: string | null
+          authors?: string
+          cover_image?: string | null
+          created_at?: string
+          discipline?: string
+          doi?: string | null
+          id?: string
+          issue?: string | null
+          keywords?: string | null
+          pages?: string | null
+          pdf_url?: string | null
+          publication_date?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          volume?: string | null
+        }
+        Update: {
+          abstract?: string | null
+          authors?: string
+          cover_image?: string | null
+          created_at?: string
+          discipline?: string
+          doi?: string | null
+          id?: string
+          issue?: string | null
+          keywords?: string | null
+          pages?: string | null
+          pdf_url?: string | null
+          publication_date?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          volume?: string | null
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           content: string
@@ -155,6 +362,54 @@ export type Database = {
           updated_at?: string
           user_id?: string
           user_name?: string
+        }
+        Relationships: []
+      }
+      upload_requests: {
+        Row: {
+          admin_notes: string | null
+          authors: string | null
+          created_at: string
+          description: string | null
+          id: string
+          isbn: string | null
+          link: string | null
+          publisher: string | null
+          request_type: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          authors?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          isbn?: string | null
+          link?: string | null
+          publisher?: string | null
+          request_type?: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          authors?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          isbn?: string | null
+          link?: string | null
+          publisher?: string | null
+          request_type?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
