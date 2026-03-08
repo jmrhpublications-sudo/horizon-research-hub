@@ -288,9 +288,10 @@ const SubmitPaperPage = memo(() => {
     };
 
     const uploadFileToStorage = async (file: File, submissionId: string): Promise<string | null> => {
-        const fileName = `${submissionId}/${Date.now()}_${file.name}`;
+        if (!currentUser) return null;
+        const fileName = `${currentUser.id}/${Date.now()}_${file.name}`;
         const { data, error } = await supabase.storage
-            .from('manuscripts')
+            .from('papers')
             .upload(fileName, file, {
                 cacheControl: '3600',
                 upsert: false
@@ -303,7 +304,7 @@ const SubmitPaperPage = memo(() => {
         
         // Use signed URLs for private bucket - never expose via getPublicUrl
         const { data: signedData, error: signedError } = await supabase.storage
-            .from('manuscripts')
+            .from('papers')
             .createSignedUrl(fileName, 3600); // 1 hour expiry
         
         if (signedError || !signedData?.signedUrl) {
@@ -528,24 +529,21 @@ const SubmitPaperPage = memo(() => {
                 manuscriptType,
                 keywords,
                 coAuthors,
-                uploadedUrls
+                uploadedUrls,
+                phone,
+                affiliation,
+                designation,
+                orcid,
+                coverLetter,
+                additionalNotes
             );
-
-            const subject = generateEmailSubject();
-            const body = generateEmailBody();
-            const mailtoLink = `mailto:submit.jmrh@gmail.com?subject=${subject}&body=${body}`;
-            const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=submit.jmrh@gmail.com&su=${encodeURIComponent(subject)}&body=${body}`;
-            
-            window.location.href = mailtoLink;
-            window.open(gmailLink, '_blank');
             
             localStorage.removeItem('jmrh_draft');
-            
             setShowReceipt(true);
             
             toast({ 
                 title: "Submission Successful!", 
-                description: `Your manuscript has been submitted. Submission ID: ${newSubmissionId}. Please also send the email with your attachment.` 
+                description: `Your manuscript has been submitted successfully. The editorial team has been notified.` 
             });
             
             setTimeout(() => {
