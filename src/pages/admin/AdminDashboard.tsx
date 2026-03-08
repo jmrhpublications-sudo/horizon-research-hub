@@ -445,23 +445,23 @@ const AdminDashboard = memo(() => {
                     <div className="space-y-6">
                         <div className="grid md:grid-cols-2 gap-6">
                             {/* Recent Papers */}
-                            <div className="bg-white border border-black/5">
-                                <div className="p-4 border-b border-black/5 flex justify-between items-center">
-                                    <h3 className="font-bold text-oxford">Recent Papers</h3>
+                            <div className="bg-card border border-border">
+                                <div className="p-4 border-b border-border flex justify-between items-center">
+                                    <h3 className="font-bold text-foreground">Recent Papers</h3>
                                     <Button variant="ghost" size="sm" onClick={() => setActiveTab("papers")}>View All</Button>
                                 </div>
-                                <div className="divide-y divide-black/5">
+                                <div className="divide-y divide-border">
                                     {papers.slice(0, 5).map(paper => (
-                                        <div key={paper.id} className="p-4 hover:bg-oxford/5">
-                                            <p className="font-medium text-oxford line-clamp-1 text-sm">{paper.title}</p>
+                                        <div key={paper.id} className="p-4 hover:bg-muted transition-colors">
+                                            <p className="font-medium text-foreground line-clamp-1 text-sm">{paper.title}</p>
                                             <div className="flex items-center gap-2 mt-1">
-                                                <span className="text-xs text-oxford/50">{paper.authorName}</span>
+                                                <span className="text-xs text-muted-foreground">{paper.authorName}</span>
                                                 <span className={`px-2 py-0.5 text-xs font-bold uppercase ${
                                                     paper.status === 'SUBMITTED' ? 'bg-orange-100 text-orange-600' :
-                                                    paper.status === 'UNDER_REVIEW' ? 'bg-blue-100 text-blue-600' :
+                                                    paper.status === 'UNDER_REVIEW' ? 'bg-secondary/10 text-secondary' :
                                                     paper.status === 'ACCEPTED' ? 'bg-green-100 text-green-600' :
-                                                    paper.status === 'PUBLISHED' ? 'bg-gold/20 text-gold' :
-                                                    'bg-red-100 text-red-600'
+                                                    paper.status === 'PUBLISHED' ? 'bg-accent/10 text-accent' :
+                                                    'bg-destructive/10 text-destructive'
                                                 }`}>
                                                     {paper.status}
                                                 </span>
@@ -469,29 +469,29 @@ const AdminDashboard = memo(() => {
                                         </div>
                                     ))}
                                     {papers.length === 0 && (
-                                        <p className="p-4 text-center text-oxford/50 text-sm">No papers yet</p>
+                                        <p className="p-4 text-center text-muted-foreground text-sm">No papers yet</p>
                                     )}
                                 </div>
                             </div>
 
-                            {/* Quick Stats */}
-                            <div className="bg-white border border-black/5 p-6">
-                                <h3 className="font-bold text-oxford mb-4">Quick Actions</h3>
+                            {/* Quick Actions */}
+                            <div className="bg-card border border-border p-6">
+                                <h3 className="font-bold text-foreground mb-4">Quick Actions</h3>
                                 <div className="grid grid-cols-2 gap-3">
                                     <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setIsUploadJournalOpen(true)}>
-                                        <Upload className="w-6 h-6 text-gold" />
+                                        <Upload className="w-6 h-6 text-accent" />
                                         <span className="text-xs">Upload Journal</span>
                                     </Button>
                                     <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setIsUploadBookOpen(true)}>
-                                        <BookOpen className="w-6 h-6 text-teal-500" />
+                                        <BookOpen className="w-6 h-6 text-secondary" />
                                         <span className="text-xs">Upload Book</span>
                                     </Button>
                                     <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setIsCreateUserOpen(true)}>
-                                        <Plus className="w-6 h-6 text-blue-500" />
+                                        <Plus className="w-6 h-6 text-secondary" />
                                         <span className="text-xs">Add User</span>
                                     </Button>
                                     <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => refreshData()}>
-                                        <RefreshCw className="w-6 h-6 text-purple-500" />
+                                        <RefreshCw className="w-6 h-6 text-accent" />
                                         <span className="text-xs">Refresh Data</span>
                                     </Button>
                                 </div>
@@ -500,29 +500,27 @@ const AdminDashboard = memo(() => {
 
                         {/* Pending Actions */}
                         {(submittedPapers.length > 0 || pendingRequests.length > 0) && (
-                            <div className="bg-orange-50 border border-orange-200 p-6">
-                                <h3 className="font-bold text-orange-800 flex items-center gap-2">
+                            <div className="bg-accent/5 border border-accent/20 p-6">
+                                <h3 className="font-bold text-accent flex items-center gap-2">
                                     <AlertCircle size={20} />
                                     Pending Actions ({submittedPapers.length + pendingRequests.length})
                                 </h3>
                                 <div className="mt-4 grid md:grid-cols-2 gap-4">
                                     {submittedPapers.length > 0 && (
-                                        <div className="bg-white p-4">
-                                            <p className="font-medium text-oxford">{submittedPapers.length} papers awaiting review</p>
+                                        <div className="bg-card p-4 border border-border">
+                                            <p className="font-medium text-foreground">{submittedPapers.length} papers awaiting review</p>
                                             <Button size="sm" className="mt-2" onClick={() => setActiveTab("papers")}>Review Now</Button>
                                         </div>
                                     )}
                                     {pendingRequests.length > 0 && (
-                                        <div className="bg-white p-4">
-                                            <p className="font-medium text-oxford">{pendingRequests.length} upload requests pending</p>
+                                        <div className="bg-card p-4 border border-border">
+                                            <p className="font-medium text-foreground">{pendingRequests.length} upload requests pending</p>
                                             <Button size="sm" className="mt-2" onClick={() => setActiveTab("upload")}>Review Now</Button>
                                         </div>
                                     )}
                                 </div>
                             </div>
                         )}
-                    </div>
-                )}
 
                 {/* Papers Tab */}
                 {activeTab === "papers" && (
