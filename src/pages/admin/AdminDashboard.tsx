@@ -553,45 +553,45 @@ const AdminDashboard = memo(() => {
                             </Select>
                         </div>
 
-                        <div className="bg-white border border-black/5 overflow-hidden">
+                        <div className="bg-card border border-border overflow-hidden">
                             <table className="w-full">
-                                <thead className="bg-oxford/5">
+                                <thead className="bg-muted">
                                     <tr>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Title</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Type</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Author</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Status</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Date</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Actions</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Title</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Type</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Author</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Status</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Date</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-black/5">
+                                <tbody className="divide-y divide-border">
                                     {filteredPapers.map((paper) => (
-                                        <tr key={paper.id} className="hover:bg-oxford/5 transition-colors">
+                                        <tr key={paper.id} className="hover:bg-muted/50 transition-colors">
                                             <td className="p-4">
-                                                <p className="font-medium text-oxford line-clamp-1 max-w-xs">{paper.title}</p>
-                                                <p className="text-xs text-oxford/50">{paper.discipline}</p>
+                                                <p className="font-medium text-foreground line-clamp-1 max-w-xs">{paper.title}</p>
+                                                <p className="text-xs text-muted-foreground">{paper.discipline}</p>
                                             </td>
                                             <td className="p-4">
-                                                <span className={`px-2 py-1 text-xs font-bold uppercase ${paper.paperType === 'JOURNAL' ? 'bg-gold/10 text-gold' : 'bg-teal-500/10 text-teal-600'}`}>
+                                                <span className={`px-2 py-1 text-xs font-bold uppercase ${paper.paperType === 'JOURNAL' ? 'bg-accent/10 text-accent' : 'bg-secondary/10 text-secondary'}`}>
                                                     {paper.paperType}
                                                 </span>
                                             </td>
-                                            <td className="p-4 text-sm text-oxford/70 max-w-32 line-clamp-1">{paper.authorName}</td>
+                                            <td className="p-4 text-sm text-muted-foreground max-w-32 line-clamp-1">{paper.authorName}</td>
                                             <td className="p-4">
                                                 <span className={`px-2 py-1 text-xs font-bold uppercase ${
                                                     paper.status === 'SUBMITTED' ? 'bg-orange-100 text-orange-600' :
-                                                    paper.status === 'UNDER_REVIEW' ? 'bg-blue-100 text-blue-600' :
-                                                    paper.status === 'REVISION_REQUIRED' ? 'bg-yellow-100 text-yellow-600' :
+                                                    paper.status === 'UNDER_REVIEW' ? 'bg-secondary/10 text-secondary' :
+                                                    paper.status === 'REVISION_REQUIRED' ? 'bg-orange-50 text-orange-500' :
                                                     paper.status === 'ACCEPTED' ? 'bg-green-100 text-green-600' :
-                                                    paper.status === 'REJECTED' ? 'bg-red-100 text-red-600' :
-                                                    paper.status === 'PUBLISHED' ? 'bg-gold/20 text-gold' :
-                                                    'bg-gray-100 text-gray-600'
+                                                    paper.status === 'REJECTED' ? 'bg-destructive/10 text-destructive' :
+                                                    paper.status === 'PUBLISHED' ? 'bg-accent/10 text-accent' :
+                                                    'bg-muted text-muted-foreground'
                                                 }`}>
                                                     {paper.status.replace('_', ' ')}
                                                 </span>
                                             </td>
-                                            <td className="p-4 text-sm text-oxford/50">
+                                            <td className="p-4 text-sm text-muted-foreground">
                                                 {paper.submissionDate}
                                             </td>
                                             <td className="p-4">
@@ -625,7 +625,7 @@ const AdminDashboard = memo(() => {
                                                                     </DialogFooter>
                                                                 </DialogContent>
                                                             </Dialog>
-                                                            <Button size="sm" variant="outline" className="text-orange-600" onClick={() => handleRejectPaper(paper)}>
+                                                            <Button size="sm" variant="outline" className="text-destructive" onClick={() => handleRejectPaper(paper)}>
                                                                 <X size={12} />
                                                             </Button>
                                                         </>
@@ -633,26 +633,26 @@ const AdminDashboard = memo(() => {
                                                     
                                                     {paper.status === 'UNDER_REVIEW' && (
                                                         <>
-                                                            <Button size="sm" className="bg-green-500 hover:bg-green-600" onClick={() => handleAcceptPaper(paper)}>
+                                                            <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => handleAcceptPaper(paper)}>
                                                                 <Check size={12} className="mr-1" /> Accept
                                                             </Button>
-                                                            <Button size="sm" variant="outline" className="text-yellow-600" onClick={() => handleRequestRevision(paper)}>
+                                                            <Button size="sm" variant="outline" className="text-orange-500" onClick={() => handleRequestRevision(paper)}>
                                                                 <RefreshCw size={12} />
                                                             </Button>
-                                                            <Button size="sm" variant="outline" className="text-red-600" onClick={() => handleRejectPaper(paper)}>
+                                                            <Button size="sm" variant="outline" className="text-destructive" onClick={() => handleRejectPaper(paper)}>
                                                                 <X size={12} />
                                                             </Button>
                                                         </>
                                                     )}
                                                     
                                                     {paper.status === 'REVISION_REQUIRED' && (
-                                                        <Button size="sm" className="bg-green-500 hover:bg-green-600" onClick={() => handleAcceptPaper(paper)}>
+                                                        <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => handleAcceptPaper(paper)}>
                                                             <Check size={12} className="mr-1" /> Accept
                                                         </Button>
                                                     )}
                                                     
                                                     {paper.status === 'ACCEPTED' && (
-                                                        <Button size="sm" className="bg-gold hover:bg-gold/80" onClick={() => handlePublishPaper(paper)}>
+                                                        <Button size="sm" className="bg-accent text-accent-foreground hover:bg-accent/80" onClick={() => handlePublishPaper(paper)}>
                                                             <Globe size={12} className="mr-1" /> Publish
                                                         </Button>
                                                     )}
@@ -664,7 +664,7 @@ const AdminDashboard = memo(() => {
                                                     )}
                                                     
                                                     {paper.status === 'REJECTED' && (
-                                                        <span className="text-xs text-red-600 font-bold flex items-center gap-1">
+                                                        <span className="text-xs text-destructive font-bold flex items-center gap-1">
                                                             <X size={14} /> Rejected
                                                         </span>
                                                     )}
@@ -674,7 +674,7 @@ const AdminDashboard = memo(() => {
                                     ))}
                                     {filteredPapers.length === 0 && (
                                         <tr>
-                                            <td colSpan={6} className="p-8 text-center text-oxford/50">
+                                            <td colSpan={6} className="p-8 text-center text-muted-foreground">
                                                 No papers found.
                                             </td>
                                         </tr>
