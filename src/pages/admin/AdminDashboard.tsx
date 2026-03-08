@@ -720,28 +720,28 @@ const AdminDashboard = memo(() => {
                             </Dialog>
                         </div>
 
-                        <div className="bg-white border border-black/5 overflow-hidden">
+                        <div className="bg-card border border-border overflow-hidden">
                             <table className="w-full">
-                                <thead className="bg-oxford/5">
+                                <thead className="bg-muted">
                                     <tr>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Name</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Email</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Role</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Status</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Papers</th>
-                                        <th className="text-left p-4 text-xs font-bold uppercase text-oxford/60">Actions</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Name</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Email</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Role</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Status</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Papers</th>
+                                        <th className="text-left p-4 text-xs font-bold uppercase text-muted-foreground">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-black/5">
+                                <tbody className="divide-y divide-border">
                                     {users.map((user) => (
-                                        <tr key={user.id} className="hover:bg-oxford/5">
-                                            <td className="p-4 font-medium text-oxford">{user.name}</td>
-                                            <td className="p-4 text-sm text-oxford/70">{user.email}</td>
+                                        <tr key={user.id} className="hover:bg-muted/50 transition-colors">
+                                            <td className="p-4 font-medium text-foreground">{user.name}</td>
+                                            <td className="p-4 text-sm text-muted-foreground">{user.email}</td>
                                             <td className="p-4">
                                                 <span className={`px-2 py-1 text-xs font-bold uppercase ${
-                                                    user.role === 'ADMIN' ? 'bg-red-100 text-red-600' :
-                                                    user.role === 'PROFESSOR' ? 'bg-blue-100 text-blue-600' :
-                                                    'bg-gray-100 text-gray-600'
+                                                    user.role === 'ADMIN' ? 'bg-destructive/10 text-destructive' :
+                                                    user.role === 'PROFESSOR' ? 'bg-secondary/10 text-secondary' :
+                                                    'bg-muted text-muted-foreground'
                                                 }`}>
                                                     {user.role}
                                                 </span>
@@ -749,12 +749,12 @@ const AdminDashboard = memo(() => {
                                             <td className="p-4">
                                                 <span className={`px-2 py-1 text-xs font-bold uppercase ${
                                                     user.status === 'ACTIVE' ? 'bg-green-100 text-green-600' :
-                                                    'bg-red-100 text-red-600'
+                                                    'bg-destructive/10 text-destructive'
                                                 }`}>
                                                     {user.status}
                                                 </span>
                                             </td>
-                                            <td className="p-4 text-sm text-oxford/70">
+                                            <td className="p-4 text-sm text-muted-foreground">
                                                 {papers.filter(p => p.authorId === user.id).length}
                                             </td>
                                             <td className="p-4">
@@ -762,7 +762,7 @@ const AdminDashboard = memo(() => {
                                                     size="sm" 
                                                     variant="ghost"
                                                     onClick={() => handleToggleUserBan(user)}
-                                                    className={user.status === 'ACTIVE' ? 'text-red-500' : 'text-green-500'}
+                                                    className={user.status === 'ACTIVE' ? 'text-destructive' : 'text-green-600'}
                                                 >
                                                     {user.status === 'ACTIVE' ? <Ban size={14} /> : <Unlock size={14} />}
                                                 </Button>
@@ -781,7 +781,7 @@ const AdminDashboard = memo(() => {
                         <div className="flex justify-end">
                             <Dialog open={isCreateUserOpen} onOpenChange={setIsCreateUserOpen}>
                                 <DialogTrigger asChild>
-                                    <Button className="bg-oxford hover:bg-gold">
+                                    <Button className="bg-foreground text-background hover:bg-accent hover:text-accent-foreground">
                                         <Plus size={16} className="mr-2" /> Add Professor
                                     </Button>
                                 </DialogTrigger>
@@ -806,26 +806,26 @@ const AdminDashboard = memo(() => {
                             {professorsList.map((prof) => {
                                 const profPapers = papers.filter(p => p.assignedProfessorId === prof.id);
                                 return (
-                                    <div key={prof.id} className="p-6 bg-white border border-black/5 hover:shadow-md transition-shadow">
+                                    <div key={prof.id} className="p-6 bg-card border border-border hover:shadow-md transition-shadow hover:border-accent/20">
                                         <div className="flex items-start gap-4">
-                                            <div className="w-12 h-12 bg-oxford/10 rounded-full flex items-center justify-center">
-                                                <GraduationCap className="w-6 h-6 text-oxford" />
+                                            <div className="w-12 h-12 bg-muted flex items-center justify-center">
+                                                <GraduationCap className="w-6 h-6 text-foreground" />
                                             </div>
                                             <div className="flex-1">
-                                                <h3 className="font-bold text-oxford">{prof.name}</h3>
-                                                <p className="text-sm text-oxford/60">{prof.email}</p>
-                                                <p className="text-xs text-oxford/50 mt-1">{prof.affiliation}</p>
+                                                <h3 className="font-bold text-foreground">{prof.name}</h3>
+                                                <p className="text-sm text-muted-foreground">{prof.email}</p>
+                                                <p className="text-xs text-muted-foreground mt-1">{prof.affiliation}</p>
                                             </div>
                                         </div>
-                                        <div className="mt-4 pt-4 border-t border-black/5 flex justify-between text-sm">
-                                            <span className="text-oxford/60">Papers Assigned:</span>
-                                            <span className="font-bold text-oxford">{profPapers.length}</span>
+                                        <div className="mt-4 pt-4 border-t border-border flex justify-between text-sm">
+                                            <span className="text-muted-foreground">Papers Assigned:</span>
+                                            <span className="font-bold text-foreground">{profPapers.length}</span>
                                         </div>
                                     </div>
                                 );
                             })}
                             {professorsList.length === 0 && (
-                                <div className="col-span-full p-8 text-center text-oxford/50">
+                                <div className="col-span-full p-8 text-center text-muted-foreground">
                                     No professors added yet.
                                 </div>
                             )}
