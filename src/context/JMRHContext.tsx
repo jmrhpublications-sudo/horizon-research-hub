@@ -396,14 +396,17 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
 
         init();
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_OUT') {
                 setCurrentUser(null);
                 return;
             }
             if (session?.user) {
-                const profile = await fetchUserProfile(session.user.id);
-                if (profile) setCurrentUser(profile);
+                // Use setTimeout to avoid deadlock with Supabase's internal lock
+                setTimeout(async () => {
+                    const profile = await fetchUserProfile(session.user.id);
+                    if (profile) setCurrentUser(profile);
+                }, 0);
             }
         });
 
