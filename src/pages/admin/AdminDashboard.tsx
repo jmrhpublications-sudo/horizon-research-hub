@@ -392,10 +392,10 @@ const AdminDashboard = memo(() => {
         <DashboardLayout role="ADMIN">
             <div className="space-y-8">
                 {/* Header */}
-                <div className="flex justify-between items-end border-b border-black/5 pb-6">
+                <div className="flex justify-between items-end border-b border-border pb-6">
                     <div className="space-y-2">
                         <p className="section-label">Admin Control Panel</p>
-                        <h1 className="text-4xl font-serif font-bold text-oxford">Dashboard</h1>
+                        <h1 className="text-4xl font-serif font-bold text-foreground">Dashboard</h1>
                     </div>
                     <Button variant="outline" onClick={() => refreshData()} className="gap-2">
                         <RefreshCw size={16} /> Refresh
@@ -405,13 +405,13 @@ const AdminDashboard = memo(() => {
                 {/* Overview Stats */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                     {stats.map((stat, idx) => (
-                        <div key={idx} className="p-4 bg-white border border-black/5 shadow-sm hover:shadow-md transition-shadow">
+                        <div key={idx} className="p-4 bg-card border border-border shadow-sm hover:shadow-md transition-shadow hover:border-accent/20">
                             <div className="flex items-center justify-between mb-2">
                                 <stat.icon className={`w-5 h-5 ${stat.color}`} />
                             </div>
-                            <p className="text-2xl font-bold text-oxford">{stat.value}</p>
-                            <p className="text-xs text-oxford/50">{stat.label}</p>
-                            <p className="text-xs text-oxford/30">{stat.sub}</p>
+                            <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                            <p className="text-xs text-muted-foreground">{stat.label}</p>
+                            <p className="text-xs text-muted-foreground/60">{stat.sub}</p>
                         </div>
                     ))}
                 </div>
