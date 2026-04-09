@@ -8,32 +8,16 @@ import { useJMRH } from "@/context/JMRHContext";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { 
-    label: "Journal", 
-    href: "/journal/about",
-    children: [
-      { label: "About", href: "/journal/about" },
-      { label: "Editorial Board", href: "/journal/editorial-board" },
-      { label: "Current Issue", href: "/journal/current-issue" },
-      { label: "Archives", href: "/journal/archives" },
-      { label: "Author Guidelines", href: "/journal/guidelines" },
-      { label: "Submit", href: "/journal/submit" },
-    ]
-  },
-  { 
-    label: "Books", 
-    href: "/books/about",
-    children: [
-      { label: "About Book Publishing", href: "/books/about" },
-      { label: "Published Books", href: "/books/published" },
-      { label: "Submit Book Proposal", href: "/books/proposal" },
-      { label: "ISBN Info", href: "/books/isbn" },
-    ]
-  },
-  { label: "Call for Chapters", href: "/call-for-chapters" },
-  { label: "Reviews", href: "/reviews" },
-  { label: "Policies", href: "/policies" },
-  { label: "About", href: "/about-us" },
+  { label: "About Journal", href: "/journal/about" },
+  { label: "Aims & Scope", href: "/journal/aims-scope" },
+  { label: "Editorial Board", href: "/journal/editorial-board" },
+  { label: "Reviewer Board", href: "/journal/reviewer-board" },
+  { label: "Author Guidelines", href: "/journal/guidelines" },
+  { label: "Publication Ethics", href: "/journal/ethics" },
+  { label: "Peer Review", href: "/journal/peer-review" },
+  { label: "APC", href: "/journal/apc" },
+  { label: "Archives", href: "/journal/archives" },
+  { label: "Call for Papers", href: "/call-for-papers" },
   { label: "Contact", href: "/contact" }
 ];
 

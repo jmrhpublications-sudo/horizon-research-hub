@@ -35,16 +35,19 @@ const Index = memo(() => {
               </div>
               
               <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-black text-oxford leading-[0.9] mb-8">
-                Welcome to <br />
-                <span className="text-gold">JMRH Publications</span>
+                Journal of<br />
+                <span className="text-gold">Multidisciplinary Research Horizon</span>
               </h1>
               
               <p className="text-xl md:text-2xl text-oxford/70 font-light leading-relaxed mb-12 max-w-2xl">
-                Advancing Knowledge Through Research & Scholarly Publishing
+                Peer-Reviewed | Open Access | Monthly | Online Journal
               </p>
               
+              <p className="text-oxford/50 mb-4 max-w-xl">
+                Published by: JMRH Publications
+              </p>
               <p className="text-oxford/50 mb-12 max-w-xl">
-                JMRH Publications is committed to promoting high-quality research dissemination through peer-reviewed journals and academic book publishing.
+                Gudalur, The Nilgiris – 643212, Tamil Nadu, India
               </p>
               
               <div className="flex flex-wrap gap-4">
@@ -79,16 +82,16 @@ const Index = memo(() => {
           <div className="container max-w-[1200px] mx-auto px-6">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div>
-                <h2 className="font-serif text-4xl md:text-5xl font-black text-oxford mb-8">
-                  About JMRH Publications
-                </h2>
-                <div className="space-y-6 text-oxford/70 leading-relaxed">
-                  <p>
-                    JMRH Publications is an independent academic publishing initiative based in Tamil Nadu, India. We provide a structured and ethical platform for the publication of peer-reviewed journals, edited books, academic monographs, and conference proceedings.
-                  </p>
-                  <p>
-                    Our publishing model emphasizes:
-                  </p>
+              <h2 className="font-serif text-4xl md:text-5xl font-black text-oxford mb-8">
+                About the Journal
+              </h2>
+              <div className="space-y-6 text-oxford/70 leading-relaxed">
+                <p>
+                  The <strong>Journal of Multidisciplinary Research Horizon (JMRH)</strong> is a peer-reviewed, open-access scholarly journal dedicated to the publication of original research across multidisciplinary domains. The journal provides a platform for researchers, academicians, and professionals to disseminate scholarly work.
+                </p>
+                <p>
+                  All manuscripts undergo a rigorous double-blind peer review process to ensure quality, originality, and academic integrity.
+                </p>
                   <ul className="space-y-3">
                     {[
                       "Academic integrity",
@@ -110,15 +113,15 @@ const Index = memo(() => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-oxford text-white p-8">
-                  <span className="text-4xl font-bold text-gold">10+</span>
-                  <p className="text-white/60 mt-2">Subject Areas</p>
+                  <span className="text-4xl font-bold text-gold">Monthly</span>
+                  <p className="text-white/60 mt-2">Frequency</p>
                 </div>
                 <div className="bg-gold/10 p-8">
-                  <span className="text-4xl font-bold text-oxford">6</span>
-                  <p className="text-oxford/60 mt-2">Issues Per Year</p>
+                  <span className="text-4xl font-bold text-oxford">2026</span>
+                  <p className="text-oxford/60 mt-2">Starting Year</p>
                 </div>
                 <div className="bg-gold/10 p-8">
-                  <span className="text-4xl font-bold text-oxford">₹750</span>
+                  <span className="text-4xl font-bold text-oxford">₹650</span>
                   <p className="text-oxford/60 mt-2">APC (INR)</p>
                 </div>
                 <div className="bg-oxford text-white p-8">
@@ -130,52 +133,34 @@ const Index = memo(() => {
           </div>
         </section>
 
-        {/* ==================== PUBLISHING DIVISIONS ==================== */}
+        {/* ==================== JOURNAL PARTICULARS ==================== */}
         <section className="py-24 bg-oxford/5">
           <div className="container max-w-[1200px] mx-auto px-6">
             <div className="text-center mb-16">
               <h2 className="font-serif text-4xl md:text-5xl font-black text-oxford mb-4">
-                Our Publishing Divisions
+                Journal Particulars
               </h2>
               <p className="text-oxford/60 max-w-2xl mx-auto">
-                Comprehensive publishing solutions for academic research
+                Key information about the Journal of Multidisciplinary Research Horizon
               </p>
             </div>
             
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* Journal Division */}
-              <Link to="/journal/about" className="bg-white p-10 border border-black/5 hover:border-gold/30 transition-all group block">
-                <div className="w-16 h-16 bg-oxford flex items-center justify-center mb-6 group-hover:bg-gold transition-colors">
-                  <BookOpen className="w-8 h-8 text-gold group-hover:text-oxford transition-colors" />
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { label: "Journal Title", value: "JMRH" },
+                { label: "Frequency", value: "Monthly" },
+                { label: "Publication Mode", value: "Online" },
+                { label: "Starting Year", value: "2026" },
+                { label: "Subject", value: "Multidisciplinary" },
+                { label: "Language", value: "English" },
+                { label: "Publisher", value: "JMRH Publications" },
+                { label: "ISSN (Online)", value: "To be assigned" }
+              ].map((item, index) => (
+                <div key={index} className="bg-white p-6 border border-black/5 hover:border-gold/20 transition-all">
+                  <p className="text-[10px] uppercase tracking-widest text-oxford/40 mb-2">{item.label}</p>
+                  <p className="text-oxford font-bold">{item.value}</p>
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-oxford mb-2">Journal Division</h3>
-                <p className="text-gold font-bold text-sm uppercase tracking-wider mb-4">Journal of Multidisciplinary Research Horizons</p>
-                <ul className="space-y-2 text-oxford/60 mb-6">
-                  <li>• Peer-Reviewed</li>
-                  <li>• Open Access</li>
-                  <li>• Quarterly</li>
-                </ul>
-                <span className="inline-flex items-center gap-2 text-oxford font-bold hover:text-gold transition-colors">
-                  View Journal <ArrowRight size={16} />
-                </span>
-              </Link>
-              
-              {/* Book Division */}
-              <Link to="/books/about" className="bg-white p-10 border border-black/5 hover:border-gold/30 transition-all group block">
-                <div className="w-16 h-16 bg-oxford flex items-center justify-center mb-6 group-hover:bg-gold transition-colors">
-                  <BookOpen className="w-8 h-8 text-gold group-hover:text-oxford transition-colors" />
-                </div>
-                <h3 className="font-serif text-2xl font-bold text-oxford mb-2">Book Division</h3>
-                <p className="text-gold font-bold text-sm uppercase tracking-wider mb-4">Edited Books & Academic Book Chapters</p>
-                <ul className="space-y-2 text-oxford/60 mb-6">
-                  <li>• ISBN Registered Publications</li>
-                  <li>• Edited Volumes</li>
-                  <li>• Conference Proceedings</li>
-                </ul>
-                <span className="inline-flex items-center gap-2 text-oxford font-bold hover:text-gold transition-colors">
-                  View Books <ArrowRight size={16} />
-                </span>
-              </Link>
+              ))}
             </div>
           </div>
         </section>

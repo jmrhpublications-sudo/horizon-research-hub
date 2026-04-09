@@ -43,19 +43,19 @@ const CallForPapers = memo(() => {
 
             {/* Upcoming Issue */}
             <div className="bg-oxford text-white p-8">
-              <h2 className="font-serif text-2xl font-bold mb-6">Upcoming Issue</h2>
+              <h2 className="font-serif text-2xl font-bold mb-6">Volume 1, Issue 1 – March 2026</h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <p className="text-white/50 text-sm">Volume & Issue</p>
-                  <p className="text-xl font-bold">Volume 1, Issue 1 (2026)</p>
-                </div>
-                <div>
                   <p className="text-white/50 text-sm">Frequency</p>
-                  <p className="font-bold">Bi-Monthly (Six Issues per Year)</p>
+                  <p className="text-xl font-bold">Monthly</p>
                 </div>
                 <div>
                   <p className="text-white/50 text-sm">Mode</p>
                   <p className="font-bold">Online</p>
+                </div>
+                <div>
+                  <p className="text-white/50 text-sm">Starting Year</p>
+                  <p className="font-bold">2026</p>
                 </div>
                 <div>
                   <p className="text-white/50 text-sm">Language</p>
@@ -115,7 +115,7 @@ const CallForPapers = memo(() => {
             {/* APC */}
             <div className="bg-oxford/5 p-6 border border-black/5">
               <h2 className="font-serif text-xl font-bold text-oxford mb-4">Article Processing Charge (APC)</h2>
-              <p className="text-oxford/70 mb-2">An APC of <strong>₹750 (INR)</strong> is applicable only after acceptance.</p>
+              <p className="text-oxford/70 mb-2">An APC of <strong>₹650 (INR)</strong> is applicable only after acceptance.</p>
               <p className="text-oxford/50 text-sm">Payment of APC does not influence editorial decisions.</p>
             </div>
 
@@ -123,8 +123,8 @@ const CallForPapers = memo(() => {
             <div className="bg-oxford text-white p-8">
               <h2 className="font-serif text-2xl font-bold mb-6">How to Submit</h2>
               <p className="text-white/70 mb-4">Manuscripts must be submitted via email:</p>
-              <a href="mailto:submit.jmrh@gmail.com" className="text-2xl font-bold text-gold hover:text-white transition-colors">
-                submit.jmrh@gmail.com
+              <a href="mailto:callforpapers@jmrh.in" className="text-2xl font-bold text-gold hover:text-white transition-colors">
+                callforpapers@jmrh.in
               </a>
               <p className="text-white/50 mt-4">
                 Subject: <strong>Submission – JMRH – [Author Name] – [Short Title]</strong>

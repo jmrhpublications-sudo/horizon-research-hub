@@ -57,7 +57,7 @@ const JournalGuidelines = memo(() => {
                 <div className="flex items-center gap-3">
                   <Mail className="text-gold w-5 h-5" />
                   <span className="text-oxford/70">Submission Email: </span>
-                  <a href="mailto:submit.jmrh@gmail.com" className="text-gold font-bold">submit.jmrh@gmail.com</a>
+                  <a href="mailto:callforpapers@jmrh.in" className="text-gold font-bold">callforpapers@jmrh.in</a>
                 </div>
               </div>
             </div>
@@ -109,10 +109,10 @@ const JournalGuidelines = memo(() => {
             <div className="bg-oxford text-white p-8">
               <h2 className="font-serif text-2xl font-bold mb-4">Article Processing Charge (APC)</h2>
               <p className="text-white/70 mb-4">
-                An APC of <strong>₹750 (INR)</strong> is applicable only after acceptance.
+                An APC of <strong>₹650 (INR)</strong> is applicable only after acceptance.
               </p>
               <p className="text-white/60 text-sm">
-                The APC covers: Editorial processing, Peer review management, Copyediting and formatting, Online publication and archiving. Payment of APC does not influence editorial decisions.
+                The APC covers: Peer review, Copyediting, Formatting, Online publication and archiving. Payment of APC does not influence editorial decisions.
               </p>
             </div>
           </div>

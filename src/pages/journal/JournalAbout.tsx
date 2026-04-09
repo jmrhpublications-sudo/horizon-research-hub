@@ -51,26 +51,42 @@ const JournalAbout = memo(() => {
               All manuscripts undergo a rigorous double-blind peer review process to ensure originality, relevance, methodological soundness, and meaningful academic contribution.
             </p>
 
-            <div className="grid md:grid-cols-2 gap-8 mt-12">
+              <div className="grid md:grid-cols-2 gap-8 mt-12">
               <div className="bg-oxford/5 p-6 border border-black/5">
-                <h3 className="font-serif text-lg font-bold text-oxford mb-4">Mode of Publication</h3>
-                <p className="text-oxford/60">Online</p>
+                <h3 className="font-serif text-lg font-bold text-oxford mb-4">Journal Title</h3>
+                <p className="text-oxford/60">Journal of Multidisciplinary Research Horizon (JMRH)</p>
               </div>
               <div className="bg-oxford/5 p-6 border border-black/5">
                 <h3 className="font-serif text-lg font-bold text-oxford mb-4">Frequency</h3>
-                <p className="text-oxford/60">Bi-Monthly (Six Issues per Year)</p>
+                <p className="text-oxford/60">Monthly</p>
               </div>
               <div className="bg-oxford/5 p-6 border border-black/5">
-                <h3 className="font-serif text-lg font-bold text-oxford mb-4">Language</h3>
-                <p className="text-oxford/60">English</p>
+                <h3 className="font-serif text-lg font-bold text-oxford mb-4">Publication Mode</h3>
+                <p className="text-oxford/60">Online</p>
               </div>
               <div className="bg-oxford/5 p-6 border border-black/5">
                 <h3 className="font-serif text-lg font-bold text-oxford mb-4">Starting Year</h3>
                 <p className="text-oxford/60">2026</p>
               </div>
               <div className="bg-oxford/5 p-6 border border-black/5">
+                <h3 className="font-serif text-lg font-bold text-oxford mb-4">Subject</h3>
+                <p className="text-oxford/60">Multidisciplinary</p>
+              </div>
+              <div className="bg-oxford/5 p-6 border border-black/5">
+                <h3 className="font-serif text-lg font-bold text-oxford mb-4">Language</h3>
+                <p className="text-oxford/60">English</p>
+              </div>
+              <div className="bg-oxford/5 p-6 border border-black/5">
+                <h3 className="font-serif text-lg font-bold text-oxford mb-4">Publisher</h3>
+                <p className="text-oxford/60">JMRH Publications</p>
+              </div>
+              <div className="bg-oxford/5 p-6 border border-black/5">
+                <h3 className="font-serif text-lg font-bold text-oxford mb-4">Publisher Address</h3>
+                <p className="text-oxford/60">Gudalur, The Nilgiris – 643212, Tamil Nadu, India</p>
+              </div>
+              <div className="bg-oxford/5 p-6 border border-black/5">
                 <h3 className="font-serif text-lg font-bold text-oxford mb-4">ISSN (Online)</h3>
-                <p className="text-oxford/60">To be Assigned</p>
+                <p className="text-oxford/60">To be assigned</p>
               </div>
             </div>
 

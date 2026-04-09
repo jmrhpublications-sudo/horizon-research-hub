@@ -6,6 +6,73 @@ import SEOHead from "@/components/seo/SEOHead";
 import { Mail } from "lucide-react";
 
 const JournalEditorialBoard = memo(() => {
+  const editorialTeam = [
+    {
+      role: "Editor-in-Chief",
+      name: "Dr. Karthick B",
+      position: "Assistant Professor",
+      department: "Department of Computer Applications",
+      institution: "Government Arts and Science College, Gudalur",
+      address: "The Nilgiris – 643212, Tamil Nadu, India",
+      email: "karthik@jmrh.in",
+      profile: "https://gascgudalur.in/department-of-computer-application/"
+    },
+    {
+      role: "Managing Editor",
+      name: "Dr. Sivasankaran M S",
+      position: "Assistant Professor",
+      department: "Department of Commerce with Computer Applications",
+      institution: "Government Arts and Science College, Gudalur",
+      address: "The Nilgiris – 643212, Tamil Nadu, India",
+      email: "sivasankaranms@jmrh.in",
+      profile: "https://gascgudalur.in/department-of-commerce-with-ca/"
+    }
+  ];
+
+  const boardMembers = [
+    {
+      name: "Dr. Jaganathan",
+      position: "Head & Assistant Professor",
+      department: "Department of Commerce with Information Technology",
+      institution: "Government Arts and Science College, Gudalur",
+      email: "jaganathan@jmrh.in",
+      profile: "https://gascgudalur.in/department-of-commerce-with-it/"
+    },
+    {
+      name: "Dr. Porko",
+      position: "Assistant Professor",
+      department: "Department of Geography",
+      institution: "Government Arts and Science College, Gudalur",
+      email: "porko@jmrh.in",
+      profile: "https://gascgudalur.in/department-of-geography/"
+    },
+    {
+      name: "Dr. Suresh",
+      position: "Assistant Professor",
+      department: "Department of English",
+      institution: "Government Arts and Science College, Gudalur",
+      email: "suresh@jmrh.in",
+      profile: "https://gascgudalur.in/department-of-english/"
+    },
+    {
+      name: "Dr. T. Sathish",
+      position: "Assistant Professor",
+      department: "Department of Mathematics",
+      institution: "Government Arts and Science College, Gudalur",
+      email: "sathisjt@jmrh.in",
+      profile: "https://gascgudalur.in/department-of-mathematics/"
+    },
+    {
+      name: "Dr. Dency Mary",
+      position: "Assistant Professor",
+      department: "Department of BBA (IB)",
+      institution: "Nilgiri College of Arts and Science (Autonomous), Thaloor",
+      address: "The Nilgiris – 643240, Tamil Nadu, India",
+      email: "dencymaryp@jmrh.in",
+      profile: ""
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-background font-sans">
       <SEOHead 
@@ -35,45 +102,52 @@ const JournalEditorialBoard = memo(() => {
       <section className="py-16">
         <div className="container max-w-4xl mx-auto px-6">
           <div className="bg-white border border-black/5 p-8 md:p-12">
-            {/* Editor-in-Chief */}
+            {/* Editor-in-Chief and Managing Editor */}
             <div className="mb-12">
-              <h2 className="font-serif text-2xl font-bold text-oxford mb-8 pb-4 border-b border-gold/20">Editor-in-Chief</h2>
-              <div className="bg-gold/5 p-8 border border-gold/10">
-                <div className="flex flex-col md:flex-row gap-6">
-                  <div className="w-24 h-24 bg-oxford flex items-center justify-center flex-shrink-0">
-                    <span className="text-4xl font-serif text-gold font-bold">KB</span>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-serif text-xl font-bold text-oxford mb-2">Dr. Karthick B</h3>
-                    <p className="text-oxford/60 mb-4">Assistant Professor, Department of Computer Science</p>
-                    <p className="text-oxford/60 mb-4">Government Arts and Science College, India</p>
-                    <a 
-                      href="mailto:editor.jmrh@gmail.com" 
-                      className="inline-flex items-center gap-2 text-gold hover:text-oxford transition-colors"
-                    >
-                      <Mail size={16} />
-                      editor.jmrh@gmail.com
+              <h2 className="font-serif text-2xl font-bold text-oxford mb-8 pb-4 border-b border-gold/20">Editorial Leadership</h2>
+              {editorialTeam.map((member, idx) => (
+                <div key={idx} className="bg-gold/5 p-6 border border-gold/10 mb-6">
+                  <h3 className="font-serif text-lg font-bold text-oxford mb-1">{member.role}</h3>
+                  <h4 className="font-bold text-gold text-xl mb-2">{member.name}</h4>
+                  <p className="text-oxford/70 mb-1">{member.position}</p>
+                  <p className="text-oxford/60 mb-1">{member.department}</p>
+                  <p className="text-oxford/60 mb-1">{member.institution}</p>
+                  {member.address && <p className="text-oxford/60 mb-1">{member.address}</p>}
+                  <a href={`mailto:${member.email}`} className="inline-flex items-center gap-2 text-gold hover:text-oxford transition-colors mt-2">
+                    <Mail size={14} />
+                    {member.email}
+                  </a>
+                  {member.profile && (
+                    <a href={member.profile} target="_blank" rel="noopener noreferrer" className="block text-gold hover:text-oxford transition-colors text-sm mt-1">
+                      View Profile →
                     </a>
-                  </div>
+                  )}
                 </div>
-                <div className="mt-6 pt-6 border-t border-gold/10">
-                  <p className="text-oxford/70 leading-relaxed">
-                    The Editor-in-Chief is responsible for maintaining academic integrity, editorial independence, quality standards, and ethical compliance of the journal. All editorial decisions are made independently and are based solely on scholarly merit.
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
 
-            {/* Additional Board Members */}
+            {/* Editorial Board Members */}
             <div>
-              <h2 className="font-serif text-2xl font-bold text-oxford mb-6 pb-4 border-b border-gold/20">Editorial Advisory Board</h2>
-              <div className="bg-oxford/5 p-6">
-                <p className="text-oxford/70 leading-relaxed">
-                  Additional Editorial Board members, along with institutional affiliations, will be published upon final confirmation.
-                </p>
-                <p className="text-oxford/50 mt-4">
-                  Interested experts may contact the editor for potential board membership.
-                </p>
+              <h2 className="font-serif text-2xl font-bold text-oxford mb-6 pb-4 border-b border-gold/20">Editorial Board Members</h2>
+              <div className="space-y-6">
+                {boardMembers.map((member, idx) => (
+                  <div key={idx} className="p-6 border border-black/5 hover:border-gold/20 transition-all">
+                    <h3 className="font-bold text-oxford mb-1">{member.name}</h3>
+                    <p className="text-oxford/70 text-sm mb-1">{member.position}</p>
+                    <p className="text-oxford/60 text-sm mb-1">{member.department}</p>
+                    <p className="text-oxford/60 text-sm mb-1">{member.institution}</p>
+                    {member.address && <p className="text-oxford/60 text-sm mb-2">{member.address}</p>}
+                    <a href={`mailto:${member.email}`} className="inline-flex items-center gap-2 text-gold hover:text-oxford transition-colors text-sm">
+                      <Mail size={12} />
+                      {member.email}
+                    </a>
+                    {member.profile && (
+                      <a href={member.profile} target="_blank" rel="noopener noreferrer" className="block text-gold hover:text-oxford transition-colors text-sm mt-1">
+                        View Profile →
+                      </a>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           </div>

@@ -39,31 +39,7 @@ const Footer = memo(() => {
               <li>
                 <Link to="/journal/about" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
                   <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link to="/journal/editorial-board" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Editorial Board
-                </Link>
-              </li>
-              <li>
-                <Link to="/journal/current-issue" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Current Issue
-                </Link>
-              </li>
-              <li>
-                <Link to="/journal/archives" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Archives
-                </Link>
-              </li>
-              <li>
-                <Link to="/journal/guidelines" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Author Guidelines
+                  About Journal
                 </Link>
               </li>
               <li>
@@ -73,58 +49,76 @@ const Footer = memo(() => {
                 </Link>
               </li>
               <li>
+                <Link to="/journal/editorial-board" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Editorial Board
+                </Link>
+              </li>
+              <li>
+                <Link to="/journal/reviewer-board" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Reviewer Board
+                </Link>
+              </li>
+              <li>
+                <Link to="/journal/guidelines" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Author Guidelines
+                </Link>
+              </li>
+              <li>
+                <Link to="/journal/ethics" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Publication Ethics
+                </Link>
+              </li>
+              <li>
                 <Link to="/journal/peer-review" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
                   <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                   Peer Review Process
                 </Link>
               </li>
               <li>
-                <Link to="/journal/ethics" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                <Link to="/journal/apc" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
                   <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Ethics
+                  APC
                 </Link>
               </li>
               <li>
-                <Link to="/journal/plagiarism" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                <Link to="/journal/archives" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
                   <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Plagiarism Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/journal/open-access" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Open Access
+                  Archives
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Books Links */}
+          {/* Quick Links */}
           <div className="md:col-span-2 space-y-6">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-oxford">Books</h4>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-oxford">Quick Links</h4>
             <ul className="space-y-3">
               <li>
-                <Link to="/books/about" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                <Link to="/call-for-papers" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
                   <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  About Publishing
+                  Call for Papers
                 </Link>
               </li>
               <li>
-                <Link to="/books/published" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                <Link to="/journal/archives" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
                   <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Published Books
+                  Archives
                 </Link>
               </li>
               <li>
-                <Link to="/books/proposal" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                <Link to="/journal/apc" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
                   <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Submit Proposal
+                  Article Processing Charges
                 </Link>
               </li>
               <li>
-                <Link to="/books/isbn" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                <Link to="/journal/submit" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
                   <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  ISBN Information
+                  Submit Manuscript
                 </Link>
               </li>
             </ul>
@@ -147,27 +141,9 @@ const Footer = memo(() => {
                 </Link>
               </li>
               <li>
-                <Link to="/policies" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Policies
-                </Link>
-              </li>
-              <li>
-                <Link to="/about-us" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  About Us
-                </Link>
-              </li>
-              <li>
                 <Link to="/contact" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
                   <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                   Contact
-                </Link>
-              </li>
-              <li>
-                <Link to="/call-for-papers" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Call for Papers
                 </Link>
               </li>
             </ul>
@@ -187,8 +163,11 @@ const Footer = memo(() => {
               </div>
               <div>
                 <p className="text-[9px] font-bold text-oxford/30 uppercase tracking-widest mb-1">Email</p>
-                <a href="mailto:jmrhpublications@gmail.com" className="text-xs text-gold hover:text-oxford transition-colors">
+                <a href="mailto:jmrhpublications@gmail.com" className="text-xs text-gold hover:text-oxford transition-colors block">
                   jmrhpublications@gmail.com
+                </a>
+                <a href="mailto:callforpapers@jmrh.in" className="text-xs text-gold hover:text-oxford transition-colors block">
+                  callforpapers@jmrh.in
                 </a>
               </div>
             </div>

@@ -37,19 +37,27 @@ const JournalAimsScope = memo(() => {
             {/* Aims */}
             <div className="mb-12">
               <h2 className="font-serif text-2xl font-bold text-oxford mb-6 pb-4 border-b border-gold/20">Aims</h2>
-              <p className="text-oxford/70 leading-relaxed mb-6">
-                JMRH aims to promote the advancement of academic knowledge and practical understanding by publishing research that bridges theory, application, and policy across disciplines.
-              </p>
-              <p className="text-oxford/70 leading-relaxed">
-                The journal encourages interdisciplinary collaboration and innovative scholarship addressing emerging global challenges.
-              </p>
+              <ul className="space-y-4 text-oxford/70 leading-relaxed">
+                <li className="flex items-start gap-3">
+                  <span className="w-2 h-2 rounded-full bg-gold mt-2 flex-shrink-0" />
+                  <span>To advance academic knowledge through interdisciplinary research</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="w-2 h-2 rounded-full bg-gold mt-2 flex-shrink-0" />
+                  <span>To bridge theory and practice</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="w-2 h-2 rounded-full bg-gold mt-2 flex-shrink-0" />
+                  <span>To promote innovation and research excellence</span>
+                </li>
+              </ul>
             </div>
 
             {/* Scope */}
             <div className="mb-12">
               <h2 className="font-serif text-2xl font-bold text-oxford mb-6 pb-4 border-b border-gold/20">Scope</h2>
               <p className="text-oxford/70 leading-relaxed mb-6">
-                The journal welcomes original research contributions including, but not limited to:
+                The journal accepts research in:
               </p>
               <div className="grid md:grid-cols-2 gap-4">
                 {[
@@ -61,7 +69,7 @@ const JournalAimsScope = memo(() => {
                   "Environmental Studies and Sustainability",
                   "Digital Transformation and Information Systems",
                   "Entrepreneurship and Innovation",
-                  "Public Policy and Governance"
+                  "Policy and Governance"
                 ].map((scope, index) => (
                   <div key={index} className="flex items-start gap-3 p-4 bg-oxford/5">
                     <span className="w-2 h-2 rounded-full bg-gold mt-2 flex-shrink-0" />

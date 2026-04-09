@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SEOHead from "@/components/seo/SEOHead";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 
 const Contact = memo(() => {
   return (
@@ -45,10 +45,11 @@ const Contact = memo(() => {
                     <MapPin className="w-5 h-5 text-oxford" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-oxford mb-2">Office Address</h3>
+                    <h3 className="font-bold text-oxford mb-2">Publisher Address</h3>
                     <p className="text-oxford/60">
                       JMRH Publications<br />
-                      Gudalur, The Nilgiris – 643212<br />
+                      Calicut Road, Gudalur<br />
+                      The Nilgiris – 643212<br />
                       Tamil Nadu, India
                     </p>
                   </div>
@@ -80,41 +81,25 @@ const Contact = memo(() => {
                   <div>
                     <h3 className="font-bold text-oxford mb-2">Submission Email</h3>
                     <p className="text-oxford/50 text-sm mb-1">For manuscripts</p>
-                    <a href="mailto:submit.jmrh@gmail.com" className="text-gold font-bold hover:text-oxford transition-colors">
-                      submit.jmrh@gmail.com
+                    <a href="mailto:callforpapers@jmrh.in" className="text-gold font-bold hover:text-oxford transition-colors">
+                      callforpapers@jmrh.in
                     </a>
                   </div>
                 </div>
               </div>
 
-              {/* Editorial Email */}
+              {/* Reviewer Email */}
               <div className="bg-white border border-black/5 p-6">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
                     <Mail className="w-5 h-5 text-oxford" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-oxford mb-2">Editorial Email</h3>
-                    <p className="text-oxford/50 text-sm mb-1">For editorial queries</p>
-                    <a href="mailto:editor.jmrh@gmail.com" className="text-gold font-bold hover:text-oxford transition-colors">
-                      editor.jmrh@gmail.com
+                    <h3 className="font-bold text-oxford mb-2">Reviewer Email</h3>
+                    <p className="text-oxford/50 text-sm mb-1">For reviewer queries</p>
+                    <a href="mailto:review@jmrh.in" className="text-gold font-bold hover:text-oxford transition-colors">
+                      review@jmrh.in
                     </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Phone */}
-              <div className="bg-white border border-black/5 p-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-5 h-5 text-oxford" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-oxford mb-2">Phone</h3>
-                    <a href="tel:+918072242010" className="text-gold font-bold hover:text-oxford transition-colors">
-                      +91 80722 42010
-                    </a>
-                    <p className="text-oxford/50 text-sm mt-1">Mon-Fri</p>
                   </div>
                 </div>
               </div>

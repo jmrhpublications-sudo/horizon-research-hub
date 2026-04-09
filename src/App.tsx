@@ -15,6 +15,7 @@ const Index = lazy(() => import("./pages/Index"));
 const JournalAbout = lazy(() => import("./pages/journal/JournalAbout"));
 const JournalAimsScope = lazy(() => import("./pages/journal/JournalAimsScope"));
 const JournalEditorialBoard = lazy(() => import("./pages/journal/JournalEditorialBoard"));
+const JournalReviewerBoard = lazy(() => import("./pages/journal/JournalReviewerBoard"));
 const JournalPeerReview = lazy(() => import("./pages/journal/JournalPeerReview"));
 const JournalEthics = lazy(() => import("./pages/journal/JournalEthics"));
 const JournalPlagiarism = lazy(() => import("./pages/journal/JournalPlagiarism"));
@@ -22,16 +23,17 @@ const JournalOpenAccess = lazy(() => import("./pages/journal/JournalOpenAccess")
 const JournalGuidelines = lazy(() => import("./pages/journal/JournalGuidelines"));
 const JournalCurrentIssue = lazy(() => import("./pages/journal/JournalCurrentIssue"));
 const JournalArchives = lazy(() => import("./pages/journal/JournalArchives"));
+const JournalAPC = lazy(() => import("./pages/journal/JournalAPC"));
 const JournalSubmit = lazy(() => import("./pages/journal/JournalSubmit"));
 
 // Books Pages
+// These are kept for potential future use but routes are removed from navigation
 const BooksAbout = lazy(() => import("./pages/books/BooksAbout"));
 const BooksPublished = lazy(() => import("./pages/books/BooksPublished"));
 const BooksProposal = lazy(() => import("./pages/books/BooksProposal"));
 const BooksISBN = lazy(() => import("./pages/books/BooksISBN"));
 
 // Other Pages
-const CallForChapters = lazy(() => import("./pages/CallForChapters"));
 const Policies = lazy(() => import("./pages/Policies"));
 const AboutUs = lazy(() => import("./pages/AboutUs"));
 const Contact = lazy(() => import("./pages/Contact"));
@@ -94,6 +96,7 @@ const App = () => (
               <Route path="/journal/about" element={<JournalAbout />} />
               <Route path="/journal/aims-scope" element={<JournalAimsScope />} />
               <Route path="/journal/editorial-board" element={<JournalEditorialBoard />} />
+              <Route path="/journal/reviewer-board" element={<JournalReviewerBoard />} />
               <Route path="/journal/peer-review" element={<JournalPeerReview />} />
               <Route path="/journal/ethics" element={<JournalEthics />} />
               <Route path="/journal/plagiarism" element={<JournalPlagiarism />} />
@@ -101,18 +104,16 @@ const App = () => (
               <Route path="/journal/guidelines" element={<JournalGuidelines />} />
               <Route path="/journal/current-issue" element={<JournalCurrentIssue />} />
               <Route path="/journal/archives" element={<JournalArchives />} />
+              <Route path="/journal/apc" element={<JournalAPC />} />
               <Route path="/journal/submit" element={<JournalSubmit />} />
               
-              {/* ==================== BOOKS SECTION ==================== */}
+              {/* ==================== BOOKS SECTION - Routes kept for legacy (accessible via direct URL) ==================== */}
               <Route path="/books" element={<BooksPublished />} />
               <Route path="/books/about" element={<BooksAbout />} />
               <Route path="/books/published" element={<BooksPublished />} />
               <Route path="/books/proposal" element={<BooksProposal />} />
               <Route path="/books/isbn" element={<BooksISBN />} />
-              
-              {/* ==================== CALL FOR CHAPTERS ==================== */}
-              <Route path="/call-for-chapters" element={<CallForChapters />} />
-              
+               
               {/* ==================== POLICIES ==================== */}
               <Route path="/policies" element={<Policies />} />
               

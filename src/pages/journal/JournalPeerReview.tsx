@@ -47,7 +47,7 @@ const JournalPeerReview = memo(() => {
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-gold/10 text-gold flex items-center justify-center font-bold flex-shrink-0">1</div>
                   <div>
-                    <h3 className="font-serif text-lg font-bold text-oxford mb-2">Initial Screening</h3>
+                    <h3 className="font-serif text-lg font-bold text-oxford mb-2">Initial Screening (Scope + Plagiarism Check)</h3>
                     <p className="text-oxford/60">Manuscripts are evaluated for scope alignment, formatting compliance, and plagiarism screening.</p>
                   </div>
                 </div>
@@ -57,8 +57,8 @@ const JournalPeerReview = memo(() => {
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-gold/10 text-gold flex items-center justify-center font-bold flex-shrink-0">2</div>
                   <div>
-                    <h3 className="font-serif text-lg font-bold text-oxford mb-2">Peer Review</h3>
-                    <p className="text-oxford/60">Each manuscript is reviewed by at least two independent subject experts.</p>
+                    <h3 className="font-serif text-lg font-bold text-oxford mb-2">Double-Blind Peer Review (Minimum 2 Reviewers)</h3>
+                    <p className="text-oxford/60">Each manuscript is reviewed by at least two independent subject experts. Both authors and reviewers remain anonymous.</p>
                   </div>
                 </div>
               </div>
