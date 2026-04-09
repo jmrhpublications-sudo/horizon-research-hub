@@ -6,17 +6,17 @@ const Footer = memo(() => {
   return (
     <footer className="bg-white border-t border-black/5 pt-16 overflow-hidden relative font-ui">
       <div className="container max-w-[1400px] mx-auto px-6 lg:px-10 relative z-10 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12 lg:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
 
           {/* Brand */}
-          <div className="lg:col-span-1 space-y-8">
+          <div className="space-y-6">
             <Link to="/" className="flex items-center gap-3 group">
               <img src="/logo.png" alt="JMRH Logo" className="w-16 h-16 object-contain" width="64" height="64" />
               <span className="font-serif text-2xl font-black text-oxford tracking-tighter">JMRH<span className="text-gold">.</span></span>
             </Link>
 
-            <p className="font-sans text-sm text-oxford/60 leading-relaxed max-w-sm">
-              JMRH Publications is committed to promoting high-quality research dissemination through peer-reviewed journals and academic book publishing.
+            <p className="font-sans text-sm text-oxford/60 leading-relaxed">
+              Journal of Multidisciplinary Research Horizon - A peer-reviewed, open-access scholarly journal.
             </p>
 
             <div className="flex gap-4">
@@ -32,177 +32,60 @@ const Footer = memo(() => {
             </div>
           </div>
 
-          {/* Journal Links */}
-          <div className="lg:col-span-1 space-y-6">
+          {/* Journal */}
+          <div className="space-y-6">
             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-oxford">Journal</h4>
             <ul className="space-y-3">
-              <li>
-                <Link to="/journal/about" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  About Journal
-                </Link>
-              </li>
-              <li>
-                <Link to="/journal/aims-scope" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Aims & Scope
-                </Link>
-              </li>
-              <li>
-                <Link to="/journal/editorial-board" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Editorial Board
-                </Link>
-              </li>
-              <li>
-                <Link to="/journal/reviewer-board" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Reviewer Board
-                </Link>
-              </li>
-              <li>
-                <Link to="/journal/archives" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Archives
-                </Link>
-              </li>
+              <li><Link to="/journal/about" className="text-xs text-oxford/50 hover:text-gold transition-colors">About Journal</Link></li>
+              <li><Link to="/journal/aims-scope" className="text-xs text-oxford/50 hover:text-gold transition-colors">Aims & Scope</Link></li>
+              <li><Link to="/journal/editorial-board" className="text-xs text-oxford/50 hover:text-gold transition-colors">Editorial Board</Link></li>
+              <li><Link to="/journal/reviewer-board" className="text-xs text-oxford/50 hover:text-gold transition-colors">Reviewer Board</Link></li>
+              <li><Link to="/journal/archives" className="text-xs text-oxford/50 hover:text-gold transition-colors">Archives</Link></li>
+              <li><Link to="/call-for-papers" className="text-xs text-oxford/50 hover:text-gold transition-colors">Call for Papers</Link></li>
+              <li><Link to="/reviews" className="text-xs text-oxford/50 hover:text-gold transition-colors">Reviews</Link></li>
             </ul>
           </div>
 
           {/* For Authors */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="space-y-6">
             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-oxford">For Authors</h4>
             <ul className="space-y-3">
-              <li>
-                <Link to="/journal/guidelines" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Author Guidelines
-                </Link>
-              </li>
-              <li>
-                <Link to="/journal/ethics" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Publication Ethics
-                </Link>
-              </li>
-              <li>
-                <Link to="/journal/peer-review" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Peer Review Process
-                </Link>
-              </li>
-              <li>
-                <Link to="/journal/apc" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  APC
-                </Link>
-              </li>
+              <li><Link to="/journal/guidelines" className="text-xs text-oxford/50 hover:text-gold transition-colors">Author Guidelines</Link></li>
+              <li><Link to="/journal/ethics" className="text-xs text-oxford/50 hover:text-gold transition-colors">Publication Ethics</Link></li>
+              <li><Link to="/journal/peer-review" className="text-xs text-oxford/50 hover:text-gold transition-colors">Peer Review Process</Link></li>
+              <li><Link to="/journal/apc" className="text-xs text-oxford/50 hover:text-gold transition-colors">APC</Link></li>
+              <li><Link to="/journal/submit" className="text-xs text-oxford/50 hover:text-gold transition-colors">Submit Manuscript</Link></li>
+              <li><Link to="/open-access" className="text-xs text-oxford/50 hover:text-gold transition-colors">Open Access Policy</Link></li>
             </ul>
           </div>
 
-          {/* Quick Links */}
-          <div className="lg:col-span-1 space-y-6">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-oxford">Quick Links</h4>
-            <ul className="space-y-3">
-              <li>
-                <Link to="/call-for-papers" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Call for Papers
-                </Link>
-              </li>
-              <li>
-                <Link to="/journal/submit" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Submit Manuscript
-                </Link>
-              </li>
-              <li>
-                <Link to="/journal/archives" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Archives
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Contact
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Legal */}
-          <div className="lg:col-span-1 space-y-6">
+          {/* Legal & Contact */}
+          <div className="space-y-6">
             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-oxford">Legal</h4>
             <ul className="space-y-3">
-              <li>
-                <Link to="/terms" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Terms & Conditions
-                </Link>
-              </li>
-              <li>
-                <Link to="/privacy" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/security" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Security Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/plagiarism-policy" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Plagiarism Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/refund" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Refund Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/copyright" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Copyright Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/disclaimer" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Disclaimer
-                </Link>
-              </li>
+              <li><Link to="/terms" className="text-xs text-oxford/50 hover:text-gold transition-colors">Terms & Conditions</Link></li>
+              <li><Link to="/privacy" className="text-xs text-oxford/50 hover:text-gold transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/security" className="text-xs text-oxford/50 hover:text-gold transition-colors">Security Policy</Link></li>
+              <li><Link to="/plagiarism-policy" className="text-xs text-oxford/50 hover:text-gold transition-colors">Plagiarism Policy</Link></li>
+              <li><Link to="/refund" className="text-xs text-oxford/50 hover:text-gold transition-colors">Refund Policy</Link></li>
+              <li><Link to="/copyright" className="text-xs text-oxford/50 hover:text-gold transition-colors">Copyright Policy</Link></li>
+              <li><Link to="/disclaimer" className="text-xs text-oxford/50 hover:text-gold transition-colors">Disclaimer</Link></li>
             </ul>
-          </div>
 
-          {/* Contact Info */}
-          <div className="lg:col-span-1 space-y-6">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-oxford">Contact</h4>
-            <div className="space-y-4">
-              <div>
-                <p className="text-[9px] font-bold text-oxford/30 uppercase tracking-widest mb-1">Address</p>
-                <p className="text-xs text-oxford/50 leading-relaxed">
-                  JMRH Publications<br />
-                  Calicut Road, Gudalur<br />
-                  The Nilgiris – 643212<br />
-                  Tamil Nadu, India
-                </p>
-              </div>
-              <div>
-                <p className="text-[9px] font-bold text-oxford/30 uppercase tracking-widest mb-1">Email</p>
-                <a href="mailto:jmrhpublications@gmail.com" className="text-xs text-gold hover:text-oxford transition-colors block">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-oxford mt-6">Contact</h4>
+            <ul className="space-y-3">
+              <li><Link to="/contact" className="text-xs text-oxford/50 hover:text-gold transition-colors">Contact Us</Link></li>
+              <li>
+                <a href="mailto:jmrhpublications@gmail.com" className="text-xs text-gold hover:text-oxford transition-colors">
                   jmrhpublications@gmail.com
                 </a>
-                <a href="mailto:callforpapers@jmrh.in" className="text-xs text-gold hover:text-oxford transition-colors block">
+              </li>
+              <li>
+                <a href="mailto:callforpapers@jmrh.in" className="text-xs text-gold hover:text-oxford transition-colors">
                   callforpapers@jmrh.in
                 </a>
-              </div>
-            </div>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -217,7 +100,7 @@ const Footer = memo(() => {
             <p className="text-[9px] uppercase tracking-[0.3em] text-white/40 font-bold">© 2026 JMRH Publications</p>
           </div>
           <div className="flex items-center gap-6 text-[9px] text-white/30 uppercase tracking-[0.2em] font-bold">
-            <Link to="/policies" className="hover:text-gold transition-colors">Privacy Policy</Link>
+            <Link to="/privacy" className="hover:text-gold transition-colors">Privacy Policy</Link>
             <span className="w-[1px] h-3 bg-white/10" />
             <span className="flex items-center gap-2">
               <ShieldCheck size={10} />

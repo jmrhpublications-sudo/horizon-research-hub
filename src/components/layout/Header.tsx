@@ -10,8 +10,14 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "About Journal", href: "/journal/about" },
   { label: "Aims & Scope", href: "/journal/aims-scope" },
-  { label: "Editorial Board", href: "/journal/editorial-board" },
-  { label: "Reviewer Board", href: "/journal/reviewer-board" },
+  { 
+    label: "Boards", 
+    href: "/journal/editorial-board",
+    children: [
+      { label: "Editorial Board", href: "/journal/editorial-board" },
+      { label: "Reviewer Board", href: "/journal/reviewer-board" },
+    ]
+  },
   { 
     label: "For Authors", 
     href: "/journal/guidelines",
@@ -24,6 +30,7 @@ const navLinks = [
   },
   { label: "Archives", href: "/journal/archives" },
   { label: "Call for Papers", href: "/call-for-papers" },
+  { label: "Reviews", href: "/reviews" },
   { label: "Contact", href: "/contact" }
 ];
 
