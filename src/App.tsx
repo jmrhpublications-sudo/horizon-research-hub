@@ -57,6 +57,7 @@ const EthicsPage = lazy(() => import("./pages/EthicsPage"));
 const ArchivesPage = lazy(() => import("./pages/ArchivesPage"));
 const ReviewsPage = lazy(() => import("./pages/ReviewsPage"));
 const AuthPage = lazy(() => import("./pages/AuthPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/auth/ForgotPasswordPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Secure Auth
@@ -154,6 +155,7 @@ const App = () => (
               <Route path="/archives" element={<ArchivesPage />} />
               <Route path="/reviews" element={<ReviewsPage />} />
               <Route path="/auth" element={<AuthPage />} />
+              <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/login" element={<AuthPage />} />
 
               {/* User Secure Routes - Submit Paper requires login */}
