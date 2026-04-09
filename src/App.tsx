@@ -39,6 +39,16 @@ const AboutUs = lazy(() => import("./pages/AboutUs"));
 const Contact = lazy(() => import("./pages/Contact"));
 const CallForPapers = lazy(() => import("./pages/CallForPapers"));
 
+// Policy Pages
+const TermsPage = lazy(() => import("./pages/policies/TermsPage"));
+const PrivacyPage = lazy(() => import("./pages/policies/PrivacyPage"));
+const SecurityPage = lazy(() => import("./pages/policies/SecurityPage"));
+const PlagiarismPage = lazy(() => import("./pages/policies/PlagiarismPage"));
+const OpenAccessPage = lazy(() => import("./pages/policies/OpenAccessPage"));
+const DisclaimerPage = lazy(() => import("./pages/policies/DisclaimerPage"));
+const RefundPage = lazy(() => import("./pages/policies/RefundPage"));
+const CopyrightPage = lazy(() => import("./pages/policies/CopyrightPage"));
+
 // Legacy Pages (for backward compatibility)
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const GuidelinesPage = lazy(() => import("./pages/GuidelinesPage"));
@@ -126,6 +136,16 @@ const App = () => (
               {/* ==================== CALL FOR PAPERS ==================== */}
               <Route path="/call-for-papers" element={<CallForPapers />} />
 
+              {/* ==================== POLICY PAGES ==================== */}
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/security" element={<SecurityPage />} />
+              <Route path="/plagiarism-policy" element={<PlagiarismPage />} />
+              <Route path="/open-access" element={<OpenAccessPage />} />
+              <Route path="/disclaimer" element={<DisclaimerPage />} />
+              <Route path="/refund" element={<RefundPage />} />
+              <Route path="/copyright" element={<CopyrightPage />} />
+               
               {/* ==================== LEGACY ROUTES (for backward compatibility) ==================== */}
               <Route path="/about" element={<AboutPage />} />
               <Route path="/guidelines" element={<GuidelinesPage />} />

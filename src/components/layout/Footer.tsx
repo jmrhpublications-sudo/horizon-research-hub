@@ -6,7 +6,7 @@ const Footer = memo(() => {
   return (
     <footer className="bg-white border-t border-black/5 pt-16 overflow-hidden relative font-ui">
       <div className="container max-w-[1400px] mx-auto px-6 lg:px-10 relative z-10 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12 lg:gap-10">
 
           {/* Brand */}
           <div className="lg:col-span-1 space-y-8">
@@ -117,9 +117,64 @@ const Footer = memo(() => {
                 </Link>
               </li>
               <li>
+                <Link to="/journal/archives" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Archives
+                </Link>
+              </li>
+              <li>
                 <Link to="/contact" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
                   <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                   Contact
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div className="lg:col-span-1 space-y-6">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-oxford">Legal</h4>
+            <ul className="space-y-3">
+              <li>
+                <Link to="/terms" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Terms & Conditions
+                </Link>
+              </li>
+              <li>
+                <Link to="/privacy" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/security" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Security Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/plagiarism-policy" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Plagiarism Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/refund" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Refund Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/copyright" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Copyright Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/disclaimer" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Disclaimer
                 </Link>
               </li>
             </ul>
