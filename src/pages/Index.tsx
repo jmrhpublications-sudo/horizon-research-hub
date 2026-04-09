@@ -59,13 +59,6 @@ const Index = memo(() => {
                   Submit to Journal
                 </Link>
                 <Link 
-                  to="/books/proposal"
-                  className="inline-flex items-center gap-3 border border-oxford text-oxford px-8 py-4 text-xs uppercase tracking-widest font-bold hover:bg-oxford hover:text-white transition-all"
-                >
-                  <BookOpen size={16} />
-                  Submit Book Proposal
-                </Link>
-                <Link 
                   to="/call-for-papers"
                   className="inline-flex items-center gap-3 text-oxford/60 px-8 py-4 text-xs uppercase tracking-widest font-bold hover:text-gold transition-all"
                 >
@@ -174,21 +167,16 @@ const Index = memo(() => {
               </h2>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 gap-6">
               {[
                 {
-                  title: "Call for Papers – Volume 1, Issue 1",
-                  description: "Submit your original research manuscripts for the inaugural issue of JMRH.",
+                  title: "Call for Papers – Volume 1, Issue 2",
+                  description: "Submit your original research manuscripts for the upcoming issue of JMRH.",
                   icon: "📝"
                 },
                 {
-                  title: "Call for Book Chapters",
-                  description: "Contribute chapters to upcoming edited volumes across multidisciplinary domains.",
-                  icon: "📚"
-                },
-                {
-                  title: "New Book Published",
-                  description: "Check our published books section for the latest academic publications.",
+                  title: "Volume 1, Issue 1 Published",
+                  description: "Check our archives to view the first published issue of JMRH.",
                   icon: "📖"
                 }
               ].map((announcement, index) => (
@@ -197,25 +185,16 @@ const Index = memo(() => {
                   <h3 className="font-serif text-xl font-bold text-oxford mb-3">{announcement.title}</h3>
                   <p className="text-oxford/60 mb-4">{announcement.description}</p>
                   <Link 
-                    to="/call-for-papers"
+                    to={index === 0 ? "/call-for-papers" : "/journal/archives"}
                     className="text-gold font-bold text-sm uppercase tracking-wider hover:text-oxford transition-colors"
                   >
                     Learn More →
                   </Link>
                 </div>
               ))}
+              </div>
             </div>
-            
-            <div className="text-center mt-12">
-              <Link 
-                to="/call-for-chapters"
-                className="inline-flex items-center gap-2 border border-oxford text-oxford px-8 py-4 text-xs uppercase tracking-widest font-bold hover:bg-oxford hover:text-white transition-all"
-              >
-                View All Announcements
-              </Link>
-            </div>
-          </div>
-        </section>
+          </section>
 
         {/* ==================== WHY PUBLISH WITH US ==================== */}
         <section className="py-24 bg-oxford">
