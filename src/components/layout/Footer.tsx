@@ -1,15 +1,15 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen, ShieldCheck, Globe, Instagram, Mail, ArrowRight } from "lucide-react";
+import { ShieldCheck, Globe, Instagram, Mail, ArrowRight } from "lucide-react";
 
 const Footer = memo(() => {
   return (
     <footer className="bg-white border-t border-black/5 pt-16 overflow-hidden relative font-ui">
       <div className="container max-w-[1400px] mx-auto px-6 lg:px-10 relative z-10 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-16">
 
           {/* Brand */}
-          <div className="md:col-span-4 space-y-8">
+          <div className="lg:col-span-1 space-y-8">
             <Link to="/" className="flex items-center gap-3 group">
               <img src="/logo.png" alt="JMRH Logo" className="w-16 h-16 object-contain" width="64" height="64" />
               <span className="font-serif text-2xl font-black text-oxford tracking-tighter">JMRH<span className="text-gold">.</span></span>
@@ -33,7 +33,7 @@ const Footer = memo(() => {
           </div>
 
           {/* Journal Links */}
-          <div className="md:col-span-2 space-y-6">
+          <div className="lg:col-span-1 space-y-6">
             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-oxford">Journal</h4>
             <ul className="space-y-3">
               <li>
@@ -61,6 +61,19 @@ const Footer = memo(() => {
                 </Link>
               </li>
               <li>
+                <Link to="/journal/archives" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
+                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Archives
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* For Authors */}
+          <div className="lg:col-span-1 space-y-6">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-oxford">For Authors</h4>
+            <ul className="space-y-3">
+              <li>
                 <Link to="/journal/guidelines" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
                   <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                   Author Guidelines
@@ -84,17 +97,11 @@ const Footer = memo(() => {
                   APC
                 </Link>
               </li>
-              <li>
-                <Link to="/journal/archives" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Archives
-                </Link>
-              </li>
             </ul>
           </div>
 
           {/* Quick Links */}
-          <div className="md:col-span-2 space-y-6">
+          <div className="lg:col-span-1 space-y-6">
             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-oxford">Quick Links</h4>
             <ul className="space-y-3">
               <li>
@@ -104,40 +111,9 @@ const Footer = memo(() => {
                 </Link>
               </li>
               <li>
-                <Link to="/journal/archives" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Archives
-                </Link>
-              </li>
-              <li>
-                <Link to="/journal/apc" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Article Processing Charges
-                </Link>
-              </li>
-              <li>
                 <Link to="/journal/submit" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
                   <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                   Submit Manuscript
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Quick Links */}
-          <div className="md:col-span-2 space-y-6">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-oxford">Quick Links</h4>
-            <ul className="space-y-3">
-              <li>
-                <Link to="/call-for-chapters" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Call for Chapters
-                </Link>
-              </li>
-              <li>
-                <Link to="/reviews" className="text-xs text-oxford/50 hover:text-gold transition-colors flex items-center gap-2 group">
-                  <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Reviews
                 </Link>
               </li>
               <li>
@@ -150,14 +126,15 @@ const Footer = memo(() => {
           </div>
 
           {/* Contact Info */}
-          <div className="md:col-span-2 space-y-6">
+          <div className="lg:col-span-1 space-y-6">
             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-oxford">Contact</h4>
             <div className="space-y-4">
               <div>
                 <p className="text-[9px] font-bold text-oxford/30 uppercase tracking-widest mb-1">Address</p>
                 <p className="text-xs text-oxford/50 leading-relaxed">
                   JMRH Publications<br />
-                  Gudalur, The Nilgiris – 643212<br />
+                  Calicut Road, Gudalur<br />
+                  The Nilgiris – 643212<br />
                   Tamil Nadu, India
                 </p>
               </div>

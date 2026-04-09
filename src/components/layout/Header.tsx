@@ -12,10 +12,16 @@ const navLinks = [
   { label: "Aims & Scope", href: "/journal/aims-scope" },
   { label: "Editorial Board", href: "/journal/editorial-board" },
   { label: "Reviewer Board", href: "/journal/reviewer-board" },
-  { label: "Author Guidelines", href: "/journal/guidelines" },
-  { label: "Publication Ethics", href: "/journal/ethics" },
-  { label: "Peer Review", href: "/journal/peer-review" },
-  { label: "APC", href: "/journal/apc" },
+  { 
+    label: "For Authors", 
+    href: "/journal/guidelines",
+    children: [
+      { label: "Author Guidelines", href: "/journal/guidelines" },
+      { label: "Publication Ethics", href: "/journal/ethics" },
+      { label: "Peer Review Process", href: "/journal/peer-review" },
+      { label: "APC", href: "/journal/apc" },
+    ]
+  },
   { label: "Archives", href: "/journal/archives" },
   { label: "Call for Papers", href: "/call-for-papers" },
   { label: "Contact", href: "/contact" }
