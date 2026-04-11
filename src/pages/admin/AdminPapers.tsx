@@ -405,59 +405,68 @@ const AdminPapers = memo(() => {
                                 )}
 
                                 {/* Attachments */}
-                                {inspectPaper.attachments && inspectPaper.attachments.length > 0 && (
-                                    <>
-                                        <Separator />
-                                        <div>
-                                            <h4 className="text-xs font-bold uppercase tracking-widest text-accent mb-2">Uploaded Documents ({inspectPaper.attachments.length})</h4>
-                                            <div className="space-y-2">
-                                                {inspectPaper.attachments.map((attachment, idx) => {
-                                                    const parsed = parseAttachment(attachment);
-                                                    if (parsed.type === 'drive') {
-                                                        const driveFile = parsed.data as DriveFileInfo;
-                                                        return (
-                                                            <div key={idx} className="flex items-center justify-between p-3 bg-muted/50 border border-border rounded">
-                                                                <div className="flex items-center gap-2 min-w-0">
-                                                                    <FileText size={14} className="text-green-600 shrink-0" />
-                                                                    <span className="text-sm truncate">{driveFile.name}</span>
-                                                                </div>
-                                                                <div className="flex gap-1">
-                                                                    {driveFile.webViewLink && (
-                                                                        <Button variant="ghost" size="sm" className="text-xs shrink-0" onClick={() => window.open(driveFile.webViewLink, '_blank')}>
-                                                                            <Eye size={14} />
-                                                                        </Button>
-                                                                    )}
-                                                                    {driveFile.webContentLink && (
-                                                                        <Button variant="ghost" size="sm" className="text-xs shrink-0" onClick={() => window.open(driveFile.webContentLink, '_blank')}>
-                                                                            <Download size={14} />
-                                                                        </Button>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                        );
-                                                    }
-                                                    const filePath = parsed.data as string;
-                                                    const fileName = filePath.split('/').pop() || filePath;
+                                <Separator />
+                                <div>
+                                    <h4 className="text-xs font-bold uppercase tracking-widest text-accent mb-2">Uploaded Documents</h4>
+                                    {inspectPaper.attachments && inspectPaper.attachments.length > 0 ? (
+                                        <div className="space-y-2">
+                                            <pre className="text-xs bg-muted p-2 rounded overflow-x-auto">
+                                                {JSON.stringify(inspectPaper.attachments, null, 2)}
+                                            </pre>
+                                            {inspectPaper.attachments.map((attachment, idx) => {
+                                                const parsed = parseAttachment(attachment);
+                                                if (parsed.type === 'drive') {
+                                                    const driveFile = parsed.data as DriveFileInfo;
                                                     return (
                                                         <div key={idx} className="flex items-center justify-between p-3 bg-muted/50 border border-border rounded">
                                                             <div className="flex items-center gap-2 min-w-0">
-                                                                <FileText size={14} className="text-accent shrink-0" />
-                                                                <span className="text-sm truncate">{fileName}</span>
+                                                                <FileText size={14} className="text-green-600 shrink-0" />
+                                                                <span className="text-sm truncate">{driveFile.name}</span>
                                                             </div>
-                                                            <Button variant="ghost" size="sm" className="text-xs shrink-0" onClick={async () => {
-                                                                const { data, error } = await supabase.storage.from('papers').createSignedUrl(filePath, 3600);
-                                                                if (data?.signedUrl) window.open(data.signedUrl, '_blank');
-                                                                else toast({ title: "Error", description: "Could not generate download link", variant: "destructive" });
-                                                            }}>
-                                                                <Download size={14} />
-                                                            </Button>
+                                                            <div className="flex gap-1">
+                                                                {driveFile.webViewLink && (
+                                                                    <Button variant="ghost" size="sm" className="text-xs shrink-0" onClick={() => window.open(driveFile.webViewLink, '_blank')}>
+                                                                        <Eye size={14} />
+                                                                    </Button>
+                                                                )}
+                                                                {driveFile.webContentLink && (
+                                                                    <Button variant="ghost" size="sm" className="text-xs shrink-0" onClick={() => window.open(driveFile.webContentLink, '_blank')}>
+                                                                        <Download size={14} />
+                                                                    </Button>
+                                                                )}
+                                                            </div>
                                                         </div>
                                                     );
-                                                })}
-                                            </div>
+                                                }
+                                                const filePath = parsed.data as string;
+                                                const fileName = filePath.split('/').pop() || filePath;
+                                                return (
+                                                    <div key={idx} className="flex items-center justify-between p-3 bg-muted/50 border border-border rounded">
+                                                        <div className="flex items-center gap-2 min-w-0">
+                                                            <FileText size={14} className="text-accent shrink-0" />
+                                                            <span className="text-sm truncate">{fileName}</span>
+                                                        </div>
+                                                        <Button variant="ghost" size="sm" className="text-xs shrink-0" onClick={async () => {
+                                                            console.log('Downloading file:', filePath);
+                                                            const { data, error } = await supabase.storage.from('papers').createSignedUrl(filePath, 3600);
+                                                            if (data?.signedUrl) {
+                                                                console.log('Signed URL:', data.signedUrl);
+                                                                window.open(data.signedUrl, '_blank');
+                                                            } else {
+                                                                console.error('Error:', error);
+                                                                toast({ title: "Error", description: error?.message || "Could not generate download link", variant: "destructive" });
+                                                            }
+                                                        }}>
+                                                            <Download size={14} />
+                                                        </Button>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
-                                    </>
-                                )}
+                                    ) : (
+                                        <p className="text-sm text-muted-foreground">No documents uploaded</p>
+                                    )}
+                                </div>
 
                                 {/* Review Info */}
                                 {(inspectPaper.assignedProfessorName || inspectPaper.revisionComments) && (
