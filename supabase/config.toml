@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.notify-admin-submission]
 verify_jwt = false
+
+[functions.google-drive-upload]
+verify_jwt = false

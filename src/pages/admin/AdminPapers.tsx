@@ -4,7 +4,7 @@ import { useJMRH, Paper } from "@/context/JMRHContext";
 import {
     BookOpen, CheckCircle, Clock, User as UserIcon, Search, Filter,
     GraduationCap, ArrowRight, Eye, Download, Trash2, X, Mail, Phone,
-    MapPin, FileText, Calendar, AlertTriangle, Building2, Globe, PenLine
+    MapPin, FileText, Calendar, AlertTriangle, Building2, Globe, PenLine, ExternalLink
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import JSZip from "jszip";
+import { parseDriveAttachment, DriveFileInfo } from "@/lib/google-drive";
+
+const isDriveAttachment = (attachment: string): boolean => {
+    try {
+        const parsed = JSON.parse(attachment);
+        return !!(parsed.id && (parsed.viewLink || parsed.downloadLink));
+    } catch {
+        return false;
+    }
+};
+
+const parseAttachment = (attachment: string): { type: 'supabase' | 'drive'; data: string | DriveFileInfo } => {
+    const driveInfo = parseDriveAttachment(attachment);
+    if (driveInfo) {
+        return { type: 'drive', data: driveInfo };
+    }
+    return { type: 'supabase', data: attachment };
+};
 
 const statusColors: Record<string, string> = {
     SUBMITTED: "bg-orange-100 text-orange-700 border-orange-200",
@@ -115,17 +133,32 @@ const AdminPapers = memo(() => {
             // Download and add attachments
             if (paper.attachments && paper.attachments.length > 0) {
                 const attachmentsFolder = zip.folder("attachments");
-                for (const filePath of paper.attachments) {
-                    try {
-                        const { data, error } = await supabase.storage
-                            .from('papers')
-                            .download(filePath);
-                        if (data && !error) {
-                            const fileName = filePath.split('/').pop() || filePath;
-                            attachmentsFolder?.file(fileName, data);
+                for (const attachment of paper.attachments) {
+                    const parsed = parseAttachment(attachment);
+                    if (parsed.type === 'drive') {
+                        const driveFile = parsed.data as DriveFileInfo;
+                        if (driveFile.webContentLink) {
+                            try {
+                                const response = await fetch(driveFile.webContentLink);
+                                const blob = await response.blob();
+                                attachmentsFolder?.file(driveFile.name, blob);
+                            } catch (err) {
+                                console.warn(`Failed to download Drive file: ${driveFile.name}`, err);
+                            }
                         }
-                    } catch (err) {
-                        console.warn(`Failed to download attachment: ${filePath}`, err);
+                    } else {
+                        const filePath = parsed.data as string;
+                        try {
+                            const { data, error } = await supabase.storage
+                                .from('papers')
+                                .download(filePath);
+                            if (data && !error) {
+                                const fileName = filePath.split('/').pop() || filePath;
+                                attachmentsFolder?.file(fileName, data);
+                            }
+                        } catch (err) {
+                            console.warn(`Failed to download attachment: ${filePath}`, err);
+                        }
                     }
                 }
             }
@@ -203,7 +236,15 @@ const AdminPapers = memo(() => {
                                             <Badge variant="outline" className="text-[9px] uppercase tracking-widest">{paper.paperType}</Badge>
                                             {paper.attachments && paper.attachments.length > 0 && (
                                                 <Badge variant="secondary" className="text-[9px] gap-1">
-                                                    <FileText size={10} /> {paper.attachments.length} file{paper.attachments.length > 1 ? 's' : ''}
+                                                    {paper.attachments[0] && isDriveAttachment(paper.attachments[0]) ? (
+                                                        <>
+                                                            <ExternalLink size={10} /> {paper.attachments.length} file{paper.attachments.length > 1 ? 's' : ''}
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <FileText size={10} /> {paper.attachments.length} file{paper.attachments.length > 1 ? 's' : ''}
+                                                        </>
+                                                    )}
                                                 </Badge>
                                             )}
                                         </div>
@@ -370,7 +411,32 @@ const AdminPapers = memo(() => {
                                         <div>
                                             <h4 className="text-xs font-bold uppercase tracking-widest text-accent mb-2">Uploaded Documents ({inspectPaper.attachments.length})</h4>
                                             <div className="space-y-2">
-                                                {inspectPaper.attachments.map((filePath, idx) => {
+                                                {inspectPaper.attachments.map((attachment, idx) => {
+                                                    const parsed = parseAttachment(attachment);
+                                                    if (parsed.type === 'drive') {
+                                                        const driveFile = parsed.data as DriveFileInfo;
+                                                        return (
+                                                            <div key={idx} className="flex items-center justify-between p-3 bg-muted/50 border border-border rounded">
+                                                                <div className="flex items-center gap-2 min-w-0">
+                                                                    <FileText size={14} className="text-green-600 shrink-0" />
+                                                                    <span className="text-sm truncate">{driveFile.name}</span>
+                                                                </div>
+                                                                <div className="flex gap-1">
+                                                                    {driveFile.webViewLink && (
+                                                                        <Button variant="ghost" size="sm" className="text-xs shrink-0" onClick={() => window.open(driveFile.webViewLink, '_blank')}>
+                                                                            <Eye size={14} />
+                                                                        </Button>
+                                                                    )}
+                                                                    {driveFile.webContentLink && (
+                                                                        <Button variant="ghost" size="sm" className="text-xs shrink-0" onClick={() => window.open(driveFile.webContentLink, '_blank')}>
+                                                                            <Download size={14} />
+                                                                        </Button>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    }
+                                                    const filePath = parsed.data as string;
                                                     const fileName = filePath.split('/').pop() || filePath;
                                                     return (
                                                         <div key={idx} className="flex items-center justify-between p-3 bg-muted/50 border border-border rounded">

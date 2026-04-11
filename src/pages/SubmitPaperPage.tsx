@@ -2,6 +2,7 @@ import React, { useState, memo, FormEvent, useRef, useEffect, useMemo, useCallba
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useJMRH } from "@/context/JMRHContext";
 import { supabase } from "@/integrations/supabase/client";
+import { validateFile, validateFiles, formatFileSize } from "@/lib/file-validation";
 import {
     Send,
     FileText,
@@ -163,18 +164,8 @@ const SubmitPaperPage = memo(() => {
         "Letter to Editor"
     ];
 
-    const fileSizeLimit = 50 * 1024 * 1024; // 50MB
-    const allowedTypes = [
-        'application/pdf',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'image/jpeg',
-        'image/png',
-        'image/tiff',
-        'application/zip',
-        'application/x-zip-compressed'
-    ];
-    const allowedExtensions = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png', '.tiff', '.tif', '.zip'];
+    const fileSizeLimit = 20 * 1024 * 1024; // 20MB (max)
+    const allowedExtensions = ['.pdf', '.doc', '.docx'];
 
     useEffect(() => {
         if (currentUser) {
@@ -243,35 +234,32 @@ const SubmitPaperPage = memo(() => {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const files = Array.from(e.target.files);
+            const validationResult = validateFiles(files);
+            
+            if (!validationResult.valid) {
+                toast({
+                    title: "Invalid File",
+                    description: validationResult.error || "File validation failed",
+                    variant: "destructive"
+                });
+                return;
+            }
+            
             const validFiles: File[] = [];
             
             files.forEach(file => {
-                if (file.size > fileSizeLimit) {
+                const fileValidation = validateFile(file);
+                if (!fileValidation.valid) {
                     toast({
-                        title: "File Too Large",
-                        description: `${file.name} exceeds 50MB limit`,
-                        variant: "destructive"
-                    });
-                    return;
-                }
-                
-                const ext = '.' + file.name.split('.').pop()?.toLowerCase();
-                if (!allowedExtensions.includes(ext)) {
-                    toast({
-                        title: "Invalid File Type",
-                        description: `${file.name} has an unsupported format`,
+                        title: "Invalid File",
+                        description: fileValidation.error,
                         variant: "destructive"
                     });
                     return;
                 }
                 
                 validFiles.push(file);
-                if (file.type.startsWith('image/')) {
-                    const url = URL.createObjectURL(file);
-                    setAttachmentPreviews(prev => [...prev, url]);
-                } else {
-                    setAttachmentPreviews(prev => [...prev, null]);
-                }
+                setAttachmentPreviews(prev => [...prev, null]);
             });
             
             setAttachmentFiles(prev => [...prev, ...validFiles]);
@@ -603,9 +591,8 @@ const SubmitPaperPage = memo(() => {
     };
 
     const getFileIcon = (file: File) => {
-        if (file.type.startsWith('image/')) return <Image className="w-8 h-8 text-purple-500" />;
-        if (file.name.endsWith('.pdf')) return <FileText className="w-8 h-8 text-red-500" />;
-        if (file.name.endsWith('.doc') || file.name.endsWith('.docx')) return <FileText className="w-8 h-8 text-blue-500" />;
+        if (file.name.toLowerCase().endsWith('.pdf')) return <FileText className="w-8 h-8 text-red-500" />;
+        if (file.name.toLowerCase().endsWith('.doc') || file.name.toLowerCase().endsWith('.docx')) return <FileText className="w-8 h-8 text-blue-500" />;
         return <FileIcon className="w-8 h-8 text-gray-500" />;
     };
 
@@ -1042,7 +1029,7 @@ const SubmitPaperPage = memo(() => {
                                     <div className="text-center">
                                         <Upload className="mx-auto text-gold mb-3" size={32} />
                                         <h4 className="font-semibold text-oxford">Upload Manuscript Files</h4>
-                                        <p className="text-xs text-oxford/50 mt-1">PDF, DOC, DOCX, JPEG, PNG, TIFF, ZIP (Max 50MB each)</p>
+                                        <p className="text-xs text-oxford/50 mt-1">PDF, DOC, DOCX only • 100KB - 20MB per file</p>
                                     </div>
 
                                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -1051,7 +1038,7 @@ const SubmitPaperPage = memo(() => {
                                             type="file"
                                             multiple
                                             onChange={handleFileChange}
-                                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.tiff,.tif,.zip"
+                                            accept=".pdf,.doc,.docx"
                                             className="hidden"
                                         />
                                         <Button
