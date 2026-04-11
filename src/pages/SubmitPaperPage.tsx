@@ -276,31 +276,33 @@ const SubmitPaperPage = memo(() => {
     };
 
     const uploadFileToStorage = async (file: File, submissionId: string): Promise<string | null> => {
-        if (!currentUser) return null;
-        const fileName = `${currentUser.id}/${Date.now()}_${file.name}`;
-        const { data, error } = await supabase.storage
-            .from('papers')
-            .upload(fileName, file, {
-                cacheControl: '3600',
-                upsert: false
-            });
-        
-        if (error) {
-            console.error('Upload error:', error);
+        if (!currentUser) {
+            console.error('No user logged in');
             return null;
         }
         
-        // Use signed URLs for private bucket - never expose via getPublicUrl
-        const { data: signedData, error: signedError } = await supabase.storage
-            .from('papers')
-            .createSignedUrl(fileName, 3600); // 1 hour expiry
-        
-        if (signedError || !signedData?.signedUrl) {
-            console.error('Signed URL error:', signedError);
-            return fileName; // Return path as fallback for DB storage
+        try {
+            const fileName = `${currentUser.id}/${Date.now()}_${file.name}`;
+            console.log('Uploading file:', fileName, 'size:', file.size);
+            
+            const { data, error } = await supabase.storage
+                .from('papers')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+            
+            if (error) {
+                console.error('Storage upload error:', error);
+                return null;
+            }
+            
+            console.log('Upload success:', data);
+            return fileName;
+        } catch (err) {
+            console.error('Upload exception:', err);
+            return null;
         }
-        
-        return fileName; // Store the path, generate signed URLs on demand
     };
 
     const handleAutoSave = async () => {
