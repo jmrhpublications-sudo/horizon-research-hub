@@ -62,7 +62,7 @@ const SubmitPaperPage = memo(() => {
             setEmail(currentUser.email || "");
             setPhone(currentUser.phone || "");
             setAffiliation(currentUser.affiliation || "");
-            setDesignation(currentUser.designation || "");
+            setDesignation((currentUser as any).designation || "");
         }
     }, [currentUser]);
 
@@ -273,7 +273,7 @@ const SubmitPaperPage = memo(() => {
                                     setEmail(currentUser?.email || "");
                                     setPhone(currentUser?.phone || "");
                                     setAffiliation(currentUser?.affiliation || "");
-                                    setDesignation(currentUser?.designation || "");
+                                    setDesignation((currentUser as any)?.designation || "");
                                     setJournalName("");
                                     setSelectedFile(null);
                                     setChecklist({
