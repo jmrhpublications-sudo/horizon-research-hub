@@ -47,14 +47,6 @@ const JournalEditorialBoard = memo(() => {
       profile: "https://gascgudalur.in/department-of-geography/"
     },
     {
-      name: "Dr. Suresh",
-      position: "Assistant Professor",
-      department: "Department of English",
-      institution: "Government Arts and Science College, Gudalur",
-      email: "suresh@jmrh.in",
-      profile: "https://gascgudalur.in/department-of-english/"
-    },
-    {
       name: "Dr. T. Sathish",
       position: "Assistant Professor",
       department: "Department of Mathematics",
