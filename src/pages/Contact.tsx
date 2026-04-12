@@ -38,7 +38,25 @@ const Contact = memo(() => {
           <div className="grid md:grid-cols-2 gap-8">
             {/* Contact Information */}
             <div className="space-y-6">
-              {/* Office Address */}
+              {/* Editor-in-Chief Address */}
+              <div className="bg-white border border-black/5 p-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-5 h-5 text-oxford" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-oxford mb-2">Editor-in-Chief</h3>
+                    <p className="text-oxford/60">
+                      Dr. Karthick B<br />
+                      Assistant Professor, Department of Computer Applications<br />
+                      Government Arts and Science College, Gudalur<br />
+                      The Nilgiris – 643212, Tamil Nadu, India
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Publisher Address */}
               <div className="bg-white border border-black/5 p-6">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
