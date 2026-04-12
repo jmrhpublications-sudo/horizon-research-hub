@@ -132,7 +132,6 @@ const JournalArchives = memo(() => {
                                                 
                                                 <p className="text-sm text-oxford/70 mb-2">
                                                     <span className="font-semibold">Authors:</span> {paper.authors}
-                                                    </p>
                                                 </p>
                                                 
                                                 {paper.abstract && (
