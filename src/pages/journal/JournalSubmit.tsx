@@ -29,7 +29,6 @@ import {
   Send,
   Upload,
   FileText,
-  X,
   CheckCircle,
   AlertCircle,
   Loader2,
@@ -37,47 +36,13 @@ import {
   Paperclip,
   Mail,
   Phone,
-  MapPin,
   User,
   Building,
-  BookOpen,
   FileType,
-  Check,
-  ChevronRight,
-  AlertTriangle
+  AlertTriangle,
+  BookOpen
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-
-interface UploadProgress {
-  fileName: string;
-  progress: number;
-  status: 'uploading' | 'complete' | 'error';
-  error?: string;
-}
-
-const disciplines = [
-  "Commerce and Management",
-  "Economics and Finance",
-  "Education and Psychology",
-  "Social Sciences and Humanities",
-  "Science and Technology",
-  "Environmental Studies and Sustainability",
-  "Law and Legal Studies",
-  "Medical and Health Sciences",
-  "Engineering and Technology",
-  "Arts and Literature",
-  "Multidisciplinary"
-];
-
-const manuscriptTypes = [
-  "Research Article",
-  "Review Article",
-  "Short Communication",
-  "Case Study",
-  "Letter to Editor",
-  "Book Review",
-  "Conference Proceeding"
-];
+import { motion } from "framer-motion";
 
 const JournalSubmit = memo(() => {
   const { currentUser, submitPaper } = useJMRH();
@@ -88,26 +53,21 @@ const JournalSubmit = memo(() => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
   const [submissionId, setSubmissionId] = useState("");
-  const [formStep, setFormStep] = useState(1);
 
   const [authorName, setAuthorName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [affiliation, setAffiliation] = useState("");
   const [designation, setDesignation] = useState("");
-  const [orcid, setOrcid] = useState("");
   
-  const [title, setTitle] = useState("");
-  const [discipline, setDiscipline] = useState("");
-  const [manuscriptType, setManuscriptType] = useState("");
-  const [abstract, setAbstract] = useState("");
-  const [keywords, setKeywords] = useState("");
-  const [coAuthors, setCoAuthors] = useState("");
-  const [coverLetter, setCoverLetter] = useState("");
+  const [journalName, setJournalName] = useState("");
+  const [journalDescription, setJournalDescription] = useState("");
   
-  const [attachmentFiles, setAttachmentFiles] = useState<File[]>([]);
-  const [uploadProgress, setUploadProgress] = useState<UploadProgress[]>([]);
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [isUploading, setIsUploading] = useState(false);
+  
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [agreements, setAgreements] = useState({
     original: false,
@@ -125,6 +85,8 @@ const JournalSubmit = memo(() => {
       setAuthorName(currentUser.name || "");
       setEmail(currentUser.email || "");
       setAffiliation(currentUser.affiliation || "");
+      setDesignation(currentUser.designation || "");
+      setPhone(currentUser.phone || "");
     }
   }, [currentUser]);
 
@@ -137,54 +99,60 @@ const JournalSubmit = memo(() => {
     navigate("/");
   };
 
-  const validateStep = (step: number): boolean => {
-    const errors: Record<string, string> = {};
+  const validate = (): boolean => {
+    const newErrors: Record<string, string> = {};
     
-    if (step === 1) {
-      if (!authorName.trim()) errors.authorName = "Author name is required";
-      if (!email.trim()) errors.email = "Email is required";
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = "Valid email is required";
-      if (!affiliation.trim()) errors.affiliation = "Affiliation is required";
-    }
-    
-    if (step === 2) {
-      if (!title.trim()) errors.title = "Title is required";
-      if (!discipline) errors.discipline = "Discipline is required";
-      if (!manuscriptType) errors.manuscriptType = "Manuscript type is required";
-      if (!abstract.trim()) errors.abstract = "Abstract is required";
-      else if (abstract.length < 150) errors.abstract = "Abstract must be at least 150 characters";
-    }
-    
-    if (step === 3) {
-      if (!agreements.original) errors.agreement = "You must confirm originality";
-      if (!agreements.noConflict) errors.agreement = "You must confirm no conflict of interest";
-      if (!agreements.copyright) errors.agreement = "You must agree to copyright terms";
-      if (!agreements.ethics) errors.agreement = "You must confirm ethics compliance";
-    }
+    if (!authorName.trim()) newErrors.authorName = "Author name is required";
+    if (!email.trim()) newErrors.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = "Valid email is required";
+    if (!affiliation.trim()) newErrors.affiliation = "Institution is required";
+    if (!designation.trim()) newErrors.designation = "Designation is required";
+    if (!journalName.trim()) newErrors.journalName = "Journal name is required";
+    if (!journalDescription.trim()) newErrors.journalDescription = "Description is required";
+    if (!attachmentFile) newErrors.attachment = "Please upload your manuscript";
+    if (!agreements.original) newErrors.agreement = "You must confirm originality";
+    if (!agreements.noConflict) newErrors.agreement = "You must confirm no conflict of interest";
+    if (!agreements.copyright) newErrors.agreement = "You must agree to copyright terms";
+    if (!agreements.ethics) newErrors.agreement = "You must confirm ethics compliance";
 
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const canProceedToStep2 = authorName && email && affiliation && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const canProceedToStep3 = title && discipline && manuscriptType && abstract && abstract.length >= 150;
-  const canSubmit = agreements.original && agreements.noConflict && agreements.copyright && agreements.ethics;
+  const canSubmit = agreements.original && agreements.noConflict && agreements.copyright && agreements.ethics && attachmentFile;
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    const validFiles = files.filter(file => {
-      const maxSize = 50 * 1024 * 1024;
-      if (file.size > maxSize) {
-        toast({ title: "File Too Large", description: `${file.name} exceeds 50MB limit`, variant: "destructive" });
-        return false;
-      }
-      return true;
-    });
-    setAttachmentFiles(prev => [...prev, ...validFiles]);
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const minSize = 10 * 1024;
+    const maxSize = 20 * 1024 * 1024;
+    
+    if (file.size < minSize) {
+      toast({ title: "File Too Small", description: "File must be at least 10KB", variant: "destructive" });
+      return;
+    }
+    if (file.size > maxSize) {
+      toast({ title: "File Too Large", description: "File must not exceed 20MB", variant: "destructive" });
+      return;
+    }
+
+    const validTypes = ['.doc', '.docx'];
+    const ext = '.' + file.name.split('.').pop()?.toLowerCase();
+    if (!validTypes.includes(ext)) {
+      toast({ title: "Invalid File Type", description: "Only DOC or DOCX files are allowed", variant: "destructive" });
+      return;
+    }
+
+    setAttachmentFile(file);
+    setErrors(prev => ({ ...prev, attachment: "" }));
   };
 
-  const removeFile = (index: number) => {
-    setAttachmentFiles(prev => prev.filter((_, i) => i !== index));
+  const removeFile = () => {
+    setAttachmentFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const generateSubmissionId = () => {
@@ -210,144 +178,69 @@ const JournalSubmit = memo(() => {
     return fileName;
   };
 
-  const generateEmailSubject = () => {
-    return `Submission – JMRH Journal – ${authorName} – ${title.substring(0, 50)}`;
-  };
-
-  const generateEmailBody = () => {
-    let body = `Dear Editorial Team,\n\n`;
-    body += `I am submitting my manuscript for consideration for publication in the Journal of Multidisciplinary Research Horizon (JMRH).\n\n`;
-    
-    body += `=== SUBMISSION DETAILS ===\n`;
-    body += `Submission ID: ${submissionId}\n`;
-    body += `Date: ${new Date().toLocaleDateString()}\n\n`;
-    
-    body += `=== AUTHOR DETAILS ===\n`;
-    body += `Name: ${authorName}\n`;
-    body += `Email: ${email}\n`;
-    body += `Phone: ${phone || "Not provided"}\n`;
-    body += `Affiliation: ${affiliation}\n`;
-    body += `Designation: ${designation || "Not provided"}\n`;
-    if (orcid) body += `ORCID: ${orcid}\n`;
-    body += `\n`;
-    
-    body += `=== MANUSCRIPT DETAILS ===\n`;
-    body += `Title: ${title}\n`;
-    body += `Discipline: ${discipline}\n`;
-    body += `Manuscript Type: ${manuscriptType}\n`;
-    body += `Keywords: ${keywords || "Not provided"}\n`;
-    body += `Co-Authors: ${coAuthors || "None"}\n\n`;
-    
-    body += `=== ABSTRACT ===\n`;
-    body += `${abstract}\n\n`;
-    
-    if (coverLetter) {
-      body += `=== COVER LETTER ===\n`;
-      body += `${coverLetter}\n\n`;
-    }
-    
-    body += `=== ATTACHMENTS ===\n`;
-    attachmentFiles.forEach((file, index) => {
-      body += `${index + 1}. ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)\n`;
-    });
-    body += `\n`;
-    
-    body += `=== CHECKLIST ===\n`;
-    body += `✓ Original manuscript: Yes\n`;
-    body += `✓ Not under consideration elsewhere: Yes\n`;
-    body += `✓ No conflict of interest: Yes\n`;
-    body += `✓ Copyright agreement: Yes\n`;
-    body += `✓ Ethics compliance: Yes\n\n`;
-    
-    body += `Please acknowledge receipt of this submission.\n\n`;
-    body += `Thank you for your consideration.\n\n`;
-    body += `Best regards,\n`;
-    body += `${authorName}`;
-    
-    return encodeURIComponent(body);
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
-    if (!validateStep(3)) {
+    if (!validate()) {
       toast({ 
         title: "Validation Error", 
-        description: Object.values(validationErrors)[0] || "Please complete all required fields", 
+        description: Object.values(errors)[0] || "Please complete all required fields", 
+        variant: "destructive" 
+      });
+      return;
+    }
+
+    if (!canSubmit) {
+      toast({ 
+        title: "Confirmation Required", 
+        description: "Please confirm all declarations in the checklist", 
         variant: "destructive" 
       });
       return;
     }
 
     setIsSubmitting(true);
+    setIsUploading(true);
+    setUploadProgress(30);
 
     try {
       const newSubmissionId = generateSubmissionId();
       setSubmissionId(newSubmissionId);
       
-      setUploadProgress(attachmentFiles.map(f => ({
-        fileName: f.name,
-        progress: 0,
-        status: 'uploading' as const
-      })));
-
-      const uploadedUrls: string[] = [];
+      const uploadedUrl = await uploadFileToStorage(attachmentFile!, newSubmissionId);
       
-      for (let i = 0; i < attachmentFiles.length; i++) {
-        const file = attachmentFiles[i];
-        try {
-          const url = await uploadFileToStorage(file, newSubmissionId);
-          if (url) {
-            uploadedUrls.push(url);
-            setUploadProgress(prev => prev.map((p, idx) => 
-              idx === i ? { ...p, progress: 100, status: 'complete' } : p
-            ));
-          } else {
-            setUploadProgress(prev => prev.map((p, idx) => 
-              idx === i ? { ...p, status: 'error', error: 'Upload failed' } : p
-            ));
-          }
-        } catch (err) {
-          setUploadProgress(prev => prev.map((p, idx) => 
-            idx === i ? { ...p, status: 'error', error: 'Upload failed' } : p
-          ));
-        }
-      }
+      setUploadProgress(70);
 
       await submitPaper(
-        title,
-        abstract,
-        discipline,
+        `${journalName} - ${journalDescription}`,
+        `Author: ${authorName}\nInstitution: ${affiliation}\nDesignation: ${designation}`,
+        journalName,
         "JOURNAL",
         authorName,
         email,
-        manuscriptType,
-        keywords,
-        coAuthors,
-        uploadedUrls
+        "Research Article",
+        "",
+        "",
+        uploadedUrl ? [uploadedUrl] : [],
+        phone,
+        affiliation,
+        designation
       );
 
-      const subject = generateEmailSubject();
-      const body = generateEmailBody();
-      const adminEmail = "jmrhpublication@gmail.com";
-      
-      const mailtoLink = `mailto:${adminEmail}?subject=${subject}&body=${body}`;
-      const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${adminEmail}&su=${encodeURIComponent(subject)}&body=${body}`;
-      
-      window.location.href = mailtoLink;
-      window.open(gmailLink, '_blank');
+      setUploadProgress(100);
       
       setShowReceipt(true);
       
       toast({ 
         title: "Submission Successful!", 
-        description: `Your manuscript has been submitted. Submission ID: ${newSubmissionId}. Please also check your email to attach files.` 
+        description: `Your manuscript has been submitted. Submission ID: ${newSubmissionId}.` 
       });
       
     } catch (error: any) {
       toast({ title: "Error", description: error?.message || "Failed to process submission.", variant: "destructive" });
     } finally {
       setIsSubmitting(false);
+      setIsUploading(false);
     }
   };
 
@@ -406,7 +299,7 @@ const JournalSubmit = memo(() => {
               </p>
             </div>
             <p className="text-sm text-gray-600">
-              Your manuscript has been submitted successfully. Please check your email client to attach the manuscript files and send to the admin.
+              Your manuscript has been submitted successfully. It is now being stored and will appear in your dashboard.
             </p>
             <p className="text-xs text-gray-500">
               You will receive an acknowledgment email within 2-3 working days.
@@ -446,394 +339,214 @@ const JournalSubmit = memo(() => {
         <div className="container max-w-4xl mx-auto px-4 sm:px-6">
           <div className="bg-white border border-black/5 shadow-xl rounded-sm overflow-hidden">
             <form onSubmit={handleSubmit}>
-              <div className="border-b border-black/5">
-                <div className="flex items-center justify-between px-6 py-4 bg-oxford/5">
-                  <div className="flex items-center gap-1 sm:gap-2">
-                    {[
-                      { num: 1, label: "Author" },
-                      { num: 2, label: "Manuscript" },
-                      { num: 3, label: "Review" }
-                    ].map((step) => (
-                      <div key={step.num} className="flex items-center">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (step.num === 1 || (step.num === 2 && validateStep(1)) || (step.num === 3 && validateStep(2))) {
-                              setFormStep(step.num);
-                            }
-                          }}
-                          className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
-                            formStep === step.num 
-                              ? "bg-oxford text-white" 
-                              : formStep > step.num 
-                                ? "bg-green-500 text-white"
-                                : "bg-white text-oxford/40 border border-oxford/10"
-                          }`}
-                        >
-                          {formStep > step.num ? <Check className="w-3 h-3" /> : step.num}
-                          <span className="hidden sm:inline">{step.label}</span>
-                        </button>
-                        {step.num < 3 && (
-                          <ChevronRight className="w-4 h-4 text-oxford/20 mx-1" />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
               <div className="p-6 sm:p-8 md:p-12">
-                <AnimatePresence mode="wait">
-                  {formStep === 1 && (
-                    <motion.div
-                      key="step1"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      className="space-y-6"
-                    >
-                      <div>
-                        <h2 className="font-serif text-2xl font-bold text-oxford mb-6 flex items-center gap-2">
-                          <User className="w-5 h-5 text-gold" />
-                          Author Information
-                        </h2>
-                      </div>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="space-y-8"
+                >
+                  <div>
+                    <h2 className="font-serif text-2xl font-bold text-oxford mb-2 flex items-center gap-2">
+                      <BookOpen className="w-5 h-5 text-gold" />
+                      Submit Your Manuscript
+                    </h2>
+                    <p className="text-oxford/60 text-sm">Fill in your details and upload your manuscript for peer review</p>
+                  </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
-                            Author Name <span className="text-red-500">*</span>
-                          </label>
-                          <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-oxford/30" />
-                            <Input
-                              value={authorName}
-                              onChange={(e) => setAuthorName(e.target.value)}
-                              placeholder="Full Name"
-                              className="pl-10 border-oxford/10 focus:border-gold"
-                            />
-                          </div>
-                          {validationErrors.authorName && (
-                            <p className="text-xs text-red-500">{validationErrors.authorName}</p>
-                          )}
-                        </div>
-
-                        <div className="space-y-2">
-                          <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
-                            Email Address <span className="text-red-500">*</span>
-                          </label>
-                          <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-oxford/30" />
-                            <Input
-                              type="email"
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                              placeholder="author@example.com"
-                              className="pl-10 border-oxford/10 focus:border-gold"
-                            />
-                          </div>
-                          {validationErrors.email && (
-                            <p className="text-xs text-red-500">{validationErrors.email}</p>
-                          )}
-                        </div>
-
-                        <div className="space-y-2">
-                          <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
-                            Phone Number
-                          </label>
-                          <div className="relative">
-                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-oxford/30" />
-                            <Input
-                              type="tel"
-                              value={phone}
-                              onChange={(e) => setPhone(e.target.value)}
-                              placeholder="+1 (555) 000-0000"
-                              className="pl-10 border-oxford/10 focus:border-gold"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
-                            Designation
-                          </label>
-                          <Input
-                            value={designation}
-                            onChange={(e) => setDesignation(e.target.value)}
-                            placeholder="e.g., Professor, Researcher"
-                            className="border-oxford/10 focus:border-gold"
-                          />
-                        </div>
-
-                        <div className="space-y-2 md:col-span-2">
-                          <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
-                            Affiliation / Institution <span className="text-red-500">*</span>
-                          </label>
-                          <div className="relative">
-                            <Building className="absolute left-3 top-3 w-4 h-4 text-oxford/30" />
-                            <Input
-                              value={affiliation}
-                              onChange={(e) => setAffiliation(e.target.value)}
-                              placeholder="University / Organization"
-                              className="pl-10 border-oxford/10 focus:border-gold"
-                            />
-                          </div>
-                          {validationErrors.affiliation && (
-                            <p className="text-xs text-red-500">{validationErrors.affiliation}</p>
-                          )}
-                        </div>
-
-                        <div className="space-y-2 md:col-span-2">
-                          <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
-                            ORCID (Optional)
-                          </label>
-                          <Input
-                            value={orcid}
-                            onChange={(e) => setOrcid(e.target.value)}
-                            placeholder="https://orcid.org/0000-0000-0000-0000"
-                            className="border-oxford/10 focus:border-gold"
-                          />
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {formStep === 2 && (
-                    <motion.div
-                      key="step2"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      className="space-y-6"
-                    >
-                      <div>
-                        <h2 className="font-serif text-2xl font-bold text-oxford mb-6 flex items-center gap-2">
-                          <FileText className="w-5 h-5 text-gold" />
-                          Manuscript Details
-                        </h2>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
-                          Manuscript Title <span className="text-red-500">*</span>
-                        </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
+                        Name <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-oxford/30" />
                         <Input
-                          value={title}
-                          onChange={(e) => setTitle(e.target.value)}
-                          placeholder="Enter the title of your manuscript"
-                          className="border-oxford/10 focus:border-gold text-lg"
+                          value={authorName}
+                          onChange={(e) => setAuthorName(e.target.value)}
+                          placeholder="Your Full Name"
+                          className="pl-10 border-oxford/10 focus:border-gold"
                         />
-                        {validationErrors.title && (
-                          <p className="text-xs text-red-500">{validationErrors.title}</p>
-                        )}
                       </div>
+                      {errors.authorName && (
+                        <p className="text-xs text-red-500">{errors.authorName}</p>
+                      )}
+                    </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
-                            Discipline <span className="text-red-500">*</span>
-                          </label>
-                          <Select value={discipline} onValueChange={setDiscipline}>
-                            <SelectTrigger className="border-oxford/10 focus:border-gold">
-                              <SelectValue placeholder="Select discipline" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {disciplines.map((d) => (
-                                <SelectItem key={d} value={d}>{d}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          {validationErrors.discipline && (
-                            <p className="text-xs text-red-500">{validationErrors.discipline}</p>
-                          )}
-                        </div>
-
-                        <div className="space-y-2">
-                          <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
-                            Manuscript Type <span className="text-red-500">*</span>
-                          </label>
-                          <Select value={manuscriptType} onValueChange={setManuscriptType}>
-                            <SelectTrigger className="border-oxford/10 focus:border-gold">
-                              <SelectValue placeholder="Select type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {manuscriptTypes.map((t) => (
-                                <SelectItem key={t} value={t}>{t}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          {validationErrors.manuscriptType && (
-                            <p className="text-xs text-red-500">{validationErrors.manuscriptType}</p>
-                          )}
-                        </div>
+                    <div className="space-y-2">
+                      <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
+                        Email <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-oxford/30" />
+                        <Input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="your@email.com"
+                          className="pl-10 border-oxford/10 focus:border-gold"
+                        />
                       </div>
+                      {errors.email && (
+                        <p className="text-xs text-red-500">{errors.email}</p>
+                      )}
+                    </div>
 
+                    <div className="space-y-2">
+                      <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
+                        Phone
+                      </label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-oxford/30" />
+                        <Input
+                          type="tel"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          placeholder="+91 98765 43210"
+                          className="pl-10 border-oxford/10 focus:border-gold"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
+                        Designation <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        value={designation}
+                        onChange={(e) => setDesignation(e.target.value)}
+                        placeholder="e.g., Professor, Researcher"
+                        className="border-oxford/10 focus:border-gold"
+                      />
+                      {errors.designation && (
+                        <p className="text-xs text-red-500">{errors.designation}</p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2 md:col-span-2">
+                      <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
+                        College / Institution <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <Building className="absolute left-3 top-3 w-4 h-4 text-oxford/30" />
+                        <Input
+                          value={affiliation}
+                          onChange={(e) => setAffiliation(e.target.value)}
+                          placeholder="Your College / University"
+                          className="pl-10 border-oxford/10 focus:border-gold"
+                        />
+                      </div>
+                      {errors.affiliation && (
+                        <p className="text-xs text-red-500">{errors.affiliation}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="border-t border-black/5 pt-6">
+                    <h3 className="font-serif text-xl font-bold text-oxford mb-4">Manuscript Details</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
-                          Keywords
+                          Journal Name <span className="text-red-500">*</span>
                         </label>
                         <Input
-                          value={keywords}
-                          onChange={(e) => setKeywords(e.target.value)}
-                          placeholder="keyword1, keyword2, keyword3"
+                          value={journalName}
+                          onChange={(e) => setJournalName(e.target.value)}
+                          placeholder="Name of the journal you're submitting to"
                           className="border-oxford/10 focus:border-gold"
                         />
-                        <p className="text-xs text-oxford/40">Separate keywords with commas</p>
+                        {errors.journalName && (
+                          <p className="text-xs text-red-500">{errors.journalName}</p>
+                        )}
                       </div>
 
                       <div className="space-y-2">
                         <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
-                          Co-Authors
+                          One Line About Journal <span className="text-red-500">*</span>
                         </label>
                         <Input
-                          value={coAuthors}
-                          onChange={(e) => setCoAuthors(e.target.value)}
-                          placeholder="Co-author names (if any)"
+                          value={journalDescription}
+                          onChange={(e) => setJournalDescription(e.target.value)}
+                          placeholder="Brief description of your manuscript"
                           className="border-oxford/10 focus:border-gold"
                         />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
-                          Abstract <span className="text-red-500">*</span> (Min 150 characters)
-                        </label>
-                        <Textarea
-                          value={abstract}
-                          onChange={(e) => setAbstract(e.target.value)}
-                          placeholder="Provide a summary of your research..."
-                          className="border-oxford/10 focus:border-gold min-h-[150px]"
-                        />
-                        <div className="flex justify-between text-xs">
-                          <span className={abstract.length < 150 ? "text-red-500" : "text-green-500"}>
-                            {abstract.length} / 150 characters minimum
-                          </span>
-                        </div>
-                        {validationErrors.abstract && (
-                          <p className="text-xs text-red-500">{validationErrors.abstract}</p>
+                        {errors.journalDescription && (
+                          <p className="text-xs text-red-500">{errors.journalDescription}</p>
                         )}
                       </div>
+                    </div>
+                  </div>
 
-                      <div className="space-y-2">
-                        <label className="text-xs uppercase tracking-wider font-bold text-oxford/70">
-                          Cover Letter
-                        </label>
-                        <Textarea
-                          value={coverLetter}
-                          onChange={(e) => setCoverLetter(e.target.value)}
-                          placeholder="Explain the significance of your research..."
-                          className="border-oxford/10 focus:border-gold min-h-[100px]"
+                  <div className="border-t border-black/5 pt-6">
+                    <h3 className="font-serif text-xl font-bold text-oxford mb-4">Upload Manuscript</h3>
+                    <div className="space-y-4">
+                      <div className="border-2 border-dashed border-oxford/20 rounded-lg p-8 text-center hover:border-gold/50 transition-colors">
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept=".doc,.docx"
+                          onChange={handleFileSelect}
+                          className="hidden"
                         />
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {formStep === 3 && (
-                    <motion.div
-                      key="step3"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      className="space-y-6"
-                    >
-                      <div>
-                        <h2 className="font-serif text-2xl font-bold text-oxford mb-6 flex items-center gap-2">
-                          <Upload className="w-5 h-5 text-gold" />
-                          File Upload & Review
-                        </h2>
-                      </div>
-
-                      <div className="space-y-4">
-                        <div className="border-2 border-dashed border-oxford/20 rounded-lg p-8 text-center hover:border-gold/50 transition-colors">
-                          <input
-                            ref={fileInputRef}
-                            type="file"
-                            multiple
-                            accept=".pdf,.doc,.docx"
-                            onChange={handleFileSelect}
-                            className="hidden"
-                          />
-                          <Upload className="w-10 h-10 mx-auto text-oxford/30 mb-3" />
-                          <p className="text-sm font-medium text-oxford mb-1">
-                            Drop your manuscript files here
-                          </p>
-                          <p className="text-xs text-oxford/50 mb-4">
-                            PDF, DOC, DOCX (Max 50MB each)
-                          </p>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => fileInputRef.current?.click()}
-                            className="border-oxford/20 hover:bg-oxford hover:text-white"
-                          >
-                            <Paperclip className="w-4 h-4 mr-2" />
-                            Browse Files
-                          </Button>
-                        </div>
-
-                        {attachmentFiles.length > 0 && (
-                          <div className="space-y-2">
-                            <p className="text-xs uppercase tracking-wider font-bold text-oxford/70">
-                              Attached Files ({attachmentFiles.length})
-                            </p>
-                            {attachmentFiles.map((file, index) => (
-                              <div
-                                key={index}
-                                className="flex items-center justify-between p-3 bg-oxford/5 border border-oxford/10 rounded-lg"
-                              >
-                                <div className="flex items-center gap-3">
-                                  <FileType className="w-5 h-5 text-oxford/50" />
-                                  <div>
-                                    <p className="text-sm font-medium text-oxford">{file.name}</p>
-                                    <p className="text-xs text-oxford/50">{formatFileSize(file.size)}</p>
-                                  </div>
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={() => removeFile(index)}
-                                  className="p-1 hover:bg-red-50 text-red-500 rounded"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        )}
+                        <Upload className="w-10 h-10 mx-auto text-oxford/30 mb-3" />
+                        <p className="text-sm font-medium text-oxford mb-1">
+                          Upload your manuscript
+                        </p>
+                        <p className="text-xs text-oxford/50 mb-4">
+                          DOC or DOCX (10KB - 20MB)
+                        </p>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="border-oxford/20 hover:bg-oxford hover:text-white"
+                        >
+                          <Paperclip className="w-4 h-4 mr-2" />
+                          Browse Files
+                        </Button>
                       </div>
 
-                      {uploadProgress.length > 0 && (
-                        <div className="space-y-2">
-                          <p className="text-xs uppercase tracking-wider font-bold text-oxford/70">
-                            Upload Progress
-                          </p>
-                          {uploadProgress.map((up, index) => (
-                            <div key={index} className="flex items-center gap-3 p-2">
-                              {up.status === 'complete' && <CheckCircle className="w-4 h-4 text-green-500" />}
-                              {up.status === 'uploading' && <Loader2 className="w-4 h-4 animate-spin text-gold" />}
-                              {up.status === 'error' && <AlertCircle className="w-4 h-4 text-red-500" />}
-                              <span className="text-sm text-oxford flex-1">{up.fileName}</span>
-                              {up.status === 'uploading' && <span className="text-xs text-oxford/50">{up.progress}%</span>}
+                      {attachmentFile && (
+                        <div className="flex items-center justify-between p-3 bg-oxford/5 border border-oxford/10 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <FileType className="w-5 h-5 text-oxford/50" />
+                            <div>
+                              <p className="text-sm font-medium text-oxford">{attachmentFile.name}</p>
+                              <p className="text-xs text-oxford/50">{formatFileSize(attachmentFile.size)}</p>
                             </div>
-                          ))}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={removeFile}
+                            className="p-1 hover:bg-red-50 text-red-500 rounded"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       )}
 
-                      <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg">
-                        <h3 className="font-bold text-amber-800 flex items-center gap-2 mb-3">
-                          <AlertTriangle className="w-4 h-4" />
-                          Submission Checklist
-                        </h3>
-                        <div className="space-y-2">
-                          {[
-                            { key: 'original', label: 'This manuscript is original and has not been published elsewhere' },
-                            { key: 'noConflict', label: 'I declare no conflict of interest' },
-                            { key: 'copyright', label: 'I agree to the copyright terms and conditions' },
-                            { key: 'ethics', label: 'My research follows ethical guidelines' }
-                          ].map((item) => (
-                            <label key={item.key} className="flex items-start gap-3 cursor-pointer">
-                              <Checkbox
-                                checked={agreements[item.key as keyof typeof agreements]}
-                                onCheckedChange={(checked) => 
-                                  setAgreements(prev => ({ ...prev, [item.key]: checked }))
+                      {errors.attachment && (
+                        <p className="text-xs text-red-500">{errors.attachment}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg">
+                    <h3 className="font-bold text-amber-800 flex items-center gap-2 mb-3">
+                      <AlertTriangle className="w-4 h-4" />
+                      Submission Checklist
+                    </h3>
+                    <div className="space-y-2">
+                      {[
+                        { key: 'original', label: 'This manuscript is original and has not been published elsewhere' },
+                        { key: 'noConflict', label: 'I declare no conflict of interest' },
+                        { key: 'copyright', label: 'I agree to the copyright terms and conditions' },
+                        { key: 'ethics', label: 'My research follows ethical guidelines' }
+                      ].map((item) => (
+                        <label key={item.key} className="flex items-start gap-3 cursor-pointer">
+                          <Checkbox
+                            checked={agreements[item.key as keyof typeof agreements]}
+                            onCheckedChange={(checked) => 
+                              setAgreements(prev => ({ ...prev, [item.key]: checked }))
                                 }
                                 className="mt-0.5 border-oxford/30 data-[state=checked]:bg-gold data-[state=checked]:border-gold"
                               />
@@ -841,99 +554,57 @@ const JournalSubmit = memo(() => {
                             </label>
                           ))}
                         </div>
-                        {validationErrors.agreement && (
-                          <p className="text-xs text-red-500 mt-2">{validationErrors.agreement}</p>
+                        {errors.agreement && (
+                          <p className="text-xs text-red-500 mt-2">{errors.agreement}</p>
                         )}
-                      </div>
-
-                      <div className="bg-oxford text-white p-6 rounded-lg">
-                        <h3 className="font-bold mb-2 flex items-center gap-2">
-                          <Mail className="w-4 h-4 text-gold" />
-                          Submission Email
-                        </h3>
-                        <p className="text-sm text-white/70 mb-2">
-                          After submission, an email will be opened with all details to:
-                        </p>
-                        <p className="text-lg font-bold text-gold">jmrhpublication@gmail.com</p>
-                        <p className="text-xs text-white/50 mt-2">
-                          Please attach your manuscript files in the email.
-                        </p>
                       </div>
                     </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <div className="flex items-center justify-between mt-8 pt-6 border-t border-black/5">
-                  <div>
-                    {formStep > 1 && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setFormStep(formStep - 1)}
-                        className="border-oxford/20"
-                      >
-                        Previous
-                      </Button>
-                    )}
                   </div>
-                  <div className="flex gap-3">
-                    {formStep < 3 ? (
-                      <Button
-                        type="button"
-                        onClick={() => {
-                          if (validateStep(formStep)) {
-                            setFormStep(formStep + 1);
-                          }
-                        }}
-                        className="bg-oxford hover:bg-oxford/90"
-                      >
-                        Continue
-                        <ChevronRight className="w-4 h-4 ml-2" />
-                      </Button>
-                    ) : (
-                      <Button
-                        type="submit"
-                        disabled={isSubmitting || !canSubmit}
-                        className="bg-gold hover:bg-gold/90 text-oxford"
-                      >
-                        {isSubmitting ? (
-                          <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Submitting...
-                          </>
-                        ) : (
-                          <>
-                            <Send className="w-4 h-4 mr-2" />
-                            Submit Manuscript
-                          </>
-                        )}
-                      </Button>
-                    )}
+
+                  <div className="flex items-center justify-end pt-6 border-t border-black/5">
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="bg-gold hover:bg-gold/90 text-oxford"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4 mr-2" />
+                          Submit Manuscript
+                        </>
+                      )}
+                    </Button>
                   </div>
                 </div>
-              </div>
-            </form>
-          </div>
-
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Link 
-              to="/journal/guidelines"
-              className="inline-flex items-center gap-2 border border-oxford text-oxford px-6 py-3 text-xs uppercase tracking-widest font-bold hover:bg-oxford hover:text-white transition-all"
-            >
-              View Author Guidelines
-            </Link>
-            <Link 
-              to="/call-for-papers"
-              className="inline-flex items-center gap-2 bg-gold text-oxford px-6 py-3 text-xs uppercase tracking-widest font-bold hover:bg-oxford hover:text-white transition-all"
-            >
-              View Call for Papers
-            </Link>
-          </div>
+              </motion.div>
+            </div>
+          </form>
         </div>
-      </section>
 
-      <Footer />
-    </div>
+        <div className="mt-8 flex flex-wrap gap-4">
+          <Link 
+            to="/journal/guidelines"
+            className="inline-flex items-center gap-2 border border-oxford text-oxford px-6 py-3 text-xs uppercase tracking-widest font-bold hover:bg-oxford hover:text-white transition-all"
+          >
+            View Author Guidelines
+          </Link>
+          <Link 
+            to="/call-for-papers"
+            className="inline-flex items-center gap-2 bg-gold text-oxford px-6 py-3 text-xs uppercase tracking-widest font-bold hover:bg-oxford hover:text-white transition-all"
+          >
+            View Call for Papers
+          </Link>
+        </div>
+      </div>
+    </section>
+
+    <Footer />
+  </div>
   );
 });
 
