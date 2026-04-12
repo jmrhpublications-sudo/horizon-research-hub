@@ -32,6 +32,7 @@ export interface User {
     college?: string;
     specialization?: string;
     studyType?: string;
+    designation?: string;
 }
 
 export interface Paper {
