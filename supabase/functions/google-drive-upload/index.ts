@@ -100,7 +100,7 @@ Deno.serve(async (req) => {
           requestBody: {
             name: submissionFolderName,
             mimeType: 'application/vnd.google-apps.folder',
-            parents: [userFolderId]
+            parents: [userFolderId!]
           },
           fields: 'id'
         })
@@ -117,7 +117,7 @@ Deno.serve(async (req) => {
       const fileResponse: any = await drive.files.create({
         requestBody: {
           name: fileName,
-          parents: [submissionFolderId]
+          parents: [submissionFolderId!]
         },
         media: media,
         fields: 'id,webViewLink,webContentLink'
