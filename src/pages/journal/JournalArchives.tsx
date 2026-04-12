@@ -27,11 +27,10 @@ const JournalArchives = memo(() => {
             id: j.id,
             title: j.title,
             authors: j.authors,
-            affiliation: j.affiliation || "",
             abstract: j.abstract,
             keywords: j.keywords,
-            volume: j.volume || 1,
-            issue: j.issue || 1,
+            volume: Number(j.volume) || 1,
+            issue: Number(j.issue) || 1,
             publicationDate: j.publicationDate,
             pdfUrl: j.pdfUrl,
         }));
@@ -133,13 +132,8 @@ const JournalArchives = memo(() => {
                                                 
                                                 <p className="text-sm text-oxford/70 mb-2">
                                                     <span className="font-semibold">Authors:</span> {paper.authors}
-                                                </p>
-                                                
-                                                {paper.affiliation && (
-                                                    <p className="text-sm text-oxford/60 mb-3">
-                                                        <span className="font-semibold">Affiliation:</span> {paper.affiliation}
                                                     </p>
-                                                )}
+                                                </p>
                                                 
                                                 {paper.abstract && (
                                                     <div className="mb-3">
