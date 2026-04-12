@@ -17,6 +17,7 @@ interface VolumeGroup {
 interface IssueGroup {
     id: string;
     name: string;
+    publicationDate?: string;
     journals: any[];
 }
 
@@ -49,10 +50,12 @@ const JournalArchives = memo(() => {
                 let issue = volume.issues.find(i => i.id === issueNum);
                 
                 if (!issue) {
+                    const pubDate = j.publicationDate ? new Date(j.publicationDate) : null;
                     issue = {
                         id: issueNum,
                         name: `Issue ${issueNum}`,
-                        journals: []
+                        journals: [],
+                        publicationDate: pubDate ? pubDate.toLocaleString('en-US', { month: 'long', year: 'numeric' }) : undefined
                     };
                     volume.issues.push(issue);
                 }
@@ -222,6 +225,7 @@ const JournalArchives = memo(() => {
                                                         {issue.name}
                                                     </h2>
                                                     <p className="text-oxford/60 text-sm mt-1">
+                                                        {issue.publicationDate && <span className="mr-2">{issue.publicationDate}</span>}
                                                         {issue.journals.length} {issue.journals.length === 1 ? 'Article' : 'Articles'}
                                                     </p>
                                                 </div>

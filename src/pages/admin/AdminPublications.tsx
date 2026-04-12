@@ -1,4 +1,4 @@
-import { memo, useState, useRef, useMemo } from "react";
+import { memo, useState, useRef, useMemo, useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useJMRH, PublishedJournal, PublishedBook, ProfessorSubmission } from "@/context/JMRHContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,7 +6,7 @@ import { getSignedFileUrl } from "@/lib/storage-utils";
 import {
     Library, BookOpen, Upload, Edit, Trash2, ExternalLink, Check, X, Plus,
     Search, Eye, GraduationCap, FileText, Image, ChevronRight, FolderOpen,
-    FileIcon, FilePlus, Layers
+    FileIcon, FilePlus, Layers, Calendar
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,20 +30,25 @@ const disciplines = [
     "Entrepreneurship and Innovation", "Public Policy and Governance", "Other"
 ];
 
-interface Volume {
+const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+];
+
+interface VolumeData {
     id: string;
     name: string;
-    description?: string;
-    createdAt: string;
+    number: number;
 }
 
-interface Issue {
+interface IssueData {
     id: string;
     volumeId: string;
     name: string;
-    description?: string;
+    number: number;
+    publicationMonth?: string;
+    publicationYear?: string;
     publicationDate?: string;
-    createdAt: string;
 }
 
 const AdminPublications = memo(() => {
@@ -60,54 +65,91 @@ const AdminPublications = memo(() => {
 
     // View state for journal hierarchy
     const [viewMode, setViewMode] = useState<"list" | "volume" | "issue">("list");
-    const [selectedVolume, setSelectedVolume] = useState<Volume | null>(null);
-    const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
-    
-    // Volume/Issue management
-    const [volumes, setVolumes] = useState<Volume[]>([]);
-    const [issues, setIssues] = useState<Issue[]>([]);
-    const [isVolumeOpen, setIsVolumeOpen] = useState(false);
-    const [isIssueOpen, setIsIssueOpen] = useState(false);
-    const [editingVolume, setEditingVolume] = useState<Volume | null>(null);
-    const [editingIssue, setEditingIssue] = useState<Issue | null>(null);
-    const [volumeForm, setVolumeForm] = useState({ name: "", description: "" });
-    const [issueForm, setIssueForm] = useState({ name: "", description: "", publicationDate: "" });
+    const [selectedVolume, setSelectedVolume] = useState<any>(null);
+    const [selectedIssue, setSelectedIssue] = useState<any>(null);
 
-    // Load volumes and issues from local state or fetch from DB
-    // For now, we'll generate from existing journals
+    // Manage volumes and issues in state
+    const [volumes, setVolumes] = useState<VolumeData[]>([]);
+    const [issues, setIssues] = useState<IssueData[]>([]);
+
+    // Load volumes and issues from journals
+    useEffect(() => {
+        const volSet = new Set<string>();
+        const issueSet = new Set<string>();
+        const volMap = new Map<string, VolumeData>();
+        const issueMap = new Map<string, IssueData>();
+
+        publishedJournals.forEach(j => {
+            const volNum = j.volume || "1";
+            const issueNum = j.issue || "1";
+            const volId = `vol-${volNum}`;
+            
+            if (!volSet.has(volNum)) {
+                volSet.add(volNum);
+                volMap.set(volId, { id: volId, name: `Volume ${volNum}`, number: parseInt(volNum) });
+            }
+
+            const issueId = `vol-${volNum}-issue-${issueNum}`;
+            if (!issueSet.has(issueId)) {
+                issueSet.add(issueId);
+                issueMap.set(issueId, {
+                    id: issueId,
+                    volumeId: volId,
+                    name: `Issue ${issueNum}`,
+                    number: parseInt(issueNum),
+                    publicationMonth: j.publicationDate ? new Date(j.publicationDate).toLocaleString('en-US', { month: 'long' }) : undefined,
+                    publicationYear: j.publicationDate ? new Date(j.publicationDate).getFullYear().toString() : undefined,
+                    publicationDate: j.publicationDate
+                });
+            }
+        });
+
+        setVolumes(Array.from(volMap.values()).sort((a, b) => b.number - a.number));
+        setIssues(Array.from(issueMap.values()));
+    }, [publishedJournals]);
+
+    // Group journals by volume and issue
     const journalVolumes = useMemo(() => {
-        const volMap = new Map<string, { name: string; issues: Map<string, Issue & { journals: PublishedJournal[] }> }>();
+        const volMap = new Map<string, any>();
         
         publishedJournals.forEach(j => {
             const volNum = j.volume || "1";
             const issueNum = j.issue || "1";
+            const volId = `vol-${volNum}`;
+            const issueId = `vol-${volNum}-issue-${issueNum}`;
             
-            if (!volMap.has(volNum)) {
-                volMap.set(volNum, { name: `Volume ${volNum}`, issues: new Map() });
-            }
-            
-            const volume = volMap.get(volNum)!;
-            if (!volume.issues.has(issueNum)) {
-                volume.issues.set(issueNum, {
-                    id: `vol-${volNum}-issue-${issueNum}`,
-                    volumeId: volNum,
-                    name: `Issue ${issueNum}`,
-                    createdAt: j.createdAt || new Date().toISOString(),
-                    journals: []
+            if (!volMap.has(volId)) {
+                const vol = volumes.find(v => v.id === volId);
+                volMap.set(volId, {
+                    id: volId,
+                    name: vol?.name || `Volume ${volNum}`,
+                    number: parseInt(volNum),
+                    issues: []
                 });
             }
             
-            volume.issues.get(issueNum)!.journals.push(j);
+            const volume = volMap.get(volId)!;
+            let issue = volume.issues.find((i: any) => i.id === issueId);
+            
+            if (!issue) {
+                const issueData = issues.find(i => i.id === issueId);
+                issue = {
+                    id: issueId,
+                    volumeId: volId,
+                    name: issueData?.name || `Issue ${issueNum}`,
+                    number: parseInt(issueNum),
+                    publicationMonth: issueData?.publicationMonth,
+                    publicationYear: issueData?.publicationYear,
+                    journals: []
+                };
+                volume.issues.push(issue);
+            }
+            
+            issue.journals.push(j);
         });
         
-        return Array.from(volMap.entries()).map(([id, vol]) => ({
-            id,
-            name: vol.name,
-            description: "",
-            createdAt: new Date().toISOString(),
-            issues: Array.from(vol.issues.values())
-        })).sort((a, b) => parseInt(b.id) - parseInt(a.id));
-    }, [publishedJournals]);
+        return Array.from(volMap.values()).sort((a, b) => b.number - a.number);
+    }, [publishedJournals, volumes, issues]);
 
     // Journal form
     const [isJournalOpen, setIsJournalOpen] = useState(false);
@@ -118,6 +160,15 @@ const AdminPublications = memo(() => {
         publicationDate: new Date().toISOString().split('T')[0],
         pdfUrl: "", coverImage: ""
     });
+
+    // New volume/issue form states
+    const [isVolumeDialogOpen, setIsVolumeDialogOpen] = useState(false);
+    const [isIssueDialogOpen, setIsIssueDialogOpen] = useState(false);
+    const [newVolumeNumber, setNewVolumeNumber] = useState("");
+    const [newIssueNumber, setNewIssueNumber] = useState("");
+    const [newIssueMonth, setNewIssueMonth] = useState("");
+    const [newIssueYear, setNewIssueYear] = useState("");
+    const [selectedVolumeForIssue, setSelectedVolumeForIssue] = useState("");
 
     // Book form
     const [isBookOpen, setIsBookOpen] = useState(false);
@@ -162,6 +213,62 @@ const AdminPublications = memo(() => {
         setEditingBook(b);
         setBookForm({ title: b.title, authors: b.authors, editors: b.editors || "", isbn: b.isbn || "", publisher: b.publisher || "", description: b.description || "", discipline: b.discipline, keywords: b.keywords || "", edition: b.edition || "", publicationYear: b.publicationYear || "", pdfUrl: b.pdfUrl || "", coverImage: b.coverImage || "", purchaseLink: b.purchaseLink || "" });
         setIsBookOpen(true);
+    };
+
+    const handleCreateVolume = () => {
+        if (!newVolumeNumber) {
+            toast({ title: "Error", description: "Please enter volume number", variant: "destructive" });
+            return;
+        }
+        const volNum = parseInt(newVolumeNumber);
+        const volId = `vol-${volNum}`;
+        
+        if (volumes.find(v => v.id === volId)) {
+            toast({ title: "Error", description: "Volume already exists", variant: "destructive" });
+            return;
+        }
+
+        const newVol = { id: volId, name: `Volume ${volNum}`, number: volNum };
+        setVolumes(prev => [...prev, newVol].sort((a, b) => b.number - a.number));
+        setJournalForm(p => ({ ...p, volume: volNum.toString() }));
+        setIsVolumeDialogOpen(false);
+        setNewVolumeNumber("");
+        toast({ title: "Success", description: `Volume ${volNum} created` });
+    };
+
+    const handleCreateIssue = () => {
+        if (!newIssueNumber || !selectedVolumeForIssue || !newIssueMonth || !newIssueYear) {
+            toast({ title: "Error", description: "Please fill all fields", variant: "destructive" });
+            return;
+        }
+
+        const volNum = selectedVolumeForIssue;
+        const issueNum = parseInt(newIssueNumber);
+        const issueId = `vol-${volNum}-issue-${issueNum}`;
+        
+        if (issues.find(i => i.id === issueId)) {
+            toast({ title: "Error", description: "Issue already exists", variant: "destructive" });
+            return;
+        }
+
+        const newIssue: IssueData = {
+            id: issueId,
+            volumeId: `vol-${volNum}`,
+            name: `Issue ${issueNum}`,
+            number: issueNum,
+            publicationMonth: newIssueMonth,
+            publicationYear: newIssueYear,
+            publicationDate: `${newIssueMonth} ${newIssueYear}`
+        };
+
+        setIssues(prev => [...prev, newIssue]);
+        setJournalForm(p => ({ ...p, volume: volNum, issue: issueNum.toString() }));
+        setIsIssueDialogOpen(false);
+        setNewIssueNumber("");
+        setNewIssueMonth("");
+        setNewIssueYear("");
+        setSelectedVolumeForIssue("");
+        toast({ title: "Success", description: `Issue ${issueNum} created for Volume ${volNum}` });
     };
 
     const handleSaveJournal = async () => {
@@ -242,7 +349,7 @@ const AdminPublications = memo(() => {
                         </h1>
                         <p className="text-sm text-muted-foreground">
                             {viewMode === "list" && `${publishedJournals.length} journals • ${publishedBooks.length} books • ${pendingSubs.length} pending`}
-                            {viewMode === "volume" && `${selectedVolume?.issues.length} issues`}
+                            {viewMode === "volume" && `${selectedVolume?.issues?.length || 0} issues`}
                             {viewMode === "issue" && `${selectedIssue?.journals?.length || 0} articles`}
                         </p>
                     </div>
@@ -263,12 +370,12 @@ const AdminPublications = memo(() => {
                             </>
                         )}
                         {viewMode === "volume" && selectedVolume && (
-                            <Button onClick={() => openNewJournal(selectedVolume.id)} className="gap-2 bg-accent text-accent-foreground text-xs">
+                            <Button onClick={() => { setSelectedVolumeForIssue(selectedVolume.number.toString()); setIsIssueDialogOpen(true); }} className="gap-2 bg-accent text-accent-foreground text-xs">
                                 <Plus size={16} /> Add Issue
                             </Button>
                         )}
                         {viewMode === "issue" && selectedIssue && (
-                            <Button onClick={() => openNewJournal(selectedVolume?.id, selectedIssue?.id)} className="gap-2 bg-accent text-accent-foreground text-xs">
+                            <Button onClick={() => openNewJournal(selectedVolume?.number?.toString(), selectedIssue?.number?.toString())} className="gap-2 bg-accent text-accent-foreground text-xs">
                                 <FilePlus size={16} /> Add Article
                             </Button>
                         )}
@@ -294,7 +401,7 @@ const AdminPublications = memo(() => {
                             <Input placeholder={viewMode === "list" ? "Search journals..." : `Search in ${selectedVolume?.name}...`} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-10" />
                         </div>
 
-                        {/* View Mode: List */}
+                        {/* View Mode: List - Show Volumes */}
                         {viewMode === "list" && (
                             <div className="space-y-3">
                                 <AnimatePresence>
@@ -310,7 +417,7 @@ const AdminPublications = memo(() => {
                                                         </div>
                                                         <div>
                                                             <h3 className="font-serif font-bold text-foreground">{volume.name}</h3>
-                                                            <p className="text-xs text-muted-foreground">{volume.issues.length} issues • {volume.issues.reduce((sum, i) => sum + (i.journals?.length || 0), 0)} articles</p>
+                                                            <p className="text-xs text-muted-foreground">{volume.issues?.length || 0} issues • {volume.issues?.reduce((sum: number, i: any) => sum + (i.journals?.length || 0), 0) || 0} articles</p>
                                                         </div>
                                                     </div>
                                                     <ChevronRight size={18} className="text-muted-foreground group-hover:text-accent transition-colors" />
@@ -334,7 +441,7 @@ const AdminPublications = memo(() => {
                         {viewMode === "volume" && selectedVolume && (
                             <div className="space-y-3">
                                 <AnimatePresence>
-                                    {selectedVolume.issues.map((issue) => (
+                                    {(selectedVolume.issues || []).sort((a: any, b: any) => b.number - a.number).map((issue: any) => (
                                         <motion.div key={issue.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                                             className="p-4 bg-card border border-border hover:border-accent/30 transition-all cursor-pointer group"
                                             onClick={() => navigateToIssue(selectedVolume, issue)}>
@@ -345,7 +452,14 @@ const AdminPublications = memo(() => {
                                                     </div>
                                                     <div>
                                                         <h3 className="font-serif font-bold text-foreground">{issue.name}</h3>
-                                                        <p className="text-xs text-muted-foreground">{issue.journals?.length || 0} articles</p>
+                                                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                                            {issue.publicationMonth && (
+                                                                <span className="flex items-center gap-1">
+                                                                    <Calendar size={10} /> {issue.publicationMonth} {issue.publicationYear}
+                                                                </span>
+                                                            )}
+                                                            <span>{issue.journals?.length || 0} articles</span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <ChevronRight size={18} className="text-muted-foreground group-hover:text-accent transition-colors" />
@@ -353,10 +467,10 @@ const AdminPublications = memo(() => {
                                         </motion.div>
                                     ))}
                                 </AnimatePresence>
-                                {selectedVolume.issues.length === 0 && (
+                                {(selectedVolume.issues || []).length === 0 && (
                                     <div className="py-12 text-center">
                                         <p className="text-muted-foreground font-serif italic">No issues in this volume.</p>
-                                        <Button onClick={() => openNewJournal(selectedVolume.id)} className="mt-4 gap-2">
+                                        <Button onClick={() => { setSelectedVolumeForIssue(selectedVolume.number.toString()); setIsIssueDialogOpen(true); }} className="mt-4 gap-2">
                                             <Plus size={16} /> Add Issue
                                         </Button>
                                     </div>
@@ -368,7 +482,7 @@ const AdminPublications = memo(() => {
                         {viewMode === "issue" && selectedIssue && (
                             <div className="space-y-3">
                                 <AnimatePresence>
-                                    {(selectedIssue.journals || []).filter(j => !searchTerm || j.title.toLowerCase().includes(searchTerm.toLowerCase())).map((journal) => (
+                                    {(selectedIssue.journals || []).filter((j: any) => !searchTerm || j.title.toLowerCase().includes(searchTerm.toLowerCase())).map((journal: any) => (
                                         <motion.div key={journal.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                                             className="p-4 bg-card border border-border hover:border-accent/20 transition-all group">
                                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -402,11 +516,11 @@ const AdminPublications = memo(() => {
                                         </motion.div>
                                     ))}
                                 </AnimatePresence>
-                                {(selectedIssue.journals || []).filter(j => !searchTerm || j.title.toLowerCase().includes(searchTerm.toLowerCase())).length === 0 && (
+                                {(selectedIssue.journals || []).filter((j: any) => !searchTerm || j.title.toLowerCase().includes(searchTerm.toLowerCase())).length === 0 && (
                                     <div className="py-12 text-center border-2 border-dashed border-border rounded-lg">
                                         <FileText size={48} className="text-muted-foreground/30 mx-auto mb-4" />
                                         <p className="text-muted-foreground font-serif italic">No articles in this issue.</p>
-                                        <Button onClick={() => openNewJournal(selectedVolume?.id, selectedIssue?.id)} className="mt-4 gap-2">
+                                        <Button onClick={() => openNewJournal(selectedVolume?.number?.toString(), selectedIssue?.number?.toString())} className="mt-4 gap-2">
                                             <FilePlus size={16} /> Add Article
                                         </Button>
                                     </div>
@@ -497,6 +611,87 @@ const AdminPublications = memo(() => {
                 )}
             </div>
 
+            {/* Create Volume Dialog */}
+            <Dialog open={isVolumeDialogOpen} onOpenChange={setIsVolumeDialogOpen}>
+                <DialogContent className="max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="font-serif">Create New Volume</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Volume Number</label>
+                            <Input 
+                                type="number" 
+                                placeholder="e.g., 1, 2, 3" 
+                                value={newVolumeNumber}
+                                onChange={(e) => setNewVolumeNumber(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsVolumeDialogOpen(false)}>Cancel</Button>
+                        <Button className="bg-accent text-accent-foreground" onClick={handleCreateVolume}>Create Volume</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Create Issue Dialog */}
+            <Dialog open={isIssueDialogOpen} onOpenChange={setIsIssueDialogOpen}>
+                <DialogContent className="max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="font-serif">Create New Issue</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Volume</label>
+                            <Select value={selectedVolumeForIssue} onValueChange={setSelectedVolumeForIssue}>
+                                <SelectTrigger><SelectValue placeholder="Select Volume" /></SelectTrigger>
+                                <SelectContent>
+                                    {volumes.map(v => (
+                                        <SelectItem key={v.id} value={v.number.toString()}>{v.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Issue Number</label>
+                            <Input 
+                                type="number" 
+                                placeholder="e.g., 1, 2, 3" 
+                                value={newIssueNumber}
+                                onChange={(e) => setNewIssueNumber(e.target.value)}
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">Month</label>
+                                <Select value={newIssueMonth} onValueChange={setNewIssueMonth}>
+                                    <SelectTrigger><SelectValue placeholder="Select Month" /></SelectTrigger>
+                                    <SelectContent>
+                                        {months.map(m => (
+                                            <SelectItem key={m} value={m}>{m}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">Year</label>
+                                <Input 
+                                    type="number" 
+                                    placeholder="e.g., 2026" 
+                                    value={newIssueYear}
+                                    onChange={(e) => setNewIssueYear(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsIssueDialogOpen(false)}>Cancel</Button>
+                        <Button className="bg-accent text-accent-foreground" onClick={handleCreateIssue}>Create Issue</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
             {/* Journal Dialog */}
             <Dialog open={isJournalOpen} onOpenChange={(open) => { if (!open) { setIsJournalOpen(false); setEditingJournal(null); } }}>
                 <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -514,12 +709,50 @@ const AdminPublications = memo(() => {
                             </Select>
                             <Input placeholder="Keywords" value={journalForm.keywords} onChange={(e) => setJournalForm(p => ({ ...p, keywords: e.target.value }))} />
                         </div>
-                        <div className="grid grid-cols-3 gap-4">
-                            <Input placeholder="Volume" value={journalForm.volume} onChange={(e) => setJournalForm(p => ({ ...p, volume: e.target.value }))} />
-                            <Input placeholder="Issue" value={journalForm.issue} onChange={(e) => setJournalForm(p => ({ ...p, issue: e.target.value }))} />
-                            <Input placeholder="Pages" value={journalForm.pages} onChange={(e) => setJournalForm(p => ({ ...p, pages: e.target.value }))} />
+                        
+                        {/* Volume and Issue Selection with Create Option */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold uppercase text-muted-foreground">Volume *</label>
+                                <div className="flex gap-2">
+                                    <Select onValueChange={(v) => setJournalForm(p => ({ ...p, volume: v }))} value={journalForm.volume}>
+                                        <SelectTrigger><SelectValue placeholder="Select Volume" /></SelectTrigger>
+                                        <SelectContent>
+                                            {volumes.map(v => (
+                                                <SelectItem key={v.id} value={v.number.toString()}>{v.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <Button type="button" variant="outline" size="sm" onClick={() => setIsVolumeDialogOpen(true)}>
+                                        <Plus size={14} />
+                                    </Button>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold uppercase text-muted-foreground">Issue *</label>
+                                <div className="flex gap-2">
+                                    <Select onValueChange={(v) => setJournalForm(p => ({ ...p, issue: v }))} value={journalForm.issue}>
+                                        <SelectTrigger><SelectValue placeholder="Select Issue" /></SelectTrigger>
+                                        <SelectContent>
+                                            {issues
+                                                .filter(i => i.volumeId === `vol-${journalForm.volume}`)
+                                                .map(i => (
+                                                    <SelectItem key={i.id} value={i.number.toString()}>{i.name} ({i.publicationMonth} {i.publicationYear})</SelectItem>
+                                                ))
+                                            }
+                                        </SelectContent>
+                                    </Select>
+                                    <Button type="button" variant="outline" size="sm" onClick={() => { if (journalForm.volume) { setSelectedVolumeForIssue(journalForm.volume); setIsIssueDialogOpen(true); } }} disabled={!journalForm.volume}>
+                                        <Plus size={14} />
+                                    </Button>
+                                </div>
+                            </div>
                         </div>
-                        <Input placeholder="DOI" value={journalForm.doi} onChange={(e) => setJournalForm(p => ({ ...p, doi: e.target.value }))} />
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                            <Input placeholder="Pages" value={journalForm.pages} onChange={(e) => setJournalForm(p => ({ ...p, pages: e.target.value }))} />
+                            <Input placeholder="DOI" value={journalForm.doi} onChange={(e) => setJournalForm(p => ({ ...p, doi: e.target.value }))} />
+                        </div>
                         <Input type="date" value={journalForm.publicationDate} onChange={(e) => setJournalForm(p => ({ ...p, publicationDate: e.target.value }))} />
                         <div className="space-y-2">
                             <label className="text-xs font-bold uppercase text-muted-foreground">PDF/DOC File</label>
