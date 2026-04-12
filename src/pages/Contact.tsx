@@ -35,10 +35,8 @@ const Contact = memo(() => {
       {/* Content */}
       <section className="py-16 bg-white">
         <div className="container max-w-4xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Contact Information */}
-            <div className="space-y-6">
-              {/* Editor-in-Chief Address */}
+          <div className="grid md:grid-cols-2 gap-6">
+              {/* Row 1: Editor-in-Chief + Publisher Address */}
               <div className="bg-white border border-black/5 p-6">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
@@ -56,7 +54,6 @@ const Contact = memo(() => {
                 </div>
               </div>
 
-              {/* Publisher Address */}
               <div className="bg-white border border-black/5 p-6">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
@@ -74,7 +71,7 @@ const Contact = memo(() => {
                 </div>
               </div>
 
-              {/* Official Email */}
+              {/* Row 2: Official Email + Submission Email */}
               <div className="bg-white border border-black/5 p-6">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
@@ -90,7 +87,6 @@ const Contact = memo(() => {
                 </div>
               </div>
 
-              {/* Submission Email */}
               <div className="bg-white border border-black/5 p-6">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
@@ -106,7 +102,7 @@ const Contact = memo(() => {
                 </div>
               </div>
 
-              {/* Reviewer Email */}
+              {/* Row 3: Reviewer Email + Response Time */}
               <div className="bg-white border border-black/5 p-6">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
@@ -122,7 +118,6 @@ const Contact = memo(() => {
                 </div>
               </div>
 
-              {/* Response Time */}
               <div className="bg-oxford/5 p-6 border border-black/5">
                 <p className="text-oxford/70">
                   <strong>Response Time:</strong> All inquiries will be responded to within <strong>2–3 working days</strong>.
