@@ -23,6 +23,7 @@ const JournalOpenAccess = lazy(() => import("./pages/journal/JournalOpenAccess")
 const JournalGuidelines = lazy(() => import("./pages/journal/JournalGuidelines"));
 const JournalCurrentIssue = lazy(() => import("./pages/journal/JournalCurrentIssue"));
 const JournalArchives = lazy(() => import("./pages/journal/JournalArchives"));
+const JournalViewer = lazy(() => import("./pages/journal/JournalViewer"));
 const JournalAPC = lazy(() => import("./pages/journal/JournalAPC"));
 const JournalSubmit = lazy(() => import("./pages/journal/JournalSubmit"));
 
@@ -115,6 +116,7 @@ const App = () => (
               <Route path="/journal/guidelines" element={<JournalGuidelines />} />
               <Route path="/journal/current-issue" element={<JournalCurrentIssue />} />
               <Route path="/journal/archives" element={<JournalArchives />} />
+              <Route path="/journal/viewer/:id" element={<JournalViewer />} />
               <Route path="/journal/apc" element={<JournalAPC />} />
               <Route path="/journal/submit" element={<JournalSubmit />} />
               
