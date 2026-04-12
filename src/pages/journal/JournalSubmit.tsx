@@ -580,10 +580,9 @@ const JournalSubmit = memo(() => {
                       )}
                     </Button>
                   </div>
-                </div>
               </motion.div>
-            </div>
-          </form>
+              </div>
+            </form>
           </div>
         </div>
 
