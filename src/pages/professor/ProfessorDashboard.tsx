@@ -6,7 +6,8 @@ import { getSignedFileUrl } from "@/lib/storage-utils";
 import {
     BookOpen, CheckCircle, Clock, FileText, Send, ArrowRight, AlertCircle,
     MessageSquare, Search, Download, Eye, Upload, Library, Plus, Trash2,
-    User, Calendar, GraduationCap, RefreshCw
+    User, Calendar, GraduationCap, RefreshCw, Star, TrendingUp, Activity,
+    BarChart3, CheckSquare, Square
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,6 +23,8 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell, AreaChart, Area } from "recharts";
+import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO } from "date-fns";
 
 const statusColors: Record<string, string> = {
     SUBMITTED: "bg-orange-100 text-orange-700",
@@ -85,6 +88,69 @@ const ProfessorDashboard = memo(() => {
 
     const pendingReviews = filteredPapers.filter(p => p.status === 'UNDER_REVIEW' || p.status === 'SUBMITTED');
     const completedReviews = filteredPapers.filter(p => p.status !== 'UNDER_REVIEW' && p.status !== 'SUBMITTED');
+
+    // Analytics calculations
+    const myReviews = papers.filter(p => p.assignedProfessorId === currentUser?.id);
+    const monthlyReviewData = useMemo(() => {
+        const last6Months = Array.from({ length: 6 }, (_, i) => {
+            const date = subMonths(new Date(), 5 - i);
+            return {
+                month: format(date, 'MMM'),
+                fullDate: startOfMonth(date),
+                reviews: 0,
+                accepted: 0,
+                rejected: 0
+            };
+        });
+        
+        myReviews.forEach(paper => {
+            try {
+                const paperDate = parseISO(paper.submissionDate);
+                const monthIndex = monthlyReviewData.findIndex(m => 
+                    isWithinInterval(paperDate, { start: m.fullDate, end: endOfMonth(m.fullDate) })
+                );
+                if (monthIndex !== -1) {
+                    monthlyReviewData[monthIndex].reviews++;
+                    if (paper.status === 'ACCEPTED' || paper.status === 'PUBLISHED') {
+                        monthlyReviewData[monthIndex].accepted++;
+                    }
+                    if (paper.status === 'REJECTED') {
+                        monthlyReviewData[monthIndex].rejected++;
+                    }
+                }
+            } catch {}
+        });
+
+        return monthlyReviewData;
+    }, [myReviews]);
+
+    const reviewDecisionData = useMemo(() => {
+        const accepted = myReviews.filter(r => r.status === 'ACCEPTED' || r.status === 'PUBLISHED').length;
+        const rejected = myReviews.filter(r => r.status === 'REJECTED').length;
+        const pending = myReviews.filter(r => r.status === 'SUBMITTED' || r.status === 'UNDER_REVIEW').length;
+        const revision = myReviews.filter(r => r.status === 'REVISION_REQUIRED').length;
+        return [
+            { name: 'Accepted', value: accepted, color: 'hsl(142, 60%, 40%)' },
+            { name: 'Published', value: myReviews.filter(r => r.status === 'PUBLISHED').length, color: 'hsl(35, 50%, 60%)' },
+            { name: 'Revision', value: revision, color: 'hsl(45, 90%, 60%)' },
+            { name: 'Rejected', value: rejected, color: 'hsl(0, 84%, 60%)' },
+            { name: 'Pending', value: pending, color: 'hsl(200, 10%, 40%)' },
+        ].filter(d => d.value > 0);
+    }, [myReviews]);
+
+    const acceptanceRate = myReviews.length > 0 
+        ? ((myReviews.filter(r => r.status === 'ACCEPTED' || r.status === 'PUBLISHED').length / myReviews.length) * 100).toFixed(1)
+        : '0';
+
+    const stats = {
+        totalReviews: myReviews.length,
+        pending: pendingReviews.length,
+        completed: completedReviews.length,
+        accepted: myReviews.filter(r => r.status === 'ACCEPTED' || r.status === 'PUBLISHED').length,
+        rejected: myReviews.filter(r => r.status === 'REJECTED').length,
+        published: myReviews.filter(r => r.status === 'PUBLISHED').length,
+        acceptanceRate
+    };
 
     const handleSubmitReview = (paperId: string, decision: PaperStatus) => {
         if (!reviewComments.trim()) {
@@ -156,6 +222,7 @@ const ProfessorDashboard = memo(() => {
     };
 
     const tabs = [
+        { key: "analytics", label: "Analytics", count: 0 },
         { key: "reviews", label: "Pending Reviews", count: pendingReviews.length },
         { key: "history", label: "Review History", count: completedReviews.length },
         { key: "submissions", label: "My Submissions", count: mySubmissions.length },
@@ -185,7 +252,7 @@ const ProfessorDashboard = memo(() => {
                                 <Clock size={18} className="text-orange-600" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-foreground">{pendingReviews.length}</p>
+                                <p className="text-2xl font-bold text-foreground">{stats.pending}</p>
                                 <p className="text-xs text-muted-foreground">Pending Reviews</p>
                             </div>
                         </div>
@@ -197,7 +264,7 @@ const ProfessorDashboard = memo(() => {
                                 <CheckCircle size={18} className="text-emerald-600" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-foreground">{completedReviews.length}</p>
+                                <p className="text-2xl font-bold text-foreground">{stats.completed}</p>
                                 <p className="text-xs text-muted-foreground">Completed</p>
                             </div>
                         </div>
@@ -209,7 +276,7 @@ const ProfessorDashboard = memo(() => {
                                 <Library size={18} className="text-accent" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-foreground">{mySubmissions.filter(s => s.status === 'APPROVED').length}</p>
+                                <p className="text-2xl font-bold text-foreground">{stats.published}</p>
                                 <p className="text-xs text-muted-foreground">Published</p>
                             </div>
                         </div>
@@ -217,12 +284,12 @@ const ProfessorDashboard = memo(() => {
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
                         className="bg-card border border-border p-4 rounded-lg">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <BookOpen size={18} className="text-blue-600" />
+                            <div className="w-10 h-10 bg-gold/10 rounded-lg flex items-center justify-center">
+                                <TrendingUp size={18} className="text-gold" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-foreground">{assignedPapers.length}</p>
-                                <p className="text-xs text-muted-foreground">Total Assigned</p>
+                                <p className="text-2xl font-bold text-foreground">{stats.acceptanceRate}%</p>
+                                <p className="text-xs text-muted-foreground">Accept Rate</p>
                             </div>
                         </div>
                     </motion.div>
@@ -263,10 +330,146 @@ const ProfessorDashboard = memo(() => {
                     {tabs.map(tab => (
                         <button key={tab.key} onClick={() => setActiveTab(tab.key as any)}
                             className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.key ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
-                            {tab.label} ({tab.count})
+                            {tab.label} {tab.key !== 'analytics' && `(${tab.count})`}
                         </button>
                     ))}
                 </div>
+
+                {/* Analytics Tab */}
+                {activeTab === "analytics" && (
+                    <div className="space-y-6">
+                        {/* Stats Cards */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                                className="bg-card border border-border p-4 rounded-lg">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <FileText size={16} className="text-accent" />
+                                    <span className="text-xs text-muted-foreground">Total Assigned</span>
+                                </div>
+                                <p className="text-2xl font-bold text-foreground">{stats.totalReviews}</p>
+                            </motion.div>
+                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
+                                className="bg-card border border-border p-4 rounded-lg">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Clock size={16} className="text-orange-500" />
+                                    <span className="text-xs text-muted-foreground">Pending</span>
+                                </div>
+                                <p className="text-2xl font-bold text-foreground">{stats.pending}</p>
+                            </motion.div>
+                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+                                className="bg-card border border-border p-4 rounded-lg">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <CheckCircle size={16} className="text-green-500" />
+                                    <span className="text-xs text-muted-foreground">Accepted/Published</span>
+                                </div>
+                                <p className="text-2xl font-bold text-foreground">{stats.accepted + stats.published}</p>
+                            </motion.div>
+                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+                                className="bg-card border border-border p-4 rounded-lg">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <TrendingUp size={16} className="text-gold" />
+                                    <span className="text-xs text-muted-foreground">Acceptance Rate</span>
+                                </div>
+                                <p className="text-2xl font-bold text-foreground">{stats.acceptanceRate}%</p>
+                            </motion.div>
+                        </div>
+
+                        {/* Charts Row */}
+                        <div className="grid md:grid-cols-2 gap-6">
+                            {/* Monthly Review Activity */}
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                                className="bg-card border border-border p-5">
+                                <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                    <Activity size={16} className="text-accent" /> Monthly Review Activity
+                                </h3>
+                                <ResponsiveContainer width="100%" height={220}>
+                                    <AreaChart data={monthlyReviewData}>
+                                        <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                                        <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
+                                        <Tooltip />
+                                        <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
+                                        <Area type="monotone" dataKey="reviews" stackId="1" stroke="hsl(35, 40%, 50%)" fill="hsl(35, 40%, 50%)" fillOpacity={0.6} name="Total Reviews" />
+                                        <Area type="monotone" dataKey="accepted" stackId="2" stroke="hsl(142, 60%, 40%)" fill="hsl(142, 60%, 40%)" fillOpacity={0.6} name="Accepted" />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </motion.div>
+
+                            {/* Review Decision Distribution */}
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
+                                className="bg-card border border-border p-5">
+                                <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                    <BarChart3 size={16} className="text-secondary" /> Review Decision Distribution
+                                </h3>
+                                <ResponsiveContainer width="100%" height={220}>
+                                    <BarChart data={reviewDecisionData}>
+                                        <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+                                        <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
+                                        <Tooltip />
+                                        <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                                            {reviewDecisionData.map((entry, index) => (
+                                                <Cell key={index} fill={entry.color} />
+                                            ))}
+                                        </Bar>
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </motion.div>
+                        </div>
+
+                        {/* My Submissions Status */}
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+                            className="bg-card border border-border p-5">
+                            <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                <Library size={16} className="text-accent" /> My Submissions Status
+                            </h3>
+                            <div className="space-y-3">
+                                {[
+                                    { status: 'PENDING', count: mySubmissions.filter(s => s.status === 'PENDING').length, color: 'bg-orange-100 text-orange-600' },
+                                    { status: 'APPROVED', count: mySubmissions.filter(s => s.status === 'APPROVED').length, color: 'bg-green-100 text-green-600' },
+                                    { status: 'REJECTED', count: mySubmissions.filter(s => s.status === 'REJECTED').length, color: 'bg-red-100 text-red-600' },
+                                ].map(item => (
+                                    <div key={item.status} className="flex items-center justify-between">
+                                        <span className={`px-2 py-1 text-xs font-bold uppercase ${item.color}`}>{item.status}</span>
+                                        <span className="text-sm font-bold text-foreground">{item.count}</span>
+                                    </div>
+                                ))}
+                                {mySubmissions.length === 0 && (
+                                    <p className="text-sm text-muted-foreground text-center py-4">No submissions yet</p>
+                                )}
+                            </div>
+                        </motion.div>
+
+                        {/* Recent Activity Timeline */}
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
+                            className="bg-card border border-border p-5">
+                            <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                <Clock size={16} className="text-accent" /> Recent Activity
+                            </h3>
+                            <div className="space-y-3">
+                                {myReviews.slice(0, 5).map(paper => (
+                                    <div key={paper.id} className="flex items-center justify-between text-sm">
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-foreground truncate">{paper.title}</p>
+                                            <p className="text-xs text-muted-foreground">{paper.submissionDate}</p>
+                                        </div>
+                                        <span className={`px-2 py-0.5 text-[9px] font-bold uppercase shrink-0 ml-2 ${
+                                            paper.status === 'SUBMITTED' ? 'bg-orange-100 text-orange-600' :
+                                            paper.status === 'UNDER_REVIEW' ? 'bg-blue-100 text-blue-600' :
+                                            paper.status === 'ACCEPTED' ? 'bg-green-100 text-green-600' :
+                                            paper.status === 'PUBLISHED' ? 'bg-accent/20 text-accent' :
+                                            paper.status === 'REJECTED' ? 'bg-red-100 text-red-600' :
+                                            'bg-yellow-100 text-yellow-600'
+                                        }`}>
+                                            {paper.status.replace('_', ' ')}
+                                        </span>
+                                    </div>
+                                ))}
+                                {myReviews.length === 0 && (
+                                    <p className="text-sm text-muted-foreground text-center py-4">No recent activity</p>
+                                )}
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
 
                 {/* Pending Reviews Tab */}
                 {activeTab === "reviews" && (

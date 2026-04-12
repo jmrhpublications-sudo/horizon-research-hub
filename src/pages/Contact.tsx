@@ -125,10 +125,13 @@ const Contact = memo(() => {
               </div>
             </div>
 
-            
+            <div className="bg-oxford/5 p-6 border border-black/5">
+              <p className="text-oxford/70">
+                <strong>Response Time:</strong> All inquiries will be responded to within <strong>2–3 working days</strong>.
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
       <Footer />
     </div>

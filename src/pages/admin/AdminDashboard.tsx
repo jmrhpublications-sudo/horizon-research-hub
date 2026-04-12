@@ -59,7 +59,9 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, LineChart, Line, AreaChart, Area } from "recharts";
+import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO } from "date-fns";
+import { useMemo } from "react";
 
 const AdminDashboard = memo(() => {
     const { 
@@ -69,7 +71,7 @@ const AdminDashboard = memo(() => {
         createPublishedBook, updatePublishedBook, deletePublishedBook,
         updateUploadRequest, deleteUploadRequest, banUser, unbanUser, refreshData,
         approveProfessorSubmission, updateProfessorSubmission,
-        deleteUser, updateUserRole
+        deleteUser, updateUserRole, reviews
     } = useJMRH();
     const [activeTab, setActiveTab] = useState<"papers" | "users" | "professors" | "upload" | "overview" | "reviews">("overview");
     const [isCreateUserOpen, setIsCreateUserOpen] = useState(false);
@@ -141,6 +143,8 @@ const AdminDashboard = memo(() => {
     const acceptedPapers = papers.filter(p => p.status === 'ACCEPTED');
     const rejectedPapers = papers.filter(p => p.status === 'REJECTED');
     const publishedPapers = papers.filter(p => p.status === 'PUBLISHED');
+    const assignedPapers = papers.filter(p => p.assignedProfessorId);
+    const completedReviews = papers.filter(p => p.status !== 'UNDER_REVIEW' && p.status !== 'SUBMITTED');
     
     const journalPapers = papers.filter(p => p.paperType === 'JOURNAL' && p.status === 'PUBLISHED');
     const bookPapers = papers.filter(p => p.paperType === 'BOOK' && p.status === 'PUBLISHED');
@@ -148,6 +152,107 @@ const AdminDashboard = memo(() => {
     const pendingRequests = uploadRequests.filter(r => r.status === 'PENDING');
     const approvedRequests = uploadRequests.filter(r => r.status === 'APPROVED');
     const rejectedRequests = uploadRequests.filter(r => r.status === 'REJECTED');
+
+    // Analytics calculations
+    const monthlyPaperData = useMemo(() => {
+        const last12Months = Array.from({ length: 12 }, (_, i) => {
+            const date = subMonths(new Date(), 11 - i);
+            return {
+                month: format(date, 'MMM'),
+                fullDate: startOfMonth(date),
+                papers: 0,
+                published: 0,
+                reviews: 0
+            };
+        });
+        
+        papers.forEach(paper => {
+            try {
+                const paperDate = parseISO(paper.submissionDate);
+                const monthIndex = monthlyPaperData.findIndex(m => 
+                    isWithinInterval(paperDate, { start: m.fullDate, end: endOfMonth(m.fullDate) })
+                );
+                if (monthIndex !== -1) {
+                    monthlyPaperData[monthIndex].papers++;
+                    if (paper.status === 'PUBLISHED') {
+                        monthlyPaperData[monthIndex].published++;
+                    }
+                }
+            } catch {}
+        });
+
+        reviews.forEach(review => {
+            try {
+                const reviewDate = parseISO(review.createdAt);
+                const monthIndex = monthlyPaperData.findIndex(m => 
+                    isWithinInterval(reviewDate, { start: m.fullDate, end: endOfMonth(m.fullDate) })
+                );
+                if (monthIndex !== -1) {
+                    monthlyPaperData[monthIndex].reviews++;
+                }
+            } catch {}
+        });
+
+        return monthlyPaperData.map(({ month, papers: p, published: pb, reviews: r }) => ({ month, papers: p, published: pb, reviews: r }));
+    }, [papers, reviews]);
+
+    const disciplineData = useMemo(() => {
+        const counts: Record<string, number> = {};
+        papers.forEach(p => {
+            const d = p.discipline || 'Other';
+            counts[d] = (counts[d] || 0) + 1;
+        });
+        return Object.entries(counts).map(([name, value]) => ({ name: name.length > 20 ? name.slice(0, 20) + '...' : name, value })).slice(0, 6);
+    }, [papers]);
+
+    const userGrowthData = useMemo(() => {
+        const last6Months = Array.from({ length: 6 }, (_, i) => {
+            const date = subMonths(new Date(), 5 - i);
+            return {
+                month: format(date, 'MMM'),
+                fullDate: startOfMonth(date),
+                users: 0,
+                professors: 0
+            };
+        });
+        
+        users.forEach(user => {
+            try {
+                const userDate = new Date(user.createdAt);
+                const monthIndex = userGrowthData.findIndex(m => 
+                    isWithinInterval(userDate, { start: m.fullDate, end: endOfMonth(m.fullDate) })
+                );
+                if (monthIndex !== -1) {
+                    userGrowthData[monthIndex].users++;
+                    if (user.role === 'PROFESSOR') {
+                        userGrowthData[monthIndex].professors++;
+                    }
+                }
+            } catch {}
+        });
+
+        let cumulative = 0;
+        let profCumulative = 0;
+        return userGrowthData.map(m => {
+            cumulative += m.users;
+            profCumulative += m.professors;
+            return { month: m.month, users: cumulative, professors: profCumulative };
+        });
+    }, [users]);
+
+    const reviewStats = useMemo(() => {
+        const total = reviews.length;
+        const avgRating = total > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / total).toFixed(1) : '0';
+        const fiveStar = reviews.filter(r => r.rating === 5).length;
+        const fourStar = reviews.filter(r => r.rating === 4).length;
+        const threeStar = reviews.filter(r => r.rating === 3).length;
+        const twoStar = reviews.filter(r => r.rating === 2).length;
+        const oneStar = reviews.filter(r => r.rating === 1).length;
+        return { total, avgRating, distribution: [fiveStar, fourStar, threeStar, twoStar, oneStar] };
+    }, [reviews]);
+
+    const paperSuccessRate = papers.length > 0 ? ((acceptedPapers.length + publishedPapers.length) / papers.length * 100).toFixed(1) : '0';
+    const reviewCompletionRate = assignedPapers.length > 0 ? ((completedReviews.length / assignedPapers.length) * 100).toFixed(1) : '0';
 
     const disciplines = [
         "Commerce and Management",
@@ -169,6 +274,8 @@ const AdminDashboard = memo(() => {
         { label: "Published Books", value: publishedBooks.length + bookPapers.length, icon: BookOpen, color: "text-secondary", sub: "Books available" },
         { label: "Pending Review", value: submittedPapers.length, icon: Clock, color: "text-orange-500", sub: "Awaiting action" },
         { label: "Upload Requests", value: pendingRequests.length, icon: Inbox, color: "text-accent", sub: "Pending approval" },
+        { label: "Success Rate", value: paperSuccessRate + "%", icon: TrendingUp, color: "text-green-500", sub: "Paper acceptance" },
+        { label: "Avg Rating", value: reviewStats.avgRating, icon: Star, color: "text-gold", sub: `${reviewStats.total} reviews` },
     ];
 
     const filteredPapers = papers.filter(paper => {
@@ -451,46 +558,48 @@ const AdminDashboard = memo(() => {
                 {/* Overview Tab */}
                 {activeTab === "overview" && (
                     <div className="space-y-8">
+                        {/* Quick Stats */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+                            {stats.map((stat, idx) => (
+                                <motion.div key={idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.03 }}
+                                    className="p-3 bg-card border border-border rounded-lg hover:shadow-sm transition-shadow hover:border-accent/20">
+                                    <div className="flex items-center justify-between mb-1">
+                                        <stat.icon className={`w-4 h-4 ${stat.color}`} />
+                                    </div>
+                                    <p className="text-xl font-bold text-foreground">{stat.value}</p>
+                                    <p className="text-[10px] text-muted-foreground truncate">{stat.label}</p>
+                                </motion.div>
+                            ))}
+                        </div>
+
                         {/* Charts Row */}
-                        <div className="grid md:grid-cols-3 gap-6">
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {/* Paper Status Chart */}
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                                className="bg-card border border-border p-6">
+                                className="bg-card border border-border p-5 lg:col-span-2">
                                 <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
-                                    <BarChart3 size={16} className="text-accent" /> Paper Status
+                                    <BarChart3 size={16} className="text-accent" /> Paper Status Distribution
                                 </h3>
                                 <ResponsiveContainer width="100%" height={200}>
-                                    <PieChart>
-                                        <Pie
-                                            data={[
-                                                { name: 'Submitted', value: submittedPapers.length, color: 'hsl(35, 40%, 50%)' },
-                                                { name: 'Under Review', value: underReviewPapers.length, color: 'hsl(200, 10%, 40%)' },
-                                                { name: 'Accepted', value: acceptedPapers.length, color: 'hsl(142, 60%, 40%)' },
-                                                { name: 'Published', value: publishedPapers.length, color: 'hsl(35, 50%, 60%)' },
-                                                { name: 'Rejected', value: rejectedPapers.length, color: 'hsl(0, 84%, 60%)' },
-                                            ].filter(d => d.value > 0)}
-                                            cx="50%" cy="50%" innerRadius={50} outerRadius={80}
-                                            dataKey="value" paddingAngle={3} strokeWidth={0}
-                                        >
-                                            {[
-                                                { color: 'hsl(35, 40%, 50%)' },
-                                                { color: 'hsl(200, 10%, 40%)' },
-                                                { color: 'hsl(142, 60%, 40%)' },
-                                                { color: 'hsl(35, 50%, 60%)' },
-                                                { color: 'hsl(0, 84%, 60%)' },
-                                            ].map((entry, index) => (
-                                                <Cell key={index} fill={entry.color} />
-                                            ))}
-                                        </Pie>
+                                    <BarChart data={[
+                                        { name: 'Submitted', value: submittedPapers.length, fill: 'hsl(35, 40%, 50%)' },
+                                        { name: 'Under Review', value: underReviewPapers.length, fill: 'hsl(200, 10%, 40%)' },
+                                        { name: 'Revision', value: revisionPapers.length, fill: 'hsl(45, 90%, 60%)' },
+                                        { name: 'Accepted', value: acceptedPapers.length, fill: 'hsl(142, 60%, 40%)' },
+                                        { name: 'Published', value: publishedPapers.length, fill: 'hsl(35, 50%, 60%)' },
+                                        { name: 'Rejected', value: rejectedPapers.length, fill: 'hsl(0, 84%, 60%)' },
+                                    ].filter(d => d.value > 0)}>
+                                        <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+                                        <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
                                         <Tooltip />
-                                        <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
-                                    </PieChart>
+                                        <Bar dataKey="value" radius={[4, 4, 0, 0]} />
+                                    </BarChart>
                                 </ResponsiveContainer>
                             </motion.div>
 
                             {/* User Roles Chart */}
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                                className="bg-card border border-border p-6">
+                                className="bg-card border border-border p-5">
                                 <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
                                     <Users size={16} className="text-secondary" /> User Distribution
                                 </h3>
@@ -508,65 +617,125 @@ const AdminDashboard = memo(() => {
                                 </ResponsiveContainer>
                             </motion.div>
 
-                            {/* Activity Summary */}
-                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                                className="bg-card border border-border p-6">
+                            {/* Review Rating Distribution */}
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
+                                className="bg-card border border-border p-5">
                                 <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
-                                    <Activity size={16} className="text-accent" /> Activity Summary
+                                    <Star size={16} className="text-gold" /> Rating Distribution
                                 </h3>
-                                <div className="space-y-4">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-xs text-muted-foreground">Pending Papers</span>
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-24 h-2 bg-muted overflow-hidden">
-                                                <div className="h-full bg-accent transition-all" style={{ width: `${papers.length ? (submittedPapers.length / papers.length) * 100 : 0}%` }} />
-                                            </div>
-                                            <span className="text-xs font-bold text-foreground">{submittedPapers.length}</span>
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-xs text-muted-foreground">Under Review</span>
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-24 h-2 bg-muted overflow-hidden">
-                                                <div className="h-full bg-secondary transition-all" style={{ width: `${papers.length ? (underReviewPapers.length / papers.length) * 100 : 0}%` }} />
-                                            </div>
-                                            <span className="text-xs font-bold text-foreground">{underReviewPapers.length}</span>
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-xs text-muted-foreground">Published</span>
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-24 h-2 bg-muted overflow-hidden">
-                                                <div className="h-full bg-green-500 transition-all" style={{ width: `${papers.length ? (publishedPapers.length / papers.length) * 100 : 0}%` }} />
-                                            </div>
-                                            <span className="text-xs font-bold text-foreground">{publishedPapers.length}</span>
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-xs text-muted-foreground">Prof Submissions</span>
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-24 h-2 bg-muted overflow-hidden">
-                                                <div className="h-full bg-accent transition-all" style={{ width: `${professorSubmissions.length ? (pendingProfessorSubmissions.length / professorSubmissions.length) * 100 : 0}%` }} />
-                                            </div>
-                                            <span className="text-xs font-bold text-foreground">{pendingProfessorSubmissions.length}</span>
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-xs text-muted-foreground">Upload Requests</span>
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-24 h-2 bg-muted overflow-hidden">
-                                                <div className="h-full bg-accent transition-all" style={{ width: `${uploadRequests.length ? (pendingRequests.length / uploadRequests.length) * 100 : 0}%` }} />
-                                            </div>
-                                            <span className="text-xs font-bold text-foreground">{pendingRequests.length}</span>
-                                        </div>
-                                    </div>
-                                    <div className="pt-3 border-t border-border flex justify-between text-xs font-bold">
-                                        <span className="text-muted-foreground">Active Users</span>
-                                        <span className="text-green-600">{users.filter(u => u.status === 'ACTIVE').length} / {users.length}</span>
-                                    </div>
-                                </div>
+                                <ResponsiveContainer width="100%" height={200}>
+                                    <BarChart data={[
+                                        { name: '5★', value: reviewStats.distribution[0] },
+                                        { name: '4★', value: reviewStats.distribution[1] },
+                                        { name: '3★', value: reviewStats.distribution[2] },
+                                        { name: '2★', value: reviewStats.distribution[3] },
+                                        { name: '1★', value: reviewStats.distribution[4] },
+                                    ]}>
+                                        <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+                                        <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
+                                        <Tooltip />
+                                        <Bar dataKey="value" fill="hsl(45, 80%, 55%)" radius={[2, 2, 0, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
                             </motion.div>
                         </div>
+
+                        {/* Line Charts Row */}
+                        <div className="grid md:grid-cols-2 gap-6">
+                            {/* Monthly Paper Activity Line Chart */}
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+                                className="bg-card border border-border p-5">
+                                <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                    <TrendingUp size={16} className="text-accent" /> Monthly Activity (Line Graph)
+                                </h3>
+                                <ResponsiveContainer width="100%" height={220}>
+                                    <AreaChart data={monthlyPaperData}>
+                                        <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                                        <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
+                                        <Tooltip />
+                                        <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
+                                        <Area type="monotone" dataKey="papers" stackId="1" stroke="hsl(35, 40%, 50%)" fill="hsl(35, 40%, 50%)" fillOpacity={0.6} name="Papers" />
+                                        <Area type="monotone" dataKey="published" stackId="2" stroke="hsl(142, 60%, 40%)" fill="hsl(142, 60%, 40%)" fillOpacity={0.6} name="Published" />
+                                        <Area type="monotone" dataKey="reviews" stackId="3" stroke="hsl(200, 10%, 40%)" fill="hsl(200, 10%, 40%)" fillOpacity={0.6} name="Reviews" />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </motion.div>
+
+                            {/* User Growth Line Chart */}
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
+                                className="bg-card border border-border p-5">
+                                <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                    <Activity size={16} className="text-secondary" /> User Growth (12 Months)
+                                </h3>
+                                <ResponsiveContainer width="100%" height={220}>
+                                    <LineChart data={userGrowthData}>
+                                        <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                                        <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
+                                        <Tooltip />
+                                        <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
+                                        <Line type="monotone" dataKey="users" stroke="hsl(35, 40%, 50%)" strokeWidth={2} dot={{ r: 3 }} name="Total Users" />
+                                        <Line type="monotone" dataKey="professors" stroke="hsl(200, 10%, 40%)" strokeWidth={2} dot={{ r: 3 }} name="Professors" />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </motion.div>
+                        </div>
+
+                        {/* Discipline Distribution */}
+                        {disciplineData.length > 0 && (
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+                                className="bg-card border border-border p-5">
+                                <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                    <Library size={16} className="text-accent" /> Papers by Discipline
+                                </h3>
+                                <ResponsiveContainer width="100%" height={200}>
+                                    <BarChart data={disciplineData} layout="horizontal">
+                                        <XAxis dataKey="name" tick={{ fontSize: 9 }} />
+                                        <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
+                                        <Tooltip />
+                                        <Bar dataKey="value" fill="hsl(35, 40%, 50%)" radius={[2, 2, 0, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </motion.div>
+                        )}
+
+                        {/* Activity Summary */}
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
+                            className="bg-card border border-border p-5">
+                            <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                <Activity size={16} className="text-accent" /> Performance Metrics
+                            </h3>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                                <div className="space-y-2">
+                                    <p className="text-xs text-muted-foreground">Paper Success Rate</p>
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex-1 h-2 bg-muted overflow-hidden rounded-full">
+                                            <div className="h-full bg-green-500 transition-all" style={{ width: `${paperSuccessRate}%` }} />
+                                        </div>
+                                        <span className="text-sm font-bold text-foreground">{paperSuccessRate}%</span>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="text-xs text-muted-foreground">Review Completion</p>
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex-1 h-2 bg-muted overflow-hidden rounded-full">
+                                            <div className="h-full bg-accent transition-all" style={{ width: `${reviewCompletionRate}%` }} />
+                                        </div>
+                                        <span className="text-sm font-bold text-foreground">{reviewCompletionRate}%</span>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="text-xs text-muted-foreground">Total Reviews</p>
+                                    <p className="text-2xl font-bold text-foreground">{reviewStats.total}</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="text-xs text-muted-foreground">Avg Rating</p>
+                                    <div className="flex items-center gap-1">
+                                        <p className="text-2xl font-bold text-foreground">{reviewStats.avgRating}</p>
+                                        <Star className="w-5 h-5 fill-gold text-gold" />
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
 
                         <div className="grid md:grid-cols-2 gap-6">
                             {/* Recent Papers */}
