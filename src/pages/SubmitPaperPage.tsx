@@ -86,7 +86,7 @@ interface SavedDraft {
 }
 
 const SubmitPaperPage = memo(() => {
-    const { currentUser, submitPaper } = useJMRH();
+    const { currentUser, submitPaper, submitPaperAnonymous } = useJMRH();
     const navigate = useNavigate();
     const { toast } = useToast();
 
@@ -276,29 +276,42 @@ const SubmitPaperPage = memo(() => {
     };
 
     const uploadFileToStorage = async (file: File, submissionId: string): Promise<string | null> => {
-        if (!currentUser) {
-            console.error('No user logged in');
-            return null;
-        }
-        
         try {
-            const fileName = `${currentUser.id}/${Date.now()}_${file.name}`;
-            console.log('Uploading file:', fileName, 'size:', file.size);
+            console.log('Uploading file:', file.name, 'size:', file.size);
             
-            const { data, error } = await supabase.storage
-                .from('papers')
-                .upload(fileName, file, {
-                    cacheControl: '3600',
-                    upsert: false
-                });
+            const reader = new FileReader();
+            
+            const fileData = await new Promise<string>((resolve, reject) => {
+                reader.onload = () => {
+                    const result = reader.result as string;
+                    const base64 = result.split(',')[1];
+                    resolve(base64);
+                };
+                reader.onerror = reject;
+            });
+            
+            const { data, error } = await supabase.functions.invoke('anonymous-upload', {
+                body: {
+                    action: 'upload',
+                    fileName: file.name,
+                    fileData: fileData,
+                    contentType: file.type,
+                    submissionId: submissionId
+                }
+            });
             
             if (error) {
-                console.error('Storage upload error:', error);
+                console.error('Upload function error:', error);
                 return null;
             }
             
-            console.log('Upload success:', data);
-            return fileName;
+            if (data?.success && data?.filePath) {
+                console.log('Upload success:', data.filePath);
+                return data.filePath;
+            }
+            
+            console.error('Upload failed:', data?.error || 'Unknown error');
+            return null;
         } catch (err) {
             console.error('Upload exception:', err);
             return null;
@@ -509,24 +522,45 @@ const SubmitPaperPage = memo(() => {
 
             const paperType = submissionType === "journal" ? "JOURNAL" : "BOOK";
             
-            await submitPaper(
-                title,
-                abstract,
-                discipline,
-                paperType,
-                authorName,
-                email,
-                manuscriptType,
-                keywords,
-                coAuthors,
-                uploadedUrls,
-                phone,
-                affiliation,
-                designation,
-                orcid,
-                coverLetter,
-                additionalNotes
-            );
+            if (currentUser) {
+                await submitPaper(
+                    title,
+                    abstract,
+                    discipline,
+                    paperType,
+                    authorName,
+                    email,
+                    manuscriptType,
+                    keywords,
+                    coAuthors,
+                    uploadedUrls,
+                    phone,
+                    affiliation,
+                    designation,
+                    orcid,
+                    coverLetter,
+                    additionalNotes
+                );
+            } else {
+                await submitPaperAnonymous(
+                    title,
+                    abstract,
+                    discipline,
+                    paperType,
+                    authorName,
+                    email,
+                    manuscriptType,
+                    keywords,
+                    coAuthors,
+                    uploadedUrls,
+                    phone,
+                    affiliation,
+                    designation,
+                    orcid,
+                    coverLetter,
+                    additionalNotes
+                );
+            }
             
             localStorage.removeItem('jmrh_draft');
             setShowReceipt(true);

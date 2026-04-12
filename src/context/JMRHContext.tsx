@@ -179,6 +179,7 @@ interface JMRHContextType {
     updateUserRole: (userId: string, role: UserRole) => Promise<void>;
     assignPaper: (paperId: string, professorId: string, professorName: string) => Promise<void>;
     submitPaper: (title: string, abstract: string, discipline: string, paperType: PaperType, authorName: string, authorEmail?: string, manuscriptType?: string, keywords?: string, coAuthors?: string, attachments?: string[], phone?: string, affiliation?: string, designation?: string, orcid?: string, coverLetter?: string, additionalNotes?: string) => Promise<void>;
+    submitPaperAnonymous: (title: string, abstract: string, discipline: string, paperType: PaperType, authorName: string, authorEmail?: string, manuscriptType?: string, keywords?: string, coAuthors?: string, attachments?: string[], phone?: string, affiliation?: string, designation?: string, orcid?: string, coverLetter?: string, additionalNotes?: string, submissionId?: string) => Promise<void>;
     updatePaper: (paperId: string, updates: Partial<Paper>) => Promise<void>;
     updatePaperStatus: (paperId: string, status: PaperStatus, comments?: string) => Promise<void>;
     publishPaper: (paperId: string) => Promise<void>;
@@ -645,6 +646,58 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         await refreshData();
     };
 
+    const     submitPaperAnonymous = async (
+        title: string, 
+        abstract: string, 
+        discipline: string, 
+        paperType: PaperType,
+        authorName: string, 
+        authorEmail?: string,
+        manuscriptType?: string,
+        keywords?: string,
+        coAuthors?: string,
+        attachments?: string[],
+        phone?: string,
+        affiliation?: string,
+        designation?: string,
+        orcid?: string,
+        coverLetter?: string,
+        additionalNotes?: string
+    ) => {
+        const { error } = await db.from('papers').insert({
+            author_name: authorName,
+            author_email: authorEmail || '',
+            title, 
+            abstract, 
+            discipline,
+            paper_type: paperType,
+            manuscript_type: manuscriptType || '',
+            keywords: keywords || '',
+            co_authors: coAuthors || '',
+            phone: phone || '',
+            affiliation: affiliation || '',
+            designation: designation || '',
+            orcid: orcid || '',
+            cover_letter: coverLetter || '',
+            additional_notes: additionalNotes || '',
+            status: 'SUBMITTED',
+            submission_date: new Date().toISOString().split('T')[0],
+            attachments
+        });
+        if (error) throw error;
+        
+        try {
+            await supabase.functions.invoke('notify-admin-submission', {
+                body: { title, authorName, authorEmail: authorEmail || '', discipline, paperType }
+            });
+        } catch (notifyErr) {
+            console.warn('Admin notification failed (non-critical):', notifyErr);
+        }
+        
+        toast({ title: "Submission Received", description: "Your manuscript has been submitted for review." });
+        await refreshData();
+    };
+
     const updatePaper = async (paperId: string, updates: Partial<Paper>) => {
         const dbUpdates: any = {};
         if (updates.title !== undefined) dbUpdates.title = updates.title;
@@ -958,7 +1011,7 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         <JMRHContext.Provider value={{
             users, papers, reviews, publishedJournals, publishedBooks, uploadRequests, professorSubmissions, currentUser, isLoading, setCurrentUser, signIn, signUp, updateUser,
             banUser, unbanUser, createUser, deleteUser, updateUserRole, assignPaper,
-            submitPaper, updatePaper, updatePaperStatus, publishPaper, deletePaper, addReview, updateReview, deleteReview, logout, refreshData,
+            submitPaper, submitPaperAnonymous, updatePaper, updatePaperStatus, publishPaper, deletePaper, addReview, updateReview, deleteReview, logout, refreshData,
             createPublishedJournal, updatePublishedJournal, deletePublishedJournal,
             createPublishedBook, updatePublishedBook, deletePublishedBook,
             createUploadRequest, updateUploadRequest, deleteUploadRequest,
