@@ -1,12 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { google } from 'https://esm.sh/googleapis@118'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
-
-const SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -31,6 +28,8 @@ Deno.serve(async (req) => {
       })
     }
 
+    // Dynamic import to avoid type issues
+    const { google } = await import('https://esm.sh/googleapis@118')
     const auth = new google.auth.OAuth2(googleClientId, googleClientSecret)
     auth.setCredentials({ refresh_token: googleRefreshToken })
 
@@ -49,14 +48,14 @@ Deno.serve(async (req) => {
         })
       }
 
-      const folderMetadata = {
+      const folderMetadata: Record<string, unknown> = {
         name: userEmail,
         mimeType: 'application/vnd.google-apps.folder',
         parents: googleDriveRootFolderId ? [googleDriveRootFolderId] : []
       }
 
-      const folderResponse = await drive.files.create({
-        resource: folderMetadata,
+      const folderResponse: any = await drive.files.create({
+        requestBody: folderMetadata,
         fields: 'id'
       })
 
@@ -75,15 +74,14 @@ Deno.serve(async (req) => {
       const listResponse = await drive.files.list({ q: query, fields: 'files(id, name)' })
 
       if (listResponse.data.files && listResponse.data.files.length > 0) {
-        userFolderId = listResponse.data.files[0].id
+        userFolderId = listResponse.data.files[0].id as string
       } else {
-        const folderMetadata = {
-          name: userEmail,
-          mimeType: 'application/vnd.google-apps.folder',
-          parents: googleDriveRootFolderId ? [googleDriveRootFolderId] : []
-        }
-        const folderResponse = await drive.files.create({
-          resource: folderMetadata,
+        const folderResponse: any = await drive.files.create({
+          requestBody: {
+            name: userEmail,
+            mimeType: 'application/vnd.google-apps.folder',
+            parents: googleDriveRootFolderId ? [googleDriveRootFolderId] : []
+          },
           fields: 'id'
         })
         userFolderId = folderResponse.data.id
@@ -96,15 +94,14 @@ Deno.serve(async (req) => {
       const subListResponse = await drive.files.list({ q: subQuery, fields: 'files(id, name)' })
 
       if (subListResponse.data.files && subListResponse.data.files.length > 0) {
-        submissionFolderId = subListResponse.data.files[0].id
+        submissionFolderId = subListResponse.data.files[0].id as string
       } else {
-        const subFolderMetadata = {
-          name: submissionFolderName,
-          mimeType: 'application/vnd.google-apps.folder',
-          parents: [userFolderId]
-        }
-        const subFolderResponse = await drive.files.create({
-          resource: subFolderMetadata,
+        const subFolderResponse: any = await drive.files.create({
+          requestBody: {
+            name: submissionFolderName,
+            mimeType: 'application/vnd.google-apps.folder',
+            parents: [userFolderId]
+          },
           fields: 'id'
         })
         submissionFolderId = subFolderResponse.data.id
@@ -112,18 +109,16 @@ Deno.serve(async (req) => {
 
       const binaryData = Uint8Array.from(atob(fileData), c => c.charCodeAt(0))
 
-      const fileMetadata = {
-        name: fileName,
-        parents: [submissionFolderId]
-      }
-
       const media = {
         mimeType: mimeType,
         body: new Blob([binaryData], { type: mimeType })
       }
 
-      const fileResponse = await drive.files.create({
-        resource: fileMetadata,
+      const fileResponse: any = await drive.files.create({
+        requestBody: {
+          name: fileName,
+          parents: [submissionFolderId]
+        },
         media: media,
         fields: 'id,webViewLink,webContentLink'
       })
@@ -147,7 +142,7 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'getDownloadLink') {
-      const fileResponse = await drive.files.get({
+      const fileResponse: any = await drive.files.get({
         fileId: fileId,
         fields: 'webContentLink,webViewLink'
       })
