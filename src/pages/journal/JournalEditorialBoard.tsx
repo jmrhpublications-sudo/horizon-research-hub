@@ -60,7 +60,16 @@ const JournalEditorialBoard = memo(() => {
       department: "Department of BBA (IB)",
       institution: "Nilgiri College of Arts and Science (Autonomous), Thaloor",
       address: "The Nilgiris – 643240, Tamil Nadu, India",
-      email: "dencymaryp@jmrh.in",
+      email: "dencymary@nilgiricollege.ac.in",
+      profile: ""
+    },
+    {
+      name: "Dr. K Thamarai Selvi",
+      position: "Research Coordinator & Assistant Professor",
+      department: "Department of Commerce",
+      institution: "Nilgiri College of Arts and Science (Autonomous)",
+      address: "Konnachal Post, Thaloor, The Nilgiris, Tamil Nadu - 643239",
+      email: "thamaraiselvi@nilgiricollege.ac.in",
       profile: ""
     }
   ];

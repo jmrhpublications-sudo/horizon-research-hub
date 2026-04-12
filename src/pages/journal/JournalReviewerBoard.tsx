@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SEOHead from "@/components/seo/SEOHead";
-import { ShieldCheck, FileCheck, Users, AlertCircle } from "lucide-react";
+import { ShieldCheck, FileCheck, Users, AlertCircle, Mail } from "lucide-react";
 
 const JournalReviewerBoard = memo(() => {
   const responsibilities = [
@@ -11,6 +11,37 @@ const JournalReviewerBoard = memo(() => {
     "Provide unbiased and constructive evaluation",
     "Adhere to ethical review standards",
     "Declare any conflict of interest"
+  ];
+
+  const reviewers = [
+    {
+      name: "Mr. Suresh",
+      position: "Assistant Professor",
+      department: "Department of English",
+      institution: "Government Arts and Science College, Gudalur",
+      email: "suresh.eng@gascgudalur.in"
+    },
+    {
+      name: "Ms. Saranya",
+      position: "Assistant Professor",
+      department: "Department of Commerce CA",
+      institution: "Government Arts and Science College, Gudalur",
+      email: "saranya.ca@gascgudalur.in"
+    },
+    {
+      name: "Ms. Dhana Bharathi A",
+      position: "Assistant Professor",
+      department: "Department of English",
+      institution: "Government Arts and Science College, Gudalur",
+      email: "dhanabharathi.eng@gascgudalur.in"
+    },
+    {
+      name: "Gautham Krishna R",
+      position: "Assistant Professor",
+      department: "Department of Psychology",
+      institution: "ST Marys College, Perinthalmanna",
+      email: "gauthamkrishna@stmaryscollege.in"
+    }
   ];
 
   return (
@@ -65,6 +96,24 @@ const JournalReviewerBoard = memo(() => {
                 <p className="text-oxford/60 text-sm">
                   Each manuscript is evaluated by minimum 2 qualified reviewers from relevant subject areas.
                 </p>
+              </div>
+            </div>
+
+            {/* Reviewer Members */}
+            <div className="mb-12">
+              <h2 className="font-serif text-2xl font-bold text-oxford mb-6 pb-4 border-b border-gold/20">Our Reviewers</h2>
+              <div className="grid md:grid-cols-2 gap-4">
+                {reviewers.map((reviewer, index) => (
+                  <div key={index} className="p-4 border border-black/5 bg-white hover:border-gold/20 transition-colors">
+                    <h3 className="font-bold text-oxford">{reviewer.name}</h3>
+                    <p className="text-sm text-oxford/70">{reviewer.position}</p>
+                    <p className="text-xs text-oxford/60 mt-1">{reviewer.department}</p>
+                    <p className="text-xs text-oxford/60">{reviewer.institution}</p>
+                    <a href={`mailto:${reviewer.email}`} className="text-xs text-gold hover:text-oxford mt-2 inline-block">
+                      {reviewer.email}
+                    </a>
+                  </div>
+                ))}
               </div>
             </div>
 
