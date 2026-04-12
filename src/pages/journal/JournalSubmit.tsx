@@ -584,6 +584,7 @@ const JournalSubmit = memo(() => {
               </motion.div>
             </div>
           </form>
+          </div>
         </div>
 
         <div className="mt-8 flex flex-wrap gap-4">
