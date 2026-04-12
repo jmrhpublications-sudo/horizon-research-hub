@@ -100,7 +100,7 @@ Deno.serve(async (req) => {
           requestBody: {
             name: submissionFolderName,
             mimeType: 'application/vnd.google-apps.folder',
-            parents: [userFolderId]
+            parents: [userFolderId!]
           },
           fields: 'id'
         })
