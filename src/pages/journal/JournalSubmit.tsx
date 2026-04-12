@@ -547,18 +547,16 @@ const JournalSubmit = memo(() => {
                             checked={agreements[item.key as keyof typeof agreements]}
                             onCheckedChange={(checked) => 
                               setAgreements(prev => ({ ...prev, [item.key]: checked }))
-                                }
-                                className="mt-0.5 border-oxford/30 data-[state=checked]:bg-gold data-[state=checked]:border-gold"
-                              />
-                              <span className="text-sm text-oxford/80">{item.label}</span>
-                            </label>
-                          ))}
-                        </div>
-                        {errors.agreement && (
-                          <p className="text-xs text-red-500 mt-2">{errors.agreement}</p>
-                        )}
-                      </div>
-                    </motion.div>
+                            }
+                            className="mt-0.5 border-oxford/30 data-[state=checked]:bg-gold data-[state=checked]:border-gold"
+                          />
+                          <span className="text-sm text-oxford/80">{item.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                    {errors.agreement && (
+                      <p className="text-xs text-red-500 mt-2">{errors.agreement}</p>
+                    )}
                   </div>
 
                   <div className="flex items-center justify-end pt-6 border-t border-black/5">
@@ -580,28 +578,27 @@ const JournalSubmit = memo(() => {
                       )}
                     </Button>
                   </div>
-                </div>
-              </motion.div>
-            </div>
-          </form>
-        </div>
+                </motion.div>
+              </div>
+            </form>
+          </div>
 
-        <div className="mt-8 flex flex-wrap gap-4">
-          <Link 
-            to="/journal/guidelines"
-            className="inline-flex items-center gap-2 border border-oxford text-oxford px-6 py-3 text-xs uppercase tracking-widest font-bold hover:bg-oxford hover:text-white transition-all"
-          >
-            View Author Guidelines
-          </Link>
-          <Link 
-            to="/call-for-papers"
-            className="inline-flex items-center gap-2 bg-gold text-oxford px-6 py-3 text-xs uppercase tracking-widest font-bold hover:bg-oxford hover:text-white transition-all"
-          >
-            View Call for Papers
-          </Link>
+          <div className="mt-8 flex flex-wrap gap-4">
+            <Link 
+              to="/journal/guidelines"
+              className="inline-flex items-center gap-2 border border-oxford text-oxford px-6 py-3 text-xs uppercase tracking-widest font-bold hover:bg-oxford hover:text-white transition-all"
+            >
+              View Author Guidelines
+            </Link>
+            <Link 
+              to="/call-for-papers"
+              className="inline-flex items-center gap-2 bg-gold text-oxford px-6 py-3 text-xs uppercase tracking-widest font-bold hover:bg-oxford hover:text-white transition-all"
+            >
+              View Call for Papers
+            </Link>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
     <Footer />
   </div>
