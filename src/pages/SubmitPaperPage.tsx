@@ -15,7 +15,9 @@ import {
     Phone,
     GraduationCap,
     Briefcase,
-    BookOpen
+    BookOpen,
+    User,
+    X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -98,21 +100,40 @@ const SubmitPaperPage = memo(() => {
         
         try {
             const submissionId = `SUB-${Date.now()}`;
-            const fileName = `submissions/${submissionId}/${Date.now()}_${selectedFile.name}`;
             
-            const { data, error } = await supabase.storage
-                .from('papers')
-                .upload(fileName, selectedFile, {
-                    cacheControl: '3600',
-                    upsert: false
-                });
-
+            // Convert file to base64 for edge function
+            const reader = new FileReader();
+            const base64Data = await new Promise<string>((resolve, reject) => {
+                reader.onload = () => {
+                    const result = reader.result as string;
+                    const base64 = result.split(',')[1];
+                    resolve(base64);
+                };
+                reader.onerror = reject;
+            });
+            reader.readAsDataURL(selectedFile);
+            
+            // Use edge function for upload (works for both logged in and anonymous users)
+            const { data, error } = await supabase.functions.invoke('anonymous-upload', {
+                body: {
+                    action: 'upload',
+                    fileName: selectedFile.name,
+                    fileData: base64Data,
+                    contentType: selectedFile.type || 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    submissionId: submissionId
+                }
+            });
+            
             if (error) {
                 console.error('Upload error:', error);
                 return null;
             }
-
-            return fileName;
+            
+            if (data?.success && data?.filePath) {
+                return data.filePath;
+            }
+            
+            return null;
         } catch (err) {
             console.error('Upload exception:', err);
             return null;
