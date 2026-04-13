@@ -649,6 +649,18 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
             assigned_professor_id: professorId,
         }).eq('id', paperId);
         if (error) throw error;
+        
+        // Also update assigned manuscript document
+        try {
+            await db.from('documents').update({
+                reviewer_id: professorId,
+                reviewer_name: professorName,
+                status: 'UNDER_REVIEW'
+            }).eq('related_document_id', paperId);
+        } catch (docErr) {
+            console.warn('Document assignment updated failed (non-critical):', docErr);
+        }
+        
         toast({ title: "Paper Assigned", description: `Assigned to ${professorName}` });
         await refreshData();
     };
@@ -695,6 +707,43 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
             attachments
         });
         if (error) throw error;
+        
+        // Also save to documents table for better management
+        if (attachments && attachments.length > 0) {
+            const filePath = attachments[0];
+            const fileName = filePath.split('/').pop() || 'manuscript.docx';
+            const fileExt = fileName.split('.').pop()?.toLowerCase();
+            
+            if (fileExt && ['doc', 'docx'].includes(fileExt)) {
+                try {
+                    // Update papers entry to get the ID, then create document entry
+                    const { data: paperData } = await db.from('papers')
+                        .select('id')
+                        .eq('author_id', currentUser.id)
+                        .eq('title', title)
+                        .order('created_at', { ascending: false })
+                        .limit(1);
+                    
+                    if (paperData && paperData.length > 0) {
+                        await db.from('documents').insert({
+                            uploader_id: currentUser.id,
+                            uploader_name: currentUser.name,
+                            uploader_role: currentUser.role,
+                            title: title,
+                            description: `Author: ${authorName}\nEmail: ${authorEmail || currentUser.email}\nDiscipline: ${discipline}`,
+                            file_path: filePath,
+                            file_name: fileName,
+                            file_type: fileExt,
+                            document_type: 'MANUSCRIPT',
+                            status: 'PENDING',
+                            related_document_id: paperData[0].id
+                        });
+                    }
+                } catch (docErr) {
+                    console.warn('Document tracking failed (non-critical):', docErr);
+                }
+            }
+        }
         
         // Notify admin via edge function
         try {
@@ -749,6 +798,42 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         });
         if (error) throw error;
         
+        // Also save to documents table for anonymous submissions
+        if (attachments && attachments.length > 0) {
+            const filePath = attachments[0];
+            const fileName = filePath.split('/').pop() || 'manuscript.docx';
+            const fileExt = fileName.split('.').pop()?.toLowerCase();
+            
+            if (fileExt && ['doc', 'docx'].includes(fileExt)) {
+                try {
+                    const { data: paperData } = await db.from('papers')
+                        .select('id')
+                        .eq('author_name', authorName)
+                        .eq('title', title)
+                        .order('created_at', { ascending: false })
+                        .limit(1);
+                    
+                    if (paperData && paperData.length > 0) {
+                        await db.from('documents').insert({
+                            uploader_id: null,
+                            uploader_name: authorName,
+                            uploader_role: 'USER',
+                            title: title,
+                            description: `Author: ${authorName}\nEmail: ${authorEmail}\nDiscipline: ${discipline}`,
+                            file_path: filePath,
+                            file_name: fileName,
+                            file_type: fileExt,
+                            document_type: 'MANUSCRIPT',
+                            status: 'PENDING',
+                            related_document_id: paperData[0].id
+                        });
+                    }
+                } catch (docErr) {
+                    console.warn('Document tracking failed (non-critical):', docErr);
+                }
+            }
+        }
+        
         try {
             await supabase.functions.invoke('notify-admin-submission', {
                 body: { title, authorName, authorEmail: authorEmail || '', discipline, paperType }
@@ -789,6 +874,15 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         }).eq('id', paperId);
         if (error) throw error;
         
+        // Also update document status
+        try {
+            await db.from('documents').update({
+                status: 'APPROVED'
+            }).eq('related_document_id', paperId);
+        } catch (docErr) {
+            console.warn('Document publish update failed (non-critical):', docErr);
+        }
+        
         toast({ title: "Published!", description: "Paper is now visible in the journal/book section." });
         await refreshData();
     };
@@ -800,6 +894,20 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         // Delete attachments from storage
         if (paper?.attachments && paper.attachments.length > 0) {
             await supabase.storage.from('papers').remove(paper.attachments);
+        }
+        
+        // Also delete related documents
+        try {
+            const { data: relatedDocs } = await db.from('documents')
+                .select('file_path')
+                .eq('related_document_id', paperId);
+            
+            if (relatedDocs && relatedDocs.length > 0) {
+                await supabase.storage.from('documents').remove(relatedDocs.map(d => d.file_path));
+                await db.from('documents').delete().eq('related_document_id', paperId);
+            }
+        } catch (docErr) {
+            console.warn('Document deletion failed (non-critical):', docErr);
         }
         
         const { error } = await db.from('papers').delete().eq('id', paperId);
