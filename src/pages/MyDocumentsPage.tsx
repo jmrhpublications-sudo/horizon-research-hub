@@ -137,7 +137,7 @@ const MyDocumentsPage = memo(() => {
     };
 
     return (
-        <DashboardLayout role="USER">
+        <DashboardLayout role="ADMIN">
             <div className="space-y-6">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-6 border-b border-border">

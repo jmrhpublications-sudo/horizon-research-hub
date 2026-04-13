@@ -4,7 +4,7 @@ import { useJMRH } from "@/context/JMRHContext";
 import { 
     Users, FileText, Library, BookOpen, Clock, TrendingUp, 
     Activity, Download, Upload, CheckCircle, XCircle, AlertCircle,
-    Star, RefreshCw, BarChart3, LineChart, PieChart
+    Star, RefreshCw, BarChart3, LineChart as LineChartIcon, PieChart as PieChartIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";

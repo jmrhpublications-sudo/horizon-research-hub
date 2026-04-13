@@ -3,7 +3,7 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useJMRH } from "@/context/JMRHContext";
 import { 
     FileText, Clock, CheckCircle, Star, TrendingUp, 
-    Activity, BarChart3, LineChart, RefreshCw
+    Activity, BarChart3, LineChart as LineChartIcon, RefreshCw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";

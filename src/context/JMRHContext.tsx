@@ -1108,9 +1108,13 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
                 isDuplicate: true,
                 duplicateOf: {
                     id: dup.id,
+                    uploaderId: null,
                     uploaderName: dup.uploader_name,
+                    uploaderRole: 'USER' as UserRole,
                     title: dup.title,
                     fileName: dup.file_name,
+                    filePath: '',
+                    fileType: 'doc' as const,
                     documentType: documentType as Document['documentType'],
                     status: 'PENDING' as Document['status'],
                     createdAt: '',
