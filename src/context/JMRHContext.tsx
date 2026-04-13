@@ -572,12 +572,11 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
                 address: details.address || '',
                 city: details.city || '',
                 pincode: details.pincode || '',
-                university: details.affiliation || '',
+                university: details.university || details.affiliation || '',
                 college: details.college || '',
                 department: details.department || '',
                 degree: details.degree || '',
                 specialization: details.specialization || '',
-                university: details.university || '',
                 status: 'ACTIVE'
             });
         }

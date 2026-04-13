@@ -16,7 +16,7 @@ import {
     Calendar,
     MapPin,
     GraduationCap,
-    College
+    School
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
