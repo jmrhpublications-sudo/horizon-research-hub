@@ -219,13 +219,13 @@ const AdminDashboard = memo(() => {
         users.forEach(user => {
             try {
                 const userDate = new Date(user.createdAt);
-                const monthIndex = userGrowthData.findIndex(m => 
+                const monthIndex = last6Months.findIndex(m => 
                     isWithinInterval(userDate, { start: m.fullDate, end: endOfMonth(m.fullDate) })
                 );
                 if (monthIndex !== -1) {
-                    userGrowthData[monthIndex].users++;
+                    last6Months[monthIndex].users++;
                     if (user.role === 'PROFESSOR') {
-                        userGrowthData[monthIndex].professors++;
+                        last6Months[monthIndex].professors++;
                     }
                 }
             } catch {}
@@ -233,7 +233,7 @@ const AdminDashboard = memo(() => {
 
         let cumulative = 0;
         let profCumulative = 0;
-        return userGrowthData.map(m => {
+        return last6Months.map(m => {
             cumulative += m.users;
             profCumulative += m.professors;
             return { month: m.month, users: cumulative, professors: profCumulative };
