@@ -482,7 +482,7 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
                 db.from('profiles').select('*'),
                 db.from('user_roles').select('*'),
                 db.from('papers').select('*'),
-                db.from('reviews').select('*'),
+                db.from('reviews').select('id, content, rating, user_name, created_at, updated_at'),
                 db.from('published_journals').select('*'),
                 db.from('published_books').select('*'),
                 db.from('upload_requests').select('*'),
@@ -572,12 +572,11 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
                 address: details.address || '',
                 city: details.city || '',
                 pincode: details.pincode || '',
-                university: details.affiliation || '',
+                university: details.university || details.affiliation || '',
                 college: details.college || '',
                 department: details.department || '',
                 degree: details.degree || '',
                 specialization: details.specialization || '',
-                university: details.university || '',
                 status: 'ACTIVE'
             });
         }
