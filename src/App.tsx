@@ -68,6 +68,7 @@ const SecureLoginPage = lazy(() => import("./pages/SecureLoginPage"));
 const SubmitPaperPage = lazy(() => import("./pages/SubmitPaperPage"));
 const AccountPage = lazy(() => import("./pages/AccountPage"));
 const RequestUploadPage = lazy(() => import("./pages/RequestUploadPage"));
+const MyDocumentsPage = lazy(() => import("./pages/MyDocumentsPage"));
 
 // Admin Dashboard
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
@@ -77,6 +78,7 @@ const AdminProfessors = lazy(() => import("./pages/admin/AdminProfessors"));
 const AdminPapers = lazy(() => import("./pages/admin/AdminPapers"));
 const AdminPublications = lazy(() => import("./pages/admin/AdminPublications"));
 const AdminRequests = lazy(() => import("./pages/admin/AdminRequests"));
+const AdminDocuments = lazy(() => import("./pages/admin/AdminDocuments"));
 
 // Professor Dashboard
 const ProfessorDashboard = lazy(() => import("./pages/professor/ProfessorDashboard"));
@@ -179,6 +181,11 @@ const App = () => (
                   <AccountPage />
                 </ProtectedRoute>
               } />
+              <Route path="/my-documents" element={
+                <ProtectedRoute allowedRoles={['USER', 'PROFESSOR', 'ADMIN']}>
+                  <MyDocumentsPage />
+                </ProtectedRoute>
+              } />
 
               {/* Secure Admin Console */}
               <Route path="/secure/admin/login" element={<SecureLoginPage role="ADMIN" />} />
@@ -210,6 +217,11 @@ const App = () => (
               <Route path="/secure/admin/publications" element={
                 <ProtectedRoute allowedRoles={['ADMIN']}>
                   <AdminPublications />
+                </ProtectedRoute>
+              } />
+              <Route path="/secure/admin/documents" element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminDocuments />
                 </ProtectedRoute>
               } />
               <Route path="/secure/admin/requests" element={

@@ -11,8 +11,9 @@ import SEOHead from "@/components/seo/SEOHead";
 import { pageSEO } from "@/lib/seo-data";
 
 const ArchivesPage = memo(() => {
-    const { papers } = useJMRH();
+    const { papers, publishedJournals, publishedBooks } = useJMRH();
     const [searchTerm, setSearchTerm] = useState("");
+    const [activeTab, setActiveTab] = useState<"papers" | "journals" | "books">("papers");
 
     const publishedPapers = useMemo(() => {
         return papers.filter(p =>
@@ -22,6 +23,22 @@ const ArchivesPage = memo(() => {
                 p.discipline.toLowerCase().includes(searchTerm.toLowerCase()))
         );
     }, [papers, searchTerm]);
+
+    const archivedJournals = useMemo(() => {
+        return publishedJournals.filter(j =>
+            j.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            j.authors.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            j.discipline.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }, [publishedJournals, searchTerm]);
+
+    const archivedBooks = useMemo(() => {
+        return publishedBooks.filter(b =>
+            b.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            b.authors.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            b.discipline.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }, [publishedBooks, searchTerm]);
 
     const handleDownload = (attachments?: string[]) => {
         if (!attachments || attachments.length === 0) return;
@@ -80,19 +97,44 @@ const ArchivesPage = memo(() => {
                         <div className="flex items-center gap-6">
                             <div className="text-right">
                                 <p className="text-[10px] uppercase tracking-[0.3em] font-black text-oxford/20">Discovery Results</p>
-                                <p className="text-3xl font-serif font-bold italic text-gold">{publishedPapers.length}</p>
+                                <p className="text-3xl font-serif font-bold italic text-gold">
+                                    {activeTab === 'papers' ? publishedPapers.length : activeTab === 'journals' ? archivedJournals.length : archivedBooks.length}
+                                </p>
                             </div>
                             <div className="h-12 w-[1px] bg-black/5" />
-                            <Button variant="ghost" className="h-16 w-16 p-0 hover:bg-black/5 rounded-none border border-black/5">
-                                <Filter size={20} className="text-oxford/40" />
-                            </Button>
+                            <div className="flex gap-2">
+                                <Button 
+                                    variant={activeTab === 'papers' ? 'default' : 'ghost'} 
+                                    size="sm" 
+                                    onClick={() => setActiveTab('papers')}
+                                    className="text-xs uppercase tracking-wider"
+                                >
+                                    Papers
+                                </Button>
+                                <Button 
+                                    variant={activeTab === 'journals' ? 'default' : 'ghost'} 
+                                    size="sm" 
+                                    onClick={() => setActiveTab('journals')}
+                                    className="text-xs uppercase tracking-wider"
+                                >
+                                    Journals
+                                </Button>
+                                <Button 
+                                    variant={activeTab === 'books' ? 'default' : 'ghost'} 
+                                    size="sm" 
+                                    onClick={() => setActiveTab('books')}
+                                    className="text-xs uppercase tracking-wider"
+                                >
+                                    Books
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Results List */}
                 <div className="container mx-auto px-6 py-24 max-w-6xl space-y-16">
-                    {publishedPapers.length > 0 ? (
+                    {activeTab === 'papers' && publishedPapers.length > 0 ? (
                         publishedPapers.map((paper, idx) => (
                             <div key={paper.id} className="group grid md:grid-cols-4 gap-12 items-start pb-16 border-b border-black/5 last:border-0 hover:translate-x-4 transition-all duration-700">
                                 {/* Metadata Column */}
@@ -143,6 +185,111 @@ const ArchivesPage = memo(() => {
                                     <Button variant="ghost" className="w-full md:w-48 h-16 border border-black/5 hover:bg-black/5 rounded-none font-bold tracking-[0.3em] text-[10px] uppercase flex items-center gap-2">
                                         Full View <ExternalLink size={14} />
                                     </Button>
+                                </div>
+                            </div>
+                        ))
+                    ) : activeTab === 'journals' && archivedJournals.length > 0 ? (
+                        archivedJournals.map((journal) => (
+                            <div key={journal.id} className="group grid md:grid-cols-4 gap-12 items-start pb-16 border-b border-black/5 last:border-0 hover:translate-x-4 transition-all duration-700">
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-[1px] bg-gold" />
+                                        <span className="text-[10px] uppercase tracking-[0.3em] font-black text-gold">Journal Article</span>
+                                    </div>
+                                    <div className="flex flex-col gap-1 text-oxford/40">
+                                        <p className="text-[9px] uppercase font-bold tracking-widest flex items-center gap-2">
+                                            <Calendar size={12} className="text-teal" /> Posted: {journal.publicationDate}
+                                        </p>
+                                        {journal.volume && <p className="text-[9px] uppercase font-bold tracking-widest">Vol. {journal.volume}, Issue {journal.issue}</p>}
+                                    </div>
+                                </div>
+                                <div className="md:col-span-2 space-y-6">
+                                    <h3 className="text-4xl font-serif font-bold text-oxford group-hover:text-gold transition-colors leading-tight">
+                                        {journal.title}
+                                    </h3>
+                                    {journal.abstract && (
+                                        <p className="text-oxford/50 leading-loose text-lg font-serif italic">
+                                            {journal.abstract}
+                                        </p>
+                                    )}
+                                    <div className="flex items-center gap-4 pt-4 border-t border-black/5">
+                                        <div className="w-12 h-12 rounded-full bg-oxford/5 flex items-center justify-center font-serif italic text-xl text-gold">
+                                            {journal.authors.charAt(0)}
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-oxford/20">Author(s)</p>
+                                            <p className="text-lg font-serif font-bold text-oxford">{journal.authors}</p>
+                                        </div>
+                                    </div>
+                                    {(journal as any).uploaded_by && (
+                                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                            <span className="font-medium">Uploaded by:</span> {(journal as any).uploaded_by}
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex flex-col gap-4 items-end">
+                                    {journal.pdfUrl && (
+                                        <Button
+                                            onClick={() => window.open(journal.pdfUrl, '_blank')}
+                                            className="w-full md:w-48 h-16 bg-oxford text-white hover:bg-gold transition-all duration-500 rounded-none font-bold tracking-[0.3em] text-[10px] uppercase group/btn"
+                                        >
+                                            <Download size={14} className="mr-3 group-hover/btn:translate-y-1 transition-transform" />
+                                            PDF
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
+                        ))
+                    ) : activeTab === 'books' && archivedBooks.length > 0 ? (
+                        archivedBooks.map((book) => (
+                            <div key={book.id} className="group grid md:grid-cols-4 gap-12 items-start pb-16 border-b border-black/5 last:border-0 hover:translate-x-4 transition-all duration-700">
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-[1px] bg-gold" />
+                                        <span className="text-[10px] uppercase tracking-[0.3em] font-black text-gold">Book Publication</span>
+                                    </div>
+                                    <div className="flex flex-col gap-1 text-oxford/40">
+                                        <p className="text-[9px] uppercase font-bold tracking-widest flex items-center gap-2">
+                                            <Calendar size={12} className="text-teal" /> Published: {book.publicationYear}
+                                        </p>
+                                        {book.isbn && <p className="text-[9px] uppercase font-bold tracking-widest">ISBN: {book.isbn}</p>}
+                                        {book.publisher && <p className="text-[9px] uppercase font-bold tracking-widest">Publisher: {book.publisher}</p>}
+                                    </div>
+                                </div>
+                                <div className="md:col-span-2 space-y-6">
+                                    <h3 className="text-4xl font-serif font-bold text-oxford group-hover:text-gold transition-colors leading-tight">
+                                        {book.title}
+                                    </h3>
+                                    {book.description && (
+                                        <p className="text-oxford/50 leading-loose text-lg font-serif italic">
+                                            {book.description}
+                                        </p>
+                                    )}
+                                    <div className="flex items-center gap-4 pt-4 border-t border-black/5">
+                                        <div className="w-12 h-12 rounded-full bg-oxford/5 flex items-center justify-center font-serif italic text-xl text-gold">
+                                            {book.authors.charAt(0)}
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-oxford/20">Author(s)/Editor(s)</p>
+                                            <p className="text-lg font-serif font-bold text-oxford">{book.authors}</p>
+                                        </div>
+                                    </div>
+                                    {(book as any).uploaded_by && (
+                                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                            <span className="font-medium">Uploaded by:</span> {(book as any).uploaded_by}
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex flex-col gap-4 items-end">
+                                    {book.purchaseLink && (
+                                        <Button
+                                            onClick={() => window.open(book.purchaseLink, '_blank')}
+                                            className="w-full md:w-48 h-16 bg-oxford text-white hover:bg-gold transition-all duration-500 rounded-none font-bold tracking-[0.3em] text-[10px] uppercase group/btn"
+                                        >
+                                            <ExternalLink size={14} className="mr-3" />
+                                            Purchase
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                         ))

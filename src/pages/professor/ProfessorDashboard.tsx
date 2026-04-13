@@ -726,10 +726,10 @@ const ProfessorDashboard = memo(() => {
                             <Input placeholder="DOI" value={journalForm.doi} onChange={(e) => setJournalForm(prev => ({ ...prev, doi: e.target.value }))} />
                             <Input type="date" value={journalForm.publicationDate} onChange={(e) => setJournalForm(prev => ({ ...prev, publicationDate: e.target.value }))} />
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase text-muted-foreground">PDF File</label>
-                                <input ref={journalFileRef} type="file" accept=".pdf" onChange={handleJournalFileUpload} className="hidden" />
+                                <label className="text-xs font-bold uppercase text-muted-foreground">Document File (PDF, DOC, DOCX)</label>
+                                <input ref={journalFileRef} type="file" accept=".pdf,.doc,.docx" onChange={handleJournalFileUpload} className="hidden" />
                                 <Button type="button" variant="outline" onClick={() => journalFileRef.current?.click()} className="w-full">
-                                    {isUploadingJournal ? "Uploading..." : journalForm.pdfUrl ? "PDF Uploaded ✓" : "Choose PDF"}
+                                    {isUploadingJournal ? "Uploading..." : journalForm.pdfUrl ? "Document Uploaded ✓" : "Choose Document (PDF, DOC, DOCX)"}
                                 </Button>
                             </div>
                         </div>
@@ -771,10 +771,10 @@ const ProfessorDashboard = memo(() => {
                             </div>
                             <Input placeholder="Purchase Link" value={bookForm.purchaseLink} onChange={(e) => setBookForm(prev => ({ ...prev, purchaseLink: e.target.value }))} />
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase text-muted-foreground">PDF File</label>
-                                <input ref={bookFileRef} type="file" accept=".pdf" onChange={handleBookFileUpload} className="hidden" />
+                                <label className="text-xs font-bold uppercase text-muted-foreground">Document File (PDF, DOC, DOCX)</label>
+                                <input ref={bookFileRef} type="file" accept=".pdf,.doc,.docx" onChange={handleBookFileUpload} className="hidden" />
                                 <Button type="button" variant="outline" onClick={() => bookFileRef.current?.click()} className="w-full">
-                                    {isUploadingBook ? "Uploading..." : bookForm.pdfUrl ? "PDF Uploaded ✓" : "Choose PDF"}
+                                    {isUploadingBook ? "Uploading..." : bookForm.pdfUrl ? "Document Uploaded ✓" : "Choose Document (PDF, DOC, DOCX)"}
                                 </Button>
                             </div>
                         </div>

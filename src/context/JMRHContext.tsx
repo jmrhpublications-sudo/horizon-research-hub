@@ -156,6 +156,29 @@ export interface ProfessorSubmission {
     updatedAt: string;
 }
 
+export interface Document {
+    id: string;
+    uploaderId: string | null;
+    uploaderName: string;
+    uploaderRole: UserRole;
+    title: string;
+    description?: string;
+    filePath: string;
+    fileName: string;
+    fileType: 'doc' | 'docx';
+    fileHash?: string;
+    fileSize?: number;
+    documentType: 'MANUSCRIPT' | 'JOURNAL' | 'BOOK' | 'REVIEW';
+    status: 'PENDING' | 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED' | 'ARCHIVED';
+    relatedDocumentId?: string;
+    reviewNotes?: string;
+    reviewDecision?: 'ACCEPT' | 'REVISION_REQUIRED' | 'REJECTED';
+    reviewerId?: string;
+    reviewerName?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
 // Helper to cast supabase client for untyped tables
 const db = supabase as any;
 
@@ -167,6 +190,7 @@ interface JMRHContextType {
     publishedBooks: PublishedBook[];
     uploadRequests: UploadRequest[];
     professorSubmissions: ProfessorSubmission[];
+    documents: Document[];
     currentUser: User | null;
     isLoading: boolean;
     setCurrentUser: (user: User | null) => void;
@@ -203,6 +227,16 @@ interface JMRHContextType {
     updateProfessorSubmission: (id: string, data: Partial<ProfessorSubmission>) => Promise<void>;
     deleteProfessorSubmission: (id: string) => Promise<void>;
     approveProfessorSubmission: (submission: ProfessorSubmission) => Promise<void>;
+    uploadDocument: (file: File, title: string, documentType: Document['documentType'], description?: string) => Promise<{ success: boolean; error?: string; isDuplicate?: boolean; duplicateOf?: Document }>;
+    getDocumentUrl: (documentId: string) => Promise<string | null>;
+    getMyDocuments: () => Promise<Document[]>;
+    getAssignedDocuments: () => Promise<Document[]>;
+    getAllDocuments: (filters?: { documentType?: Document['documentType']; status?: Document['status']; uploaderRole?: UserRole }) => Promise<Document[]>;
+    assignReviewer: (documentId: string, reviewerId: string, reviewerName: string) => Promise<void>;
+    submitDocumentReview: (documentId: string, decision: Document['reviewDecision'], notes: string) => Promise<void>;
+    updateDocumentStatus: (documentId: string, status: Document['status'], notes?: string) => Promise<void>;
+    deleteDocument: (documentId: string) => Promise<void>;
+    archiveDocument: (documentId: string) => Promise<void>;
 }
 
 const JMRHContext = createContext<JMRHContextType | undefined>(undefined);
@@ -358,9 +392,33 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     const [publishedBooks, setPublishedBooks] = useState<PublishedBook[]>([]);
     const [uploadRequests, setUploadRequests] = useState<UploadRequest[]>([]);
     const [professorSubmissions, setProfessorSubmissions] = useState<ProfessorSubmission[]>([]);
+    const [documents, setDocuments] = useState<Document[]>([]);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const { toast } = useToast();
+
+    const mapDocument = (d: any): Document => ({
+        id: d.id,
+        uploaderId: d.uploader_id,
+        uploaderName: d.uploader_name,
+        uploaderRole: d.uploader_role as UserRole,
+        title: d.title,
+        description: d.description,
+        filePath: d.file_path,
+        fileName: d.file_name,
+        fileType: d.file_type as 'doc' | 'docx',
+        fileHash: d.file_hash,
+        fileSize: d.file_size,
+        documentType: d.document_type as Document['documentType'],
+        status: d.status as Document['status'],
+        relatedDocumentId: d.related_document_id,
+        reviewNotes: d.revision_comments,
+        reviewDecision: d.review_decision as Document['reviewDecision'],
+        reviewerId: d.reviewer_id,
+        reviewerName: d.reviewer_name,
+        createdAt: d.created_at,
+        updatedAt: d.updated_at
+    });
 
     const fetchUserProfile = async (userId: string): Promise<User | null> => {
         const { data: profile } = await db.from('profiles').select('*').eq('id', userId).maybeSingle();
@@ -420,7 +478,7 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     const refreshData = async () => {
         try {
             // Fetch all data in parallel - non-existent tables return error gracefully
-            const [profilesRes, rolesRes, papersRes, reviewsRes, journalsRes, booksRes, requestsRes, professorSubsRes] = await Promise.all([
+            const [profilesRes, rolesRes, papersRes, reviewsRes, journalsRes, booksRes, requestsRes, professorSubsRes, docsRes] = await Promise.all([
                 db.from('profiles').select('*'),
                 db.from('user_roles').select('*'),
                 db.from('papers').select('*'),
@@ -429,6 +487,7 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
                 db.from('published_books').select('*'),
                 db.from('upload_requests').select('*'),
                 db.from('professor_submissions').select('*'),
+                db.from('documents').select('*').order('created_at', { ascending: false }),
             ]);
 
             if (profilesRes.data) {
@@ -468,6 +527,9 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
             if (booksRes?.data) setPublishedBooks(booksRes.data.map(mapPublishedBook));
             if (requestsRes?.data) setUploadRequests(requestsRes.data.map(mapUploadRequest));
             if (professorSubsRes?.data) setProfessorSubmissions(professorSubsRes.data.map(mapProfessorSubmission));
+            if (docsRes?.data && !docsRes.error) {
+                setDocuments(docsRes.data.map(mapDocument));
+            }
         } catch (err) {
             console.warn('Data refresh error:', err);
         }
@@ -1008,15 +1070,206 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         toast({ title: "Submission Approved", description: "Content is now visible to all users." });
     };
 
+    const uploadDocument = async (
+        file: File,
+        title: string,
+        documentType: Document['documentType'],
+        description?: string
+    ): Promise<{ success: boolean; error?: string; isDuplicate?: boolean; duplicateOf?: Document }> => {
+        if (!currentUser) {
+            return { success: false, error: 'Please sign in to upload documents' };
+        }
+
+        const fileExt = file.name.split('.').pop()?.toLowerCase();
+        if (!['doc', 'docx'].includes(fileExt || '')) {
+            return { success: false, error: 'Only .doc and .docx files are allowed' };
+        }
+
+        if (file.size > 20 * 1024 * 1024) {
+            return { success: false, error: 'File size must be less than 20MB' };
+        }
+
+        // Generate file hash for deduplication
+        const buffer = await file.arrayBuffer();
+        const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+        const fileHash = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+        // Check for duplicates
+        const { data: existingDocs } = await db.from('documents')
+            .select('id, title, file_name, uploader_name')
+            .eq('file_hash', fileHash)
+            .limit(1);
+
+        if (existingDocs && existingDocs.length > 0) {
+            const dup = existingDocs[0];
+            return {
+                success: false,
+                error: 'This file already exists in the system',
+                isDuplicate: true,
+                duplicateOf: {
+                    id: dup.id,
+                    uploaderName: dup.uploader_name,
+                    title: dup.title,
+                    fileName: dup.file_name,
+                    documentType: documentType as Document['documentType'],
+                    status: 'PENDING' as Document['status'],
+                    createdAt: '',
+                    updatedAt: ''
+                }
+            };
+        }
+
+        // Upload to storage
+        const folderMap: Record<string, string> = {
+            MANUSCRIPT: 'manuscripts',
+            JOURNAL: 'journals',
+            BOOK: 'books',
+            REVIEW: 'reviews'
+        };
+        const folder = folderMap[documentType];
+        const fileName = `${currentUser.id}/${folder}/${Date.now()}_${file.name}`;
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('documents')
+            .upload(fileName, file, {
+                cacheControl: '3600',
+                upsert: false,
+                contentType: file.type || 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            });
+
+        if (uploadError) {
+            return { success: false, error: uploadError.message };
+        }
+
+        // Save to database
+        const { error: insertError } = await db.from('documents').insert({
+            uploader_id: currentUser.id,
+            uploader_name: currentUser.name,
+            uploader_role: currentUser.role,
+            title,
+            description: description || null,
+            file_path: uploadData.path,
+            file_name: file.name,
+            file_type: fileExt,
+            file_hash: fileHash,
+            file_size: file.size,
+            document_type: documentType,
+            status: 'PENDING'
+        });
+
+        if (insertError) {
+            await supabase.storage.from('documents').remove([uploadData.path]);
+            return { success: false, error: insertError.message };
+        }
+
+        toast({ title: "Document Uploaded", description: `${file.name} uploaded successfully` });
+        await refreshData();
+        return { success: true };
+    };
+
+    const getDocumentUrl = async (documentId: string): Promise<string | null> => {
+        const doc = documents.find(d => d.id === documentId);
+        if (!doc) return null;
+
+        try {
+            const { data } = await supabase.storage
+                .from('documents')
+                .createSignedUrl(doc.filePath, 3600);
+            return data?.signedUrl || null;
+        } catch {
+            return null;
+        }
+    };
+
+    const getMyDocuments = async (): Promise<Document[]> => {
+        if (!currentUser) return [];
+        return documents.filter(d => d.uploaderId === currentUser.id);
+    };
+
+    const getAssignedDocuments = async (): Promise<Document[]> => {
+        if (!currentUser || currentUser.role !== 'PROFESSOR') return [];
+        return documents.filter(d => d.reviewerId === currentUser.id);
+    };
+
+    const getAllDocuments = async (filters?: {
+        documentType?: Document['documentType'];
+        status?: Document['status'];
+        uploaderRole?: UserRole;
+    }): Promise<Document[]> => {
+        let filtered = documents;
+        if (filters?.documentType) {
+            filtered = filtered.filter(d => d.documentType === filters.documentType);
+        }
+        if (filters?.status) {
+            filtered = filtered.filter(d => d.status === filters.status);
+        }
+        if (filters?.uploaderRole) {
+            filtered = filtered.filter(d => d.uploaderRole === filters.uploaderRole);
+        }
+        return filtered;
+    };
+
+    const assignReviewer = async (documentId: string, reviewerId: string, reviewerName: string) => {
+        const { error } = await db.from('documents').update({
+            reviewer_id: reviewerId,
+            reviewer_name: reviewerName,
+            status: 'UNDER_REVIEW'
+        }).eq('id', documentId);
+
+        if (error) throw error;
+        toast({ title: "Reviewer Assigned", description: `Assigned to ${reviewerName}` });
+        await refreshData();
+    };
+
+    const submitDocumentReview = async (documentId: string, decision: Document['reviewDecision'], notes: string) => {
+        const { error } = await db.from('documents').update({
+            review_decision: decision,
+            review_notes: notes,
+            status: decision === 'ACCEPT' ? 'APPROVED' : decision === 'REVISION_REQUIRED' ? 'UNDER_REVIEW' : 'REJECTED'
+        }).eq('id', documentId);
+
+        if (error) throw error;
+        toast({ title: "Review Submitted", description: `Decision: ${decision}` });
+        await refreshData();
+    };
+
+    const updateDocumentStatus = async (documentId: string, status: Document['status'], notes?: string) => {
+        const { error } = await db.from('documents').update({
+            status,
+            review_notes: notes || null
+        }).eq('id', documentId);
+
+        if (error) throw error;
+        toast({ title: "Status Updated", description: `Document status changed to ${status}` });
+        await refreshData();
+    };
+
+    const deleteDocument = async (documentId: string) => {
+        const doc = documents.find(d => d.id === documentId);
+        if (!doc) throw new Error('Document not found');
+
+        await supabase.storage.from('documents').remove([doc.filePath]);
+        const { error } = await db.from('documents').delete().eq('id', documentId);
+
+        if (error) throw error;
+        toast({ title: "Document Deleted", description: "Document has been removed" });
+        await refreshData();
+    };
+
+    const archiveDocument = async (documentId: string) => {
+        return updateDocumentStatus(documentId, 'ARCHIVED');
+    };
+
     return (
         <JMRHContext.Provider value={{
-            users, papers, reviews, publishedJournals, publishedBooks, uploadRequests, professorSubmissions, currentUser, isLoading, setCurrentUser, signIn, signUp, updateUser,
+            users, papers, reviews, publishedJournals, publishedBooks, uploadRequests, professorSubmissions, documents, currentUser, isLoading, setCurrentUser, signIn, signUp, updateUser,
             banUser, unbanUser, createUser, deleteUser, updateUserRole, assignPaper,
             submitPaper, submitPaperAnonymous, updatePaper, updatePaperStatus, publishPaper, deletePaper, addReview, updateReview, deleteReview, logout, refreshData,
             createPublishedJournal, updatePublishedJournal, deletePublishedJournal,
             createPublishedBook, updatePublishedBook, deletePublishedBook,
             createUploadRequest, updateUploadRequest, deleteUploadRequest,
-            createProfessorSubmission, updateProfessorSubmission, deleteProfessorSubmission, approveProfessorSubmission
+            createProfessorSubmission, updateProfessorSubmission, deleteProfessorSubmission, approveProfessorSubmission,
+            uploadDocument, getDocumentUrl, getMyDocuments, getAssignedDocuments, getAllDocuments, assignReviewer, submitDocumentReview, updateDocumentStatus, deleteDocument, archiveDocument
         }}>
             {children}
         </JMRHContext.Provider>

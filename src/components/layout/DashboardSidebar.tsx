@@ -45,6 +45,7 @@ const DashboardSidebar = memo(({ role }: DashboardSidebarProps) => {
         { label: "Professors", icon: GraduationCap, href: "/secure/admin/professors", badge: 0 },
         { label: "Manuscripts", icon: FileText, href: "/secure/admin/papers", badge: pendingPapers },
         { label: "Publications", icon: Library, href: "/secure/admin/publications", badge: 0 },
+        { label: "Documents", icon: Upload, href: "/secure/admin/documents", badge: 0 },
         { label: "Upload Requests", icon: Inbox, href: "/secure/admin/requests", badge: pendingRequests },
     ];
 
@@ -52,6 +53,7 @@ const DashboardSidebar = memo(({ role }: DashboardSidebarProps) => {
         { label: "Dashboard", icon: LayoutDashboard, href: "/secure/professor/dashboard", badge: 0 },
         { label: "Analytics", icon: BarChart3, href: "/secure/professor/analytics", badge: 0 },
         { label: "My Reviews", icon: BookOpen, href: "/secure/professor/papers", badge: pendingReviews },
+        { label: "Documents", icon: Upload, href: "/my-documents", badge: 0 },
     ];
 
     const links = role === 'ADMIN' ? adminLinks : professorLinks;
