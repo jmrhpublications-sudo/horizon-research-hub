@@ -561,6 +561,25 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
         // Set user role
         if (data.user) {
             await db.from('user_roles').insert({ user_id: data.user.id, role: 'USER' });
+            
+            // Also create profile with extended details
+            await db.from('profiles').insert({
+                id: data.user.id,
+                name: name,
+                email: email,
+                phone_number: details.phone || '',
+                dob: details.dob || '',
+                address: details.address || '',
+                city: details.city || '',
+                pincode: details.pincode || '',
+                university: details.affiliation || '',
+                college: details.college || '',
+                department: details.department || '',
+                degree: details.degree || '',
+                specialization: details.specialization || '',
+                university: details.university || '',
+                status: 'ACTIVE'
+            });
         }
         
         toast({ title: "Registration Success", description: "Please check your email for verification link." });

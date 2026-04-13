@@ -12,7 +12,11 @@ import {
     EyeOff,
     Loader2,
     ArrowRight,
-    CheckCircle
+    CheckCircle,
+    Calendar,
+    MapPin,
+    GraduationCap,
+    College
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -50,9 +54,16 @@ const AuthPage = memo(() => {
     const [regEmail, setRegEmail] = useState("");
     const [regPass, setRegPass] = useState("");
     const [regPhone, setRegPhone] = useState("");
-    const [regAffiliation, setRegAffiliation] = useState("");
+    const [regDob, setRegDob] = useState("");
+    const [regAddress, setRegAddress] = useState("");
+    const [regCity, setRegCity] = useState("");
+    const [regPincode, setRegPincode] = useState("");
+    const [regUniversity, setRegUniversity] = useState("");
+    const [regCollege, setRegCollege] = useState("");
     const [regDepartment, setRegDepartment] = useState("");
     const [regDegree, setRegDegree] = useState("");
+    const [regSpecialization, setRegSpecialization] = useState("");
+    const [regAffiliation, setRegAffiliation] = useState("");
     const [regRole, setRegRole] = useState("researcher");
 
     const { signIn, signUp } = useJMRH();
@@ -111,9 +122,16 @@ const AuthPage = memo(() => {
                 
                 await signUp(regName, regEmail, regPass, {
                     phone: regPhone,
-                    affiliation: regAffiliation,
+                    dob: regDob,
+                    address: regAddress,
+                    city: regCity,
+                    pincode: regPincode,
+                    university: regUniversity,
+                    college: regCollege,
                     department: regDepartment,
                     degree: regDegree,
+                    specialization: regSpecialization,
+                    affiliation: regAffiliation,
                     role: regRole
                 });
                 
@@ -334,6 +352,53 @@ const AuthPage = memo(() => {
                                 </div>
 
                                 <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Date of Birth</label>
+                                    <div className="relative">
+                                        <Calendar className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
+                                        <Input
+                                            type="date"
+                                            value={regDob}
+                                            onChange={(e) => setRegDob(e.target.value)}
+                                            className="h-11 pl-10 border-black/10 focus:border-gold"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Address</label>
+                                    <div className="relative">
+                                        <MapPin className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
+                                        <Input
+                                            placeholder="Street Address"
+                                            value={regAddress}
+                                            onChange={(e) => setRegAddress(e.target.value)}
+                                            className="h-11 pl-10 border-black/10 focus:border-gold"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">City</label>
+                                        <Input
+                                            placeholder="City"
+                                            value={regCity}
+                                            onChange={(e) => setRegCity(e.target.value)}
+                                            className="h-11 border-black/10 focus:border-gold"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Pincode</label>
+                                        <Input
+                                            placeholder="123456"
+                                            value={regPincode}
+                                            onChange={(e) => setRegPincode(e.target.value)}
+                                            className="h-11 border-black/10 focus:border-gold"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
                                     <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Institution / Affiliation *</label>
                                     <div className="relative">
                                         <Building2 className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
@@ -343,6 +408,40 @@ const AuthPage = memo(() => {
                                             value={regAffiliation}
                                             onChange={(e) => setRegAffiliation(e.target.value)}
                                             className="h-11 pl-10 border-black/10 focus:border-gold"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">University</label>
+                                    <div className="relative">
+                                        <GraduationCap className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
+                                        <Input
+                                            placeholder="University Name"
+                                            value={regUniversity}
+                                            onChange={(e) => setRegUniversity(e.target.value)}
+                                            className="h-11 pl-10 border-black/10 focus:border-gold"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">College</label>
+                                        <Input
+                                            placeholder="College Name"
+                                            value={regCollege}
+                                            onChange={(e) => setRegCollege(e.target.value)}
+                                            className="h-11 border-black/10 focus:border-gold"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Specialization</label>
+                                        <Input
+                                            placeholder="Area of Study"
+                                            value={regSpecialization}
+                                            onChange={(e) => setRegSpecialization(e.target.value)}
+                                            className="h-11 border-black/10 focus:border-gold"
                                         />
                                     </div>
                                 </div>
