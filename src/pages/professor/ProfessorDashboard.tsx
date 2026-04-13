@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell, AreaChart, Area } from "recharts";
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from "recharts";
 import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO } from "date-fns";
 
 const statusColors: Record<string, string> = {
@@ -44,7 +44,7 @@ const ProfessorDashboard = memo(() => {
     } = useJMRH();
     const [reviewComments, setReviewComments] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
-    const [activeTab, setActiveTab] = useState<"reviews" | "history" | "submissions">("reviews");
+    const [activeTab, setActiveTab] = useState<"reviews" | "history" | "submissions" | "analytics">("reviews");
     const [isUploadJournalOpen, setIsUploadJournalOpen] = useState(false);
     const [isUploadBookOpen, setIsUploadBookOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
