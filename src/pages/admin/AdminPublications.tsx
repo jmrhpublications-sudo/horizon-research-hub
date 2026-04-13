@@ -307,6 +307,11 @@ const AdminPublications = memo(() => {
         }
     };
 
+    const handleStatusChange = async (submissionId: string, newStatus: 'PENDING' | 'APPROVED' | 'REJECTED') => {
+        await updateProfessorSubmission(submissionId, { status: newStatus });
+        toast({ title: "Status Updated", description: `Status changed to ${newStatus}` });
+    };
+
     const filteredJournals = publishedJournals.filter(j => j.title.toLowerCase().includes(searchTerm.toLowerCase()) || j.authors.toLowerCase().includes(searchTerm.toLowerCase()));
     const filteredBooks = publishedBooks.filter(b => b.title.toLowerCase().includes(searchTerm.toLowerCase()) || b.authors.toLowerCase().includes(searchTerm.toLowerCase()));
     const pendingSubs = professorSubmissions.filter(s => s.status === 'PENDING');
@@ -583,25 +588,54 @@ const AdminPublications = memo(() => {
                                 <motion.div key={sub.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                                     className="p-4 bg-card border border-border hover:border-accent/20 transition-all">
                                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-                                        <div className="flex-1 min-w-0 space-y-1">
+                                        <div className="flex-1 min-w-0 space-y-2">
                                             <div className="flex items-center gap-2 flex-wrap">
                                                 <Badge variant="outline" className={`text-[9px] uppercase tracking-widest ${sub.submissionType === 'JOURNAL' ? 'border-accent/30 text-accent' : 'border-secondary/30 text-secondary'}`}>{sub.submissionType}</Badge>
                                                 <Badge variant="outline" className={`text-[9px] uppercase tracking-widest ${sub.status === 'PENDING' ? 'border-orange-300 text-orange-600' : sub.status === 'APPROVED' ? 'border-green-300 text-green-600' : 'border-destructive/30 text-destructive'}`}>{sub.status}</Badge>
                                             </div>
                                             <h3 className="font-serif font-bold text-foreground">{sub.title}</h3>
-                                            <p className="text-xs text-muted-foreground">By: {sub.professorName} • {sub.authors} • {sub.discipline}</p>
-                                            {sub.abstract && <p className="text-xs text-muted-foreground line-clamp-2">{sub.abstract}</p>}
-                                        </div>
-                                        {sub.status === 'PENDING' && (
-                                            <div className="flex gap-2 shrink-0">
-                                                <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white gap-1" onClick={() => handleProfSubmission(sub, 'approve')}>
-                                                    <Check size={14} /> Approve
-                                                </Button>
-                                                <Button size="sm" variant="destructive" onClick={() => handleProfSubmission(sub, 'reject')}>
-                                                    <X size={14} />
-                                                </Button>
+                                            <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
+                                                <span className="flex items-center gap-1"><GraduationCap size={12} /> {sub.professorName}</span>
+                                                <span>•</span>
+                                                <span>{sub.authors}</span>
+                                                <span>•</span>
+                                                <span>{sub.discipline}</span>
                                             </div>
-                                        )}
+                                            {sub.abstract && <p className="text-xs text-muted-foreground line-clamp-2">{sub.abstract}</p>}
+                                            {sub.pdfUrl && (
+                                                <div className="flex items-center gap-2">
+                                                    <Button variant="ghost" size="sm" className="text-xs h-7 gap-1" onClick={async () => { const url = sub.pdfUrl?.startsWith('http') ? sub.pdfUrl : await getSignedFileUrl('publications', sub.pdfUrl!); if (url) window.open(url, '_blank'); }}>
+                                                        <FileText size={12} /> View Document
+                                                    </Button>
+                                                    {sub.discipline && <span className="text-xs text-muted-foreground">• {sub.discipline}</span>}
+                                                    {sub.keywords && <span className="text-xs text-muted-foreground">• {sub.keywords}</span>}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-col gap-2 shrink-0">
+                                            {sub.status === 'PENDING' && (
+                                                <div className="flex gap-2">
+                                                    <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white gap-1" onClick={() => handleProfSubmission(sub, 'approve')}>
+                                                        <Check size={14} /> Approve
+                                                    </Button>
+                                                    <Button size="sm" variant="destructive" onClick={() => handleProfSubmission(sub, 'reject')}>
+                                                        <X size={14} />
+                                                    </Button>
+                                                </div>
+                                            )}
+                                            {sub.status !== 'PENDING' && (
+                                                <Select value={sub.status} onValueChange={(value) => handleStatusChange(sub.id, value as 'PENDING' | 'APPROVED' | 'REJECTED')}>
+                                                    <SelectTrigger className="w-32 h-8">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="PENDING">Pending</SelectItem>
+                                                        <SelectItem value="APPROVED">Approved</SelectItem>
+                                                        <SelectItem value="REJECTED">Rejected</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        </div>
                                     </div>
                                 </motion.div>
                             ))}

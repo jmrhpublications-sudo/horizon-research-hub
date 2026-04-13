@@ -1139,7 +1139,7 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const approveProfessorSubmission = async (submission: ProfessorSubmission) => {
-        // Create the published entry
+        // Create the published entry with uploader info
         if (submission.submissionType === 'JOURNAL') {
             await createPublishedJournal({
                 title: submission.title,
@@ -1155,6 +1155,10 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
                 coverImage: submission.coverImage,
                 pdfUrl: submission.pdfUrl,
             });
+            
+            // Update with uploaded_by
+            const db = supabase as any;
+            await db.from('published_journals').update({ uploaded_by: submission.professorName }).eq('title', submission.title);
         } else {
             await createPublishedBook({
                 title: submission.title,
@@ -1171,6 +1175,10 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
                 pdfUrl: submission.pdfUrl,
                 purchaseLink: submission.purchaseLink,
             });
+            
+            // Update with uploaded_by
+            const db = supabase as any;
+            await db.from('published_books').update({ uploaded_by: submission.professorName }).eq('title', submission.title);
         }
 
         // Update submission status to approved
