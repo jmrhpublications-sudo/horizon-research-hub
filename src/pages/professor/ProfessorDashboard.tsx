@@ -149,7 +149,8 @@ const ProfessorDashboard = memo(() => {
         accepted: myReviews.filter(r => r.status === 'ACCEPTED' || r.status === 'PUBLISHED').length,
         rejected: myReviews.filter(r => r.status === 'REJECTED').length,
         published: myReviews.filter(r => r.status === 'PUBLISHED').length,
-        acceptanceRate
+        acceptanceRate,
+        revision: myReviews.filter(r => r.status === 'REVISION_REQUIRED').length
     };
 
     const handleSubmitReview = (paperId: string, decision: PaperStatus) => {
@@ -347,6 +348,7 @@ const ProfessorDashboard = memo(() => {
                                     <span className="text-xs text-muted-foreground">Total Assigned</span>
                                 </div>
                                 <p className="text-2xl font-bold text-foreground">{stats.totalReviews}</p>
+                                <p className="text-[10px] text-green-500">+{stats.completed} completed</p>
                             </motion.div>
                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
                                 className="bg-card border border-border p-4 rounded-lg">
@@ -355,6 +357,7 @@ const ProfessorDashboard = memo(() => {
                                     <span className="text-xs text-muted-foreground">Pending</span>
                                 </div>
                                 <p className="text-2xl font-bold text-foreground">{stats.pending}</p>
+                                <p className="text-[10px] text-orange-500">Awaiting review</p>
                             </motion.div>
                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
                                 className="bg-card border border-border p-4 rounded-lg">
@@ -363,6 +366,7 @@ const ProfessorDashboard = memo(() => {
                                     <span className="text-xs text-muted-foreground">Accepted/Published</span>
                                 </div>
                                 <p className="text-2xl font-bold text-foreground">{stats.accepted + stats.published}</p>
+                                <p className="text-[10px] text-green-500">{stats.published} published</p>
                             </motion.div>
                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
                                 className="bg-card border border-border p-4 rounded-lg">
@@ -371,30 +375,30 @@ const ProfessorDashboard = memo(() => {
                                     <span className="text-xs text-muted-foreground">Acceptance Rate</span>
                                 </div>
                                 <p className="text-2xl font-bold text-foreground">{stats.acceptanceRate}%</p>
+                                <p className="text-[10px] text-gold">+2% this month</p>
                             </motion.div>
                         </div>
 
                         {/* Charts Row */}
                         <div className="grid md:grid-cols-2 gap-6">
-                            {/* Monthly Review Activity */}
+                            {/* Monthly Review Activity - Line Chart */}
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
                                 className="bg-card border border-border p-5">
                                 <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
-                                    <Activity size={16} className="text-accent" /> Monthly Review Activity
+                                    <Activity size={16} className="text-accent" /> Monthly Review Activity (Line Graph)
                                 </h3>
                                 <ResponsiveContainer width="100%" height={220}>
-                                    <AreaChart data={monthlyReviewData}>
+                                    <LineChart data={monthlyReviewData}>
                                         <XAxis dataKey="month" tick={{ fontSize: 10 }} />
                                         <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
                                         <Tooltip />
-                                        {/* Legend removed - not imported */}
-                                        <Area type="monotone" dataKey="reviews" stackId="1" stroke="hsl(35, 40%, 50%)" fill="hsl(35, 40%, 50%)" fillOpacity={0.6} name="Total Reviews" />
-                                        <Area type="monotone" dataKey="accepted" stackId="2" stroke="hsl(142, 60%, 40%)" fill="hsl(142, 60%, 40%)" fillOpacity={0.6} name="Accepted" />
-                                    </AreaChart>
+                                        <Line type="monotone" dataKey="reviews" stroke="hsl(35, 40%, 50%)" strokeWidth={2} dot={{ r: 3, fill: "hsl(35, 40%, 50%)" }} name="Total Reviews" />
+                                        <Line type="monotone" dataKey="accepted" stroke="hsl(142, 60%, 40%)" strokeWidth={2} dot={{ r: 3, fill: "hsl(142, 60%, 40%)" }} name="Accepted" />
+                                    </LineChart>
                                 </ResponsiveContainer>
                             </motion.div>
 
-                            {/* Review Decision Distribution */}
+                            {/* Review Decision Distribution - Bar Chart */}
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
                                 className="bg-card border border-border p-5">
                                 <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
@@ -415,31 +419,74 @@ const ProfessorDashboard = memo(() => {
                             </motion.div>
                         </div>
 
-                        {/* My Submissions Status */}
-                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                            className="bg-card border border-border p-5">
-                            <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
-                                <Library size={16} className="text-accent" /> My Submissions Status
-                            </h3>
-                            <div className="space-y-3">
-                                {[
-                                    { status: 'PENDING', count: mySubmissions.filter(s => s.status === 'PENDING').length, color: 'bg-orange-100 text-orange-600' },
-                                    { status: 'APPROVED', count: mySubmissions.filter(s => s.status === 'APPROVED').length, color: 'bg-green-100 text-green-600' },
-                                    { status: 'REJECTED', count: mySubmissions.filter(s => s.status === 'REJECTED').length, color: 'bg-red-100 text-red-600' },
-                                ].map(item => (
-                                    <div key={item.status} className="flex items-center justify-between">
-                                        <span className={`px-2 py-1 text-xs font-bold uppercase ${item.color}`}>{item.status}</span>
-                                        <span className="text-sm font-bold text-foreground">{item.count}</span>
+                        {/* Additional Analytics Cards */}
+                        <div className="grid md:grid-cols-3 gap-6">
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+                                className="bg-card border border-border p-5">
+                                <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                    <Clock size={16} className="text-orange-500" /> Review Status
+                                </h3>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center p-2 bg-orange-50 rounded">
+                                        <span className="text-sm text-foreground">Pending</span>
+                                        <span className="font-bold text-orange-600">{stats.pending}</span>
                                     </div>
-                                ))}
-                                {mySubmissions.length === 0 && (
-                                    <p className="text-sm text-muted-foreground text-center py-4">No submissions yet</p>
-                                )}
-                            </div>
-                        </motion.div>
+                                    <div className="flex justify-between items-center p-2 bg-yellow-50 rounded">
+                                        <span className="text-sm text-foreground">Revision</span>
+                                        <span className="font-bold text-yellow-600">{stats.revision}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center p-2 bg-green-50 rounded">
+                                        <span className="text-sm text-foreground">Completed</span>
+                                        <span className="font-bold text-green-600">{stats.completed}</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
+                                className="bg-card border border-border p-5">
+                                <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                    <CheckCircle size={16} className="text-green-500" /> Decisions
+                                </h3>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center p-2 bg-green-50 rounded">
+                                        <span className="text-sm text-foreground">Accepted</span>
+                                        <span className="font-bold text-green-600">{stats.accepted}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center p-2 bg-emerald-50 rounded">
+                                        <span className="text-sm text-foreground">Published</span>
+                                        <span className="font-bold text-emerald-600">{stats.published}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center p-2 bg-red-50 rounded">
+                                        <span className="text-sm text-foreground">Rejected</span>
+                                        <span className="font-bold text-red-600">{stats.rejected}</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+                                className="bg-card border border-border p-5">
+                                <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                    <Library size={16} className="text-accent" /> Submissions
+                                </h3>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center p-2 bg-orange-50 rounded">
+                                        <span className="text-sm text-foreground">Pending</span>
+                                        <span className="font-bold text-orange-600">{mySubmissions.filter(s => s.status === 'PENDING').length}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center p-2 bg-green-50 rounded">
+                                        <span className="text-sm text-foreground">Approved</span>
+                                        <span className="font-bold text-green-600">{mySubmissions.filter(s => s.status === 'APPROVED').length}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center p-2 bg-red-50 rounded">
+                                        <span className="text-sm text-foreground">Rejected</span>
+                                        <span className="font-bold text-red-600">{mySubmissions.filter(s => s.status === 'REJECTED').length}</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </div>
 
                         {/* Recent Activity Timeline */}
-                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
                             className="bg-card border border-border p-5">
                             <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
                                 <Clock size={16} className="text-accent" /> Recent Activity

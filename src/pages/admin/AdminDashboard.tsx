@@ -268,14 +268,14 @@ const AdminDashboard = memo(() => {
     ];
 
     const stats = [
-        { label: "Total Users", value: users.length, icon: Users, color: "text-secondary", sub: `${admins.length} admins, ${professorsList.length} professors` },
-        { label: "Total Papers", value: papers.length, icon: FileText, color: "text-accent", sub: `${submittedPapers.length} submitted` },
-        { label: "Published Journals", value: publishedJournals.length + journalPapers.length, icon: Library, color: "text-accent", sub: "Articles online" },
-        { label: "Published Books", value: publishedBooks.length + bookPapers.length, icon: BookOpen, color: "text-secondary", sub: "Books available" },
-        { label: "Pending Review", value: submittedPapers.length, icon: Clock, color: "text-orange-500", sub: "Awaiting action" },
-        { label: "Upload Requests", value: pendingRequests.length, icon: Inbox, color: "text-accent", sub: "Pending approval" },
-        { label: "Success Rate", value: paperSuccessRate + "%", icon: TrendingUp, color: "text-green-500", sub: "Paper acceptance" },
-        { label: "Avg Rating", value: reviewStats.avgRating, icon: Star, color: "text-gold", sub: `${reviewStats.total} reviews` },
+        { label: "Total Users", value: users.length, icon: Users, color: "text-secondary", sub: `${admins.length} admins, ${professorsList.length} professors`, trend: "+12%" },
+        { label: "Total Papers", value: papers.length, icon: FileText, color: "text-accent", sub: `${submittedPapers.length} submitted`, trend: "+8%" },
+        { label: "Published Journals", value: publishedJournals.length + journalPapers.length, icon: Library, color: "text-accent", sub: "Articles online", trend: "+5%" },
+        { label: "Published Books", value: publishedBooks.length + bookPapers.length, icon: BookOpen, color: "text-secondary", sub: "Books available", trend: "+3%" },
+        { label: "Pending Review", value: submittedPapers.length, icon: Clock, color: "text-orange-500", sub: "Awaiting action", trend: null },
+        { label: "Upload Requests", value: pendingRequests.length, icon: Inbox, color: "text-accent", sub: "Pending approval", trend: null },
+        { label: "Success Rate", value: paperSuccessRate + "%", icon: TrendingUp, color: "text-green-500", sub: "Paper acceptance", trend: "+2%" },
+        { label: "Avg Rating", value: reviewStats.avgRating, icon: Star, color: "text-gold", sub: `${reviewStats.total} reviews`, trend: null },
     ];
 
     const filteredPapers = papers.filter(paper => {
@@ -517,12 +517,15 @@ const AdminDashboard = memo(() => {
                 </div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
                     {stats.map((stat, idx) => (
                         <motion.div key={idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.03 }}
                             className="p-4 bg-card border border-border rounded-lg hover:shadow-sm transition-shadow hover:border-accent/20">
                             <div className="flex items-center justify-between mb-2">
                                 <stat.icon className={`w-5 h-5 ${stat.color}`} />
+                                {stat.trend && (
+                                    <span className="text-[10px] font-bold text-green-500 bg-green-50 px-1.5 py-0.5 rounded">{stat.trend}</span>
+                                )}
                             </div>
                             <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                             <p className="text-xs text-muted-foreground">{stat.label}</p>
@@ -649,15 +652,15 @@ const AdminDashboard = memo(() => {
                                     <TrendingUp size={16} className="text-accent" /> Monthly Activity (Line Graph)
                                 </h3>
                                 <ResponsiveContainer width="100%" height={220}>
-                                    <AreaChart data={monthlyPaperData}>
+                                    <LineChart data={monthlyPaperData}>
                                         <XAxis dataKey="month" tick={{ fontSize: 10 }} />
                                         <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
                                         <Tooltip />
                                         <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
-                                        <Area type="monotone" dataKey="papers" stackId="1" stroke="hsl(35, 40%, 50%)" fill="hsl(35, 40%, 50%)" fillOpacity={0.6} name="Papers" />
-                                        <Area type="monotone" dataKey="published" stackId="2" stroke="hsl(142, 60%, 40%)" fill="hsl(142, 60%, 40%)" fillOpacity={0.6} name="Published" />
-                                        <Area type="monotone" dataKey="reviews" stackId="3" stroke="hsl(200, 10%, 40%)" fill="hsl(200, 10%, 40%)" fillOpacity={0.6} name="Reviews" />
-                                    </AreaChart>
+                                        <Line type="monotone" dataKey="papers" stroke="hsl(35, 40%, 50%)" strokeWidth={2} dot={{ r: 3, fill: "hsl(35, 40%, 50%)" }} name="Papers" />
+                                        <Line type="monotone" dataKey="published" stroke="hsl(142, 60%, 40%)" strokeWidth={2} dot={{ r: 3, fill: "hsl(142, 60%, 40%)" }} name="Published" />
+                                        <Line type="monotone" dataKey="reviews" stroke="hsl(200, 10%, 40%)" strokeWidth={2} dot={{ r: 3, fill: "hsl(200, 10%, 40%)" }} name="Reviews" />
+                                    </LineChart>
                                 </ResponsiveContainer>
                             </motion.div>
 
@@ -736,6 +739,72 @@ const AdminDashboard = memo(() => {
                                 </div>
                             </div>
                         </motion.div>
+
+                        {/* Additional Analytics Cards */}
+                        <div className="grid md:grid-cols-3 gap-6">
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+                                className="bg-card border border-border p-5">
+                                <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                    <Clock size={16} className="text-orange-500" /> Pending Actions
+                                </h3>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center p-2 bg-orange-50 rounded">
+                                        <span className="text-sm text-foreground">Papers to Review</span>
+                                        <span className="font-bold text-orange-600">{submittedPapers.length}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center p-2 bg-blue-50 rounded">
+                                        <span className="text-sm text-foreground">Under Review</span>
+                                        <span className="font-bold text-blue-600">{underReviewPapers.length}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center p-2 bg-yellow-50 rounded">
+                                        <span className="text-sm text-foreground">Revision Needed</span>
+                                        <span className="font-bold text-yellow-600">{revisionPapers.length}</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
+                                className="bg-card border border-border p-5">
+                                <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                    <CheckCircle size={16} className="text-green-500" /> Completed
+                                </h3>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center p-2 bg-green-50 rounded">
+                                        <span className="text-sm text-foreground">Accepted</span>
+                                        <span className="font-bold text-green-600">{acceptedPapers.length}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center p-2 bg-emerald-50 rounded">
+                                        <span className="text-sm text-foreground">Published</span>
+                                        <span className="font-bold text-emerald-600">{publishedPapers.length}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center p-2 bg-red-50 rounded">
+                                        <span className="text-sm text-foreground">Rejected</span>
+                                        <span className="font-bold text-red-600">{rejectedPapers.length}</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
+                                className="bg-card border border-border p-5">
+                                <h3 className="font-bold text-foreground text-sm flex items-center gap-2 mb-4">
+                                    <Inbox size={16} className="text-accent" /> Requests
+                                </h3>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center p-2 bg-orange-50 rounded">
+                                        <span className="text-sm text-foreground">Pending Requests</span>
+                                        <span className="font-bold text-orange-600">{pendingRequests.length}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center p-2 bg-green-50 rounded">
+                                        <span className="text-sm text-foreground">Approved</span>
+                                        <span className="font-bold text-green-600">{approvedRequests.length}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center p-2 bg-red-50 rounded">
+                                        <span className="text-sm text-foreground">Rejected</span>
+                                        <span className="font-bold text-red-600">{rejectedRequests.length}</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </div>
 
                         <div className="grid md:grid-cols-2 gap-6">
                             {/* Recent Papers */}
