@@ -116,7 +116,7 @@ const ProfessorAnalytics = memo(() => {
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
                     className="bg-card border border-border p-6">
                     <h3 className="font-bold text-foreground text-lg flex items-center gap-2 mb-6">
-                        <LineChart size={20} className="text-accent" /> Monthly Review Activity (Line Chart)
+                        <LineChartIcon size={20} className="text-accent" /> Monthly Review Activity (Line Chart)
                     </h3>
                     <ResponsiveContainer width="100%" height={300}>
                         <LineChart data={monthlyData}>
