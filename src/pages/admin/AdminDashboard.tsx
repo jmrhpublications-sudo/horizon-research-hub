@@ -73,7 +73,7 @@ const AdminDashboard = memo(() => {
         approveProfessorSubmission, updateProfessorSubmission,
         deleteUser, updateUserRole, reviews
     } = useJMRH();
-    const [activeTab, setActiveTab] = useState<"papers" | "users" | "professors" | "upload" | "overview" | "reviews">("overview");
+    const [activeTab, setActiveTab] = useState<"papers" | "users" | "professors" | "upload" | "overview" | "reviews" | "analytics">("overview");
     const [isCreateUserOpen, setIsCreateUserOpen] = useState(false);
     const [isAssignOpen, setIsAssignOpen] = useState(false);
     const [isUploadJournalOpen, setIsUploadJournalOpen] = useState(false);
@@ -538,6 +538,7 @@ const AdminDashboard = memo(() => {
                 <div className="flex gap-1 sm:gap-2 border-b border-border overflow-x-auto pb-px -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-none">
                     {[
                         { key: "overview", label: "Overview" },
+                        { key: "analytics", label: "Analytics" },
                         { key: "papers", label: "Papers" },
                         { key: "users", label: "Users" },
                         { key: "professors", label: "Professors" },
@@ -897,6 +898,65 @@ const AdminDashboard = memo(() => {
                                 </div>
                             </motion.div>
                         )}
+                    </div>
+                )}
+                {/* Analytics Tab */}
+                {activeTab === "analytics" && (
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            {stats.slice(0, 4).map((stat, idx) => (
+                                <motion.div key={idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}
+                                    className="bg-card border border-border p-5 rounded-lg">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                                        {stat.trend && <span className="text-xs font-bold text-green-500 bg-green-50 px-2 py-1 rounded">{stat.trend}</span>}
+                                    </div>
+                                    <p className="text-3xl font-bold text-foreground">{stat.value}</p>
+                                    <p className="text-sm text-muted-foreground">{stat.label}</p>
+                                </motion.div>
+                            ))}
+                        </div>
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <div className="bg-card border border-border p-5">
+                                <h3 className="font-bold text-foreground mb-4">Paper Status</h3>
+                                <div className="space-y-2">
+                                    {[{ label: 'Submitted', count: submittedPapers.length, color: 'bg-orange-500' },{ label: 'Under Review', count: underReviewPapers.length, color: 'bg-blue-500' },{ label: 'Accepted', count: acceptedPapers.length, color: 'bg-green-500' },{ label: 'Published', count: publishedPapers.length, color: 'bg-accent' },{ label: 'Rejected', count: rejectedPapers.length, color: 'bg-red-500' }].map(s => (
+                                        <div key={s.label} className="flex items-center justify-between">
+                                            <span className="text-sm text-foreground">{s.label}</span>
+                                            <div className="flex items-center gap-2">
+                                                <div className={`w-2 h-2 rounded-full ${s.color}`} />
+                                                <span className="font-bold">{s.count}</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="bg-card border border-border p-5">
+                                <h3 className="font-bold text-foreground mb-4">User Roles</h3>
+                                <div className="space-y-2">
+                                    {[{ label: 'Users', count: users.filter(u => u.role === 'USER').length },{ label: 'Professors', count: professorsList.length },{ label: 'Admins', count: admins.length }].map(r => (
+                                        <div key={r.label} className="flex items-center justify-between">
+                                            <span className="text-sm text-foreground">{r.label}</span>
+                                            <span className="font-bold">{r.count}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-4">
+                            <div className="bg-card border border-border p-5">
+                                <div className="flex items-center gap-2 mb-2"><Clock className="w-5 h-5 text-orange-500" /><span className="font-bold">Pending</span></div>
+                                <p className="text-3xl font-bold">{submittedPapers.length}</p>
+                            </div>
+                            <div className="bg-card border border-border p-5">
+                                <div className="flex items-center gap-2 mb-2"><CheckCircle className="w-5 h-5 text-green-500" /><span className="font-bold">Published</span></div>
+                                <p className="text-3xl font-bold">{publishedPapers.length}</p>
+                            </div>
+                            <div className="bg-card border border-border p-5">
+                                <div className="flex items-center gap-2 mb-2"><TrendingUp className="w-5 h-5 text-gold" /><span className="font-bold">Success Rate</span></div>
+                                <p className="text-3xl font-bold">{paperSuccessRate}%</p>
+                            </div>
+                        </div>
                     </div>
                 )}
                 {/* Papers Tab */}
