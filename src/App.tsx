@@ -83,6 +83,7 @@ const AdminDocuments = lazy(() => import("./pages/admin/AdminDocuments"));
 // Professor Dashboard
 const ProfessorDashboard = lazy(() => import("./pages/professor/ProfessorDashboard"));
 const ProfessorAnalytics = lazy(() => import("./pages/professor/ProfessorAnalytics"));
+const ProfessorDocuments = lazy(() => import("./pages/professor/ProfessorDocuments"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -245,6 +246,11 @@ const App = () => (
               <Route path="/secure/professor/papers" element={
                 <ProtectedRoute allowedRoles={['PROFESSOR']}>
                   <ProfessorDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/secure/professor/documents" element={
+                <ProtectedRoute allowedRoles={['PROFESSOR']}>
+                  <ProfessorDocuments />
                 </ProtectedRoute>
               } />
 
