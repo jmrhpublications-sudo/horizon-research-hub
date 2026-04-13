@@ -387,7 +387,7 @@ const ProfessorDashboard = memo(() => {
                                         <XAxis dataKey="month" tick={{ fontSize: 10 }} />
                                         <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
                                         <Tooltip />
-                                        <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
+                                        {/* Legend removed - not imported */}
                                         <Area type="monotone" dataKey="reviews" stackId="1" stroke="hsl(35, 40%, 50%)" fill="hsl(35, 40%, 50%)" fillOpacity={0.6} name="Total Reviews" />
                                         <Area type="monotone" dataKey="accepted" stackId="2" stroke="hsl(142, 60%, 40%)" fill="hsl(142, 60%, 40%)" fillOpacity={0.6} name="Accepted" />
                                     </AreaChart>
