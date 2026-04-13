@@ -106,22 +106,22 @@ const ProfessorDashboard = memo(() => {
         myReviews.forEach(paper => {
             try {
                 const paperDate = parseISO(paper.submissionDate);
-                const monthIndex = monthlyReviewData.findIndex(m => 
+                const monthIndex = last6Months.findIndex(m => 
                     isWithinInterval(paperDate, { start: m.fullDate, end: endOfMonth(m.fullDate) })
                 );
                 if (monthIndex !== -1) {
-                    monthlyReviewData[monthIndex].reviews++;
+                    last6Months[monthIndex].reviews++;
                     if (paper.status === 'ACCEPTED' || paper.status === 'PUBLISHED') {
-                        monthlyReviewData[monthIndex].accepted++;
+                        last6Months[monthIndex].accepted++;
                     }
                     if (paper.status === 'REJECTED') {
-                        monthlyReviewData[monthIndex].rejected++;
+                        last6Months[monthIndex].rejected++;
                     }
                 }
             } catch {}
         });
 
-        return monthlyReviewData;
+        return last6Months;
     }, [myReviews]);
 
     const reviewDecisionData = useMemo(() => {
