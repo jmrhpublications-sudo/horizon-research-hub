@@ -169,13 +169,13 @@ const AdminDashboard = memo(() => {
         papers.forEach(paper => {
             try {
                 const paperDate = parseISO(paper.submissionDate);
-                const monthIndex = monthlyPaperData.findIndex(m => 
+                const monthIndex = last12Months.findIndex(m => 
                     isWithinInterval(paperDate, { start: m.fullDate, end: endOfMonth(m.fullDate) })
                 );
                 if (monthIndex !== -1) {
-                    monthlyPaperData[monthIndex].papers++;
+                    last12Months[monthIndex].papers++;
                     if (paper.status === 'PUBLISHED') {
-                        monthlyPaperData[monthIndex].published++;
+                        last12Months[monthIndex].published++;
                     }
                 }
             } catch {}
@@ -184,16 +184,16 @@ const AdminDashboard = memo(() => {
         reviews.forEach(review => {
             try {
                 const reviewDate = parseISO(review.createdAt);
-                const monthIndex = monthlyPaperData.findIndex(m => 
+                const monthIndex = last12Months.findIndex(m => 
                     isWithinInterval(reviewDate, { start: m.fullDate, end: endOfMonth(m.fullDate) })
                 );
                 if (monthIndex !== -1) {
-                    monthlyPaperData[monthIndex].reviews++;
+                    last12Months[monthIndex].reviews++;
                 }
             } catch {}
         });
 
-        return monthlyPaperData.map(({ month, papers: p, published: pb, reviews: r }) => ({ month, papers: p, published: pb, reviews: r }));
+        return last12Months.map(({ month, papers: p, published: pb, reviews: r }) => ({ month, papers: p, published: pb, reviews: r }));
     }, [papers, reviews]);
 
     const disciplineData = useMemo(() => {
