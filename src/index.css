@@ -286,3 +286,15 @@ img, video {
     scroll-behavior: auto !important;
   }
 }
+
+/* Mobile bottom nav safe area */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Mobile-friendly touch targets */
+@media (max-width: 1023px) {
+  footer {
+    padding-bottom: 5rem;
+  }
+}
