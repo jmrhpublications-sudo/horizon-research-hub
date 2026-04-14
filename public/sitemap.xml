@@ -1,48 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://jmrh.lovable.app/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://jmrh.lovable.app/about</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://jmrh.lovable.app/guidelines</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://jmrh.lovable.app/editorial-board</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jmrh.lovable.app/ethics-policy</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jmrh.lovable.app/archives</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://jmrh.lovable.app/reviews</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://jmrh.lovable.app/contact</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://jmrh.lovable.app/submit-paper</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
+  <!-- Home -->
+  <url><loc>https://jmrh.lovable.app/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  
+  <!-- Journal Section -->
+  <url><loc>https://jmrh.lovable.app/journal/about</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://jmrh.lovable.app/journal/aims-scope</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jmrh.lovable.app/journal/editorial-board</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jmrh.lovable.app/journal/reviewer-board</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jmrh.lovable.app/journal/peer-review</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jmrh.lovable.app/journal/ethics</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jmrh.lovable.app/journal/plagiarism</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://jmrh.lovable.app/journal/open-access</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jmrh.lovable.app/journal/guidelines</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jmrh.lovable.app/journal/current-issue</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://jmrh.lovable.app/journal/archives</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://jmrh.lovable.app/journal/apc</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://jmrh.lovable.app/journal/submit</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- Books -->
+  <url><loc>https://jmrh.lovable.app/books/published</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jmrh.lovable.app/books/about</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://jmrh.lovable.app/books/proposal</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <!-- About & Contact -->
+  <url><loc>https://jmrh.lovable.app/about-us</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jmrh.lovable.app/contact</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jmrh.lovable.app/call-for-papers</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jmrh.lovable.app/reviews</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+
+  <!-- Policies -->
+  <url><loc>https://jmrh.lovable.app/policies</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://jmrh.lovable.app/terms</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://jmrh.lovable.app/privacy</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://jmrh.lovable.app/copyright</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://jmrh.lovable.app/open-access</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://jmrh.lovable.app/plagiarism-policy</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
+
+  <!-- Auth & Submission -->
+  <url><loc>https://jmrh.lovable.app/auth</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://jmrh.lovable.app/submit-paper</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>

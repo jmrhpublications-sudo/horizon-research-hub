@@ -1,8 +1,10 @@
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 2
 
 User-agent: Twitterbot
 Allow: /
@@ -19,7 +21,16 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
 User-agent: *
 Allow: /
+Disallow: /secure/
+Disallow: /account
+Disallow: /my-documents
 
 Sitemap: https://jmrh.lovable.app/sitemap.xml
