@@ -246,7 +246,7 @@ const App = () => (
               } />
               <Route path="/secure/professor/papers" element={
                 <ProtectedRoute allowedRoles={['PROFESSOR']}>
-                  <ProfessorDashboard />
+                  <ProfessorReviews />
                 </ProtectedRoute>
               } />
               <Route path="/secure/professor/documents" element={
