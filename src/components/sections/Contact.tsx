@@ -55,7 +55,7 @@ const Contact = memo(() => {
                                     <Phone className="w-5 h-5 text-gold shrink-0 mt-0.5" />
                                     <div>
                                         <p className="text-white/40 text-xs uppercase mb-1">Phone</p>
-                                        <p className="text-white/80 text-sm">+91 98765 43210</p>
+                                        <p className="text-white/80 text-sm">+91 9345691912</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-3">
@@ -99,7 +99,7 @@ const Contact = memo(() => {
                                     <div className="flex gap-3">
                                         <Phone className="w-5 h-5 text-gold shrink-0" />
                                         <div>
-                                            <p className="text-sm">+91 94896 18899</p>
+                                            <p className="text-sm">+91 8072242010</p>
                                         </div>
                                     </div>
                                 </div>

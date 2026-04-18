@@ -17,7 +17,7 @@ const JournalReviewerBoard = memo(() => {
     {
       name: "Mr. Suresh",
       position: "Assistant Professor",
-      department: "Department of English",
+      department: "Department of Geography",
       institution: "Government Arts and Science College, Gudalur",
       email: "suresh.eng@gascgudalur.in"
     },

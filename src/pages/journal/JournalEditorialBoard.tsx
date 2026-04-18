@@ -30,7 +30,7 @@ const JournalEditorialBoard = memo(() => {
 
   const boardMembers = [
     { name: "Dr. Jaganathan", position: "Head & Assistant Professor", department: "Department of Commerce with Information Technology", institution: "Government Arts and Science College, Gudalur", email: "jaganathan@jmrh.in", profile: "https://gascgudalur.in/department-of-commerce-with-it/" },
-    { name: "Dr. Porko", position: "Assistant Professor", department: "Department of Geography", institution: "Government Arts and Science College, Gudalur", email: "porko@jmrh.in", profile: "https://gascgudalur.in/department-of-geography/" },
+    { name: "Dr. Porko", position: "Assistant Professor", department: "Department of English", institution: "Government Arts and Science College, Gudalur", email: "porko@jmrh.in", profile: "https://gascgudalur.in/department-of-english/" },
     { name: "Dr. T. Sathish", position: "Assistant Professor", department: "Department of Mathematics", institution: "Government Arts and Science College, Gudalur", email: "sathisjt@jmrh.in", profile: "https://gascgudalur.in/department-of-mathematics/" },
     { name: "Dr. Dency Mary", position: "Assistant Professor", department: "Department of BBA (IB)", institution: "Nilgiri College of Arts and Science (Autonomous), Thaloor", address: "The Nilgiris – 643240, Tamil Nadu, India", email: "dencymary@nilgiricollege.ac.in", profile: "" },
     { name: "Dr. K Thamarai Selvi", position: "Research Coordinator & Assistant Professor", department: "Department of Commerce", institution: "Nilgiri College of Arts and Science (Autonomous)", address: "Konnachal Post, Thaloor, The Nilgiris, Tamil Nadu - 643239", email: "thamaraiselvi@nilgiricollege.ac.in", profile: "" }

@@ -50,7 +50,9 @@ const JournalAbout = memo(() => {
                 { label: "Subject", value: "Multidisciplinary" },
                 { label: "Language", value: "English" },
                 { label: "Publisher", value: "JMRH Publications" },
-                { label: "Address", value: "Gudalur, Nilgiris – 643212" },
+                { label: "Address", value: "Gudalur, Nilgiris" },
+                { label: "Contact", value: "jmrhpublications@gmail.com" },
+                { label: "Phone", value: "+91 8072242010" },
                 { label: "ISSN", value: "To be assigned" }
               ].map((item, index) => (
                 <div key={index} className="bg-oxford/5 p-3 sm:p-6 border border-black/5">

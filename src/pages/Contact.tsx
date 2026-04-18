@@ -2,7 +2,7 @@ import { memo } from "react";
 import { Link } from "react-router-dom";
 import PageShell from "@/components/layout/PageShell";
 import { pageSEO } from "@/lib/seo-data";
-import { Mail, MapPin } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 
 const Contact = memo(() => {
   return (
@@ -23,26 +23,10 @@ const Contact = memo(() => {
         </div>
       </section>
 
-      <section className="py-8 sm:py-16">
+      <section className="py-8 sm:py-16 bg-white">
         <div className="container max-w-4xl mx-auto px-4 sm:px-6">
           <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
-            <div className="bg-white border border-black/5 p-4 sm:p-6">
-              <div className="flex items-start gap-3 sm:gap-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-oxford" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-oxford mb-2 text-sm sm:text-base">Editor-in-Chief</h3>
-                  <p className="text-oxford/60 text-xs sm:text-sm leading-relaxed">
-                    Dr. Karthick B<br />
-                    Asst. Professor, Dept. of Computer Applications<br />
-                    Govt. Arts and Science College, Gudalur<br />
-                    The Nilgiris – 643212, Tamil Nadu
-                  </p>
-                </div>
-              </div>
-            </div>
-
+            {/* Publisher Address - Left */}
             <div className="bg-white border border-black/5 p-4 sm:p-6">
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
@@ -56,10 +40,32 @@ const Contact = memo(() => {
                     The Nilgiris – 643212<br />
                     Tamil Nadu, India
                   </p>
+                  <p className="text-oxford/50 text-xs sm:text-sm mt-2">Email: jmrhpublications@gmail.com</p>
+                  <p className="text-oxford/50 text-xs sm:text-sm">Phone: +91 8072242010</p>
                 </div>
               </div>
             </div>
 
+            {/* Editor-in-Chief - Right */}
+            <div className="bg-white border border-black/5 p-4 sm:p-6">
+              <div className="flex items-start gap-3 sm:gap-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-oxford" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-oxford mb-2 text-sm sm:text-base">Editor-in-Chief</h3>
+                  <p className="text-oxford/60 text-xs sm:text-sm leading-relaxed">
+                    Dr. Karthick B<br />
+                    Asst. Professor, Dept. of Computer Applications<br />
+                    Govt. Arts and Science College, Gudalur<br />
+                    The Nilgiris – 643212, Tamil Nadu
+                  </p>
+                  <p className="text-oxford/50 text-xs sm:text-sm mt-2">Phone: +91 9345691912</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Official Email */}
             <div className="bg-white border border-black/5 p-4 sm:p-6">
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
@@ -75,6 +81,7 @@ const Contact = memo(() => {
               </div>
             </div>
 
+            {/* Submission Email */}
             <div className="bg-white border border-black/5 p-4 sm:p-6">
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
@@ -90,6 +97,7 @@ const Contact = memo(() => {
               </div>
             </div>
 
+            {/* Reviewer Email */}
             <div className="bg-white border border-black/5 p-4 sm:p-6">
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-oxford/10 flex items-center justify-center flex-shrink-0">
@@ -105,6 +113,7 @@ const Contact = memo(() => {
               </div>
             </div>
 
+            {/* Response Time */}
             <div className="bg-oxford/5 p-4 sm:p-6 border border-black/5 flex items-center">
               <p className="text-oxford/70 text-sm sm:text-base">
                 <strong>Response Time:</strong> All inquiries will be responded to within <strong>2–3 working days</strong>.
