@@ -40,4 +40,12 @@
   <!-- Auth & Submission -->
   <url><loc>https://jmrh.lovable.app/auth</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://jmrh.lovable.app/submit-paper</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- Static SEO landing pages -->
+  <url><loc>https://jmrh.lovable.app/seo/about-journal.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jmrh.lovable.app/seo/aims-scope.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jmrh.lovable.app/seo/boards.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jmrh.lovable.app/seo/for-authors.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jmrh.lovable.app/seo/archives.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jmrh.lovable.app/seo/call-for-papers.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>
