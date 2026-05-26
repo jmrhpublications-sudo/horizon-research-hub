@@ -74,7 +74,7 @@ const ArchivesPage = memo(() => {
 
     return (
         <div className="min-h-screen bg-[#FDFCFB] flex flex-col font-sans selection:bg-gold selection:text-white">
-            <SEOHead {...pageSEO.archives} canonical="/archives" />
+            <SEOHead title={seoTitle} description={seoDescription} keywords={seoKeywords} canonical={canonical} />
             <Header />
             <main className="flex-1">
                 {/* Cinematic Editorial Hero */}
