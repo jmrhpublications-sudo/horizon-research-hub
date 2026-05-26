@@ -1,5 +1,5 @@
-import { memo, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { memo, useMemo, useState, useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { useJMRH } from "@/context/JMRHContext";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -12,8 +12,30 @@ import { pageSEO } from "@/lib/seo-data";
 
 const ArchivesPage = memo(() => {
     const { papers, publishedJournals, publishedBooks } = useJMRH();
-    const [searchTerm, setSearchTerm] = useState("");
-    const [activeTab, setActiveTab] = useState<"papers" | "journals" | "books">("papers");
+    const [searchParams, setSearchParams] = useSearchParams();
+    const queryParam = searchParams.get("q") || "";
+    const tabParam = (searchParams.get("tab") as "papers" | "journals" | "books") || "papers";
+    const [searchTerm, setSearchTerm] = useState(queryParam);
+    const [activeTab, setActiveTab] = useState<"papers" | "journals" | "books">(tabParam);
+
+    useEffect(() => {
+        const next = new URLSearchParams(searchParams);
+        if (searchTerm) next.set("q", searchTerm); else next.delete("q");
+        next.set("tab", activeTab);
+        setSearchParams(next, { replace: true });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchTerm, activeTab]);
+
+    const seoTitle = searchTerm
+        ? `"${searchTerm}" — ${activeTab === 'papers' ? 'Research Papers' : activeTab === 'journals' ? 'Journal Articles' : 'Books'} | JMRH Archives Gudalur, Ooty, Tamil Nadu`
+        : `Research Paper Publications — Gudalur, Ooty, Nilgiris, Tamil Nadu | JMRH Archives`;
+    const seoDescription = searchTerm
+        ? `Search results for "${searchTerm}" in JMRH ${activeTab}. Peer-reviewed research papers, academic journals & PDFs from Gudalur, Ooty, Nilgiris and Tamil Nadu scholars.`
+        : `Browse Gudalur, Ooty and Nilgiris academic journal papers, college conference publications, Tamil Nadu research articles PDF, scientific & biodiversity research from JMRH Publications.`;
+    const seoKeywords = `${searchTerm ? searchTerm + ', ' : ''}Gudalur Ooty research paper publications, Gudalur Nilgiris academic journal papers, Ooty college conference paper publications, Gudalur Tamil Nadu research articles PDF, Nilgiris district scientific paper publications, Ooty university journal publications 2026, Gudalur environmental research papers, Ooty education research publication journal, Nilgiris biodiversity research articles, Gudalur Ooty scholarly publications, JMRH, professor publications, peer reviewed journal India`;
+    const canonical = searchTerm
+        ? `/archives?q=${encodeURIComponent(searchTerm)}&tab=${activeTab}`
+        : `/archives`;
 
     const publishedPapers = useMemo(() => {
         return papers.filter(p =>
