@@ -469,6 +469,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_papers_for_professor: {
+        Args: never
+        Returns: {
+          abstract: string
+          assigned_professor_id: string
+          attachments: string[]
+          author_id: string
+          co_authors: string
+          cover_letter: string
+          created_at: string
+          discipline: string
+          id: string
+          keywords: string
+          manuscript_type: string
+          paper_type: string
+          revision_comments: string
+          status: string
+          submission_date: string
+          title: string
+          updated_at: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
