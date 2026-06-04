@@ -509,15 +509,24 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
                 })));
             }
 
-            if (papersRes.data) {
-                // Build a lookup for professor names from profiles
-                const profNames: Record<string, string> = {};
-                if (profilesRes.data) {
-                    for (const p of profilesRes.data) {
-                        profNames[p.id] = p.name || '';
-                    }
+            // Merge admin/author papers with professor-visible (PII-masked) rows
+            const profNames: Record<string, string> = {};
+            if (profilesRes.data) {
+                for (const p of profilesRes.data) {
+                    profNames[p.id] = p.name || '';
                 }
-                setPapers(papersRes.data.map((p: any) => ({
+            }
+            const mergedPapersMap = new Map<string, any>();
+            if (papersRes.data) {
+                for (const p of papersRes.data) mergedPapersMap.set(p.id, p);
+            }
+            if ((professorPapersRes as any)?.data) {
+                for (const p of (professorPapersRes as any).data) {
+                    if (!mergedPapersMap.has(p.id)) mergedPapersMap.set(p.id, p);
+                }
+            }
+            if (mergedPapersMap.size > 0 || papersRes.data) {
+                setPapers(Array.from(mergedPapersMap.values()).map((p: any) => ({
                     ...mapPaper(p),
                     assignedProfessorName: p.assigned_professor_id ? (profNames[p.assigned_professor_id] || 'Unknown') : undefined,
                 })));
