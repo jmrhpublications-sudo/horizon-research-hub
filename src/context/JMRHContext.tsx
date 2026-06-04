@@ -478,10 +478,11 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
     const refreshData = async () => {
         try {
             // Fetch all data in parallel - non-existent tables return error gracefully
-            const [profilesRes, rolesRes, papersRes, reviewsRes, journalsRes, booksRes, requestsRes, professorSubsRes, docsRes] = await Promise.all([
+            const [profilesRes, rolesRes, papersRes, professorPapersRes, reviewsRes, journalsRes, booksRes, requestsRes, professorSubsRes, docsRes] = await Promise.all([
                 db.from('profiles').select('*'),
                 db.from('user_roles').select('*'),
                 db.from('papers').select('*'),
+                (db as any).rpc('get_papers_for_professor'),
                 db.from('reviews').select('id, content, rating, user_name, created_at, updated_at'),
                 db.from('published_journals').select('*'),
                 db.from('published_books').select('*'),
