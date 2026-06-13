@@ -1,57 +1,219 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script>
+(function() {
+  var ua = navigator.userAgent.toLowerCase();
+  var bots = [
+    'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider', 'yandexbot',
+    'sogou', 'exabot', 'facebot', 'ia_archiver', 'gptbot', 'chatgpt',
+    'perplexitybot', 'claudebot', 'claude-web', 'google-extended', 'applebot'
+  ];
+  var isBot = false;
+  for (var i = 0; i < bots.length; i++) {
+    if (ua.indexOf(bots[i]) !== -1) {
+      isBot = true;
+      break;
+    }
+  }
+  if (!isBot) {
+    window.location.replace('/');
+  }
+})();
+</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Call for Papers 2026 | Submit Research to JMRH</title>
-<meta name="description" content="JMRH Call for Papers – submit original research, reviews, and case studies for the upcoming issue of the Journal of Multidisciplinary Research Horizon." />
-<meta name="keywords" content="call for papers 2026, JMRH submissions, research paper call, multidisciplinary journal CFP, submit academic paper India, open access call for papers, JMRH, JMRH Publications, JMRH Gudalur, Gudalur, Gudalur Nilgiris, Nilgiris journal, Ooty journal, Tamil Nadu journal, paper publication, paper publication India, publish research paper, professor, professor publication, professor reviewer, faculty publication, assistant professor research, university professor papers, PhD scholar, monthly journal India, affordable APC, DOI paper publication, double blind peer review" />
-<meta name="robots" content="index, follow" />
-<link rel="canonical" href="https://jmrh.lovable.app/call-for-papers" />
+<meta name="description" content="JMRH Call for Papers 2026. Submit your original research papers, reviews, and case studies. Rolling monthly publication cycles with low APC." />
+<meta name="keywords" content="call for papers 2026, JMRH submissions, research paper call, multidisciplinary journal CFP, submit academic paper India, open access call for papers, Gudalur, Ooty, Nilgiris" />
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+<link rel="canonical" href="https://jmrh.in/seo/call-for-papers.html" />
+
+<!-- Open Graph -->
 <meta property="og:type" content="article" />
-<meta property="og:title" content="JMRH Call for Papers 2026" />
-<meta property="og:description" content="Submit your research to the next issue of JMRH." />
-<meta property="og:url" content="https://jmrh.lovable.app/call-for-papers" />
+<meta property="og:title" content="Call for Papers 2026 | Submit Research to JMRH" />
+<meta property="og:description" content="Open call for multidisciplinary academic papers, review articles, and conference proceedings for upcoming monthly issues." />
+<meta property="og:url" content="https://jmrh.in/seo/call-for-papers.html" />
+<meta property="og:site_name" content="JMRH Publications" />
+<meta property="og:image" content="https://jmrh.in/logo.png" />
+
+<!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Call for Papers 2026 – JMRH Journal" />
+<meta name="twitter:description" content="Submit your paper to the Journal of Multidisciplinary Research Horizon. Open rolling submissions." />
+<meta name="twitter:image" content="https://jmrh.in/logo.png" />
+
+<!-- Custom Stylesheet -->
+<link rel="stylesheet" href="/seo/style.css" />
+
+<!-- Structured Data -->
 <script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"Event",
-  "name":"JMRH Call for Papers 2026",
-  "eventStatus":"https://schema.org/EventScheduled",
-  "eventAttendanceMode":"https://schema.org/OnlineEventAttendanceMode",
-  "startDate":"2026-01-01",
-  "endDate":"2026-12-31",
-  "location":{"@type":"VirtualLocation","url":"https://jmrh.lovable.app/journal/submit"},
-  "organizer":{"@type":"Organization","name":"JMRH Publications","url":"https://jmrh.lovable.app"},
-  "description":"Open call for multidisciplinary research papers, reviews, and case studies."
-}
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": "JMRH Call for Papers 2026",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+    "startDate": "2026-01-01",
+    "endDate": "2026-12-31",
+    "location": {
+      "@type": "VirtualLocation",
+      "url": "https://jmrh.in/journal/submit"
+    },
+    "organizer": {
+      "@type": "Organization",
+      "name": "JMRH Publications",
+      "url": "https://jmrh.in"
+    },
+    "description": "Rolling call for research articles, review papers, and academic conference publications."
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What are the deadlines for the upcoming issue?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "JMRH publishes issues monthly. Submissions are accepted on a rolling basis. Manuscripts submitted before the 20th of any month are typical evaluated for inclusion in the following month's issue."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I submit my research before receiving my degree?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, JMRH supports postgraduate and PhD candidates. Student research is welcomed, and our editors provide extra structural mentorship for student papers."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are there formatting requirements for the initial draft?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Authors should use the JMRH template (Microsoft Word format) and use APA 7th edition citation style. Visit the Author Guidelines page for files and details."
+        }
+      }
+    ]
+  }
+]
 </script>
 </head>
 <body>
-<header><a href="/">JMRH Publications</a></header>
+<header>
+  <nav>
+    <a href="/" class="logo">JMRH Publications</a>
+    <div class="header-links">
+      <a href="/seo/about-journal.html">About JMRH</a>
+      <a href="/seo/aims-scope.html">Aims & Scope</a>
+      <a href="/seo/boards.html">Editorial Board</a>
+      <a href="/seo/for-authors.html">Author Guidelines</a>
+      <a href="/journal/submit" class="cta-btn">Submit Manuscript</a>
+    </div>
+  </nav>
+</header>
 <main>
-<h1>Call for Papers – 2026</h1>
-<p>JMRH invites scholars, researchers, faculty, and postgraduate students to submit original manuscripts for upcoming issues of the Journal of Multidisciplinary Research Horizon.</p>
-<h2>Themes &amp; Tracks</h2>
-<ul>
-<li>Education, Pedagogy, and Learning Technologies</li>
-<li>Commerce, Management, Finance, and Economics</li>
-<li>Science, Engineering, and Information Technology</li>
-<li>Humanities, Social Sciences, and Public Policy</li>
-<li>Environment, Climate Change, and Sustainability</li>
-</ul>
-<h2>Important Dates</h2>
-<p>Submissions are accepted on a rolling basis. Authors receive a first decision within 3–6 weeks of submission.</p>
-<h2>Why Publish with JMRH?</h2>
-<ul>
-<li>Rigorous double-blind peer review.</li>
-<li>Open access — global reach and indexing.</li>
-<li>DOI and permanent archiving.</li>
-<li>Free mentoring for first-time authors.</li>
-</ul>
-<p><a href="/journal/submit"><strong>Submit your manuscript →</strong></a></p>
-<nav><a href="/journal/guidelines">Author Guidelines</a> · <a href="/journal/submit">Submit</a> · <a href="/contact">Contact</a></nav>
+  <h1>Call for Papers – 2026 Submissions Open</h1>
+  
+  <div class="metadata-banner">
+    <span><strong>Last Updated:</strong> June 2026</span>
+    <span><strong>Submission Cycle:</strong> Monthly / Rolling Basis</span>
+    <span><strong>First Decision:</strong> 3–6 Weeks</span>
+    <span><strong>ISSN Status:</strong> Applied For</span>
+  </div>
+
+  <p>The <strong>Journal of Multidisciplinary Research Horizon (JMRH)</strong> invites researchers, professors, postgraduate students, and doctoral scholars to submit original, unpublished manuscripts for our 2026 monthly volumes. We offer a double-blind peer-reviewed publishing workflow, low APC, and rapid online dissemination.</p>
+
+  <div class="definition-box">
+    <h4>Call for Papers Focus</h4>
+    <p>Providing a regular, month-by-month publishing channel to accelerate scientific dialogue and reward original empirical research with swift peer review and stable indexing.</p>
+  </div>
+
+  <h2>Upcoming Submission Deadlines &amp; Milestones</h2>
+  <p>JMRH publishes issues on a monthly basis, allowing authors to publish their results without long delays. Here is our typical timeline:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Publishing Milestone</th>
+        <th>Expected Timeline / Deadline</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Manuscript Submission</strong></td>
+        <td>Open 24/7 (Rolling Monthly Submissions)</td>
+      </tr>
+      <tr>
+        <td><strong>Initial Editorial Screening</strong></td>
+        <td>3–5 days from upload</td>
+      </tr>
+      <tr>
+        <td><strong>Peer-Review Decisions</strong></td>
+        <td>3–6 weeks from submission</td>
+      </tr>
+      <tr>
+        <td><strong>Revised Manuscript Submission</strong></td>
+        <td>1–2 weeks post-decision</td>
+      </tr>
+      <tr>
+        <td><strong>Online Publication</strong></td>
+        <td>Within 7 days of acceptance & payment</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Disciplines Welcome for Submission</h2>
+  <p>We invite original papers and review papers across several key tracks:</p>
+  <ul>
+    <li><strong>Track A:</strong> Education, Teaching Methodologies, E-Learning, and Inclusive Pedagogy.</li>
+    <li><strong>Track B:</strong> Commerce, Management, Business Administration, and Economic Policies.</li>
+    <li><strong>Track C:</strong> Environmental Sciences, Western Ghats Ecology, Tea Plantation Studies, and Sustainability.</li>
+    <li><strong>Track D:</strong> Applied Sciences, Physics, Chemistry, Mathematics, and Computer Science Applications.</li>
+    <li><strong>Track E:</strong> Humanities, Sociology, Law, Public Policy, and Tribal Community Studies.</li>
+  </ul>
+
+  <section class="faq-section">
+    <h2 class="faq-title">Frequently Asked Questions</h2>
+    <details>
+      <summary>What are the deadlines for the upcoming issue?</summary>
+      <p>JMRH publishes issues monthly. Submissions are accepted on a rolling basis. Manuscripts submitted before the 20th of any month are typically evaluated for inclusion in the following month's issue.</p>
+    </details>
+    <details>
+      <summary>Can I submit my research before receiving my degree?</summary>
+      <p>Yes, JMRH supports postgraduate and PhD candidates. Student research is welcomed, and our editors provide extra structural mentorship for student papers.</p>
+    </details>
+    <details>
+      <summary>Are there formatting requirements for the initial draft?</summary>
+      <p>Yes. Authors should use the JMRH template (Microsoft Word format) and use APA 7th edition citation style. Visit the Author Guidelines page for files and details.</p>
+    </details>
+  </section>
+
+  <div class="cta-box">
+    <h3>Start Your Submission Today</h3>
+    <p>Prepare your manuscript using our Microsoft Word template and upload it via the JMRH manuscript management system.</p>
+    <div class="cta-buttons">
+      <a href="/journal/submit" class="primary">Submit Manuscript Online</a>
+      <a href="/seo/for-authors.html" class="secondary">Download Formatting Template</a>
+    </div>
+  </div>
 </main>
+<footer>
+  <div class="footer-content">
+    <a href="/" class="footer-logo">JMRH Publications</a>
+    <div class="footer-links">
+      <a href="/seo/about-journal.html">About JMRH</a>
+      <a href="/seo/aims-scope.html">Aims & Scope</a>
+      <a href="/seo/boards.html">Editorial Board</a>
+      <a href="/seo/for-authors.html">Guidelines</a>
+      <a href="/seo/archives.html">Archives</a>
+    </div>
+    <div class="footer-copyright">
+      &copy; 2026 JMRH Publications. All rights reserved. Registered under Govt of India. Based in Gudalur, The Nilgiris, Tamil Nadu, India.
+    </div>
+  </div>
+</footer>
 </body>
 </html>

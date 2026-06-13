@@ -1,55 +1,209 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script>
+(function() {
+  var ua = navigator.userAgent.toLowerCase();
+  var bots = [
+    'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider', 'yandexbot',
+    'sogou', 'exabot', 'facebot', 'ia_archiver', 'gptbot', 'chatgpt',
+    'perplexitybot', 'claudebot', 'claude-web', 'google-extended', 'applebot'
+  ];
+  var isBot = false;
+  for (var i = 0; i < bots.length; i++) {
+    if (ua.indexOf(bots[i]) !== -1) {
+      isBot = true;
+      break;
+    }
+  }
+  if (!isBot) {
+    window.location.replace('/');
+  }
+})();
+</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>For Authors – Submission Guidelines | JMRH Journal</title>
-<meta name="description" content="Author guidelines for JMRH – manuscript formatting, submission process, peer review, ethics, APC, and open access licensing for research papers." />
-<meta name="keywords" content="JMRH author guidelines, submit research paper, manuscript submission, paper formatting, APC, open access publishing India, peer review process, JMRH, JMRH Publications, JMRH Gudalur, Gudalur, Gudalur Nilgiris, Nilgiris journal, Ooty journal, Tamil Nadu journal, paper publication, paper publication India, publish research paper, professor, professor publication, professor reviewer, faculty publication, assistant professor research, university professor papers, PhD scholar, monthly journal India, affordable APC, DOI paper publication, double blind peer review" />
-<meta name="robots" content="index, follow" />
-<link rel="canonical" href="https://jmrh.lovable.app/journal/guidelines" />
+<meta name="description" content="Author guidelines for JMRH. Find formatting templates, manuscript structure, plagiarism limits, and Article Processing Charge (APC) details." />
+<meta name="keywords" content="JMRH author guidelines, submit research paper, manuscript submission, paper formatting, APC, open access publishing India, peer review process, double blind review" />
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+<link rel="canonical" href="https://jmrh.in/seo/for-authors.html" />
+
+<!-- Open Graph -->
 <meta property="og:type" content="article" />
 <meta property="og:title" content="For Authors | JMRH Submission Guidelines" />
-<meta property="og:description" content="How to prepare and submit your manuscript to JMRH." />
-<meta property="og:url" content="https://jmrh.lovable.app/journal/guidelines" />
-<meta name="twitter:card" content="summary" />
+<meta property="og:description" content="Detailed guide on preparing manuscripts, plagiarism policy, and APC for publishing in JMRH." />
+<meta property="og:url" content="https://jmrh.in/seo/for-authors.html" />
+<meta property="og:site_name" content="JMRH Publications" />
+<meta property="og:image" content="https://jmrh.in/logo.png" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="For Authors – JMRH Submission Guidelines" />
+<meta name="twitter:description" content="How to prepare, format, and submit your research article to JMRH. Free templates available." />
+<meta name="twitter:image" content="https://jmrh.in/logo.png" />
+
+<!-- Custom Stylesheet -->
+<link rel="stylesheet" href="/seo/style.css" />
+
+<!-- Structured Data -->
 <script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"FAQPage",
-  "mainEntity":[
-    {"@type":"Question","name":"How do I submit a paper to JMRH?","acceptedAnswer":{"@type":"Answer","text":"Submit your manuscript through the online portal at /journal/submit. Prepare your file in Word or LaTeX following the author template."}},
-    {"@type":"Question","name":"What is the peer review process?","acceptedAnswer":{"@type":"Answer","text":"JMRH uses double-blind peer review. Two or more reviewers evaluate each submission for novelty, methodology, and clarity."}},
-    {"@type":"Question","name":"Is there an Article Processing Charge (APC)?","acceptedAnswer":{"@type":"Answer","text":"See the APC page for current charges and waiver policies for scholars from low-income regions."}},
-    {"@type":"Question","name":"How long does review take?","acceptedAnswer":{"@type":"Answer","text":"Typical first decision is within 3–6 weeks of submission."}}
-  ]
-}
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Author Guidelines",
+    "url": "https://jmrh.in/seo/for-authors.html",
+    "isPartOf": {
+      "@type": "Periodical",
+      "name": "JMRH",
+      "url": "https://jmrh.in"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the similarity or plagiarism threshold for JMRH submissions?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "JMRH has a strict anti-plagiarism policy. Every submission is analyzed via Crossref Similarity Check (powered by iThenticate). The maximum allowed similarity score is 10%, excluding bibliography/references. Papers exceeding this limit will be sent back immediately."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the formatting specifications for manuscripts?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Manuscripts must be submitted in Microsoft Word (.doc or .docx) format using Times New Roman, 12 pt font, 1.5 line spacing. The text should be organized into: Abstract, Key-words, Introduction, Literature Review, Methodology, Results, Discussion, Conclusion, and References (APA 7th edition)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are there APC waivers or discounts available?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. JMRH charges a baseline APC of INR 650 for Indian authors. Under our inclusive policy, we offer complete APC waivers or subsidies for scholars belonging to tribal communities, early-career researchers from rural areas, and low-income regions upon written request."
+        }
+      }
+    ]
+  }
+]
 </script>
 </head>
 <body>
-<header><a href="/">JMRH Publications</a></header>
+<header>
+  <nav>
+    <a href="/" class="logo">JMRH Publications</a>
+    <div class="header-links">
+      <a href="/seo/about-journal.html">About JMRH</a>
+      <a href="/seo/aims-scope.html">Aims & Scope</a>
+      <a href="/seo/boards.html">Editorial Board</a>
+      <a href="/seo/archives.html">Archives</a>
+      <a href="/journal/submit" class="cta-btn">Submit Manuscript</a>
+    </div>
+  </nav>
+</header>
 <main>
-<h1>For Authors</h1>
-<p>JMRH welcomes original, unpublished manuscripts that advance knowledge in any covered discipline. Follow the guidelines below to prepare your submission.</p>
-<h2>Manuscript Preparation</h2>
-<ul>
-<li>Use the JMRH Word/LaTeX template. Times New Roman 12 pt, 1.5 line spacing.</li>
-<li>Structured abstract (150–250 words) and 4–6 keywords.</li>
-<li>Sections: Introduction, Literature Review, Methodology, Results, Discussion, Conclusion, References.</li>
-<li>Citations in APA 7th edition (or as recommended by the section editor).</li>
-</ul>
-<h2>Submission Process</h2>
-<ol>
-<li>Register an author account.</li>
-<li>Upload your manuscript and cover letter.</li>
-<li>Complete the conflict-of-interest and originality declaration.</li>
-<li>Track your submission through the dashboard.</li>
-</ol>
-<h2>Peer Review &amp; Ethics</h2>
-<p>All manuscripts undergo double-blind peer review and plagiarism screening. JMRH follows COPE guidelines on publication ethics, authorship, and corrections.</p>
-<h2>Open Access</h2>
-<p>Accepted articles are published under Creative Commons (CC BY) licensing and freely available to readers worldwide.</p>
-<nav><a href="/journal/submit">Submit Paper</a> · <a href="/journal/peer-review">Peer Review</a> · <a href="/journal/ethics">Ethics</a> · <a href="/journal/apc">APC</a></nav>
+  <h1>Author Submission Guidelines &amp; Policies</h1>
+  
+  <div class="metadata-banner">
+    <span><strong>Last Updated:</strong> June 2026</span>
+    <span><strong>APC:</strong> INR 650 (Indian) / USD 10 (International)</span>
+    <span><strong>Plagiarism Limit:</strong> &lt; 10% (iThenticate)</span>
+    <span><strong>Formatting:</strong> APA 7th Edition</span>
+  </div>
+
+  <p>To submit your academic research to the <strong>Journal of Multidisciplinary Research Horizon (JMRH)</strong>, please review our author guidelines below. Following these formatting requirements and ethical policies ensures your paper moves efficiently through our double-blind peer-review workflow.</p>
+
+  <div class="definition-box">
+    <h4>Authorship Responsibility</h4>
+    <p>Authors must submit only original work. All data sources must be transparent, and all contributors who made significant intellectual contributions must be listed as co-authors.</p>
+  </div>
+
+  <h2>Submission Checklist &amp; Formatting</h2>
+  <p>Please format your manuscript according to the following specifications prior to uploading:</p>
+  <ul>
+    <li><strong>File Format:</strong> Only Microsoft Word document files (.doc or .docx) are accepted for editing.</li>
+    <li><strong>Layout &amp; Font:</strong> Times New Roman, 12-point font size, 1.5 line spacing, with standard 1-inch margins on all sides.</li>
+    <li><strong>Structure:</strong> Title page, Abstract (150–250 words, structured with Objective, Methods, Findings), 4–6 Keywords, Introduction, Methods, Results, Discussion, Conclusion, and References.</li>
+    <li><strong>Citations:</strong> All citations and reference list entries must conform strictly to the APA 7th edition standard.</li>
+  </ul>
+
+  <h2>Submission Fees &amp; APC Details</h2>
+  <p>JMRH charges no manuscript submission or evaluation fees. APC fees are charged ONLY after peer-review acceptance:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Fee Category</th>
+        <th>Amount & Policy</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Submission Fee</strong></td>
+        <td>Free (No fee charged for manuscript evaluation)</td>
+      </tr>
+      <tr>
+        <td><strong>Indian Authors APC</strong></td>
+        <td>INR 650 (Fixed rate covering editing and DOI indexing)</td>
+      </tr>
+      <tr>
+        <td><strong>International Authors APC</strong></td>
+        <td>USD 10 (Fixed rate covering international hosting)</td>
+      </tr>
+      <tr>
+        <td><strong>Waiver Policy</strong></td>
+        <td>Full waivers available for tribal community scholars and low-income candidates.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Ethics &amp; Plagiarism Policies</h2>
+  <p>JMRH maintains zero tolerance for research misconduct. Submissions undergo automatic software validation via Crossref Similarity Check. Manuscripts showing similarity above 10% (excluding references) are rejected without review. Authors must guarantee their submission is not published elsewhere.</p>
+
+  <section class="faq-section">
+    <h2 class="faq-title">Frequently Asked Questions</h2>
+    <details>
+      <summary>What is the similarity or plagiarism threshold for JMRH submissions?</summary>
+      <p>JMRH has a strict anti-plagiarism policy. Every submission is analyzed via Crossref Similarity Check (powered by iThenticate). The maximum allowed similarity score is 10%, excluding bibliography/references. Papers exceeding this limit will be sent back immediately.</p>
+    </details>
+    <details>
+      <summary>What are the formatting specifications for manuscripts?</summary>
+      <p>Manuscripts must be submitted in Microsoft Word (.doc or .docx) format using Times New Roman, 12 pt font, 1.5 line spacing. The text should be organized into: Abstract, Key-words, Introduction, Literature Review, Methodology, Results, Discussion, Conclusion, and References (APA 7th edition).</p>
+    </details>
+    <details>
+      <summary>Are there APC waivers or discounts available?</summary>
+      <p>Yes. JMRH charges a baseline APC of INR 650 for Indian authors. Under our inclusive policy, we offer complete APC waivers or subsidies for scholars belonging to tribal communities, early-career researchers from rural areas, and low-income regions upon written request.</p>
+    </details>
+  </section>
+
+  <div class="cta-box">
+    <h3>Download Manuscript Template</h3>
+    <p>Read the guidelines, download our template, and upload your manuscript to begin the double-blind review process.</p>
+    <div class="cta-buttons">
+      <a href="/journal/submit" class="primary">Submit Manuscript Now</a>
+      <a href="/journal/guidelines" class="secondary">View Full Author Guide</a>
+    </div>
+  </div>
 </main>
+<footer>
+  <div class="footer-content">
+    <a href="/" class="footer-logo">JMRH Publications</a>
+    <div class="footer-links">
+      <a href="/seo/about-journal.html">About JMRH</a>
+      <a href="/seo/aims-scope.html">Aims & Scope</a>
+      <a href="/seo/boards.html">Editorial Board</a>
+      <a href="/seo/for-authors.html">Guidelines</a>
+      <a href="/seo/archives.html">Archives</a>
+    </div>
+    <div class="footer-copyright">
+      &copy; 2026 JMRH Publications. All rights reserved. Registered under Govt of India. Based in Gudalur, The Nilgiris, Tamil Nadu, India.
+    </div>
+  </div>
+</footer>
 </body>
 </html>

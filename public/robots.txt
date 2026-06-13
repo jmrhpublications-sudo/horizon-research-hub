@@ -1,5 +1,5 @@
 # JMRH Publications - robots.txt
-# https://jmrh.lovable.app
+# https://jmrh.in
 
 # --- Search engines ---
 User-agent: Googlebot
@@ -76,4 +76,4 @@ Disallow: /request-upload
 Disallow: /submit-paper
 Disallow: /journal/viewer/
 
-Sitemap: https://jmrh.lovable.app/sitemap.xml
+Sitemap: https://jmrh.in/sitemap.xml

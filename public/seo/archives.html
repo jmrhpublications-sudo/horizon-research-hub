@@ -1,38 +1,205 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script>
+(function() {
+  var ua = navigator.userAgent.toLowerCase();
+  var bots = [
+    'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider', 'yandexbot',
+    'sogou', 'exabot', 'facebot', 'ia_archiver', 'gptbot', 'chatgpt',
+    'perplexitybot', 'claudebot', 'claude-web', 'google-extended', 'applebot'
+  ];
+  var isBot = false;
+  for (var i = 0; i < bots.length; i++) {
+    if (ua.indexOf(bots[i]) !== -1) {
+      isBot = true;
+      break;
+    }
+  }
+  if (!isBot) {
+    window.location.replace('/');
+  }
+})();
+</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Archives – Past Issues &amp; Volumes | JMRH Journal</title>
-<meta name="description" content="Browse JMRH archives – past volumes, issues, and published research articles across commerce, education, science, technology, and humanities." />
-<meta name="keywords" content="JMRH archives, past issues, journal volumes, published research papers, multidisciplinary archives, open access archive, JMRH, JMRH Publications, JMRH Gudalur, Gudalur, Gudalur Nilgiris, Nilgiris journal, Ooty journal, Tamil Nadu journal, paper publication, paper publication India, publish research paper, professor, professor publication, professor reviewer, faculty publication, assistant professor research, university professor papers, PhD scholar, monthly journal India, affordable APC, DOI paper publication, double blind peer review" />
-<meta name="robots" content="index, follow" />
-<link rel="canonical" href="https://jmrh.lovable.app/journal/archives" />
+<meta name="description" content="Access JMRH past issues, volumes, and published research articles. Open-access archives with permanent digital preservation (LOCKSS/CLOCKSS)." />
+<meta name="keywords" content="JMRH archives, past issues, journal volumes, published research papers, multidisciplinary archives, open access archive, PKP PN, LOCKSS CLOCKSS, DOI publications" />
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+<link rel="canonical" href="https://jmrh.in/seo/archives.html" />
+
+<!-- Open Graph -->
 <meta property="og:type" content="article" />
-<meta property="og:title" content="JMRH Archives" />
-<meta property="og:description" content="All past volumes and issues of JMRH." />
-<meta property="og:url" content="https://jmrh.lovable.app/journal/archives" />
-<meta name="twitter:card" content="summary" />
+<meta property="og:title" content="JMRH Archives – Past Issues &amp; Volumes" />
+<meta property="og:description" content="Permanent, open-access archive index of all published volumes, peer-reviewed research papers, and case studies." />
+<meta property="og:url" content="https://jmrh.in/seo/archives.html" />
+<meta property="og:site_name" content="JMRH Publications" />
+<meta property="og:image" content="https://jmrh.in/logo.png" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Archives – JMRH Academic Journal" />
+<meta name="twitter:description" content="Browse JMRH open-access archives. Download research papers with permanent Crossref DOIs." />
+<meta name="twitter:image" content="https://jmrh.in/logo.png" />
+
+<!-- Custom Stylesheet -->
+<link rel="stylesheet" href="/seo/style.css" />
+
+<!-- Structured Data -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"CollectionPage","name":"JMRH Archives","url":"https://jmrh.lovable.app/journal/archives","isPartOf":{"@type":"Periodical","name":"JMRH"}}
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "JMRH Archives",
+    "url": "https://jmrh.in/seo/archives.html",
+    "isPartOf": {
+      "@type": "Periodical",
+      "name": "JMRH",
+      "url": "https://jmrh.in"
+    },
+    "description": "Permanent open-access collection of peer-reviewed multidisciplinary academic articles and past issues."
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Are past JMRH articles permanently preserved?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. JMRH preserves all articles digitally through the LOCKSS/CLOCKSS systems and the PKP Preservation Network (PN). This ensures permanent, decentralized storage and immediate availability even in long-term scenarios."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I cite an archived JMRH article?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Each archived article has a unique Crossref DOI. Citing authors should include the DOI URL (e.g., https://doi.org/10.xxxx/jmrh.xxxx) at the end of the reference in APA, Harvard, or local formats."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I download PDF versions of archived articles?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, JMRH provides free, unlimited downloads of full-text PDF articles for all published volumes, with no login or registration barriers."
+        }
+      }
+    ]
+  }
+]
 </script>
 </head>
 <body>
-<header><a href="/">JMRH Publications</a></header>
+<header>
+  <nav>
+    <a href="/" class="logo">JMRH Publications</a>
+    <div class="header-links">
+      <a href="/seo/about-journal.html">About JMRH</a>
+      <a href="/seo/aims-scope.html">Aims & Scope</a>
+      <a href="/seo/boards.html">Editorial Board</a>
+      <a href="/seo/for-authors.html">Author Guidelines</a>
+      <a href="/journal/submit" class="cta-btn">Submit Manuscript</a>
+    </div>
+  </nav>
+</header>
 <main>
-<h1>Archives – Past Issues</h1>
-<p>The JMRH archive offers permanent open access to every issue ever published. Browse by volume, issue, or discipline to discover peer-reviewed research from scholars around the world.</p>
-<h2>Latest Issue</h2>
-<p>See the <a href="/journal/current-issue">Current Issue</a> for the most recent peer-reviewed articles.</p>
-<h2>Volume Index</h2>
-<p>Volumes are organized chronologically, each containing multiple issues. Every article includes a DOI, permanent URL, and downloadable PDF for citation and study.</p>
-<h2>Why Archive Matters</h2>
-<ul>
-<li>Permanent open-access preservation of scholarly record.</li>
-<li>Indexed and discoverable via Google Scholar and academic databases.</li>
-<li>Stable DOI links suitable for citation.</li>
-</ul>
-<nav><a href="/journal/current-issue">Current Issue</a> · <a href="/journal/archives">All Archives</a> · <a href="/journal/submit">Submit</a></nav>
+  <h1>Archives – Past Issues &amp; Volumes</h1>
+  
+  <div class="metadata-banner">
+    <span><strong>Last Updated:</strong> June 2026</span>
+    <span><strong>Preservation:</strong> LOCKSS, CLOCKSS, PKP PN</span>
+    <span><strong>DOI Prefix:</strong> Crossref Enabled</span>
+    <span><strong>Access:</strong> Full PDF (Open Access)</span>
+  </div>
+
+  <p>The <strong>Journal of Multidisciplinary Research Horizon (JMRH)</strong> is committed to preserving the academic record. Our archive directory offers permanent open access to every volume and issue published since JMRH's inception. Scholars, students, and research bodies can download PDF manuscripts for study, indexing, and citations under creative commons terms.</p>
+
+  <div class="definition-box">
+    <h4>Digital Preservation Philosophy</h4>
+    <p>Permanent, stable preservation of scientific literature using decentralized nodes, preventing data loss and ensuring that published research remains accessible for future generations.</p>
+  </div>
+
+  <h2>Archived Volumes Index</h2>
+  <p>JMRH publishes 12 monthly issues per calendar year. All publications are indexed chronologically. Each archived manuscript is equipped with metadata, keywords, abstract, and permanent links:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Archive Details</th>
+        <th>System Specifications & Standards</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Permanent DOI</strong></td>
+        <td>Every article is assigned a Crossref DOI for direct citation tracking.</td>
+      </tr>
+      <tr>
+        <td><strong>Archiving Networks</strong></td>
+        <td>PKP Preservation Network (PN), LOCKSS, and CLOCKSS for decentralized safety.</td>
+      </tr>
+      <tr>
+        <td><strong>Open Access Model</strong></td>
+        <td>CC BY-NC 4.0 (Creative Commons Attribution-NonCommercial) licensing.</td>
+      </tr>
+      <tr>
+        <td><strong>Format Availability</strong></td>
+        <td>Full-text HTML landing page metadata + high-quality downloadable PDF.</td>
+      </tr>
+      <tr>
+        <td><strong>Search Engine Visibility</strong></td>
+        <td>Sitemaps optimized for Google Scholar, BASE, and academic search spiders.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Latest Issues</h2>
+  <p>For the most recent publications, please visit our <a href="/journal/current-issue">Current Issue</a> section. For historical research spanning commerce, education, applied sciences, technology, and ecological conservation in the Nilgiris, browse our indexed volumes using the online archive filter system.</p>
+
+  <section class="faq-section">
+    <h2 class="faq-title">Frequently Asked Questions</h2>
+    <details>
+      <summary>Are past JMRH articles permanently preserved?</summary>
+      <p>Yes. JMRH preserves all articles digitally through the LOCKSS/CLOCKSS systems and the PKP Preservation Network (PN). This ensures permanent, decentralized storage and immediate availability even in long-term scenarios.</p>
+    </details>
+    <details>
+      <summary>How do I cite an archived JMRH article?</summary>
+      <p>Each archived article has a unique Crossref DOI. Citing authors should include the DOI URL (e.g., https://doi.org/10.xxxx/jmrh.xxxx) at the end of the reference in APA, Harvard, or local formats.</p>
+    </details>
+    <details>
+      <summary>Can I download PDF versions of archived articles?</summary>
+      <p>Yes, JMRH provides free, unlimited downloads of full-text PDF articles for all published volumes, with no login or registration barriers.</p>
+    </details>
+  </section>
+
+  <div class="cta-box">
+    <h3>Access Current Issues</h3>
+    <p>Read current research articles or submit your own research to JMRH. Our online indexing makes it simple to search the complete JMRH corpus.</p>
+    <div class="cta-buttons">
+      <a href="/archives" class="primary">Browse Full Archives</a>
+      <a href="/journal/submit" class="secondary">Submit Research Paper</a>
+    </div>
+  </div>
 </main>
+<footer>
+  <div class="footer-content">
+    <a href="/" class="footer-logo">JMRH Publications</a>
+    <div class="footer-links">
+      <a href="/seo/about-journal.html">About JMRH</a>
+      <a href="/seo/aims-scope.html">Aims & Scope</a>
+      <a href="/seo/boards.html">Editorial Board</a>
+      <a href="/seo/for-authors.html">Guidelines</a>
+      <a href="/seo/archives.html">Archives</a>
+    </div>
+    <div class="footer-copyright">
+      &copy; 2026 JMRH Publications. All rights reserved. Registered under Govt of India. Based in Gudalur, The Nilgiris, Tamil Nadu, India.
+    </div>
+  </div>
+</footer>
 </body>
 </html>

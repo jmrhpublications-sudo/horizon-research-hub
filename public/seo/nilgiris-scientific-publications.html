@@ -1,39 +1,207 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script>
+(function() {
+  var ua = navigator.userAgent.toLowerCase();
+  var bots = [
+    'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider', 'yandexbot',
+    'sogou', 'exabot', 'facebot', 'ia_archiver', 'gptbot', 'chatgpt',
+    'perplexitybot', 'claudebot', 'claude-web', 'google-extended', 'applebot'
+  ];
+  var isBot = false;
+  for (var i = 0; i < bots.length; i++) {
+    if (ua.indexOf(bots[i]) !== -1) {
+      isBot = true;
+      break;
+    }
+  }
+  if (!isBot) {
+    window.location.replace('/');
+  }
+})();
+</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Nilgiris District Scientific Paper Publications | Ooty Research Journal 2026 | JMRH</title>
-<meta name="description" content="JMRH publishes Nilgiris district scientific paper publications, Ooty university journal articles (2026) and Gudalur Tamil Nadu research articles in PDF – peer reviewed, open access, with DOI." />
-<meta name="keywords" content="Nilgiris district scientific paper publications, Ooty university journal publications 2026, Gudalur Tamil Nadu research articles PDF, Ooty college conference paper publications, Gudalur Ooty research paper publications, Nilgiris biodiversity research articles, JMRH, JMRH Publications, peer reviewed science journal India, open access science journal, professor research publication" />
+<meta name="description" content="Publish Nilgiris district scientific publications and Ooty university journal articles (2026). JMRH is an open-access peer-reviewed journal with DOI." />
+<meta name="keywords" content="Nilgiris district scientific paper publications, Ooty university journal publications 2026, Gudalur Tamil Nadu research articles PDF, Ooty college conference paper publications, Nilgiris biodiversity research, JMRH" />
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+<link rel="canonical" href="https://jmrh.in/seo/nilgiris-scientific-publications.html" />
+
+<!-- Geographic SEO -->
 <meta name="geo.region" content="IN-TN" />
-<meta name="geo.placename" content="Nilgiris, Ooty, Gudalur, Tamil Nadu" />
-<link rel="canonical" href="https://jmrh.lovable.app/seo/nilgiris-scientific-publications.html" />
+<meta name="geo.placename" content="Nilgiris, Ooty, Gudalur, Tamil Nadu, India" />
+<meta name="geo.position" content="11.4000;76.7000" />
+<meta name="ICBM" content="11.4000, 76.7000" />
+
+<!-- Open Graph -->
 <meta property="og:type" content="article" />
-<meta property="og:title" content="Nilgiris Scientific Paper Publications – JMRH" />
-<meta property="og:description" content="Open-access scientific papers from Nilgiris, Ooty & Gudalur scholars. Published in JMRH with DOI and free PDF." />
-<meta property="og:url" content="https://jmrh.lovable.app/seo/nilgiris-scientific-publications.html" />
-<meta name="twitter:card" content="summary" />
+<meta property="og:title" content="Nilgiris District Scientific Paper Publications – JMRH" />
+<meta property="og:description" content="Open-access scientific papers from Nilgiris, Ooty &amp; Gudalur scholars. Published in JMRH with DOI and free PDF." />
+<meta property="og:url" content="https://jmrh.in/seo/nilgiris-scientific-publications.html" />
+<meta property="og:site_name" content="JMRH Publications" />
+<meta property="og:image" content="https://jmrh.in/logo.png" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Nilgiris District Scientific Paper Publications | JMRH" />
+<meta name="twitter:description" content="Publish your scientific and tech papers. Fast peer-reviewed monthly publication for Ooty &amp; Gudalur colleges." />
+<meta name="twitter:image" content="https://jmrh.in/logo.png" />
+
+<!-- Custom Stylesheet -->
+<link rel="stylesheet" href="/seo/style.css" />
+
+<!-- Structured Data -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"CollectionPage","name":"Nilgiris Scientific Paper Publications","url":"https://jmrh.lovable.app/seo/nilgiris-scientific-publications.html","isPartOf":{"@type":"Periodical","name":"JMRH"},"about":["Nilgiris science research","Ooty university publications","Gudalur scientific papers"]}
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Nilgiris Scientific Paper Publications",
+    "url": "https://jmrh.in/seo/nilgiris-scientific-publications.html",
+    "isPartOf": {
+      "@type": "Periodical",
+      "name": "JMRH",
+      "url": "https://jmrh.in"
+    },
+    "description": "Index of scientific and technology publications from Nilgiris district, Ooty and Gudalur."
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does JMRH publish conference proceedings from Nilgiris colleges?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. JMRH regularly partners with colleges in Ooty, Coonoor, and Gudalur to publish peer-reviewed conference proceedings as special issues or regular volumes with individual DOI assignments."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are LaTeX submissions accepted for scientific equations?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "For initial screening, authors must submit a Microsoft Word document (.docx). However, JMRH supports LaTeX typesetting for final publications to render complex mathematical formulas and tables correctly in the PDF version."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What scientific disciplines are covered?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "JMRH covers multiple scientific areas, including: Applied Mathematics, Physics, Chemistry, computer systems, machine learning, ecology, biology, and agricultural sciences."
+        }
+      }
+    ]
+  }
+]
 </script>
 </head>
 <body>
-<header><a href="/">JMRH Publications</a></header>
+<header>
+  <nav>
+    <a href="/" class="logo">JMRH Publications</a>
+    <div class="header-links">
+      <a href="/seo/about-journal.html">About JMRH</a>
+      <a href="/seo/aims-scope.html">Aims & Scope</a>
+      <a href="/seo/boards.html">Editorial Board</a>
+      <a href="/seo/for-authors.html">Author Guidelines</a>
+      <a href="/journal/submit" class="cta-btn">Submit Manuscript</a>
+    </div>
+  </nav>
+</header>
 <main>
-<h1>Nilgiris District Scientific Paper Publications</h1>
-<p>JMRH curates and publishes scientific research from the Nilgiris district – covering Ooty university journal publications 2026, Gudalur Tamil Nadu research articles PDF, and conference papers from colleges across the region.</p>
-<h2>Scope of scientific publications</h2>
-<ul>
-<li>Applied sciences, physics, chemistry, mathematics</li>
-<li>Life sciences, environmental science, ecology</li>
-<li>Engineering, technology and computer science</li>
-<li>Interdisciplinary studies bridging science and society</li>
-</ul>
-<h2>Submit your scientific manuscript</h2>
-<p>Researchers from Ooty colleges, Gudalur institutions and Nilgiris universities are invited to <a href="/journal/submit">submit manuscripts</a> for double-blind peer review.</p>
-<nav><a href="/journal/aims-scope">Aims &amp; Scope</a> · <a href="/journal/submit">Submit</a> · <a href="/archives">Archives</a></nav>
+  <h1>Nilgiris District Scientific Paper Publications</h1>
+  
+  <div class="metadata-banner">
+    <span><strong>Last Updated:</strong> June 2026</span>
+    <span><strong>HQ Location:</strong> Gudalur, Nilgiris, TN</span>
+    <span><strong>Peer Review:</strong> Double-Blind Refereeing</span>
+    <span><strong>Digital Preservation:</strong> PKP PN, LOCKSS</span>
+  </div>
+
+  <p>The <strong>Journal of Multidisciplinary Research Horizon (JMRH)</strong> is a key scientific publication channel in the Nilgiris district. We publish peer-reviewed scientific articles, tech studies, and botanical surveys from Ooty university scholars, Gudalur researchers, and national scientific societies. JMRH offers stable DOI citations and free PDF downloads.</p>
+
+  <div class="definition-box">
+    <h4>Scientific Publishing Mission</h4>
+    <p>Promoting open-access scientific publications across the Nilgiris district, helping researchers from local colleges (Ooty, Coonoor, Gudalur) publish peer-reviewed, DOI-indexed scientific studies without high fees.</p>
+  </div>
+
+  <h2>Scientific Research Scope &amp; Sections</h2>
+  <p>JMRH curates and publishes research across major scientific branches. Here is a summary of our primary sections:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Scientific Branch</th>
+        <th>Topics & Areas Welcomed</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Life Sciences &amp; Biology</strong></td>
+        <td>Western Ghats plant biodiversity, wildlife conservation, entomology, shola forest ecology, and ethnobotanical studies.</td>
+      </tr>
+      <tr>
+        <td><strong>Applied Mathematics &amp; Physics</strong></td>
+        <td>Mathematical modeling, high-altitude physics, environmental physics, climate projections, and data analysis.</td>
+      </tr>
+      <tr>
+        <td><strong>Computer Sciences &amp; IT</strong></td>
+        <td>Machine learning algorithms, software engineering, agricultural tech solutions, e-learning systems, and IoT.</td>
+      </tr>
+      <tr>
+        <td><strong>Environmental Chemistry</strong></td>
+        <td>Soil composition in tea gardens, pesticide analysis, river basin water toxicity studies, and green agriculture chemistry.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Partnering with Local Colleges for Symposia</h2>
+  <p>JMRH supports scientific development in Ooty and Gudalur. We collaborate with college departments to publish peer-reviewed conference proceedings. Every paper in a proceeding gets fully indexed with its own Crossref DOI and is added to the permanent LOCKSS digital archives.</p>
+
+  <section class="faq-section">
+    <h2 class="faq-title">Frequently Asked Questions</h2>
+    <details>
+      <summary>Does JMRH publish conference proceedings from Nilgiris colleges?</summary>
+      <p>Yes. JMRH regularly partners with colleges in Ooty, Coonoor, and Gudalur to publish peer-reviewed conference proceedings as special issues or regular volumes with individual DOI assignments.</p>
+    </details>
+    <details>
+      <summary>Are LaTeX submissions accepted for scientific equations?</summary>
+      <p>For initial screening, authors must submit a Microsoft Word document (.docx). However, JMRH supports LaTeX typesetting for final publications to render complex mathematical formulas and tables correctly in the PDF version.</p>
+    </details>
+    <details>
+      <summary>What scientific disciplines are covered?</summary>
+      <p>JMRH covers multiple scientific areas, including: Applied Mathematics, Physics, Chemistry, computer systems, machine learning, ecology, biology, and agricultural sciences.</p>
+    </details>
+  </section>
+
+  <div class="cta-box">
+    <h3>Publish Your Scientific Paper</h3>
+    <p>Are you a faculty member or researcher in the Nilgiris? Submit your manuscript to the upcoming volume of JMRH for double-blind peer review.</p>
+    <div class="cta-buttons">
+      <a href="/journal/submit" class="primary">Submit Manuscript</a>
+      <a href="/seo/for-authors.html" class="secondary">Author Guidelines</a>
+    </div>
+  </div>
 </main>
+<footer>
+  <div class="footer-content">
+    <a href="/" class="footer-logo">JMRH Publications</a>
+    <div class="footer-links">
+      <a href="/seo/about-journal.html">About JMRH</a>
+      <a href="/seo/aims-scope.html">Aims & Scope</a>
+      <a href="/seo/boards.html">Editorial Board</a>
+      <a href="/seo/for-authors.html">Guidelines</a>
+      <a href="/seo/archives.html">Archives</a>
+    </div>
+    <div class="footer-copyright">
+      &copy; 2026 JMRH Publications. All rights reserved. Registered under Govt of India. Based in Gudalur, The Nilgiris, Tamil Nadu, India.
+    </div>
+  </div>
+</footer>
 </body>
 </html>

@@ -1,40 +1,207 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script>
+(function() {
+  var ua = navigator.userAgent.toLowerCase();
+  var bots = [
+    'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider', 'yandexbot',
+    'sogou', 'exabot', 'facebot', 'ia_archiver', 'gptbot', 'chatgpt',
+    'perplexitybot', 'claudebot', 'claude-web', 'google-extended', 'applebot'
+  ];
+  var isBot = false;
+  for (var i = 0; i < bots.length; i++) {
+    if (ua.indexOf(bots[i]) !== -1) {
+      isBot = true;
+      break;
+    }
+  }
+  if (!isBot) {
+    window.location.replace('/');
+  }
+})();
+</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Ooty Education Research Publication Journal | College Conference Papers | JMRH</title>
-<meta name="description" content="JMRH is an Ooty education research publication journal – publish college conference papers, faculty research and Tamil Nadu academic articles in PDF, peer-reviewed and open access." />
-<meta name="keywords" content="Ooty education research publication journal, Ooty college conference paper publications, Gudalur Ooty research paper publications, Nilgiris education research, Tamil Nadu education journal, faculty research publication, professor journal Ooty, JMRH, JMRH Publications, peer reviewed education journal India, teacher education research, pedagogy research papers" />
+<meta name="description" content="JMRH is an Ooty education research journal. Publish college conference papers, teacher education research and Tamil Nadu pedagogical articles." />
+<meta name="keywords" content="Ooty education research publication journal, Ooty college conference paper publications, Nilgiris education research, Tamil Nadu education journal, teacher training research, pedagogy papers" />
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+<link rel="canonical" href="https://jmrh.in/seo/ooty-education-research-journal.html" />
+
+<!-- Geographic SEO -->
 <meta name="geo.region" content="IN-TN" />
-<meta name="geo.placename" content="Ooty, The Nilgiris, Tamil Nadu" />
-<link rel="canonical" href="https://jmrh.lovable.app/seo/ooty-education-research-journal.html" />
+<meta name="geo.placename" content="Ooty, The Nilgiris, Tamil Nadu, India" />
+<meta name="geo.position" content="11.4000;76.7000" />
+<meta name="ICBM" content="11.4000, 76.7000" />
+
+<!-- Open Graph -->
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Ooty Education Research Publication Journal – JMRH" />
-<meta property="og:description" content="Publish education research and college conference papers from Ooty, Gudalur and Nilgiris." />
-<meta property="og:url" content="https://jmrh.lovable.app/seo/ooty-education-research-journal.html" />
-<meta name="twitter:card" content="summary" />
+<meta property="og:description" content="Publish education research, classroom pedagogy papers, and teacher-training articles from Ooty and Nilgiris." />
+<meta property="og:url" content="https://jmrh.in/seo/ooty-education-research-journal.html" />
+<meta property="og:site_name" content="JMRH Publications" />
+<meta property="og:image" content="https://jmrh.in/logo.png" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Ooty Education Research Journal | JMRH" />
+<meta name="twitter:description" content="Double-blind peer-reviewed journal publishing education policy, action research, and teaching methodologies." />
+<meta name="twitter:image" content="https://jmrh.in/logo.png" />
+
+<!-- Custom Stylesheet -->
+<link rel="stylesheet" href="/seo/style.css" />
+
+<!-- Structured Data -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","name":"Ooty Education Research Publication Journal","url":"https://jmrh.lovable.app/seo/ooty-education-research-journal.html","isPartOf":{"@type":"Periodical","name":"JMRH"},"about":["Ooty education research","Nilgiris pedagogy","Tamil Nadu teacher education"]}
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Ooty Education Research Publication Journal",
+    "url": "https://jmrh.in/seo/ooty-education-research-journal.html",
+    "isPartOf": {
+      "@type": "Periodical",
+      "name": "JMRH",
+      "url": "https://jmrh.in"
+    },
+    "description": "Scholarly publications focusing on educational pedagogy, teacher training, and learning technologies in the Nilgiris."
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does JMRH publish action research by school teachers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. JMRH actively supports the publication of classroom action research, pedagogical innovations, and case studies written by educators and school teachers in Ooty and across Tamil Nadu."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can education papers focus on tribal learning in the Nilgiris?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, studies on inclusive learning, multilingual education, and digital literacy in tribal schools of the Nilgiris are highly relevant to the JMRH multidisciplinary scope."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long is the review process for education submissions?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The double-blind peer review for education and pedagogy manuscripts typical takes 3–5 weeks, with monthly publishing intervals."
+        }
+      }
+    ]
+  }
+]
 </script>
 </head>
 <body>
-<header><a href="/">JMRH Publications</a></header>
+<header>
+  <nav>
+    <a href="/" class="logo">JMRH Publications</a>
+    <div class="header-links">
+      <a href="/seo/about-journal.html">About JMRH</a>
+      <a href="/seo/aims-scope.html">Aims & Scope</a>
+      <a href="/seo/boards.html">Editorial Board</a>
+      <a href="/seo/for-authors.html">Author Guidelines</a>
+      <a href="/journal/submit" class="cta-btn">Submit Manuscript</a>
+    </div>
+  </nav>
+</header>
 <main>
-<h1>Ooty Education Research Publication Journal</h1>
-<p>JMRH serves as a dedicated platform for education research from Ooty colleges, Gudalur teacher-training institutes and Nilgiris universities. We publish peer-reviewed conference papers, action research, curriculum studies and policy analysis.</p>
-<h2>Education research themes</h2>
-<ul>
-<li>Higher education policy and reform in Tamil Nadu</li>
-<li>Pedagogy, e-learning and digital classrooms</li>
-<li>Teacher education and professional development</li>
-<li>Tribal education and inclusive learning in the Nilgiris</li>
-<li>Assessment, evaluation and educational psychology</li>
-</ul>
-<h2>For professors &amp; faculty</h2>
-<p>Faculty members are invited to submit original education research. JMRH offers mentoring for first-time authors and a fast 3–4 week review cycle.</p>
-<nav><a href="/journal/submit">Submit Paper</a> · <a href="/call-for-papers">Call for Papers</a> · <a href="/archives">Archives</a></nav>
+  <h1>Ooty Education Research &amp; Pedagogy Journal</h1>
+  
+  <div class="metadata-banner">
+    <span><strong>Last Updated:</strong> June 2026</span>
+    <span><strong>Scope:</strong> Pedagogy, Inclusive Education, Policy</span>
+    <span><strong>Target Region:</strong> Tamil Nadu & India</span>
+    <span><strong>Access:</strong> Diamond Open Access</span>
+  </div>
+
+  <p>The <strong>Journal of Multidisciplinary Research Horizon (JMRH)</strong> is a key publishing channel for education research, classroom pedagogy, and learning technologies. We serve as a vital platform for educational faculties at Ooty colleges, Gudalur teacher-training institutes, and universities across Tamil Nadu, offering professional referee reviews and stable indexing.</p>
+
+  <div class="definition-box">
+    <h4>Educational Research Mandate</h4>
+    <p>To support high-quality studies in teaching methodology, e-learning design, and inclusive policy frameworks, bridging the gap between local classroom research and global academic indexations.</p>
+  </div>
+
+  <h2>Education Research Topics &amp; Themes</h2>
+  <p>JMRH welcomes empirical studies, reviews, and qualitative analyses across these major areas of interest:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Subject Section</th>
+        <th>Scope and Regional Applications</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Pedagogical Methods</strong></td>
+        <td>Active learning models, digital classroom implementations, curriculum designs, and assessment strategies.</td>
+      </tr>
+      <tr>
+        <td><strong>Inclusive Education</strong></td>
+        <td>Tribal student enrollment, language barriers, special education resources in government schools, and rural education programs.</td>
+      </tr>
+      <tr>
+        <td><strong>Teacher Education</strong></td>
+        <td>Professional development studies, B.Ed./M.Ed. curriculum review, teacher psychological stress, and pedagogical training results.</td>
+      </tr>
+      <tr>
+        <td><strong>Educational Technology</strong></td>
+        <td>E-learning platforms, mobile learning tools, digital classrooms, and computer-assisted assessments.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Partnering with Local Colleges for Symposia</h2>
+  <p>JMRH collaborates with schools and colleges of education in the Nilgiris to publish conference proceedings. If your institution is organizing a seminar on pedagogical reforms, JMRH offers special volume packages featuring individual DOI assignments and permanent PKP PN archiving for all accepted papers.</p>
+
+  <section class="faq-section">
+    <h2 class="faq-title">Frequently Asked Questions</h2>
+    <details>
+      <summary>Does JMRH publish action research by school teachers?</summary>
+      <p>Yes. JMRH actively supports the publication of classroom action research, pedagogical innovations, and case studies written by educators and school teachers in Ooty and across Tamil Nadu.</p>
+    </details>
+    <details>
+      <summary>Can education papers focus on tribal learning in the Nilgiris?</summary>
+      <p>Yes, studies on inclusive learning, multilingual education, and digital literacy in tribal schools of the Nilgiris are highly relevant to the JMRH multidisciplinary scope.</p>
+    </details>
+    <details>
+      <summary>How long is the review process for education submissions?</summary>
+      <p>The double-blind peer review for education and pedagogy manuscripts typically takes 3–5 weeks, with monthly publishing intervals.</p>
+    </details>
+  </section>
+
+  <div class="cta-box">
+    <h3>Publish Your Education Research</h3>
+    <p>Are you an educator, faculty member, or B.Ed./M.Ed. scholar? Submit your classroom paper or educational study to JMRH today.</p>
+    <div class="cta-buttons">
+      <a href="/journal/submit" class="primary">Submit Manuscript</a>
+      <a href="/seo/for-authors.html" class="secondary">Formatting Template</a>
+    </div>
+  </div>
 </main>
+<footer>
+  <div class="footer-content">
+    <a href="/" class="footer-logo">JMRH Publications</a>
+    <div class="footer-links">
+      <a href="/seo/about-journal.html">About JMRH</a>
+      <a href="/seo/aims-scope.html">Aims & Scope</a>
+      <a href="/seo/boards.html">Editorial Board</a>
+      <a href="/seo/for-authors.html">Guidelines</a>
+      <a href="/seo/archives.html">Archives</a>
+    </div>
+    <div class="footer-copyright">
+      &copy; 2026 JMRH Publications. All rights reserved. Registered under Govt of India. Based in Gudalur, The Nilgiris, Tamil Nadu, India.
+    </div>
+  </div>
+</footer>
 </body>
 </html>

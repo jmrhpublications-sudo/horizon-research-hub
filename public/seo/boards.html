@@ -1,39 +1,200 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script>
+(function() {
+  var ua = navigator.userAgent.toLowerCase();
+  var bots = [
+    'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider', 'yandexbot',
+    'sogou', 'exabot', 'facebot', 'ia_archiver', 'gptbot', 'chatgpt',
+    'perplexitybot', 'claudebot', 'claude-web', 'google-extended', 'applebot'
+  ];
+  var isBot = false;
+  for (var i = 0; i < bots.length; i++) {
+    if (ua.indexOf(bots[i]) !== -1) {
+      isBot = true;
+      break;
+    }
+  }
+  if (!isBot) {
+    window.location.replace('/');
+  }
+})();
+</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Editorial &amp; Reviewer Boards | JMRH Academic Journal</title>
-<meta name="description" content="Meet the JMRH Editorial Board and Reviewer Board – academics and subject experts who steward peer review and editorial quality at the journal." />
-<meta name="keywords" content="JMRH editorial board, reviewer board, peer reviewers, academic editors, journal board members, JMRH India, JMRH, JMRH Publications, JMRH Gudalur, Gudalur, Gudalur Nilgiris, Nilgiris journal, Ooty journal, Tamil Nadu journal, paper publication, paper publication India, publish research paper, professor, professor publication, professor reviewer, faculty publication, assistant professor research, university professor papers, PhD scholar, monthly journal India, affordable APC, DOI paper publication, double blind peer review" />
-<meta name="robots" content="index, follow" />
-<link rel="canonical" href="https://jmrh.lovable.app/journal/editorial-board" />
+<meta name="description" content="Meet the JMRH Editorial & Reviewer Boards. Learn about peer-review responsibilities, editorial ethics, and how to apply as a referee." />
+<meta name="keywords" content="JMRH editorial board, reviewer board, peer reviewers, academic editors, journal board members, COPE ethics, peer review, academic referee" />
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+<link rel="canonical" href="https://jmrh.in/seo/boards.html" />
+
+<!-- Open Graph -->
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Editorial &amp; Reviewer Boards | JMRH" />
-<meta property="og:description" content="Editorial leadership and reviewer community of JMRH." />
-<meta property="og:url" content="https://jmrh.lovable.app/journal/editorial-board" />
-<meta name="twitter:card" content="summary" />
+<meta property="og:description" content="Editorial leadership, scientific committee, and peer-reviewer board of JMRH publications." />
+<meta property="og:url" content="https://jmrh.in/seo/boards.html" />
+<meta property="og:site_name" content="JMRH Publications" />
+<meta property="og:image" content="https://jmrh.in/logo.png" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Editorial &amp; Reviewer Boards | JMRH" />
+<meta name="twitter:description" content="Join our international board of editors and peer reviewers. Learn more about academic peer review." />
+<meta name="twitter:image" content="https://jmrh.in/logo.png" />
+
+<!-- Custom Stylesheet -->
+<link rel="stylesheet" href="/seo/style.css" />
+
+<!-- Structured Data -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"AboutPage","name":"Editorial Boards","url":"https://jmrh.lovable.app/journal/editorial-board"}
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "Editorial & Reviewer Boards",
+    "url": "https://jmrh.in/seo/boards.html",
+    "isPartOf": {
+      "@type": "Periodical",
+      "name": "JMRH",
+      "url": "https://jmrh.in"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I apply to become a peer reviewer for JMRH?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Academic experts can apply by visiting the JMRH Reviewer Board page and submitting their CV, ORCID iD, and research interest keywords. Successful applicants must hold a post-graduate degree or PhD with publication records."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the ethical responsibilities of JMRH Board members?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "All editors and reviewers must adhere to the Committee on Publication Ethics (COPE) guidelines. This includes maintaining absolute confidentiality, declaring conflicts of interest, and ensuring fair, unbiased evaluations."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are review assignments credited or tracked?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, JMRH supports peer review recognition. Reviewers can connect their ORCID profiles to automatically track and verify their contribution to our review board."
+        }
+      }
+    ]
+  }
+]
 </script>
 </head>
 <body>
-<header><a href="/">JMRH Publications</a></header>
+<header>
+  <nav>
+    <a href="/" class="logo">JMRH Publications</a>
+    <div class="header-links">
+      <a href="/seo/about-journal.html">About JMRH</a>
+      <a href="/seo/aims-scope.html">Aims & Scope</a>
+      <a href="/seo/for-authors.html">Author Guidelines</a>
+      <a href="/seo/archives.html">Archives</a>
+      <a href="/journal/submit" class="cta-btn">Submit Manuscript</a>
+    </div>
+  </nav>
+</header>
 <main>
-<h1>Editorial Board &amp; Reviewer Community</h1>
-<p>JMRH is guided by a diverse Editorial Board composed of senior academics, researchers, and domain experts, supported by a global community of subject-matter reviewers.</p>
-<h2>Editorial Board</h2>
-<p>The Editorial Board sets editorial direction, oversees ethical standards, and ensures the quality and integrity of every issue. Members include Editor-in-Chief, Associate Editors, and Section Editors representing each discipline JMRH publishes.</p>
-<h2>Reviewer Board</h2>
-<p>Reviewers conduct double-blind evaluations of submitted manuscripts. JMRH welcomes new reviewers with research credentials and expertise in their fields. <a href="/journal/reviewer-board">Apply to become a reviewer</a>.</p>
-<h2>Responsibilities</h2>
-<ul>
-<li>Maintain confidentiality of submissions.</li>
-<li>Provide constructive, evidence-based feedback.</li>
-<li>Declare and avoid conflicts of interest.</li>
-<li>Uphold COPE-aligned publication ethics.</li>
-</ul>
-<nav><a href="/journal/editorial-board">Editorial Board</a> · <a href="/journal/reviewer-board">Reviewer Board</a> · <a href="/journal/peer-review">Peer Review</a></nav>
+  <h1>Editorial Board &amp; Reviewer Community</h1>
+  
+  <div class="metadata-banner">
+    <span><strong>Last Updated:</strong> June 2026</span>
+    <span><strong>Ethics Standards:</strong> COPE Aligned</span>
+    <span><strong>Board Size:</strong> 25+ Editorial Experts</span>
+    <span><strong>Affiliations:</strong> National & International</span>
+  </div>
+
+  <p>The **Journal of Multidisciplinary Research Horizon (JMRH)** is directed by a dedicated Editorial Board. Our members are senior professors, research advisors, and subject specialists representing academic departments globally. Working alongside our editorial team, a diverse Reviewer Board ensures every published manuscript conforms to scientific and academic criteria.</p>
+
+  <div class="definition-box">
+    <h4>Editorial Leadership Philosophy</h4>
+    <p>Ensuring scientific rigor, transparency, and ethical publishing policies aligned with global COPE protocols, thereby safeguarding the integrity of our scholarly community.</p>
+  </div>
+
+  <h2>Role Definitions &amp; Ethical Duties</h2>
+  <p>Members of our academic boards serve critical functions. They oversee peer review and guide the strategic growth of JMRH:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Board Section</th>
+        <th>Duties & Ethical Standards</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Editor-in-Chief &amp; Editors</strong></td>
+        <td>Determine manuscript suitability, choose referees, resolve ethical issues, and oversee publishing timelines.</td>
+      </tr>
+      <tr>
+        <td><strong>Reviewer Board (Referees)</strong></td>
+        <td>Perform double-blind peer-review assessments on scientific merits, methodology correctness, and citation accuracy.</td>
+      </tr>
+      <tr>
+        <td><strong>Conflict of Interest Policies</strong></td>
+        <td>Editors and reviewers must declare any conflicts (financial, personal, or institutional) and recuse themselves immediately.</td>
+      </tr>
+      <tr>
+        <td><strong>Reviewer Recognition</strong></td>
+        <td>We support ORCID integration, allowing reviewers to verify and document their editorial service details.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Upholding COPE Principles</h2>
+  <p>JMRH is strictly aligned with the Committee on Publication Ethics (COPE) Core Practices. Board members participate in ongoing training to identify plagiarism, data falsification, and citation manipulation, ensuring our readers receive peer-reviewed studies of the highest caliber.</p>
+
+  <section class="faq-section">
+    <h2 class="faq-title">Frequently Asked Questions</h2>
+    <details>
+      <summary>How do I apply to become a peer reviewer for JMRH?</summary>
+      <p>Academic experts can apply by visiting the JMRH Reviewer Board page and submitting their CV, ORCID iD, and research interest keywords. Successful applicants must hold a post-graduate degree or PhD with publication records.</p>
+    </details>
+    <details>
+      <summary>What are the ethical responsibilities of JMRH Board members?</summary>
+      <p>All editors and reviewers must adhere to the Committee on Publication Ethics (COPE) guidelines. This includes maintaining absolute confidentiality, declaring conflicts of interest, and ensuring fair, unbiased evaluations.</p>
+    </details>
+    <details>
+      <summary>Are review assignments credited or tracked?</summary>
+      <p>Yes, JMRH supports peer review recognition. Reviewers can connect their ORCID profiles to automatically track and verify their contribution to our review board.</p>
+    </details>
+  </section>
+
+  <div class="cta-box">
+    <h3>Join Our Editorial / Reviewer Team</h3>
+    <p>Contribute your academic expertise. Help shape the future of multidisciplinary research by reviewing submissions in your area of expertise.</p>
+    <div class="cta-buttons">
+      <a href="/journal/reviewer-board" class="primary">Apply to Reviewer Board</a>
+      <a href="/contact" class="secondary">Contact Editorial Office</a>
+    </div>
+  </div>
 </main>
+<footer>
+  <div class="footer-content">
+    <a href="/" class="footer-logo">JMRH Publications</a>
+    <div class="footer-links">
+      <a href="/seo/about-journal.html">About JMRH</a>
+      <a href="/seo/aims-scope.html">Aims & Scope</a>
+      <a href="/seo/boards.html">Editorial Board</a>
+      <a href="/seo/for-authors.html">Guidelines</a>
+      <a href="/seo/archives.html">Archives</a>
+    </div>
+    <div class="footer-copyright">
+      &copy; 2026 JMRH Publications. All rights reserved. Registered under Govt of India. Based in Gudalur, The Nilgiris, Tamil Nadu, India.
+    </div>
+  </div>
+</footer>
 </body>
 </html>

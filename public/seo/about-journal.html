@@ -1,59 +1,216 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script>
+(function() {
+  var ua = navigator.userAgent.toLowerCase();
+  var bots = [
+    'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider', 'yandexbot',
+    'sogou', 'exabot', 'facebot', 'ia_archiver', 'gptbot', 'chatgpt',
+    'perplexitybot', 'claudebot', 'claude-web', 'google-extended', 'applebot'
+  ];
+  var isBot = false;
+  for (var i = 0; i < bots.length; i++) {
+    if (ua.indexOf(bots[i]) !== -1) {
+      isBot = true;
+      break;
+    }
+  }
+  if (!isBot) {
+    window.location.replace('/');
+  }
+})();
+</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>About JMRH Journal | Peer-Reviewed Open Access Research | Nilgiris</title>
-<meta name="description" content="About JMRH – Journal of Multidisciplinary Research Horizon. A peer-reviewed, open-access academic journal from Gudalur, Nilgiris, Tamil Nadu publishing high-quality scholarly research." />
-<meta name="keywords" content="JMRH, about JMRH, Journal of Multidisciplinary Research Horizon, peer-reviewed journal India, open access academic journal, Nilgiris journal, Gudalur research, JMRH, JMRH Publications, JMRH Gudalur, Gudalur, Gudalur Nilgiris, Nilgiris journal, Ooty journal, Tamil Nadu journal, paper publication, paper publication India, publish research paper, professor, professor publication, professor reviewer, faculty publication, assistant professor research, university professor papers, PhD scholar, monthly journal India, affordable APC, DOI paper publication, double blind peer review" />
+<title>About JMRH Journal | Peer-Reviewed Open Access Research</title>
+<meta name="description" content="Discover JMRH (Journal of Multidisciplinary Research Horizon) – a double-blind peer-reviewed, open-access academic journal published by JMRH Publications." />
+<meta name="keywords" content="JMRH, about JMRH, Journal of Multidisciplinary Research Horizon, peer-reviewed journal India, open access academic journal, Nilgiris journal, Gudalur research, JMRH Publications, JMRH Gudalur, paper publication, publish research paper, PhD scholar, monthly journal India, affordable APC, DOI paper publication, double blind peer review" />
 <meta name="author" content="JMRH Publications" />
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
-<link rel="canonical" href="https://jmrh.lovable.app/journal/about" />
+<link rel="canonical" href="https://jmrh.in/seo/about-journal.html" />
+
+<!-- Open Graph -->
 <meta property="og:type" content="article" />
 <meta property="og:title" content="About JMRH Journal | Peer-Reviewed Open Access Research" />
 <meta property="og:description" content="Learn about JMRH – a peer-reviewed open-access multidisciplinary research journal from the Nilgiris, India." />
-<meta property="og:url" content="https://jmrh.lovable.app/journal/about" />
+<meta property="og:url" content="https://jmrh.in/seo/about-journal.html" />
 <meta property="og:site_name" content="JMRH Publications" />
+<meta property="og:image" content="https://jmrh.in/logo.png" />
+
+<!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="About JMRH Journal" />
-<meta name="twitter:description" content="Peer-reviewed open-access multidisciplinary academic journal from Nilgiris, India." />
+<meta name="twitter:title" content="About JMRH Journal | Peer-Reviewed Open Access Research" />
+<meta name="twitter:description" content="Double-blind peer-reviewed open-access multidisciplinary academic journal from Nilgiris, India." />
+<meta name="twitter:image" content="https://jmrh.in/logo.png" />
+
+<!-- Custom Stylesheet -->
+<link rel="stylesheet" href="/seo/style.css" />
+
+<!-- Structured Data -->
 <script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"Periodical",
-  "name":"Journal of Multidisciplinary Research Horizon",
-  "alternateName":"JMRH",
-  "publisher":{"@type":"Organization","name":"JMRH Publications","url":"https://jmrh.lovable.app"},
-  "url":"https://jmrh.lovable.app/journal/about",
-  "issn":"Applied",
-  "inLanguage":"en",
-  "about":["Education","Science","Technology","Humanities","Commerce","Management"]
-}
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Periodical",
+    "name": "Journal of Multidisciplinary Research Horizon",
+    "alternateName": "JMRH",
+    "publisher": {
+      "@type": "Organization",
+      "name": "JMRH Publications",
+      "url": "https://jmrh.in"
+    },
+    "url": "https://jmrh.in/seo/about-journal.html",
+    "issn": "Applied",
+    "inLanguage": "en",
+    "about": ["Education", "Science", "Technology", "Humanities", "Commerce", "Management", "Environmental Studies"]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is JMRH an open-access journal?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. JMRH is a fully open-access journal, meaning all articles are immediately and permanently free for anyone to read, download, and share under the CC BY-NC 4.0 license."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the Article Processing Charge (APC) at JMRH?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "To support open-access publishing, JMRH charges a minimal APC of INR 650 for Indian authors and USD 10 for international authors. There are no submission fees; the charge applies only after acceptance."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long does the review and publication process take?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "JMRH follows a fast-track peer-review system. The editorial screening takes 3–5 days, and the double-blind review process takes typically 3–6 weeks. Upon acceptance, articles are published online within a week."
+        }
+      }
+    ]
+  }
+]
 </script>
 </head>
 <body>
-<header><a href="/">JMRH Publications</a></header>
+<header>
+  <nav>
+    <a href="/" class="logo">JMRH Publications</a>
+    <div class="header-links">
+      <a href="/seo/aims-scope.html">Aims & Scope</a>
+      <a href="/seo/boards.html">Editorial Board</a>
+      <a href="/seo/for-authors.html">Author Guidelines</a>
+      <a href="/seo/archives.html">Archives</a>
+      <a href="/journal/submit" class="cta-btn">Submit Manuscript</a>
+    </div>
+  </nav>
+</header>
 <main>
-<h1>About JMRH – Journal of Multidisciplinary Research Horizon</h1>
-<p><strong>JMRH (Journal of Multidisciplinary Research Horizon)</strong> is a peer-reviewed, open-access academic journal published from Gudalur, The Nilgiris, Tamil Nadu, India. The journal advances scholarly research across commerce, management, education, science, technology, humanities, social sciences, and environmental studies.</p>
-<h2>Our Mission</h2>
-<p>To provide an inclusive, ethical, and rigorous publishing platform for postgraduate scholars, PhD researchers, and faculty across India and abroad. JMRH offers free mentoring and structured peer review for first-time authors.</p>
-<h2>Editorial Standards</h2>
-<ul>
-<li>Double-blind peer review by qualified academic referees.</li>
-<li>Plagiarism screening on every submission.</li>
-<li>Open access under Creative Commons licensing.</li>
-<li>DOI assignment and permanent archiving.</li>
-</ul>
-<h2>Key Links</h2>
-<nav>
-<a href="/journal/aims-scope">Aims &amp; Scope</a> ·
-<a href="/journal/editorial-board">Editorial Board</a> ·
-<a href="/journal/guidelines">Author Guidelines</a> ·
-<a href="/journal/submit">Submit Manuscript</a> ·
-<a href="/journal/archives">Archives</a> ·
-<a href="/contact">Contact</a>
-</nav>
+  <h1>About JMRH – Journal of Multidisciplinary Research Horizon</h1>
+  
+  <div class="metadata-banner">
+    <span><strong>Last Updated:</strong> June 2026</span>
+    <span><strong>ISSN (Online):</strong> Applied For</span>
+    <span><strong>Frequency:</strong> Monthly</span>
+    <span><strong>Publisher:</strong> JMRH Publications</span>
+  </div>
+
+  <p>The <strong>Journal of Multidisciplinary Research Horizon (JMRH)</strong> is a double-blind peer-reviewed, monthly open-access academic journal published by JMRH Publications. Headquartered in Gudalur, The Nilgiris, Tamil Nadu, India, the journal serves as a key multidisciplinary platform to advance scholarly investigations, theoretical critiques, and field studies across a broad range of scientific and academic disciplines.</p>
+
+  <div class="definition-box">
+    <h4>What is JMRH?</h4>
+    <p>A double-blind peer-reviewed, open-access journal fostering multidisciplinary scholarship and offering mentorship for first-time authors, particularly from rural and developing regions.</p>
+  </div>
+
+  <h2>Our Core Mission</h2>
+  <p>JMRH aims to bridge the gap between regional research communities and global academic discourse. We provide an inclusive, ethical, and highly professional platform for postgraduate scholars, doctoral candidates, assistant professors, and senior researchers across India and globally. A unique feature of JMRH is our commitment to providing constructive mentorship and editorial support to early-career researchers to help them align their submissions with international standards.</p>
+
+  <h2>Rigorous Editorial Standards</h2>
+  <p>To ensure academic excellence, every submission to JMRH undergoes a rigorous editorial lifecycle:</p>
+  <ul>
+    <li><strong>Double-Blind Peer Review:</strong> Every manuscript is evaluated by at least two independent referee experts in the relevant domain. Neither the author nor the reviewer knows the other's identity.</li>
+    <li><strong>Plagiarism Control:</strong> Every manuscript undergoes screening for originality using industry-standard tools (like Crossref Similarity Check and iThenticate). The acceptable threshold is less than 10% similarity.</li>
+    <li><strong>Creative Commons Licensing:</strong> Accepted papers are published under the Creative Commons Attribution-NonCommercial (CC BY-NC 4.0) license. Authors retain copyright while granting JMRH first publication rights.</li>
+    <li><strong>Digital Preservation:</strong> Every published article is assigned a unique Crossref Digital Object Identifier (DOI) and is permanently archived under LOCKSS/CLOCKSS schemas and the PKP Preservation Network (PN) for permanent accessibility.</li>
+  </ul>
+
+  <h2>Key Publishing Indicators</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Indicator</th>
+        <th>Specification</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Review Model</strong></td>
+        <td>Double-blind peer review (typically 3–6 weeks)</td>
+      </tr>
+      <tr>
+        <td><strong>Similarity Limit</strong></td>
+        <td>Strictly &lt; 10% similarity excluding references</td>
+      </tr>
+      <tr>
+        <td><strong>Processing Charge</strong></td>
+        <td>INR 650 (Indian authors) / USD 10 (International)</td>
+      </tr>
+      <tr>
+        <td><strong>Frequency</strong></td>
+        <td>Monthly (12 issues per year)</td>
+      </tr>
+      <tr>
+        <td><strong>Access Type</strong></td>
+        <td>Diamond Open Access (Immediate, permanent, and free online access)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section class="faq-section">
+    <h2 class="faq-title">Frequently Asked Questions</h2>
+    <details>
+      <summary>Is JMRH an open-access journal?</summary>
+      <p>Yes. JMRH is a fully open-access journal, meaning all articles are immediately and permanently free for anyone to read, download, and share under the CC BY-NC 4.0 license.</p>
+    </details>
+    <details>
+      <summary>What is the Article Processing Charge (APC) at JMRH?</summary>
+      <p>To support open-access publishing, JMRH charges a minimal APC of INR 650 for Indian authors and USD 10 for international authors. There are no submission fees; the charge applies only after acceptance.</p>
+    </details>
+    <details>
+      <summary>How long does the review and publication process take?</summary>
+      <p>JMRH follows a fast-track peer-review system. The editorial screening takes 3–5 days, and the double-blind review process takes typically 3–6 weeks. Upon acceptance, articles are published online within a week.</p>
+    </details>
+  </section>
+
+  <div class="cta-box">
+    <h3>Ready to Publish Your Research?</h3>
+    <p>Join scholars from across India and around the globe. Submit your original research article, case study, or review paper to the upcoming issue of JMRH.</p>
+    <div class="cta-buttons">
+      <a href="/journal/submit" class="primary">Submit Manuscript</a>
+      <a href="/seo/for-authors.html" class="secondary">Author Guidelines</a>
+    </div>
+  </div>
 </main>
+<footer>
+  <div class="footer-content">
+    <a href="/" class="footer-logo">JMRH Publications</a>
+    <div class="footer-links">
+      <a href="/seo/about-journal.html">About JMRH</a>
+      <a href="/seo/aims-scope.html">Aims & Scope</a>
+      <a href="/seo/boards.html">Editorial Board</a>
+      <a href="/seo/for-authors.html">Guidelines</a>
+      <a href="/seo/archives.html">Archives</a>
+    </div>
+    <div class="footer-copyright">
+      &copy; 2026 JMRH Publications. All rights reserved. Registered under Govt of India. Based in Gudalur, The Nilgiris, Tamil Nadu, India.
+    </div>
+  </div>
+</footer>
 </body>
 </html>
