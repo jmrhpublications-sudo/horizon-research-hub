@@ -110,7 +110,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               
               {/* ==================== JOURNAL SECTION ==================== */}
-              <Route path="/journals" element={<JournalAbout />} />
+              <Route path="/journals" element={<JournalArchives />} />
               <Route path="/journal/about" element={<JournalAbout />} />
               <Route path="/journal/aims-scope" element={<JournalAimsScope />} />
               <Route path="/journal/editorial-board" element={<JournalEditorialBoard />} />

@@ -143,16 +143,23 @@ const BooksPublished = memo(() => {
                                                     </div>
                                                     {book.description && <p className="text-sm text-oxford/70 line-clamp-3 mb-4">{book.description}</p>}
                                                     <div className="flex flex-wrap gap-3">
-                                                        {book.pdfUrl && (
-                                                            <>
-                                                                <Button variant="outline" size="sm" onClick={() => handleView(book)} className="gap-2 text-gold border-gold/30 hover:bg-gold/5">
-                                                                    <Eye size={16} /> View
-                                                                </Button>
-                                                                <Button variant="outline" size="sm" onClick={() => handleDownload(book)} className="gap-2 text-oxford border-oxford/20 hover:bg-oxford/5">
-                                                                    <Download size={16} /> Download
-                                                                </Button>
-                                                            </>
-                                                        )}
+                                                        {book.pdfUrl && (() => {
+                                                            const publicUrl = getPublicUrl(book.pdfUrl);
+                                                            return (
+                                                                <>
+                                                                    <Button variant="outline" size="sm" asChild className="gap-2 text-gold border-gold/30 hover:bg-gold/5">
+                                                                        <a href={publicUrl || undefined} target="_blank" rel="noopener noreferrer">
+                                                                            <Eye size={16} /> View
+                                                                        </a>
+                                                                    </Button>
+                                                                    <Button variant="outline" size="sm" asChild className="gap-2 text-oxford border-oxford/20 hover:bg-oxford/5">
+                                                                        <a href={publicUrl || undefined} download={`${book.title}.pdf`} target="_blank" rel="noopener noreferrer">
+                                                                            <Download size={16} /> Download
+                                                                        </a>
+                                                                    </Button>
+                                                                </>
+                                                            );
+                                                        })()}
                                                         {book.purchaseLink && (
                                                             <a href={book.purchaseLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-teal-500 hover:underline font-medium">
                                                                 <ShoppingCart size={16} /> Purchase

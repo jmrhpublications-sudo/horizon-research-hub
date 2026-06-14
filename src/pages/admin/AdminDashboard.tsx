@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useJMRH, UserRole, PublishedJournal, PublishedBook, UploadRequest, Paper, ProfessorSubmission } from "@/context/JMRHContext";
 import { supabase } from "@/integrations/supabase/client";
-import { getSignedFileUrl } from "@/lib/storage-utils";
+import { getPublicFileUrl } from "@/lib/storage-utils";
 import AdminReviews from "@/components/sections/AdminReviews";
 import {
     Users,
@@ -1423,12 +1423,9 @@ const AdminDashboard = memo(() => {
                                             <p className="text-xs text-muted-foreground">{journal.authors}</p>
                                             <div className="flex gap-2 mt-2">
                                                 {journal.pdfUrl && (
-                                                    <button onClick={async () => {
-                                                        const url = await getSignedFileUrl('publications', journal.pdfUrl!);
-                                                        if (url) window.open(url, '_blank');
-                                                    }} className="text-xs text-accent hover:underline flex items-center gap-1">
+                                                    <a href={journal.pdfUrl.startsWith('http') ? journal.pdfUrl : getPublicFileUrl('publications', journal.pdfUrl)!} target="_blank" rel="noopener noreferrer" className="text-xs text-accent hover:underline flex items-center gap-1">
                                                         <ExternalLink size={12} /> View
-                                                    </button>
+                                                    </a>
                                                 )}
                                                 <button onClick={() => openEditJournal(journal)} className="text-xs text-secondary hover:underline flex items-center gap-1">
                                                     <Edit size={12} /> Edit
@@ -1456,12 +1453,9 @@ const AdminDashboard = memo(() => {
                                             <p className="text-xs text-muted-foreground">{book.authors} {book.isbn && `(ISBN: ${book.isbn})`}</p>
                                             <div className="flex gap-2 mt-2">
                                                 {book.pdfUrl && (
-                                                    <button onClick={async () => {
-                                                        const url = await getSignedFileUrl('publications', book.pdfUrl!);
-                                                        if (url) window.open(url, '_blank');
-                                                    }} className="text-xs text-accent hover:underline flex items-center gap-1">
+                                                    <a href={book.pdfUrl.startsWith('http') ? book.pdfUrl : getPublicFileUrl('publications', book.pdfUrl)!} target="_blank" rel="noopener noreferrer" className="text-xs text-accent hover:underline flex items-center gap-1">
                                                         <ExternalLink size={12} /> View
-                                                    </button>
+                                                    </a>
                                                 )}
                                                 {book.purchaseLink && (
                                                     <a href={book.purchaseLink} target="_blank" rel="noopener noreferrer" className="text-xs text-secondary hover:underline flex items-center gap-1">
@@ -1515,12 +1509,9 @@ const AdminDashboard = memo(() => {
                                                 {submission.keywords && <p className="text-xs text-muted-foreground">Keywords: {submission.keywords}</p>}
                                                 {submission.abstract && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{submission.abstract}</p>}
                                                 {submission.pdfUrl && (
-                                                    <button onClick={async () => {
-                                                        const url = await getSignedFileUrl('publications', submission.pdfUrl!);
-                                                        if (url) window.open(url, '_blank');
-                                                    }} className="text-xs text-accent hover:underline flex items-center gap-1 mt-2">
+                                                    <a href={submission.pdfUrl.startsWith('http') ? submission.pdfUrl : getPublicFileUrl('publications', submission.pdfUrl)!} target="_blank" rel="noopener noreferrer" className="text-xs text-accent hover:underline flex items-center gap-1 mt-2">
                                                         <ExternalLink size={12} /> View PDF
-                                                    </button>
+                                                    </a>
                                                 )}
                                             </div>
                                             {submission.status === 'PENDING' && (

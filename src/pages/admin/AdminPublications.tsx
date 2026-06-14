@@ -2,7 +2,7 @@ import { memo, useState, useRef, useMemo, useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useJMRH, PublishedJournal, PublishedBook, ProfessorSubmission } from "@/context/JMRHContext";
 import { supabase } from "@/integrations/supabase/client";
-import { getSignedFileUrl } from "@/lib/storage-utils";
+import { getPublicFileUrl } from "@/lib/storage-utils";
 import {
     Library, BookOpen, Upload, Edit, Trash2, ExternalLink, Check, X, Plus,
     Search, Eye, GraduationCap, FileText, Image, ChevronRight, FolderOpen,
@@ -501,11 +501,10 @@ const AdminPublications = memo(() => {
                                                 </div>
                                                 <div className="flex gap-1 shrink-0">
                                                     {journal.pdfUrl && (
-                                                        <Button variant="ghost" size="sm" onClick={async () => { 
-                                                            const url = journal.pdfUrl?.startsWith('http') ? journal.pdfUrl : await getSignedFileUrl('publications', journal.pdfUrl!);
-                                                            if (url) window.open(url, '_blank'); 
-                                                        }}>
-                                                            <ExternalLink size={14} />
+                                                        <Button variant="ghost" size="sm" asChild>
+                                                            <a href={journal.pdfUrl.startsWith('http') ? journal.pdfUrl : getPublicFileUrl('publications', journal.pdfUrl)!} target="_blank" rel="noopener noreferrer">
+                                                                <ExternalLink size={14} />
+                                                            </a>
                                                         </Button>
                                                     )}
                                                     <Button variant="ghost" size="sm" onClick={() => openEditJournal(journal)}><Edit size={14} /></Button>
@@ -558,8 +557,10 @@ const AdminPublications = memo(() => {
                                             </div>
                                             <div className="flex gap-1 shrink-0">
                                                 {book.pdfUrl && (
-                                                    <Button variant="ghost" size="sm" onClick={async () => { const url = book.pdfUrl?.startsWith('http') ? book.pdfUrl : await getSignedFileUrl('publications', book.pdfUrl!); if (url) window.open(url, '_blank'); }}>
-                                                        <ExternalLink size={14} />
+                                                    <Button variant="ghost" size="sm" asChild>
+                                                        <a href={book.pdfUrl.startsWith('http') ? book.pdfUrl : getPublicFileUrl('publications', book.pdfUrl)!} target="_blank" rel="noopener noreferrer">
+                                                            <ExternalLink size={14} />
+                                                        </a>
                                                     </Button>
                                                 )}
                                                 <Button variant="ghost" size="sm" onClick={() => openEditBook(book)}><Edit size={14} /></Button>
@@ -604,8 +605,10 @@ const AdminPublications = memo(() => {
                                             {sub.abstract && <p className="text-xs text-muted-foreground line-clamp-2">{sub.abstract}</p>}
                                             {sub.pdfUrl && (
                                                 <div className="flex items-center gap-2">
-                                                    <Button variant="ghost" size="sm" className="text-xs h-7 gap-1" onClick={async () => { const url = sub.pdfUrl?.startsWith('http') ? sub.pdfUrl : await getSignedFileUrl('publications', sub.pdfUrl!); if (url) window.open(url, '_blank'); }}>
-                                                        <FileText size={12} /> View Document
+                                                    <Button variant="ghost" size="sm" className="text-xs h-7 gap-1" asChild>
+                                                        <a href={sub.pdfUrl.startsWith('http') ? sub.pdfUrl : getPublicFileUrl('publications', sub.pdfUrl)!} target="_blank" rel="noopener noreferrer">
+                                                            <FileText size={12} /> View Document
+                                                        </a>
                                                     </Button>
                                                     {sub.discipline && <span className="text-xs text-muted-foreground">• {sub.discipline}</span>}
                                                     {sub.keywords && <span className="text-xs text-muted-foreground">• {sub.keywords}</span>}

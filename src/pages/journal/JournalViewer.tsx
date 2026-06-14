@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useJMRH } from "@/context/JMRHContext";
-import { getSignedFileUrl } from "@/lib/storage-utils";
+import { getPublicFileUrl } from "@/lib/storage-utils";
 import { ArrowLeft, Download, ExternalLink, FileText, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/seo/SEOHead";
@@ -16,7 +16,7 @@ const JournalViewer = () => {
     const journal = publishedJournals.find(j => j.id === id);
 
     useEffect(() => {
-        const loadPdf = async () => {
+        const loadPdf = () => {
             if (!journal?.pdfUrl) {
                 setError("No PDF file available");
                 setLoading(false);
@@ -27,7 +27,7 @@ const JournalViewer = () => {
                 if (journal.pdfUrl.startsWith('http')) {
                     setPdfUrl(journal.pdfUrl);
                 } else {
-                    const url = await getSignedFileUrl('publications', journal.pdfUrl);
+                    const url = getPublicFileUrl('publications', journal.pdfUrl);
                     setPdfUrl(url);
                 }
             } catch (err) {
@@ -57,7 +57,25 @@ const JournalViewer = () => {
         <div className="min-h-screen bg-gray-900">
             <SEOHead 
                 title={`${journal.title} | JMRH Journal`}
-                description={journal.abstract || `Journal article: ${journal.title}`}
+                description={journal.abstract || `Read the full publication "${journal.title}" by ${journal.authors} in the Journal of Multidisciplinary Research Horizon.`}
+                keywords={journal.keywords || `journal article, JMRH, multidisciplinary research, ${journal.authors}, ${journal.discipline}`}
+                canonical={`/journal/viewer/${journal.id}`}
+                ogType="article"
+                jsonLd={{
+                    "@context": "https://schema.org",
+                    "@type": "ScholarlyArticle",
+                    "headline": journal.title,
+                    "author": (journal.authors || "").split(",").map((name: string) => ({
+                        "@type": "Person",
+                        "name": name.trim()
+                    })),
+                    "datePublished": journal.publicationDate,
+                    "description": journal.abstract || undefined,
+                    "isPartOf": {
+                        "@type": "Periodical",
+                        "name": "Journal of Multidisciplinary Research Horizon"
+                    }
+                }}
             />
             
             {/* Header */}
@@ -81,23 +99,22 @@ const JournalViewer = () => {
                                 <Button 
                                     variant="ghost" 
                                     size="sm" 
+                                    asChild
                                     className="text-gray-300 hover:text-white"
-                                    onClick={() => {
-                                        const a = document.createElement('a');
-                                        a.href = pdfUrl;
-                                        a.download = `${journal.title}.pdf`;
-                                        a.click();
-                                    }}
                                 >
-                                    <Download size={16} className="mr-1" /> Download
+                                    <a href={pdfUrl} download={`${journal.title}.pdf`}>
+                                        <Download size={16} className="mr-1" /> Download
+                                    </a>
                                 </Button>
                                 <Button 
                                     variant="ghost" 
                                     size="sm" 
+                                    asChild
                                     className="text-gray-300 hover:text-white"
-                                    onClick={() => window.open(pdfUrl, '_blank')}
                                 >
-                                    <ExternalLink size={16} className="mr-1" /> Open Full Screen
+                                    <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
+                                        <ExternalLink size={16} className="mr-1" /> Open Full Screen
+                                    </a>
                                 </Button>
                             </>
                         )}

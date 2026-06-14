@@ -4,7 +4,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SEOHead from "@/components/seo/SEOHead";
 import { useJMRH } from "@/context/JMRHContext";
-import { getSignedFileUrl } from "@/lib/storage-utils";
+import { getPublicFileUrl } from "@/lib/storage-utils";
 import { FileText, Download, Eye, ChevronRight, Layers, FolderOpen, ArrowLeft, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -66,29 +66,10 @@ const JournalArchives = memo(() => {
         return Array.from(volMap.values()).sort((a, b) => parseInt(b.id) - parseInt(a.id));
     }, [publishedJournals]);
 
-    const getPublicUrl = async (filePath: string) => {
+    const getPublicUrl = (filePath: string) => {
         if (!filePath) return null;
         if (filePath.startsWith('http')) return filePath;
-        const url = await getSignedFileUrl('publications', filePath);
-        return url;
-    };
-
-    const handleViewPdf = async (journal: any) => {
-        const url = await getPublicUrl(journal.pdfUrl);
-        if (url) {
-            window.open(url, '_blank');
-        }
-    };
-
-    const handleDownload = async (journal: any) => {
-        const url = await getPublicUrl(journal.pdfUrl);
-        if (url) {
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${journal.title}.pdf`;
-            a.target = '_blank';
-            a.click();
-        }
+        return getPublicFileUrl('publications', filePath);
     };
 
     const navigateToVolume = (volume: VolumeGroup) => {
@@ -287,31 +268,43 @@ const JournalArchives = memo(() => {
                                             </p>
                                         )}
                                         
-                                        {journal.pdfUrl && (
-                                            <div className="flex items-center gap-3 pt-4 border-t border-black/5 mt-4">
-                                                <Button 
-                                                    variant="outline" size="sm" 
-                                                    onClick={() => handleViewPdf(journal)}
-                                                    className="gap-2 text-gold border-gold/30 hover:bg-gold/5"
-                                                >
-                                                    <Eye size={14} /> View PDF
-                                                </Button>
-                                                <Button 
-                                                    variant="outline" size="sm" 
-                                                    onClick={() => handleDownload(journal)}
-                                                    className="gap-2 text-oxford border-oxford/20 hover:bg-oxford/5"
-                                                >
-                                                    <Download size={14} /> Download
-                                                </Button>
-                                                <Button 
-                                                    variant="ghost" size="sm" 
-                                                    onClick={() => openInNewTab(journal)}
-                                                    className="gap-2 text-oxford/60 hover:text-oxford"
-                                                >
-                                                    <ExternalLink size={14} /> Open in New Tab
-                                                </Button>
-                                            </div>
-                                        )}
+                                        {journal.pdfUrl && (() => {
+                                            const publicUrl = getPublicUrl(journal.pdfUrl);
+                                            const viewerUrl = journal.pdfUrl.startsWith('http') 
+                                                ? journal.pdfUrl 
+                                                : `/journal/viewer/${journal.id}`;
+                                            return (
+                                                <div className="flex items-center gap-3 pt-4 border-t border-black/5 mt-4">
+                                                    <Button 
+                                                        variant="outline" size="sm" 
+                                                        asChild
+                                                        className="gap-2 text-gold border-gold/30 hover:bg-gold/5"
+                                                    >
+                                                        <Link to={viewerUrl} target="_blank">
+                                                            <Eye size={14} /> View PDF
+                                                        </Link>
+                                                    </Button>
+                                                    <Button 
+                                                        variant="outline" size="sm" 
+                                                        asChild
+                                                        className="gap-2 text-oxford border-oxford/20 hover:bg-oxford/5"
+                                                    >
+                                                        <a href={publicUrl || undefined} download={`${journal.title}.pdf`} target="_blank" rel="noopener noreferrer">
+                                                            <Download size={14} /> Download
+                                                        </a>
+                                                    </Button>
+                                                    <Button 
+                                                        variant="ghost" size="sm" 
+                                                        asChild
+                                                        className="gap-2 text-oxford/60 hover:text-oxford"
+                                                    >
+                                                        <a href={publicUrl || undefined} target="_blank" rel="noopener noreferrer">
+                                                            <ExternalLink size={14} /> Open in New Tab
+                                                        </a>
+                                                    </Button>
+                                                </div>
+                                            );
+                                        })()}
                                     </div>
                                 ))
                             ) : (

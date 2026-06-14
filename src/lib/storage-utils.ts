@@ -27,3 +27,26 @@ export const getSignedFileUrl = async (
 
   return data.signedUrl;
 };
+
+/**
+ * Generate a public URL for a file in a public Supabase storage bucket.
+ * If the stored value is already a full URL (legacy data), return it as-is.
+ */
+export const getPublicFileUrl = (
+  bucket: string,
+  filePath: string
+): string | null => {
+  if (!filePath) return null;
+
+  // Legacy: if it's already a full URL, return as-is
+  if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
+    return filePath;
+  }
+
+  const { data } = supabase.storage
+    .from(bucket)
+    .getPublicUrl(filePath);
+
+  return data.publicUrl;
+};
+
