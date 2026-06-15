@@ -100,13 +100,12 @@ const JournalViewer = () => {
                                 <Button 
                                     variant="ghost" 
                                     size="sm" 
-                                    asChild
+                                    onClick={() => downloadFileFromUrl(pdfUrl, `${(journal.title || 'article').replace(/[\\/:*?"<>|]/g, '').slice(0, 100)}.pdf`)}
                                     className="text-gray-300 hover:text-white"
                                 >
-                                    <a href={pdfUrl} download={`${journal.title}.pdf`}>
-                                        <Download size={16} className="mr-1" /> Download
-                                    </a>
+                                    <Download size={16} className="mr-1" /> Download
                                 </Button>
+
                                 <Button 
                                     variant="ghost" 
                                     size="sm" 
