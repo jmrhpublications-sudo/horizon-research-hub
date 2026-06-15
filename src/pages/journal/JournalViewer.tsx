@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useJMRH } from "@/context/JMRHContext";
-import { getPublicFileUrl } from "@/lib/storage-utils";
+import { getPublicFileUrl, downloadFileFromUrl } from "@/lib/storage-utils";
 import { ArrowLeft, Download, ExternalLink, FileText, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/seo/SEOHead";
+
 
 const JournalViewer = () => {
     const { id } = useParams<{ id: string }>();
