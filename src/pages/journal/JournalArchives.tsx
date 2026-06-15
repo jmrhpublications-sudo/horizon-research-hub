@@ -100,13 +100,49 @@ const JournalArchives = memo(() => {
         window.open(url, '_blank');
     };
 
+    const publishedArticles = useMemo(
+        () => publishedJournals.filter(j => j.status === 'PUBLISHED'),
+        [publishedJournals]
+    );
+
+    const articleListJsonLd = useMemo(() => ({
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "JMRH Journal Archives",
+        "description": "Browse all published research papers, academic journals, and scholarly articles from Gudalur, Ooty, Nilgiris and Tamil Nadu in the Journal of Multidisciplinary Research Horizon.",
+        "url": "https://jmrh.in/journal/archives",
+        "isPartOf": {
+            "@type": "Periodical",
+            "name": "Journal of Multidisciplinary Research Horizon",
+            "issn": "Pending"
+        },
+        "hasPart": publishedArticles.map(j => ({
+            "@type": "ScholarlyArticle",
+            "headline": j.title,
+            "author": (j.authors || "").split(",").map(n => ({ "@type": "Person", "name": n.trim() })),
+            "datePublished": j.publicationDate,
+            "description": j.abstract || undefined,
+            "keywords": j.keywords || undefined,
+            "url": `https://jmrh.in/journal/viewer/${j.id}`,
+            "isPartOf": {
+                "@type": "PublicationIssue",
+                "issueNumber": j.issue,
+                "isPartOf": { "@type": "PublicationVolume", "volumeNumber": j.volume }
+            }
+        }))
+    }), [publishedArticles]);
+
     return (
         <div className="min-h-screen bg-background font-sans">
             <SEOHead 
-                title="Archives | Journal of Multidisciplinary Research Horizon"
-                description="Browse the archives of JMRH journal - past issues and published articles."
+                title="Archives | Research Papers & Journals — JMRH Gudalur Ooty Nilgiris Tamil Nadu"
+                description="Browse JMRH archives: peer-reviewed research papers, academic journal articles & PDFs from Gudalur, Ooty, Nilgiris & Tamil Nadu. Free open-access publications 2026."
+                keywords="research paper publications Gudalur Ooty Tamil Nadu, academic journals PDF, Nilgiris scientific papers, Ooty university journal 2026, JMRH archives, scholarly publications"
                 canonical="/journal/archives"
+                ogType="website"
+                jsonLd={articleListJsonLd}
             />
+
             <Header />
             
             <section className="pt-32 pb-16 bg-white">
