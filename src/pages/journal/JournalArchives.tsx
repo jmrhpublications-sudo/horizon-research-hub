@@ -1,12 +1,13 @@
 import { memo, useState, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SEOHead from "@/components/seo/SEOHead";
 import { useJMRH } from "@/context/JMRHContext";
-import { getPublicFileUrl } from "@/lib/storage-utils";
+import { getPublicFileUrl, downloadFileFromUrl } from "@/lib/storage-utils";
 import { FileText, Download, Eye, ChevronRight, Layers, FolderOpen, ArrowLeft, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
 
 interface VolumeGroup {
     id: string;
