@@ -80,4 +80,10 @@
   <url><loc>https://jmrh.in/seo/gudalur-environmental-research.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://jmrh.in/seo/ooty-education-research-journal.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://jmrh.in/seo/tamil-nadu-academic-journals-pdf.html</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+
+  <!-- Published journal article viewer pages (dynamic content) -->
+  <url><loc>https://jmrh.in/journal/viewer/3dbcafd0-35e1-458a-8935-23a2b9048f7d</loc><lastmod>2026-05-22</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jmrh.in/journal/viewer/7018ed9f-2755-48f9-ac47-383a8d066420</loc><lastmod>2026-05-22</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jmrh.in/journal/viewer/12cb3745-9f86-46da-960a-5b3f2076bae2</loc><lastmod>2026-05-22</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>
+
