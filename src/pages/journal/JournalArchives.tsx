@@ -307,41 +307,39 @@ const JournalArchives = memo(() => {
                                         
                                         {journal.pdfUrl && (() => {
                                             const publicUrl = getPublicUrl(journal.pdfUrl);
-                                            const viewerUrl = journal.pdfUrl.startsWith('http') 
-                                                ? journal.pdfUrl 
-                                                : `/journal/viewer/${journal.id}`;
+                                            const safeName = `${(journal.title || 'article').replace(/[\\/:*?"<>|]/g, '').slice(0, 100)}.pdf`;
+                                            if (!publicUrl) return null;
                                             return (
-                                                <div className="flex items-center gap-3 pt-4 border-t border-black/5 mt-4">
+                                                <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-black/5 mt-4">
                                                     <Button 
                                                         variant="outline" size="sm" 
                                                         asChild
                                                         className="gap-2 text-gold border-gold/30 hover:bg-gold/5"
                                                     >
-                                                        <Link to={viewerUrl} target="_blank">
+                                                        <a href={publicUrl} target="_blank" rel="noopener noreferrer">
                                                             <Eye size={14} /> View PDF
-                                                        </Link>
+                                                        </a>
                                                     </Button>
                                                     <Button 
                                                         variant="outline" size="sm" 
-                                                        asChild
+                                                        onClick={() => downloadFileFromUrl(publicUrl, safeName)}
                                                         className="gap-2 text-oxford border-oxford/20 hover:bg-oxford/5"
                                                     >
-                                                        <a href={publicUrl || undefined} download={`${journal.title}.pdf`} target="_blank" rel="noopener noreferrer">
-                                                            <Download size={14} /> Download
-                                                        </a>
+                                                        <Download size={14} /> Download
                                                     </Button>
                                                     <Button 
                                                         variant="ghost" size="sm" 
                                                         asChild
                                                         className="gap-2 text-oxford/60 hover:text-oxford"
                                                     >
-                                                        <a href={publicUrl || undefined} target="_blank" rel="noopener noreferrer">
-                                                            <ExternalLink size={14} /> Open in New Tab
-                                                        </a>
+                                                        <Link to={`/journal/viewer/${journal.id}`}>
+                                                            <ExternalLink size={14} /> Open Reader
+                                                        </Link>
                                                     </Button>
                                                 </div>
                                             );
                                         })()}
+
                                     </div>
                                 ))
                             ) : (
