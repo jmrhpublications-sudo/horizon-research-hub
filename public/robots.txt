@@ -66,6 +66,7 @@ Allow: /
 # --- Default ---
 User-agent: *
 Allow: /
+Allow: /journal/viewer/
 Disallow: /secure/
 Disallow: /account
 Disallow: /my-documents
@@ -74,6 +75,6 @@ Disallow: /auth/
 Disallow: /login
 Disallow: /request-upload
 Disallow: /submit-paper
-Disallow: /journal/viewer/
+
 
 Sitemap: https://jmrh.in/sitemap.xml

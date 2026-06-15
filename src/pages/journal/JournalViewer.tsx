@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useJMRH } from "@/context/JMRHContext";
-import { getPublicFileUrl } from "@/lib/storage-utils";
+import { getPublicFileUrl, downloadFileFromUrl } from "@/lib/storage-utils";
 import { ArrowLeft, Download, ExternalLink, FileText, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/seo/SEOHead";
+
 
 const JournalViewer = () => {
     const { id } = useParams<{ id: string }>();
@@ -99,13 +100,12 @@ const JournalViewer = () => {
                                 <Button 
                                     variant="ghost" 
                                     size="sm" 
-                                    asChild
+                                    onClick={() => downloadFileFromUrl(pdfUrl, `${(journal.title || 'article').replace(/[\\/:*?"<>|]/g, '').slice(0, 100)}.pdf`)}
                                     className="text-gray-300 hover:text-white"
                                 >
-                                    <a href={pdfUrl} download={`${journal.title}.pdf`}>
-                                        <Download size={16} className="mr-1" /> Download
-                                    </a>
+                                    <Download size={16} className="mr-1" /> Download
                                 </Button>
+
                                 <Button 
                                     variant="ghost" 
                                     size="sm" 

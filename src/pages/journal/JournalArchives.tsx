@@ -1,12 +1,13 @@
 import { memo, useState, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SEOHead from "@/components/seo/SEOHead";
 import { useJMRH } from "@/context/JMRHContext";
-import { getPublicFileUrl } from "@/lib/storage-utils";
+import { getPublicFileUrl, downloadFileFromUrl } from "@/lib/storage-utils";
 import { FileText, Download, Eye, ChevronRight, Layers, FolderOpen, ArrowLeft, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
 
 interface VolumeGroup {
     id: string;
@@ -99,13 +100,49 @@ const JournalArchives = memo(() => {
         window.open(url, '_blank');
     };
 
+    const publishedArticles = useMemo(
+        () => publishedJournals.filter(j => j.status === 'PUBLISHED'),
+        [publishedJournals]
+    );
+
+    const articleListJsonLd = useMemo(() => ({
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "JMRH Journal Archives",
+        "description": "Browse all published research papers, academic journals, and scholarly articles from Gudalur, Ooty, Nilgiris and Tamil Nadu in the Journal of Multidisciplinary Research Horizon.",
+        "url": "https://jmrh.in/journal/archives",
+        "isPartOf": {
+            "@type": "Periodical",
+            "name": "Journal of Multidisciplinary Research Horizon",
+            "issn": "Pending"
+        },
+        "hasPart": publishedArticles.map(j => ({
+            "@type": "ScholarlyArticle",
+            "headline": j.title,
+            "author": (j.authors || "").split(",").map(n => ({ "@type": "Person", "name": n.trim() })),
+            "datePublished": j.publicationDate,
+            "description": j.abstract || undefined,
+            "keywords": j.keywords || undefined,
+            "url": `https://jmrh.in/journal/viewer/${j.id}`,
+            "isPartOf": {
+                "@type": "PublicationIssue",
+                "issueNumber": j.issue,
+                "isPartOf": { "@type": "PublicationVolume", "volumeNumber": j.volume }
+            }
+        }))
+    }), [publishedArticles]);
+
     return (
         <div className="min-h-screen bg-background font-sans">
             <SEOHead 
-                title="Archives | Journal of Multidisciplinary Research Horizon"
-                description="Browse the archives of JMRH journal - past issues and published articles."
+                title="Archives | Research Papers & Journals — JMRH Gudalur Ooty Nilgiris Tamil Nadu"
+                description="Browse JMRH archives: peer-reviewed research papers, academic journal articles & PDFs from Gudalur, Ooty, Nilgiris & Tamil Nadu. Free open-access publications 2026."
+                keywords="research paper publications Gudalur Ooty Tamil Nadu, academic journals PDF, Nilgiris scientific papers, Ooty university journal 2026, JMRH archives, scholarly publications"
                 canonical="/journal/archives"
+                ogType="website"
+                jsonLd={articleListJsonLd}
             />
+
             <Header />
             
             <section className="pt-32 pb-16 bg-white">
@@ -270,41 +307,39 @@ const JournalArchives = memo(() => {
                                         
                                         {journal.pdfUrl && (() => {
                                             const publicUrl = getPublicUrl(journal.pdfUrl);
-                                            const viewerUrl = journal.pdfUrl.startsWith('http') 
-                                                ? journal.pdfUrl 
-                                                : `/journal/viewer/${journal.id}`;
+                                            const safeName = `${(journal.title || 'article').replace(/[\\/:*?"<>|]/g, '').slice(0, 100)}.pdf`;
+                                            if (!publicUrl) return null;
                                             return (
-                                                <div className="flex items-center gap-3 pt-4 border-t border-black/5 mt-4">
+                                                <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-black/5 mt-4">
                                                     <Button 
                                                         variant="outline" size="sm" 
                                                         asChild
                                                         className="gap-2 text-gold border-gold/30 hover:bg-gold/5"
                                                     >
-                                                        <Link to={viewerUrl} target="_blank">
+                                                        <a href={publicUrl} target="_blank" rel="noopener noreferrer">
                                                             <Eye size={14} /> View PDF
-                                                        </Link>
+                                                        </a>
                                                     </Button>
                                                     <Button 
                                                         variant="outline" size="sm" 
-                                                        asChild
+                                                        onClick={() => downloadFileFromUrl(publicUrl, safeName)}
                                                         className="gap-2 text-oxford border-oxford/20 hover:bg-oxford/5"
                                                     >
-                                                        <a href={publicUrl || undefined} download={`${journal.title}.pdf`} target="_blank" rel="noopener noreferrer">
-                                                            <Download size={14} /> Download
-                                                        </a>
+                                                        <Download size={14} /> Download
                                                     </Button>
                                                     <Button 
                                                         variant="ghost" size="sm" 
                                                         asChild
                                                         className="gap-2 text-oxford/60 hover:text-oxford"
                                                     >
-                                                        <a href={publicUrl || undefined} target="_blank" rel="noopener noreferrer">
-                                                            <ExternalLink size={14} /> Open in New Tab
-                                                        </a>
+                                                        <Link to={`/journal/viewer/${journal.id}`}>
+                                                            <ExternalLink size={14} /> Open Reader
+                                                        </Link>
                                                     </Button>
                                                 </div>
                                             );
                                         })()}
+
                                     </div>
                                 ))
                             ) : (
