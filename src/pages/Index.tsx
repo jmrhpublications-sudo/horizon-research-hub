@@ -42,7 +42,7 @@ const Index = memo(() => {
               Published by: JMRH Publications
             </p>
             <p className="text-oxford/50 mb-8 sm:mb-12 max-w-xl text-sm sm:text-base">
-              Gudalur, The Nilgiris – 643212, Tamil Nadu, India
+              Calicut Road, Gudalur, The Nilgiris – 643212, Tamil Nadu, India
             </p>
             
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">

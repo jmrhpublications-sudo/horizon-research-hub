@@ -12,7 +12,7 @@ export const organizationSchema = {
   description: "JMRH is a peer-reviewed, open-access academic journal based in Gudalur, The Nilgiris, Tamil Nadu, India. Dedicated to advancing multidisciplinary research through rigorous scholarly mentoring and publication for PhD scholars and early-career researchers.",
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Gudalur",
+    streetAddress: "Calicut Road, Gudalur",
     addressLocality: "The Nilgiris",
     addressRegion: "Tamil Nadu",
     postalCode: "643212",

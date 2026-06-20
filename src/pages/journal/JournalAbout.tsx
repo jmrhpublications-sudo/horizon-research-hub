@@ -50,7 +50,7 @@ const JournalAbout = memo(() => {
                 { label: "Subject", value: "Multidisciplinary" },
                 { label: "Language", value: "English" },
                 { label: "Publisher", value: "JMRH Publications" },
-                { label: "Address", value: "Gudalur, Nilgiris" },
+                { label: "Address", value: "Calicut Road, Gudalur, Nilgiris" },
                 { label: "Contact", value: "jmrhpublications@gmail.com" },
                 { label: "Phone", value: "+91 8072242010" },
                 { label: "ISSN", value: "To be assigned" }
