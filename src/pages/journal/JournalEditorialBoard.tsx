@@ -15,7 +15,7 @@ const JournalEditorialBoard = memo(() => {
       address: "The Nilgiris – 643212, Tamil Nadu, India",
       email: "karthik@jmrh.in",
       profile: "https://gascgudalur.in/department-of-computer-application/",
-      image: ""
+      image: "/images/editorial-board/karthi.jpeg"
     },
     {
       role: "Managing Editor",
@@ -66,13 +66,13 @@ const JournalEditorialBoard = memo(() => {
               <h2 className="font-serif text-xl sm:text-2xl font-bold text-oxford mb-6 sm:mb-8 pb-3 sm:pb-4 border-b border-gold/20">Editorial Leadership</h2>
               <div className="space-y-4 sm:space-y-6">
                 {editorialTeam.map((member, idx) => (
-                  <div key={idx} className="bg-gold/5 p-4 sm:p-6 border border-gold/10 flex flex-col sm:flex-row gap-4 sm:gap-6">
+                  <div key={idx} className="bg-gold/5 p-4 sm:p-6 border border-gold/10 flex flex-col sm:flex-row-reverse gap-4 sm:gap-6">
                     {member.image && (
-                      <div className="shrink-0">
+                      <div className="shrink-0 self-start sm:self-center">
                         <img
                           src={member.image}
                           alt={member.name}
-                          className="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-lg border-2 border-gold/20"
+                          className="w-36 h-36 sm:w-40 sm:h-40 object-contain bg-gold/5 rounded-lg border-2 border-gold/20"
                           loading="lazy"
                         />
                       </div>
@@ -103,13 +103,13 @@ const JournalEditorialBoard = memo(() => {
               <h2 className="font-serif text-xl sm:text-2xl font-bold text-oxford mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gold/20">Editorial Board Members</h2>
               <div className="space-y-4 sm:space-y-6">
                 {boardMembers.map((member, idx) => (
-                  <div key={idx} className="p-4 sm:p-6 border border-black/5 hover:border-gold/20 transition-all flex flex-col sm:flex-row gap-4 sm:gap-5">
+                  <div key={idx} className="p-4 sm:p-6 border border-black/5 hover:border-gold/20 transition-all flex flex-col sm:flex-row-reverse gap-4 sm:gap-5">
                     {member.image && (
-                      <div className="shrink-0">
+                      <div className="shrink-0 self-start sm:self-center">
                         <img
                           src={member.image}
                           alt={member.name}
-                          className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg border border-gold/10"
+                          className="w-28 h-28 sm:w-32 sm:h-32 object-contain bg-gold/5 rounded-lg border border-gold/10"
                           loading="lazy"
                         />
                       </div>

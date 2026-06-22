@@ -1,11 +1,12 @@
 import { useState, memo, FormEvent } from "react";
-import { useNavigate, useLocation, Navigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useJMRH } from "@/context/JMRHContext";
-import { ShieldCheck, Lock, Mail, ArrowRight, Loader2 } from "lucide-react";
+import { ShieldCheck, Lock, Mail, ArrowRight, Loader2, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SecureLoginPageProps {
     role: 'ADMIN' | 'PROFESSOR';
@@ -16,7 +17,8 @@ const SecureLoginPage = memo(({ role }: SecureLoginPageProps) => {
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const { currentUser, signIn } = useJMRH();
+    const [authError, setAuthError] = useState("");
+    const { currentUser, signIn, logout } = useJMRH();
     const navigate = useNavigate();
     const { toast } = useToast();
 
@@ -26,6 +28,7 @@ const SecureLoginPage = memo(({ role }: SecureLoginPageProps) => {
 
     const handleAuth = async (e: FormEvent) => {
         e.preventDefault();
+        setAuthError("");
         
         if (!email || !password) {
             toast({ 
@@ -40,6 +43,21 @@ const SecureLoginPage = memo(({ role }: SecureLoginPageProps) => {
 
         try {
             await signIn(email, password);
+
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error("Authentication failed");
+
+            const { data: roleData } = await supabase
+                .from('user_roles')
+                .select('role')
+                .eq('user_id', user.id)
+                .single();
+
+            if (!roleData || roleData.role !== role) {
+                await logout();
+                const roleLabel = role === 'ADMIN' ? 'admin' : 'professor';
+                throw new Error(`You do not have ${roleLabel} access. Please use the main login page.`);
+            }
             
             toast({ 
                 title: "Login Successful", 
@@ -53,6 +71,7 @@ const SecureLoginPage = memo(({ role }: SecureLoginPageProps) => {
             
         } catch (error: any) {
             console.error("Login error:", error);
+            setAuthError(error?.message || "Login failed. Please try again.");
             toast({ 
                 title: "Login Failed", 
                 description: error?.message || "Invalid email or password. Please try again.", 
@@ -94,6 +113,12 @@ const SecureLoginPage = memo(({ role }: SecureLoginPageProps) => {
                     transition={{ delay: 0.1 }}
                     className="space-y-4"
                 >
+                    {authError && (
+                        <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 text-sm text-red-700">
+                            <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                            <span>{authError}</span>
+                        </div>
+                    )}
                     <div className="space-y-3">
                         <div className="space-y-2">
                             <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Email</label>

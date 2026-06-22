@@ -1,6 +1,5 @@
 import { useState, memo, FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useJMRH } from "@/context/JMRHContext";
+import { Link } from "react-router-dom";
 import { 
     Mail, Lock, Loader2, ArrowRight, CheckCircle, AlertCircle 
 } from "lucide-react";
@@ -11,31 +10,47 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { useToast } from "@/hooks/use-toast";
 import SEOHead from "@/components/seo/SEOHead";
+import { supabase } from "@/integrations/supabase/client";
 
 const ForgotPasswordPage = memo(() => {
     const [email, setEmail] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
+    const [error, setError] = useState("");
     const { toast } = useToast();
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        setError("");
         if (!email) {
             toast({ title: "Error", description: "Please enter your email", variant: "destructive" });
             return;
         }
 
         setIsLoading(true);
-        
-        // Simulate password reset email
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        setEmailSent(true);
-        setIsLoading(false);
-        toast({ 
-            title: "Password Reset Link Sent!", 
-            description: "Check your email for reset instructions." 
-        });
+
+        try {
+            const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/auth`,
+            });
+
+            if (resetError) throw resetError;
+
+            setEmailSent(true);
+            toast({ 
+                title: "Password Reset Link Sent!", 
+                description: "Check your email for reset instructions." 
+            });
+        } catch (err: any) {
+            setError(err.message || "Failed to send reset email. Please try again.");
+            toast({ 
+                title: "Error", 
+                description: err.message || "Failed to send reset email.", 
+                variant: "destructive" 
+            });
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     if (emailSent) {
@@ -95,6 +110,12 @@ const ForgotPasswordPage = memo(() => {
                     </div>
 
                     <form onSubmit={handleSubmit} className="bg-white border border-black/5 shadow-lg p-6 space-y-4">
+                        {error && (
+                            <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 text-sm text-red-700">
+                                <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                                <span>{error}</span>
+                            </div>
+                        )}
                         <div className="space-y-2">
                             <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Email Address</label>
                             <div className="relative">

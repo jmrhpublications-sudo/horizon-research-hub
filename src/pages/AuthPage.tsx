@@ -53,6 +53,7 @@ const AuthPage = memo(() => {
     const [regName, setRegName] = useState("");
     const [regEmail, setRegEmail] = useState("");
     const [regPass, setRegPass] = useState("");
+    const [regConfirmPass, setRegConfirmPass] = useState("");
     const [regPhone, setRegPhone] = useState("");
     const [regDob, setRegDob] = useState("");
     const [regAddress, setRegAddress] = useState("");
@@ -109,13 +110,24 @@ const AuthPage = memo(() => {
                 navigate(location.state?.from?.pathname || '/', { replace: true });
                 return;
             } else {
+                if (!regName || !regEmail || !regAffiliation) {
+                    toast({ title: "Validation Error", description: "Please fill in all required fields.", variant: "destructive" });
+                    setLoading(false);
+                    return;
+                }
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(regEmail)) {
+                    toast({ title: "Validation Error", description: "Please enter a valid email address.", variant: "destructive" });
+                    setLoading(false);
+                    return;
+                }
                 if (regPass.length < 6) {
                     toast({ title: "Validation Error", description: "Password must be at least 6 characters.", variant: "destructive" });
                     setLoading(false);
                     return;
                 }
-                if (!regName || !regEmail || !regAffiliation) {
-                    toast({ title: "Validation Error", description: "Please fill in all required fields.", variant: "destructive" });
+                if (regPass !== regConfirmPass) {
+                    toast({ title: "Validation Error", description: "Passwords do not match.", variant: "destructive" });
                     setLoading(false);
                     return;
                 }
@@ -322,32 +334,49 @@ const AuthPage = memo(() => {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Password *</label>
-                                        <div className="relative">
-                                            <Lock className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
-                                            <Input
-                                                required
-                                                type="password"
-                                                placeholder="Min 6 chars"
-                                                value={regPass}
-                                                onChange={(e) => setRegPass(e.target.value)}
-                                                className="h-11 pl-10 border-black/10 focus:border-gold"
-                                            />
-                                        </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Password *</label>
+                                    <div className="relative">
+                                        <Lock className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
+                                        <Input
+                                            required
+                                            type="password"
+                                            placeholder="Min 6 characters"
+                                            value={regPass}
+                                            onChange={(e) => setRegPass(e.target.value)}
+                                            className="h-11 pl-10 border-black/10 focus:border-gold"
+                                        />
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Phone</label>
-                                        <div className="relative">
-                                            <Phone className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
-                                            <Input
-                                                placeholder="+91 XXXXX"
-                                                value={regPhone}
-                                                onChange={(e) => setRegPhone(e.target.value)}
-                                                className="h-11 pl-10 border-black/10 focus:border-gold"
-                                            />
-                                        </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Confirm Password *</label>
+                                    <div className="relative">
+                                        <Lock className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
+                                        <Input
+                                            required
+                                            type="password"
+                                            placeholder="Re-enter password"
+                                            value={regConfirmPass}
+                                            onChange={(e) => setRegConfirmPass(e.target.value)}
+                                            className={`h-11 pl-10 border-black/10 focus:border-gold ${regConfirmPass && regPass !== regConfirmPass ? 'border-red-400' : ''}`}
+                                        />
+                                    </div>
+                                    {regConfirmPass && regPass !== regConfirmPass && (
+                                        <p className="text-xs text-red-500 mt-1">Passwords do not match</p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-oxford/60">Phone</label>
+                                    <div className="relative">
+                                        <Phone className="absolute left-3 top-3 w-5 h-5 text-oxford/30" />
+                                        <Input
+                                            placeholder="+91 XXXXX"
+                                            value={regPhone}
+                                            onChange={(e) => setRegPhone(e.target.value)}
+                                            className="h-11 pl-10 border-black/10 focus:border-gold"
+                                        />
                                     </div>
                                 </div>
 
