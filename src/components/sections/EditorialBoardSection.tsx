@@ -81,7 +81,7 @@ const editors = [
     specialization: "Commerce",
     bio: "Committed to advancing commerce education and research with a focus on academic excellence and scholarly integrity.",
     location: "Nilgiri College of Arts and Science (Autonomous), Thaloor, Nilgiris, Tamil Nadu, India",
-    profile: "https://nilgiricollege.ac.in/faculty/thamarai",
+    profile: "https://nilgiricollege.ac.in/faculty/thamarai.pdf",
   },
   {
     name: "Dr. Sandip Kumar Mukherjee",
