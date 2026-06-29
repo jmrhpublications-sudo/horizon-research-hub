@@ -1,25 +1,127 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
-import { GraduationCap, MapPin, Mail, ShieldCheck } from "lucide-react";
+import { GraduationCap, MapPin, Mail, ShieldCheck, ExternalLink } from "lucide-react";
 
 const editors = [
   {
     name: "Dr. Karthick B",
     role: "Editor-in-Chief",
-    badge: "Principal Intellectual",
-    email: "editor.jmrh@gmail.com",
-    specialization: "Academic Governance • Multidisciplinary Methods",
+    badge: "Assistant Professor",
+    email: "karthik@jmrh.in",
+    specialization: "Computer Applications • Academic Governance",
     bio: "Visionary academic dedicated to the evolution of multidisciplinary research paradigms and global scholarly integrity.",
-    location: "Nilgiris, Tamil Nadu, India",
+    location: "Government Arts and Science College, Gudalur, Nilgiris, Tamil Nadu, India",
+    profile: "https://gascgudalur.in/department-of-computer-application/",
   },
   {
-    name: "Dr. K. Thamarai Selvi K",
-    role: "Editorial Advisory",
+    name: "Dr. Sivasankaran M S",
+    role: "Managing Editor",
     badge: "Assistant Professor",
-    email: "thamarai@jems.org",
-    specialization: "Entrepreneurship • Digital Inclusion",
-    bio: "Leading specialist in financial inclusion and innovation ecosystems, ensuring rigorous peer oversight for socio-economic studies.",
-    location: "Government Arts College, India",
+    email: "sivasankaranms@jmrh.in",
+    specialization: "Commerce with Computer Applications",
+    bio: "Dedicated to fostering rigorous academic discourse and ensuring editorial excellence in multidisciplinary research.",
+    location: "Government Arts and Science College, Gudalur, Nilgiris, Tamil Nadu, India",
+    profile: "https://gascgudalur.in/department-of-commerce-with-ca/",
+  },
+  {
+    name: "Dr. Jaganathan",
+    role: "Editorial Board Member",
+    badge: "Head & Assistant Professor",
+    email: "jaganathan@jmrh.in",
+    specialization: "Commerce with Information Technology",
+    bio: "Committed to advancing scholarly research through rigorous peer review and editorial oversight.",
+    location: "Government Arts and Science College, Gudalur, Nilgiris, Tamil Nadu, India",
+    profile: "https://gascgudalur.in/department-of-commerce-with-it/",
+  },
+  {
+    name: "Dr. K. Palanichamy",
+    role: "Editorial Board Member",
+    badge: "Head & Assistant Professor",
+    email: "palanichamykp@jmrh.in",
+    specialization: "Commerce with Computer Applications",
+    bio: "Dedicated to maintaining high academic standards and fostering quality research in commerce and allied disciplines.",
+    location: "Government Arts and Science College, Gudalur, Nilgiris, Tamil Nadu, India",
+    profile: "https://gascgudalur.in/department-of-commerce-with-ca/",
+  },
+  {
+    name: "Dr. Porko",
+    role: "Editorial Board Member",
+    badge: "Assistant Professor",
+    email: "porko@jmrh.in",
+    specialization: "English Literature & Language Studies",
+    bio: "Passionate about advancing humanities research with rigorous editorial standards and ethical academic practices.",
+    location: "Government Arts and Science College, Gudalur, Nilgiris, Tamil Nadu, India",
+    profile: "https://gascgudalur.in/department-of-english/",
+  },
+  {
+    name: "Dr. T. Sathish",
+    role: "Editorial Board Member",
+    badge: "Assistant Professor",
+    email: "sathisjt@jmrh.in",
+    specialization: "Mathematical Sciences",
+    bio: "Devoted to promoting excellence in mathematical research and ensuring the integrity of the peer review process.",
+    location: "Government Arts and Science College, Gudalur, Nilgiris, Tamil Nadu, India",
+    profile: "https://gascgudalur.in/department-of-mathematics/",
+  },
+  {
+    name: "Dr. Dency Mary",
+    role: "Editorial Board Member",
+    badge: "Assistant Professor",
+    email: "dencymary@nilgiricollege.ac.in",
+    specialization: "BBA (International Business)",
+    bio: "Dedicated to fostering international business research and maintaining high standards of academic scholarship.",
+    location: "Nilgiri College of Arts and Science (Autonomous), Thaloor, Nilgiris, Tamil Nadu, India",
+    profile: "https://nilgiricollege.ac.in/faculty/dency.pdf",
+  },
+  {
+    name: "Dr. K Thamarai Selvi",
+    role: "Editorial Board Member",
+    badge: "Research Coordinator & Assistant Professor",
+    email: "thamaraiselvi@nilgiricollege.ac.in",
+    specialization: "Commerce",
+    bio: "Committed to advancing commerce education and research with a focus on academic excellence and scholarly integrity.",
+    location: "Nilgiri College of Arts and Science (Autonomous), Thaloor, Nilgiris, Tamil Nadu, India",
+    profile: "https://nilgiricollege.ac.in/faculty/thamarai",
+  },
+  {
+    name: "Dr. Sandip Kumar Mukherjee",
+    role: "Editorial Board Member",
+    badge: "Associate Professor",
+    email: "sandip@ecmt.in",
+    specialization: "Business Administration",
+    bio: "Bringing extensive expertise in management research and a commitment to rigorous academic peer review.",
+    location: "Eminent College of Management and Technology, Barasat, Kolkata, India",
+    profile: "https://sites.google.com/ecmt.in/skm",
+  },
+  {
+    name: "Abhishek BP",
+    role: "Editorial Board Member",
+    badge: "Assistant Professor in Language Pathology",
+    email: "abhishekbp@aiishmysore.in",
+    specialization: "Speech Language Sciences",
+    bio: "Dedicated to advancing research in speech-language pathology with a commitment to scholarly excellence.",
+    location: "AIISH, Mysuru, Karnataka, India",
+    profile: "https://aiishmysore.in/ka/faculty-members-staff/abhishek-b-p",
+  },
+  {
+    name: "Dr. R. Umamageswari",
+    role: "Editorial Board Member",
+    badge: "Associate Professor",
+    email: "umaamcet2023@gmail.com",
+    specialization: "Electrical & Electronics Engineering",
+    bio: "Committed to fostering innovation in engineering research and maintaining editorial integrity.",
+    location: "Annai Mira College of Engineering & Technology, Ranipet, Tamil Nadu, India",
+    profile: "https://amcet.in/academics/courses-offered/electrical-and-electronics-engineering/faculty-team/",
+  },
+  {
+    name: "Dr. R.D. Sivakumar",
+    role: "Editorial Board Member",
+    badge: "Assistant Professor (Senior Grade)",
+    email: "sivakumar@mepcoeng.ac.in",
+    specialization: "Computer Applications",
+    bio: "Dedicated to advancing computer applications research and upholding the highest standards of academic peer review.",
+    location: "Mepco Schlenk Engineering College, Sivakasi, Tamil Nadu, India",
+    profile: "https://www.mepcoeng.ac.in/sivakumarrd",
   },
 ];
 
@@ -94,6 +196,17 @@ const EditorialBoardSection = memo(() => {
                       {editor.email}
                     </a>
                   </div>
+                  {editor.profile && (
+                    <a
+                      href={editor.profile}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-xs font-bold font-ui text-gold hover:text-oxford transition-colors pt-1"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      View Profile
+                    </a>
+                  )}
                 </div>
               </div>
             </motion.div>
