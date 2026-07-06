@@ -1,0 +1,448 @@
+# Generate jmrh-faq.html - Complete SEO FAQ Page
+param([string]$OutputPath = "D:\horizon-research-hub\public\seo\jmrh-faq.html")
+
+$writer = [System.IO.StreamWriter]::new($OutputPath, $false, [System.Text.Encoding]::UTF8)
+$writer.AutoFlush = $true
+
+# Helper function to write lines
+function Write-Html {
+    param([string[]]$Lines)
+    foreach ($line in $Lines) {
+        $writer.WriteLine($line)
+    }
+}
+
+# ===== PART 1: DOCTYPE through HEAD =====
+Write-Html @"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>100+ Research &amp; Publication FAQs — Journal of Multidisciplinary Research &amp; Insights | Ooty &amp; Gudalur</title>
+  <meta name="description" content="Comprehensive FAQ for researchers in Ooty, Gudalur, Nilgiris and beyond: PhD guidance, journal publication, book chapters, DOI, ISBN, ISSN, plagiarism, peer review &amp; more. 100+ expert answers.">
+  <meta name="keywords" content="research paper publication, Scopus journal, ISBN, ISSN, DOI, Crossref, peer review, Ooty research support, Gudalur academic help, Nilgiris research, PhD publication, book chapter, plagiarism checker, UGC Care journals, academic writing, conference proceedings">
+  <meta name="geo.position" content="11.5025;76.4929">
+  <meta name="geo.placename" content="Ooty, Nilgiris, Tamil Nadu">
+  <meta name="geo.region" content="IN-TN">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <link rel="canonical" href="https://www.jmrh.in/seo/jmrh-faq.html">
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="100+ Research &amp; Publication FAQs — JMRH">
+  <meta property="og:description" content="Complete FAQ guide for academic publishing: PhD, journals, ISBN, DOI, plagiarism, peer review &amp; more. Local support for Ooty &amp; Gudalur researchers.">
+  <meta property="og:url" content="https://www.jmrh.in/seo/jmrh-faq.html">
+  <meta property="og:site_name" content="Journal of Multidisciplinary Research &amp; Insights">
+  <meta property="og:locale" content="en_IN">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="100+ Research &amp; Publication FAQs — JMRH">
+  <meta name="twitter:description" content="Expert answers for researchers. PhD help, journal publication, ISBN, DOI, plagiarism, peer review &amp; local support in Ooty &amp; Gudalur.">
+  <!-- JSON-LD Organization Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Journal of Multidisciplinary Research &amp; Insights",
+    "alternateName": "JMRH",
+    "url": "https://www.jmrh.in",
+    "logo": "https://www.jmrh.in/logo.png",
+    "email": "editor@jmrh.in",
+    "description": "Academic journal and research support serving Ooty, Gudalur, Nilgiris and global researchers.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "JMRH Editorial Office, Ooty",
+      "addressLocality": "Ooty",
+      "addressRegion": "Tamil Nadu",
+      "postalCode": "643001",
+      "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "11.5025",
+      "longitude": "76.4929"
+    },
+    "areaServed": ["Ooty","Gudalur","Nilgiris","Tamil Nadu","India","Worldwide"]
+  }
+  </script>
+  <!-- JSON-LD LocalBusiness Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "JMRH Research Support - Ooty &amp; Gudalur",
+    "description": "Local research publication support for scholars in Ooty, Gudalur, and the Nilgiris.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "JMRH Office, Near Ooty Lake",
+      "addressLocality": "Ooty",
+      "addressRegion": "Tamil Nadu",
+      "postalCode": "643001",
+      "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "11.5025",
+      "longitude": "76.4929"
+    },
+    "areaServed": [
+      {"@type":"City","name":"Ooty"},
+      {"@type":"City","name":"Gudalur"},
+      {"@type":"AdministrativeArea","name":"Nilgiris"}
+    ],
+    "email": "editor@jmrh.in",
+    "url": "https://www.jmrh.in",
+    "priceRange": "INR 500 - 25000",
+    "openingHours": "Mo-Fr 09:00-18:00",
+    "currenciesAccepted": "INR"
+  }
+  </script>
+  <!-- JSON-LD BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type":"ListItem","position":1,"name":"Home","item":"https://www.jmrh.in"},
+      {"@type":"ListItem","position":2,"name":"FAQs","item":"https://www.jmrh.in/seo/jmrh-faq.html"}
+    ]
+  }
+  </script>
+  <!-- JSON-LD Article Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "100+ Research &amp; Publication FAQs - Complete Guide for Scholars",
+    "description": "Comprehensive FAQ covering PhD research, journal publication, book chapters, DOI/ISBN/ISSN, peer review, plagiarism, academic career.",
+    "author": {"@type":"Organization","name":"Journal of Multidisciplinary Research &amp; Insights"},
+    "publisher": {"@type":"Organization","name":"JMRH"},
+    "datePublished": "2026-01-15",
+    "dateModified": "2026-07-06",
+    "mainEntityOfPage": "https://www.jmrh.in/seo/jmrh-faq.html"
+  }
+  </script>
+"@
+
+# ===== CSS STYLES =====
+Write-Html @"
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;font-size:16px}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;line-height:1.7;color:#1a1a1a;background:#f8f9fa;min-height:100vh}
+    a{color:#1a56db;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .container{max-width:1100px;margin:0 auto;padding:0 20px}
+    /* Header */
+    header{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 50%,#0f172a 100%);color:#fff;padding:2rem 0;position:relative;overflow:hidden}
+    header::after{content:'';position:absolute;top:0;right:0;bottom:0;left:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E")}
+    header .container{position:relative;z-index:1}
+    header h1{font-size:2rem;font-weight:700;line-height:1.3;margin-bottom:0.5rem}
+    header h1 span{color:#60a5fa}
+    header p{font-size:1.05rem;opacity:0.9;max-width:650px}
+    .header-meta{margin-top:0.75rem;font-size:0.85rem;opacity:0.7;display:flex;flex-wrap:wrap;gap:1rem}
+    /* Top Controls */
+    .top-controls{background:#fff;border-bottom:1px solid #e2e8f0;padding:1rem 0;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+    .top-controls .container{display:flex;flex-wrap:wrap;align-items:center;gap:0.75rem}
+    .search-box{flex:1;min-width:200px;padding:0.6rem 1rem;border:1px solid #d1d5db;border-radius:8px;font-size:0.95rem;outline:none;transition:border-color 0.2s,box-shadow 0.2s}
+    .search-box:focus{border-color:#1a56db;box-shadow:0 0 0 3px rgba(26,86,219,0.12)}
+    .btn{display:inline-flex;align-items:center;gap:0.4rem;padding:0.55rem 1.1rem;border:1px solid #d1d5db;background:#fff;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+    .btn:hover{background:#f3f4f6;border-color:#9ca3af}
+    .btn-primary{background:#1a56db;color:#fff;border-color:#1a56db}
+    .btn-primary:hover{background:#1e40af;border-color:#1e40af}
+    .results-count{font-size:0.85rem;color:#6b7280;min-width:100px}
+    /* Table of Contents */
+    .toc-wrapper{background:#fff;border-bottom:1px solid #e2e8f0}
+    .toc{padding:1.25rem 0}
+    .toc h2{font-size:1.1rem;margin-bottom:0.75rem;color:#374151}
+    .toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0.5rem}
+    .toc-item{display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.6rem;background:#f9fafb;border-radius:6px;font-size:0.85rem;color:#374151;transition:background 0.2s}
+    .toc-item:hover{background:#e5e7eb;text-decoration:none}
+    .toc-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:#1a56db;color:#fff;border-radius:50%;font-size:0.7rem;font-weight:700;flex-shrink:0}
+    .toc-count{margin-left:auto;font-size:0.75rem;color:#9ca3af;background:#f3f4f6;padding:0.1rem 0.45rem;border-radius:10px}
+    /* Main */
+    main{padding:2rem 0}
+    /* Section */
+    .faq-section{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.06);margin-bottom:2rem;overflow:hidden}
+    .faq-section-header{background:linear-gradient(135deg,#f0f4ff 0%,#e8f0fe 100%);padding:1.25rem 1.5rem;border-bottom:1px solid #e2e8f0}
+    .faq-section-header h2{font-size:1.25rem;font-weight:700;color:#0f172a;margin-bottom:0.25rem}
+    .faq-section-header p{font-size:0.9rem;color:#4b5563}
+    .faq-section-body{padding:0.5rem 1.5rem 1.5rem}
+    /* Accordion */
+    details.faq-item{border-bottom:1px solid #e5e7eb;transition:background 0.2s}
+    details.faq-item:last-of-type{border-bottom:none}
+    details.faq-item[open]{background:#fafbff}
+    details.faq-item summary{display:flex;align-items:center;gap:0.6rem;padding:1rem 0;cursor:pointer;font-weight:600;font-size:0.95rem;color:#1f2937;list-style:none;user-select:none}
+    details.faq-item summary::-webkit-details-marker{display:none}
+    details.faq-item summary::before{content:'+';display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:#e5e7eb;border-radius:50%;font-size:1rem;font-weight:700;color:#374151;flex-shrink:0;transition:all 0.25s}
+    details.faq-item[open] summary::before{content:'\2212';background:#1a56db;color:#fff}
+    details.faq-item summary:hover{color:#1a56db}
+    .faq-answer{padding:0 0 1.25rem 2.8rem;font-size:0.93rem;color:#374151;line-height:1.75}
+    .faq-answer p{margin-bottom:0.6rem}
+    .faq-answer p:last-child{margin-bottom:0}
+    .local-context{background:#fef9e7;border-left:3px solid #f59e0b;padding:0.6rem 0.8rem;margin:0.6rem 0;border-radius:0 6px 6px 0;font-size:0.88rem}
+    .faq-footer{display:flex;flex-wrap:wrap;align-items:center;gap:0.5rem;margin-top:0.75rem;font-size:0.8rem}
+    .copy-btn{padding:0.3rem 0.7rem;font-size:0.75rem;background:#f3f4f6;border:1px solid #d1d5db;border-radius:5px;cursor:pointer;transition:all 0.2s}
+    .copy-btn:hover{background:#e5e7eb}
+    .copy-btn.copied{background:#d1fae5;border-color:#10b981;color:#065f46}
+    .related-links{display:inline-flex;flex-wrap:wrap;gap:0.25rem;color:#6b7280}
+    .related-links a{font-size:0.8rem}
+    /* Local SEO Section */
+    .local-seo-section{background:linear-gradient(135deg,#064e3b 0%,#065f46 50%,#047857 100%);color:#fff;border-radius:12px;padding:2rem 1.5rem;margin-bottom:2rem}
+    .local-seo-section h2{font-size:1.4rem;margin-bottom:0.75rem}
+    .local-seo-section h2 span{color:#6ee7b7}
+    .local-seo-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1rem}
+    @media(max-width:640px){.local-seo-grid{grid-template-columns:1fr}}
+    .local-card{background:rgba(255,255,255,0.1);border-radius:10px;padding:1.25rem;backdrop-filter:blur(4px)}
+    .local-card h3{font-size:1rem;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem}
+    .local-card p,.local-card address{font-size:0.88rem;opacity:0.9;line-height:1.7}
+    .local-card address{font-style:normal}
+    .map-placeholder{background:rgba(0,0,0,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;min-height:160px;font-size:0.9rem;text-align:center;border:2px dashed rgba(255,255,255,0.2);margin-top:0.75rem}
+    /* Trust Badges */
+    .trust-badges{background:#fff;border-radius:12px;padding:1.5rem;margin-bottom:2rem;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+    .trust-badges h2{font-size:1.1rem;color:#374151;margin-bottom:0.75rem}
+    .badge-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem}
+    .badge{display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;background:#f3f4f6;border-radius:20px;font-size:0.8rem;font-weight:500;color:#374151}
+    .badge-icon{width:28px;height:28px;background:#1a56db;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:0.7rem;font-weight:700}
+    /* Changelog */
+    .changelog{background:#fff;border-radius:12px;padding:1rem 1.5rem;margin-bottom:2rem;box-shadow:0 1px 3px rgba(0,0,0,0.06);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.5rem;font-size:0.85rem;color:#6b7280}
+    .changelog strong{color:#374151}
+    /* Footer */
+    footer{background:#0f172a;color:#94a3b8;padding:2rem 0;font-size:0.85rem}
+    footer .container{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem}
+    footer a{color:#60a5fa}
+    footer a:hover{color:#93c5fd}
+    /* Scroll to Top */
+    .scroll-top{position:fixed;bottom:1.5rem;right:1.5rem;width:44px;height:44px;background:#1a56db;color:#fff;border:none;border-radius:50%;font-size:1.25rem;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);display:none;align-items:center;justify-content:center;z-index:200;transition:all 0.2s}
+    .scroll-top.show{display:flex}
+    .scroll-top:hover{background:#1e40af;transform:translateY(-2px)}
+    .hidden-faq{display:none!important}
+    @media(max-width:768px){
+      header h1{font-size:1.5rem}
+      .top-controls .container{flex-direction:column;align-items:stretch}
+      .btn-group{display:flex;gap:0.5rem;flex-wrap:wrap}
+      .toc-grid{grid-template-columns:1fr}
+      details.faq-item summary{font-size:0.88rem}
+      .faq-answer{padding-left:2rem}
+    }
+  </style>
+</head>
+<body>
+"@
+
+# ===== BODY START =====
+Write-Html @"
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="container">
+      <h1>Research &amp; Publication <span>FAQ</span></h1>
+      <p>Expert answers to 100+ frequently asked questions about academic publishing, PhD guidance, journal publication, ISBN/ISSN/DOI, peer review, plagiarism, research writing, conferences, and academic career development — with local support for researchers in <strong>Ooty</strong>, <strong>Gudalur</strong>, and the <strong>Nilgiris</strong>.</p>
+      <div class="header-meta">
+        <span>📄 100+ questions</span>
+        <span>📅 Updated Jul 6, 2026</span>
+        <span>📍 Ooty &amp; Gudalur, India</span>
+        <span>🏛️ JMRH — Journal of Multidisciplinary Research &amp; Insights</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== TOP CONTROLS ===== -->
+  <div class="top-controls" id="top-controls">
+    <div class="container">
+      <input type="text" class="search-box" id="faqSearch" placeholder="Search FAQs (e.g., DOI, plagiarism, Scopus, ISBN)..." aria-label="Search FAQs">
+      <div class="btn-group">
+        <button class="btn" id="expandAllBtn">🔽 Expand All</button>
+        <button class="btn" id="collapseAllBtn">🔼 Collapse All</button>
+      </div>
+      <span class="results-count" id="resultsCount">Showing all questions</span>
+    </div>
+  </div>
+
+  <!-- ===== TABLE OF CONTENTS ===== -->
+  <div class="toc-wrapper">
+    <div class="container toc">
+      <h2>📑 Table of Contents</h2>
+      <div class="toc-grid" id="tocGrid">
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MAIN ===== -->
+  <main class="container">
+"@
+
+# ===== SECTION 1: PhD & Research Questions =====
+Write-Html @"
+    <!-- ===== SECTION 1 ===== -->
+    <section class="faq-section" id="section-phd">
+      <div class="faq-section-header">
+        <h2>1. PhD &amp; Research Questions</h2>
+        <p>Essential guidance for PhD scholars and researchers: publishing papers, writing synopses, literature reviews, and understanding identifiers like DOI, ISBN, ISSN. Local support available in Ooty &amp; Gudalur.</p>
+      </div>
+      <div class="faq-section-body">
+"@
+
+# Q1
+Write-Html @"
+        <details class="faq-item" id="how-to-publish-research-paper">
+          <summary>How to publish a research paper in an international journal?</summary>
+          <div class="faq-answer">
+            <p>To publish a research paper in an international journal: (1) Identify a suitable journal matching your research area, (2) Format your manuscript per the journal's author guidelines, (3) Write a strong cover letter, (4) Submit via the online submission system, (5) Wait for peer review (typically 2-8 weeks), (6) Address reviewer comments constructively, and (7) Complete final revisions and proofreading.</p>
+            <div class="local-context"><strong>For researchers in Ooty, Gudalur &amp; the Nilgiris:</strong> JMRH offers step-by-step publication guidance at our Ooty office. We help you select the right journal, format your manuscript, and navigate the submission process. Contact editor@jmrh.in to schedule a consultation.</div>
+            <div class="faq-footer">
+              <button class="copy-btn" onclick="copyAnswer(this)">📋 Copy</button>
+              <span class="related-links">🔗 Related: <a href="#how-to-write-research-paper">Writing guide</a> &middot; <a href="#how-peer-review-works">Peer review</a></span>
+            </div>
+          </div>
+        </details>
+"@
+
+# Q2
+Write-Html @"
+        <details class="faq-item" id="what-is-scopus-paper">
+          <summary>What is a Scopus-indexed paper and how do I publish one?</summary>
+          <div class="faq-answer">
+            <p>A Scopus-indexed paper is published in a journal included in Elsevier's Scopus database, which covers over 26,000 active journals. To publish in Scopus: ensure the journal is currently indexed (verify on the Scopus title list), format your manuscript per guidelines, submit high-quality original research with sound methodology, and adhere to all ethical publishing standards.</p>
+            <div class="local-context"><strong>Local support:</strong> JMRH helps researchers from Ooty, Gudalur, and Nilgiris colleges identify genuine Scopus-indexed journals relevant to their field. We verify journal status before submission to avoid predatory or discontinued titles.</div>
+            <div class="faq-footer">
+              <button class="copy-btn" onclick="copyAnswer(this)">📋 Copy</button>
+              <span class="related-links">🔗 Related: <a href="#how-to-check-genuine-journal">Check genuine journal</a> &middot; <a href="#what-are-ugc-care-journals">UGC Care</a></span>
+            </div>
+          </div>
+        </details>
+"@
+
+# Q3
+Write-Html @"
+        <details class="faq-item" id="how-to-write-research-paper">
+          <summary>How do I write a research paper from scratch?</summary>
+          <div class="faq-answer">
+            <p>Writing from scratch involves: (1) Choose a focused research question, (2) Conduct a thorough literature review, (3) Design appropriate methodology, (4) Collect and analyze data rigorously, (5) Structure using IMRAD format (Introduction, Methods, Results, Discussion), (6) Write a compelling abstract, (7) Cite all sources properly, (8) Proofread thoroughly before submission.</p>
+            <div class="local-context"><strong>For Ooty &amp; Gudalur scholars:</strong> JMRH offers manuscript writing workshops and one-on-one guidance at our Ooty office. We help you develop strong academic writing skills through personalized mentoring sessions.</div>
+            <div class="faq-footer">
+              <button class="copy-btn" onclick="copyAnswer(this)">📋 Copy</button>
+              <span class="related-links">🔗 Related: <a href="#how-to-write-abstract">Write abstract</a> &middot; <a href="#what-is-imrad-format">IMRAD format</a></span>
+            </div>
+          </div>
+        </details>
+"@
+
+# Q4
+Write-Html @"
+        <details class="faq-item" id="how-to-write-phd-synopsis">
+          <summary>How to write a PhD synopsis?</summary>
+          <div class="faq-answer">
+            <p>A PhD synopsis typically includes: (1) Title of the research, (2) Introduction and background, (3) Review of literature highlighting the research gap, (4) Statement of the problem, (5) Research objectives and hypotheses, (6) Methodology in detail, (7) Expected outcomes and significance, (8) References. Most Indian universities require 10-20 pages. Check your university's specific format requirements.</p>
+            <div class="local-context"><strong>Nilgiris region support:</strong> Researchers in Ooty, Gudalur, and surrounding areas can consult JMRH for synopsis formatting, review, and content structuring services. We help ensure your synopsis meets university standards.</div>
+            <div class="faq-footer">
+              <button class="copy-btn" onclick="copyAnswer(this)">📋 Copy</button>
+              <span class="related-links">🔗 Related: <a href="#how-to-write-research-proposal">Research proposal</a> &middot; <a href="#what-are-phd-publication-requirements">PhD requirements</a></span>
+            </div>
+          </div>
+        </details>
+"@
+
+# Q5
+Write-Html @"
+        <details class="faq-item" id="how-to-write-literature-review">
+          <summary>How to write a literature review for a research paper?</summary>
+          <div class="faq-answer">
+            <p>A strong literature review: (1) Identifies key themes and debates in your research area, (2) Critically evaluates existing studies rather than just summarizing, (3) Identifies gaps that justify your research, (4) Uses recent sources (preferably last 5-10 years), (5) Organizes content thematically, chronologically, or methodologically, (6) Synthesizes findings across multiple sources. Use Google Scholar, Scopus, and ResearchGate to locate relevant papers.</p>
+            <div class="local-context"><strong>Ooty &amp; Gudalur scholars:</strong> JMRH conducts literature review workshops and provides templates to help organize your review efficiently. We also provide access to journal databases at our Ooty resource center.</div>
+            <div class="faq-footer">
+              <button class="copy-btn" onclick="copyAnswer(this)">📋 Copy</button>
+              <span class="related-links">🔗 Related: <a href="#how-to-write-research-paper">Writing guide</a> &middot; <a href="#how-to-write-objectives">Research objectives</a></span>
+            </div>
+          </div>
+        </details>
+"@
+
+# Q6
+Write-Html @"
+        <details class="faq-item" id="what-is-doi">
+          <summary>What is a DOI and how do I get one for my paper?</summary>
+          <div class="faq-answer">
+            <p>A DOI (Digital Object Identifier) is a unique alphanumeric string that provides a permanent link to your scholarly article online. DOIs are assigned by Crossref upon publication. They ensure your work remains findable even if URLs change. DOIs are now standard for all reputable academic publications and are required by most citation formats.</p>
+            <div class="local-context"><strong>JMRH provides DOIs:</strong> Every article published in JMRH receives a registered Crossref DOI. Researchers in Ooty and Gudalur gain global visibility through our DOI registration system.</div>
+            <div class="faq-footer">
+              <button class="copy-btn" onclick="copyAnswer(this)">📋 Copy</button>
+              <span class="related-links">🔗 Related: <a href="#how-to-get-doi">Get DOI</a> &middot; <a href="#what-is-crossref">Crossref</a> &middot; <a href="#doi-vs-url">DOI vs URL</a></span>
+            </div>
+          </div>
+        </details>
+"@
+
+# Q7
+Write-Html @"
+        <details class="faq-item" id="how-to-get-isbn">
+          <summary>How to get an ISBN for a book?</summary>
+          <div class="faq-answer">
+            <p>In India, apply for ISBN through the Raja Rammohun Roy Library Foundation (RRRLF) at isbn.gov.in. Steps: register as a publisher, submit book details (title, authors, edition, format, price, publication date), pay the fee, and receive your ISBN within 2-7 working days. Each format (hardcover, paperback, ebook) requires a separate ISBN.</p>
+            <div class="local-context"><strong>Ooty &amp; Gudalur authors:</strong> JMRH handles the complete ISBN application process for authors in the Nilgiris region — including form filling, documentation, and follow-up. We also publish books with ISBN under our academic press.</div>
+            <div class="faq-footer">
+              <button class="copy-btn" onclick="copyAnswer(this)">📋 Copy</button>
+              <span class="related-links">🔗 Related: <a href="#how-to-apply-for-isbn">Apply for ISBN</a> &middot; <a href="#isbn-vs-issn">ISBN vs ISSN</a></span>
+            </div>
+          </div>
+        </details>
+"@
+
+# Q8
+Write-Html @"
+        <details class="faq-item" id="what-is-issn">
+          <summary>What is an ISSN and how is it different from ISBN?</summary>
+          <div class="faq-answer">
+            <p>ISSN (International Standard Serial Number) is an 8-digit code identifying serial publications like journals. ISBN (International Standard Book Number) is a 13-digit number for individual books. ISSN stays the same for the entire run of a journal; ISBN changes with each edition and format. ISSN is free in India; ISBN has a fee. Both are essential identifiers for academic publications.</p>
+            <div class="local-context"><strong>Local journal editors:</strong> If you're starting a journal in Ooty or Gudalur, JMRH guides you through the ISSN application process via the ISSN National Centre at NISCAIR, New Delhi.</div>
+            <div class="faq-footer">
+              <button class="copy-btn" onclick="copyAnswer(this)">📋 Copy</button>
+              <span class="related-links">🔗 Related: <a href="#how-to-apply-for-issn">Apply for ISSN</a> &middot; <a href="#how-to-get-isbn">Get ISBN</a></span>
+            </div>
+          </div>
+        </details>
+"@
+
+# Q9
+Write-Html @"
+        <details class="faq-item" id="how-to-check-genuine-journal">
+          <summary>How to check if a journal is genuine?</summary>
+          <div class="faq-answer">
+            <p>Verify a journal's authenticity through: (1) Check UGC-CARE list, Scopus master list, or Web of Science, (2) Validate the ISSN on the ISSN Portal, (3) Look for a transparent peer review policy, (4) Verify editorial board credentials against institutional websites, (5) Check the publisher's track record using Think.Check.Submit., (6) Be cautious of unsolicited invitations promising rapid publication with minimal review.</p>
+            <div class="local-context"><strong>Free verification in Ooty:</strong> JMRH offers a journal verification service for researchers in Ooty, Gudalur, and throughout the Nilgiris. Bring us a journal name or ISSN and we will check its authenticity for you.</div>
+            <div class="faq-footer">
+              <button class="copy-btn" onclick="copyAnswer(this)">📋 Copy</button>
+              <span class="related-links">🔗 Related: <a href="#how-to-avoid-predatory-journals">Avoid predatory journals</a> &middot; <a href="#what-is-scopus-paper">Scopus journals</a></span>
+            </div>
+          </div>
+        </details>
+"@
+
+# Q10
+Write-Html @"
+        <details class="faq-item" id="how-to-avoid-predatory-journals">
+          <summary>How to avoid predatory journals?</summary>
+          <div class="faq-answer">
+            <p>Avoid predatory journals by: (1) Consulting Beall's List or Cabells' Predatory Reports as references, (2) Verifying on UGC-CARE, Scopus, or Web of Science, (3) Checking if the editorial board has verifiable experts with institutional affiliations, (4) Reviewing the peer review process details, (5) Avoiding spam invitations promising quick publication, (6) Confirming the journal's ISSN and publisher history on reliable databases.</p>
+            <div class="local-context"><strong>Nilgiris researcher alert:</strong> Predatory journals actively target researchers in smaller cities. JMRH in Ooty provides a journal verification service — email us a journal name and we will research its credentials for you.</div>
+            <div class="faq-footer">
+              <button class="copy-btn" onclick="copyAnswer(this)">📋 Copy</button>
+              <span class="related-links">🔗 Related: <a href="#how-to-check-genuine-journal">Check genuine journal</a> &middot; <a href="#what-are-ugc-care-journals">UGC Care journals</a></span>
+            </div>
+          </div>
+        </details>
+"@
+
+Write-Html @"
+      </div>
+    </section>
+"@
+
+<#
+.SYNOPSIS
+  Generated first section successfully
+#>
+Write-Output "Section 1 (PhD) written"
+
+# Continue writing — let me check progress and write remaining sections
+$writer.Close()
+Write-Output "Partial file written. Size: $((Get-Item $OutputPath).Length) bytes"
