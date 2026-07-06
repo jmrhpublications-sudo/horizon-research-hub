@@ -9,7 +9,7 @@ interface SEOHeadProps {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const BASE_URL = "https://jmrh.lovable.app";
+const BASE_URL = "https://jmrh.in";
 const DEFAULT_IMAGE = "https://storage.googleapis.com/gpt-engineer-file-uploads/z6n6yRQR3COHl1C465nlg0EUjOx2/social-images/social-1770267666512-OIP.webp";
 
 const SEOHead = ({ title, description, keywords, canonical, ogType = "website", jsonLd }: SEOHeadProps) => {
