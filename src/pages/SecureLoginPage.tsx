@@ -53,7 +53,7 @@ const SecureLoginPage = memo(({ role }: SecureLoginPageProps) => {
                 .eq('user_id', user.id)
                 .single();
 
-            if (!roleData || roleData.role !== role) {
+            if (!roleData || roleData.role !== role.toLowerCase()) {
                 await logout();
                 const roleLabel = role === 'ADMIN' ? 'admin' : 'professor';
                 throw new Error(`You do not have ${roleLabel} access. Please use the main login page.`);
