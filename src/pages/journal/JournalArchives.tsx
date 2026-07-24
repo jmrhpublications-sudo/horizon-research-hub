@@ -94,11 +94,10 @@ const JournalArchives = memo(() => {
     };
 
     const openInNewTab = (journal: any) => {
-        const url = journal.pdfUrl?.startsWith('http') 
-            ? journal.pdfUrl 
-            : `/journal/viewer/${journal.id}`;
-        window.open(url, '_blank');
+        // Always route through the in-domain viewer so PDFs open under jmrh.in.
+        window.open(`/journal/viewer/${journal.id}`, '_blank');
     };
+
 
     const publishedArticles = useMemo(
         () => publishedJournals.filter(j => j.status === 'PUBLISHED'),
