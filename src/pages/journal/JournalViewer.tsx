@@ -17,7 +17,10 @@ const JournalViewer = () => {
     const journal = publishedJournals.find(j => j.id === id);
 
     useEffect(() => {
-        const loadPdf = () => {
+        let objectUrl: string | null = null;
+        let cancelled = false;
+
+        const loadPdf = async () => {
             if (!journal?.pdfUrl) {
                 setError("No PDF file available");
                 setLoading(false);
@@ -25,20 +28,38 @@ const JournalViewer = () => {
             }
 
             try {
-                if (journal.pdfUrl.startsWith('http')) {
-                    setPdfUrl(journal.pdfUrl);
-                } else {
-                    const url = getPublicFileUrl('publications', journal.pdfUrl);
-                    setPdfUrl(url);
+                const sourceUrl = journal.pdfUrl.startsWith('http')
+                    ? journal.pdfUrl
+                    : getPublicFileUrl('publications', journal.pdfUrl);
+
+                // Fetch and serve as a same-origin blob URL so the PDF opens
+                // under the jmrh.in domain instead of the Supabase origin.
+                const res = await fetch(sourceUrl);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const blob = await res.blob();
+                objectUrl = URL.createObjectURL(
+                    new Blob([blob], { type: 'application/pdf' })
+                );
+                if (!cancelled) {
+                    setPdfUrl(objectUrl);
+                    setLoading(false);
                 }
             } catch (err) {
-                setError("Failed to load PDF");
+                if (!cancelled) {
+                    setError("Failed to load PDF");
+                    setLoading(false);
+                }
             }
-            setLoading(false);
         };
 
         loadPdf();
+
+        return () => {
+            cancelled = true;
+            if (objectUrl) URL.revokeObjectURL(objectUrl);
+        };
     }, [journal]);
+
 
     if (!journal) {
         return (
