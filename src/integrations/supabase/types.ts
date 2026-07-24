@@ -466,7 +466,33 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      reviews_public: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          id: string | null
+          rating: number | null
+          updated_at: string | null
+          user_name: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          id?: string | null
+          rating?: number | null
+          updated_at?: string | null
+          user_name?: never
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          id?: string | null
+          rating?: number | null
+          updated_at?: string | null
+          user_name?: never
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_papers_for_professor: {
