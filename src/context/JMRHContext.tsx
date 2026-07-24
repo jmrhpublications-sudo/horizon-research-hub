@@ -483,7 +483,7 @@ export const JMRHProvider = ({ children }: { children: ReactNode }) => {
                 db.from('user_roles').select('*'),
                 db.from('papers').select('*'),
                 (db as any).rpc('get_papers_for_professor'),
-                db.from('reviews').select('id, content, rating, user_name, created_at, updated_at'),
+                db.from('reviews_public').select('id, content, rating, user_name, created_at, updated_at'),
                 db.from('published_journals').select('*'),
                 db.from('published_books').select('*'),
                 db.from('upload_requests').select('*'),
