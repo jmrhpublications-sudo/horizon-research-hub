@@ -311,29 +311,20 @@ const JournalArchives = memo(() => {
                                             return (
                                                 <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-black/5 mt-4">
                                                     <Button 
-                                                        variant="outline" size="sm" 
+                                                        variant="default" size="sm" 
                                                         asChild
-                                                        className="gap-2 text-gold border-gold/30 hover:bg-gold/5"
+                                                        className="gap-2 bg-gold hover:bg-gold/90 text-white shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5"
                                                     >
-                                                        <a href={publicUrl} target="_blank" rel="noopener noreferrer">
+                                                        <Link to={`/journal/viewer/${journal.id}`}>
                                                             <Eye size={14} /> View PDF
-                                                        </a>
+                                                        </Link>
                                                     </Button>
                                                     <Button 
                                                         variant="outline" size="sm" 
                                                         onClick={() => downloadFileFromUrl(publicUrl, safeName)}
-                                                        className="gap-2 text-oxford border-oxford/20 hover:bg-oxford/5"
+                                                        className="gap-2 text-oxford border-oxford/20 hover:bg-oxford/5 transition-all hover:-translate-y-0.5"
                                                     >
                                                         <Download size={14} /> Download
-                                                    </Button>
-                                                    <Button 
-                                                        variant="ghost" size="sm" 
-                                                        asChild
-                                                        className="gap-2 text-oxford/60 hover:text-oxford"
-                                                    >
-                                                        <Link to={`/journal/viewer/${journal.id}`}>
-                                                            <ExternalLink size={14} /> Open Reader
-                                                        </Link>
                                                     </Button>
                                                 </div>
                                             );
