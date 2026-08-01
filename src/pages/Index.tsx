@@ -4,7 +4,7 @@ import PageShell from "@/components/layout/PageShell";
 import ReviewForm from "@/components/sections/ReviewForm";
 import ReviewList from "@/components/sections/ReviewList";
 import { Send, FileText, ShieldCheck, Globe, CheckCircle } from "lucide-react";
-import { pageSEO, organizationSchema, websiteSchema, periodicaSchema } from "@/lib/seo-data";
+import { pageSEO, organizationSchema, websiteSchema, periodicaSchema, localBusinessSchema, localFaqSchema } from "@/lib/seo-data";
 
 const Index = memo(() => {
   return (
@@ -13,7 +13,7 @@ const Index = memo(() => {
       description={pageSEO.home.description}
       keywords={pageSEO.home.keywords}
       canonical="/"
-      jsonLd={[organizationSchema, websiteSchema, periodicaSchema]}
+      jsonLd={[organizationSchema, websiteSchema, periodicaSchema, localBusinessSchema, localFaqSchema]}
     >
       {/* ==================== HERO SECTION ==================== */}
       <section className="relative min-h-[80vh] sm:min-h-screen flex items-center overflow-hidden bg-white -mt-20 lg:-mt-24 pt-20 lg:pt-24">
