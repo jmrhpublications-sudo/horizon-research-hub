@@ -31,6 +31,15 @@ const SEOHead = ({ title, description, keywords, canonical, ogType = "website", 
     setMeta("name", "description", description);
     if (keywords) setMeta("name", "keywords", keywords);
 
+    // Local / geo SEO signals (Gudalur, Ooty, The Nilgiris, Tamil Nadu)
+    setMeta("name", "geo.region", "IN-TN");
+    setMeta("name", "geo.placename", "Gudalur, The Nilgiris, Ooty, Tamil Nadu, India");
+    setMeta("name", "geo.position", "11.5025;76.4929");
+    setMeta("name", "ICBM", "11.5025, 76.4929");
+    setMeta("name", "author", "JMRH Publications");
+    setMeta("name", "robots", "index, follow, max-snippet:-1, max-image-preview:large");
+
+
     // Open Graph
     setMeta("property", "og:title", title);
     setMeta("property", "og:description", description);
