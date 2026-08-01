@@ -64,6 +64,81 @@ export const periodicaSchema = {
   inLanguage: "en",
 };
 
+/** Local/geo signals so JMRH ranks for Gudalur, Ooty, Nilgiris style native searches. */
+export const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": ["Organization", "EducationalOrganization", "LocalBusiness"],
+  "@id": `${BASE_URL}/#local`,
+  name: "JMRH Publications — Journal of Multidisciplinary Research Horizon",
+  alternateName: ["JMRH", "JMRH Gudalur", "JMRH Nilgiris"],
+  url: BASE_URL,
+  image: "https://jmrh.in/logo.png",
+  email: "info@jmrhpublications.com",
+  description:
+    "Peer-reviewed open-access research journal based in Gudalur, The Nilgiris (near Ooty), Tamil Nadu, India. Paper publication, DOI indexing and author mentoring for professors, PhD scholars and college faculty across the Nilgiris, Coonoor, Kotagiri, Pandalur and Tamil Nadu.",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Calicut Road, Gudalur",
+    addressLocality: "Gudalur, The Nilgiris",
+    addressRegion: "Tamil Nadu",
+    postalCode: "643212",
+    addressCountry: "IN",
+  },
+  geo: { "@type": "GeoCoordinates", latitude: 11.5025, longitude: 76.4929 },
+  areaServed: [
+    { "@type": "City", name: "Gudalur" },
+    { "@type": "City", name: "Ooty (Udhagamandalam)" },
+    { "@type": "City", name: "Coonoor" },
+    { "@type": "City", name: "Kotagiri" },
+    { "@type": "City", name: "Pandalur" },
+    { "@type": "AdministrativeArea", name: "The Nilgiris" },
+    { "@type": "AdministrativeArea", name: "Tamil Nadu" },
+    { "@type": "Country", name: "India" },
+  ],
+  knowsLanguage: ["en", "ta"],
+  knowsAbout: [
+    "Research paper publication",
+    "Peer review",
+    "Open access publishing",
+    "DOI indexing",
+    "Education research",
+    "Environmental research in the Nilgiris",
+    "Commerce and management research",
+  ],
+};
+
+export const localFaqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Is there a research journal in Gudalur or Ooty for paper publication?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. JMRH (Journal of Multidisciplinary Research Horizon) is a peer-reviewed, open-access journal based in Gudalur, The Nilgiris, near Ooty, Tamil Nadu. Professors, PhD scholars and PG students from Ooty, Coonoor, Kotagiri, Pandalur and across Tamil Nadu can submit manuscripts online.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How can professors and PhD scholars in the Nilgiris publish with JMRH?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Register on jmrh.in, follow the author guidelines, and upload your manuscript through the online submission form. Papers go through double-blind peer review and accepted articles receive a DOI with free open-access PDF downloads.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Is JMRH an open-access journal with affordable publication charges?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. Every article published by JMRH is freely readable and downloadable, with a minimal article processing charge kept affordable for Indian authors and first-time researchers.",
+      },
+    },
+  ],
+};
+
+
 export const pageSEO = {
   home: {
     title: "JMRH – Journal of Multidisciplinary Research Horizon | Peer-Reviewed Academic Journal | Ooty, Nilgiris",
