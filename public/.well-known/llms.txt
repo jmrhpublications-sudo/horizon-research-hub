@@ -1,15 +1,32 @@
 # JMRH Publications — Journal of Multidisciplinary Research Horizon
 
 ## About
-JMRH Publications is a peer-reviewed, open-access academic journal publishing multidisciplinary research across Commerce, Management, Economics, Education, Social Sciences, Science & Technology, Environmental Studies, and more.
+JMRH Publications is a peer-reviewed, open-access academic journal based in Gudalur, The Nilgiris (near Ooty / Udhagamandalam), Tamil Nadu, India. It publishes multidisciplinary research across Commerce, Management, Economics, Education, Social Sciences, Science & Technology, Environmental Studies, and more.
 
-- **Website**: https://jmrh.lovable.app
+- **Website**: https://jmrh.in
 - **Contact**: submissions@jmrh.in
+- **Location**: Calicut Road, Gudalur, The Nilgiris, Tamil Nadu 643212, India (11.5025, 76.4929)
+- **Region served**: Gudalur, Ooty (Udhagamandalam), Coonoor, Kotagiri, Pandalur, Devala, Cherambadi, the wider Nilgiris district, Tamil Nadu, and all of India.
+
+## Common questions
+- *Is there a research journal in Gudalur or Ooty?* Yes — JMRH is headquartered in Gudalur, The Nilgiris, near Ooty.
+- *Who can publish?* Professors, faculty, PhD scholars, and PG students from colleges across the Nilgiris, Tamil Nadu, and India.
+- *Peer review*: double-blind. Accepted papers receive a DOI and free open-access PDF downloads.
+- *Charges*: minimal, affordable article processing charge for Indian authors.
 
 ## Key Pages
-- Homepage: https://jmrh.lovable.app/
-- About the Journal: https://jmrh.lovable.app/journal/about
-- Submit Manuscript: https://jmrh.lovable.app/journal/submit
-- Archives: https://jmrh.lovable.app/journal/archives
-- Author Guidelines: https://jmrh.lovable.app/journal/guidelines
-- Contact: https://jmrh.lovable.app/contact
+- Homepage: https://jmrh.in/
+- About the Journal: https://jmrh.in/journal/about
+- Aims & Scope: https://jmrh.in/journal/aims-scope
+- Submit Manuscript: https://jmrh.in/journal/submit
+- Archives (open-access PDFs): https://jmrh.in/journal/archives
+- Author Guidelines: https://jmrh.in/journal/guidelines
+- Editorial Board: https://jmrh.in/journal/editorial-board
+- Contact: https://jmrh.in/contact
+
+## Regional landing pages
+- https://jmrh.in/seo/gudalur-ooty-research-papers.html
+- https://jmrh.in/seo/nilgiris-scientific-publications.html
+- https://jmrh.in/seo/gudalur-environmental-research.html
+- https://jmrh.in/seo/ooty-education-research-journal.html
+- https://jmrh.in/seo/tamil-nadu-academic-journals-pdf.html
