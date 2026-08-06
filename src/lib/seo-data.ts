@@ -1,8 +1,10 @@
 const BASE_URL = "https://jmrh.in";
 
-export const LOCAL_KEYWORDS = "Gudalur, Gudalur journal, Gudalur research journal, Gudalur Nilgiris, Gudalur Tamil Nadu, Ooty, Ooty journal, Ooty research paper publication, Udhagamandalam, Udhagamandalam journal, Nilgiris, Nilgiris journal, The Nilgiris research, Nilgiri hills research, Nilagiri, Neelagiri, Neelagiri journal, Coonoor, Coonoor research journal, Kotagiri, Pandalur, Devala, Cherambadi, Mudumalai research, Wayanad border research, Erode journal, Coimbatore research journal, Mysore research journal, Kerala Tamil Nadu border research, Tamil Nadu journal, Tamil Nadu paper publication, South India research journal, journal near Ooty, journal near Gudalur, paper publication in Ooty, paper publication in Gudalur, research journal in Nilgiris, best journal in Tamil Nadu, local research journal India";
+export const LOCAL_KEYWORDS = "Gudalur, Gudalur journal, Gudalur research journal, Gudalur paper publication, Gudalur Nilgiris, Gudalur Tamil Nadu, Ooty, Ooty paper publications, Ooty paper publication, Ooty journal publications, Ooty journal publication, Ooty research journal, Ooty research paper, Ooty research paper publication, Ooty PhD paper publication, Ooty journal, Udhagamandalam, Udhagamandalam journal, Udhagamandalam paper publication, Nilgiris, Nilagiris paper publications, Nilagiris paper publication, Nilgiris paper publication, Nilgiris journal publications, Nilgiris research paper publication, Nilgiris journal, The Nilgiris research, Nilgiri hills research, Nilagiri, Nilagiri journal, Neelagiri, Neelagiri journal, Coonoor, Coonoor research journal, Coonoor paper publication, Kotagiri, Kotagiri paper publication, Pandalur, Devala, Cherambadi, Mudumalai research, Wayanad border research, Erode journal, Coimbatore research journal, Mysore research journal, Kerala Tamil Nadu border research, Tamil Nadu journal, Tamil Nadu paper publication, Tamil Nadu journal publications, South India research journal, South India paper publication, journal near Ooty, journal near Gudalur, paper publication in Ooty, paper publication in Gudalur, paper publication in Nilgiris, research journal in Nilgiris, best journal in Tamil Nadu, best paper publication in Ooty, local research journal India";
 
-export const COMMON_KEYWORDS = "JMRH, JMRH Publications, JMRH Gudalur, JMRH Ooty, JMRH Nilgiris, JMRH journal, Journal of Multidisciplinary Research Horizon, " + LOCAL_KEYWORDS + ", India research journal, academic journal, research paper, paper publication, paper publication India, publish research paper, publish paper online, peer-reviewed journal, peer reviewed publication, open access journal, open access publishing, PhD research, PhD scholar journal, professor, professor journal, professor submission, professor reviewer, faculty publication, faculty research, college professor research, university professor papers, assistant professor publication, multidisciplinary research, scholarly publication, research mentoring, academic mentorship, dissertation support, thesis publication, postgraduate research, education research, teaching research, technology research, science journal, humanities journal, social science research, commerce research, management research, UGC CARE alternative, low cost paper publication, affordable APC journal, monthly journal India, double blind peer review, DOI paper publication";
+
+export const PUBLICATION_KEYWORDS = "research paper, research papers, research paper publication, research paper publication in India, research paper publisher, paper publications, paper publication, publish research paper, publish research paper online, PhD paper, PhD paper publication, PhD research paper publication, PhD thesis paper publication, PhD scholar paper publication, PhD journal publication, MPhil paper publication, PG research paper publication, conference paper publication, review paper publication, case study publication, journal publication, journal publications, online journal publication, fast paper publication, low cost research paper publication, DOI research paper publication, ISSN journal publication, peer reviewed paper publication, open access paper publication";
+export const COMMON_KEYWORDS = "JMRH, JMRH Publications, JMRH Gudalur, JMRH Ooty, JMRH Nilgiris, JMRH journal, Journal of Multidisciplinary Research Horizon, " + LOCAL_KEYWORDS + ", " + PUBLICATION_KEYWORDS + ", India research journal, academic journal, paper publication India, peer-reviewed journal, peer reviewed publication, open access journal, open access publishing, PhD research, PhD scholar journal, professor, professor journal, professor submission, professor reviewer, faculty publication, faculty research, college professor research, university professor papers, assistant professor publication, multidisciplinary research, scholarly publication, research mentoring, academic mentorship, dissertation support, thesis publication, postgraduate research, education research, teaching research, technology research, science journal, humanities journal, social science research, commerce research, management research, UGC CARE alternative, low cost paper publication, affordable APC journal, monthly journal India, double blind peer review, DOI paper publication";
 
 export const organizationSchema = {
   "@context": "https://schema.org",
@@ -141,8 +143,8 @@ export const localFaqSchema = {
 
 export const pageSEO = {
   home: {
-    title: "JMRH – Journal of Multidisciplinary Research Horizon | Peer-Reviewed Academic Journal | Ooty, Nilgiris",
-    description: "JMRH is a peer-reviewed, open-access academic journal from Gudalur, Nilgiris near Ooty, Tamil Nadu. Submit your PhD research papers in education, technology, science & humanities. Free mentoring for scholars.",
+    title: "Ooty & Nilgiris Research Paper Publication | JMRH Journal, Gudalur",
+    description: "Publish research papers, PhD papers and review articles with JMRH — a peer-reviewed, open-access journal in Gudalur, Nilgiris (near Ooty), Tamil Nadu. DOI indexing, fast double-blind review, ₹650 APC.",
     keywords: COMMON_KEYWORDS + ", home, submit paper, call for papers, research publication India",
   },
   about: {
@@ -166,8 +168,8 @@ export const pageSEO = {
     keywords: COMMON_KEYWORDS + ", publication ethics, plagiarism policy, academic integrity, research ethics, COPE guidelines",
   },
   archives: {
-    title: "Research Archives – Published Papers & Issues | JMRH Journal",
-    description: "Browse published research papers and past issues of JMRH. Open-access archives covering multidisciplinary research in education, technology, science, and humanities.",
+    title: "Research Paper Archives – Ooty & Nilgiris Journal Publications | JMRH",
+    description: "Browse open-access research papers and PhD publications archived by JMRH — multidisciplinary journal publications from Gudalur, Ooty and the Nilgiris, free to read and download.",
     keywords: COMMON_KEYWORDS + ", published papers, journal archives, past issues, research articles, open access papers",
   },
   reviews: {
@@ -181,8 +183,8 @@ export const pageSEO = {
     keywords: COMMON_KEYWORDS + ", contact, editorial office, Gudalur address, reach us, phone, email",
   },
   submitPaper: {
-    title: "Submit Your Research Paper – JMRH | Online Manuscript Submission",
-    description: "Submit your research paper or manuscript to JMRH online. Open to PhD scholars, postgraduates, and researchers in all disciplines. Fast peer review process.",
+    title: "Submit Research Paper Online – Ooty & Nilgiris Paper Publication | JMRH",
+    description: "Submit your research paper, PhD paper or conference article to JMRH online. Paper publication for scholars in Ooty, Gudalur, Nilgiris and across India with fast peer review and DOI.",
     keywords: COMMON_KEYWORDS + ", submit paper, manuscript submission, online submission, publish research, call for papers",
   },
   // New pages SEO
