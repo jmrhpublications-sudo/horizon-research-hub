@@ -143,8 +143,8 @@ export const localFaqSchema = {
 
 export const pageSEO = {
   home: {
-    title: "JMRH – Journal of Multidisciplinary Research Horizon | Peer-Reviewed Academic Journal | Ooty, Nilgiris",
-    description: "JMRH is a peer-reviewed, open-access academic journal from Gudalur, Nilgiris near Ooty, Tamil Nadu. Submit your PhD research papers in education, technology, science & humanities. Free mentoring for scholars.",
+    title: "Ooty & Nilgiris Research Paper Publication | JMRH Journal, Gudalur",
+    description: "Publish research papers, PhD papers and review articles with JMRH — a peer-reviewed, open-access journal in Gudalur, Nilgiris (near Ooty), Tamil Nadu. DOI indexing, fast double-blind review, ₹650 APC.",
     keywords: COMMON_KEYWORDS + ", home, submit paper, call for papers, research publication India",
   },
   about: {
@@ -168,8 +168,8 @@ export const pageSEO = {
     keywords: COMMON_KEYWORDS + ", publication ethics, plagiarism policy, academic integrity, research ethics, COPE guidelines",
   },
   archives: {
-    title: "Research Archives – Published Papers & Issues | JMRH Journal",
-    description: "Browse published research papers and past issues of JMRH. Open-access archives covering multidisciplinary research in education, technology, science, and humanities.",
+    title: "Research Paper Archives – Ooty & Nilgiris Journal Publications | JMRH",
+    description: "Browse open-access research papers and PhD publications archived by JMRH — multidisciplinary journal publications from Gudalur, Ooty and the Nilgiris, free to read and download.",
     keywords: COMMON_KEYWORDS + ", published papers, journal archives, past issues, research articles, open access papers",
   },
   reviews: {
@@ -183,8 +183,8 @@ export const pageSEO = {
     keywords: COMMON_KEYWORDS + ", contact, editorial office, Gudalur address, reach us, phone, email",
   },
   submitPaper: {
-    title: "Submit Your Research Paper – JMRH | Online Manuscript Submission",
-    description: "Submit your research paper or manuscript to JMRH online. Open to PhD scholars, postgraduates, and researchers in all disciplines. Fast peer review process.",
+    title: "Submit Research Paper Online – Ooty & Nilgiris Paper Publication | JMRH",
+    description: "Submit your research paper, PhD paper or conference article to JMRH online. Paper publication for scholars in Ooty, Gudalur, Nilgiris and across India with fast peer review and DOI.",
     keywords: COMMON_KEYWORDS + ", submit paper, manuscript submission, online submission, publish research, call for papers",
   },
   // New pages SEO
