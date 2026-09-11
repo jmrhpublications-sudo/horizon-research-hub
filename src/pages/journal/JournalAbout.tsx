@@ -53,7 +53,7 @@ const JournalAbout = memo(() => {
                 { label: "Address", value: "Calicut Road, Gudalur, Nilgiris" },
                 { label: "Contact", value: "jmrhpublications@gmail.com" },
                 { label: "Phone", value: "+91 8072242010" },
-                { label: "ISSN", value: "To be assigned" }
+                { label: "ISSN", value: "3139-7301" }
               ].map((item, index) => (
                 <div key={index} className="bg-oxford/5 p-3 sm:p-6 border border-black/5">
                   <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-oxford/40 mb-1">{item.label}</h3>

@@ -139,7 +139,7 @@ const Index = memo(() => {
               { label: "Subject", value: "Multidisciplinary" },
               { label: "Language", value: "English" },
               { label: "Publisher", value: "JMRH Publications" },
-              { label: "ISSN (Online)", value: "To be assigned" }
+              { label: "ISSN (Online)", value: "3139-7301" }
             ].map((item, index) => (
               <div key={index} className="bg-white p-4 sm:p-6 border border-black/5 hover:border-gold/20 transition-all">
                 <p className="text-[9px] sm:text-[10px] uppercase tracking-widest text-oxford/40 mb-1 sm:mb-2">{item.label}</p>
