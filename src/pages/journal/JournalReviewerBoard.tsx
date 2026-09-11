@@ -18,29 +18,25 @@ const JournalReviewerBoard = memo(() => {
       name: "Mr. Suresh",
       position: "Assistant Professor",
       department: "Department of Geography",
-      institution: "Government Arts and Science College, Gudalur",
-      email: "suresh.eng@gascgudalur.in"
+      institution: "Government Arts and Science College, Gudalur"
     },
     {
       name: "Ms. Saranya",
       position: "Assistant Professor",
       department: "Department of Commerce CA",
-      institution: "Government Arts and Science College, Gudalur",
-      email: "saranya.ca@gascgudalur.in"
+      institution: "Government Arts and Science College, Gudalur"
     },
     {
       name: "Ms. Dhana Bharathi A",
       position: "Assistant Professor",
       department: "Department of English",
-      institution: "Government Arts and Science College, Gudalur",
-      email: "dhanabharathi.eng@gascgudalur.in"
+      institution: "Government Arts and Science College, Gudalur"
     },
     {
       name: "Gautham Krishna R",
       position: "Assistant Professor",
       department: "Department of Psychology",
-      institution: "ST Marys College, Perinthalmanna",
-      email: "gauthamkrishna@stmaryscollege.in"
+      institution: "ST Marys College, Perinthalmanna"
     }
   ];
 
@@ -109,12 +105,12 @@ const JournalReviewerBoard = memo(() => {
                     <p className="text-sm text-oxford/70">{reviewer.position}</p>
                     <p className="text-xs text-oxford/60 mt-1">{reviewer.department}</p>
                     <p className="text-xs text-oxford/60">{reviewer.institution}</p>
-                    <a href={`mailto:${reviewer.email}`} className="text-xs text-gold hover:text-oxford mt-2 inline-block">
-                      {reviewer.email}
-                    </a>
                   </div>
                 ))}
               </div>
+              <p className="text-oxford/60 text-sm mt-6">
+                For reviewer queries: <a href="mailto:review@jmrh.in" className="text-gold hover:text-oxford transition-colors font-bold">review@jmrh.in</a>
+              </p>
             </div>
 
             {/* Reviewer Responsibilities */}

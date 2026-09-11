@@ -272,8 +272,8 @@ const AdminPublications = memo(() => {
     };
 
     const handleSaveJournal = async () => {
-        if (!journalForm.title || !journalForm.authors || !journalForm.discipline) {
-            toast({ title: "Error", description: "Title, authors, and discipline are required", variant: "destructive" }); return;
+        if (!journalForm.title || !journalForm.authors) {
+            toast({ title: "Error", description: "Title and authors are required", variant: "destructive" }); return;
         }
         if (editingJournal) {
             await updatePublishedJournal(editingJournal.id, journalForm);
@@ -285,8 +285,8 @@ const AdminPublications = memo(() => {
     };
 
     const handleSaveBook = async () => {
-        if (!bookForm.title || !bookForm.authors || !bookForm.discipline) {
-            toast({ title: "Error", description: "Title, authors, and discipline are required", variant: "destructive" }); return;
+        if (!bookForm.title || !bookForm.authors) {
+            toast({ title: "Error", description: "Title and authors are required", variant: "destructive" }); return;
         }
         if (editingBook) {
             await updatePublishedBook(editingBook.id, bookForm);
@@ -741,7 +741,7 @@ const AdminPublications = memo(() => {
                         <Textarea placeholder="Abstract" value={journalForm.abstract} onChange={(e) => setJournalForm(p => ({ ...p, abstract: e.target.value }))} />
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <Select onValueChange={(v) => setJournalForm(p => ({ ...p, discipline: v }))} value={journalForm.discipline}>
-                                <SelectTrigger><SelectValue placeholder="Discipline *" /></SelectTrigger>
+                                <SelectTrigger><SelectValue placeholder="Discipline" /></SelectTrigger>
                                 <SelectContent>{disciplines.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
                             </Select>
                             <Input placeholder="Keywords" value={journalForm.keywords} onChange={(e) => setJournalForm(p => ({ ...p, keywords: e.target.value }))} />
@@ -843,7 +843,7 @@ const AdminPublications = memo(() => {
                         <Textarea placeholder="Description" value={bookForm.description} onChange={(e) => setBookForm(p => ({ ...p, description: e.target.value }))} />
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <Select onValueChange={(v) => setBookForm(p => ({ ...p, discipline: v }))} value={bookForm.discipline}>
-                                <SelectTrigger><SelectValue placeholder="Discipline *" /></SelectTrigger>
+                                <SelectTrigger><SelectValue placeholder="Discipline" /></SelectTrigger>
                                 <SelectContent>{disciplines.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
                             </Select>
                             <Input placeholder="Keywords" value={bookForm.keywords} onChange={(e) => setBookForm(p => ({ ...p, keywords: e.target.value }))} />
