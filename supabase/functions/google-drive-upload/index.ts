@@ -197,7 +197,7 @@ Deno.serve(async (req) => {
 
     // Ownership check for fileId based actions
     async function assertOwnsFileId(fid: string) {
-      if (isAdmin || isProfessor) return true
+      if (isAdmin) return true
       const { data } = await admin
         .from('papers')
         .select('id')
