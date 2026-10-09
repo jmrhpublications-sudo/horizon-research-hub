@@ -60,21 +60,33 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Verify the submission exists and is pending
-    const { data: paper } = await supabase
-      .from('papers')
-      .select('id, status')
-      .eq('id', submissionId)
-      .maybeSingle()
-    if (!paper) {
-      return new Response(JSON.stringify({ success: false, error: 'Invalid submission' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    // Require a signed-in caller; files are stored in the caller's own folder
+    const authHeader = req.headers.get('Authorization') || ''
+    const token = authHeader.replace(/^Bearer\s+/i, '')
+    const { data: userData } = token ? await supabase.auth.getUser(token) : { data: { user: null } }
+    const user = userData?.user
+    if (!user) {
+      return new Response(JSON.stringify({ success: false, error: 'Please sign in to upload' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
+    }
+
+    // Only allow submission-scoped folders the caller owns
+    const safeSubmission = String(submissionId).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 80)
+    const uuidRe = /^[0-9a-f-]{36}$/i
+    if (uuidRe.test(String(submissionId))) {
+      const { data: paper } = await supabase
+        .from('papers').select('author_id').eq('id', submissionId).maybeSingle()
+      if (paper && paper.author_id !== user.id) {
+        return new Response(JSON.stringify({ success: false, error: 'Invalid submission' }), {
+          status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
     }
 
     // Sanitize filename
     const safeName = String(fileName).replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 200)
-    const folderPath = `anonymous/${submissionId}`
+    const folderPath = `${user.id}/${safeSubmission}`
     const storageFileName = `${folderPath}/${Date.now()}_${safeName}`
 
     const binaryData = Uint8Array.from(atob(fileData), (c) => c.charCodeAt(0))
