@@ -1,0 +1,2 @@
+CREATE POLICY "Admins can view publications objects" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'publications' AND public.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "Admins can update publications objects" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'publications' AND public.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (bucket_id = 'publications' AND public.has_role(auth.uid(), 'admin'::public.app_role));

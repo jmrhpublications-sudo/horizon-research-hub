@@ -341,7 +341,7 @@ const AdminDashboard = memo(() => {
     };
 
     const uploadFile = async (file: File, folder: string): Promise<string | null> => {
-        const fileName = `${folder}/${Date.now()}_${file.name}`;
+        const fileName = `${folder}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]+/g, "_")}`;
         const { data, error } = await supabase.storage
             .from('publications')
             .upload(fileName, file, { cacheControl: '3600', upsert: false });

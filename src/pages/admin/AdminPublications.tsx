@@ -186,9 +186,23 @@ const AdminPublications = memo(() => {
     const bookCoverRef = useRef<HTMLInputElement>(null);
 
     const uploadFile = async (file: File, folder: string): Promise<string | null> => {
-        const fileName = `${folder}/${Date.now()}_${file.name}`;
-        const { error } = await supabase.storage.from('publications').upload(fileName, file, { cacheControl: '3600', upsert: false });
-        if (error) { console.error('Upload error:', error); return null; }
+        if (file.size > 50 * 1024 * 1024) {
+            toast({ title: "File too large", description: "Maximum size is 50 MB.", variant: "destructive" });
+            return null;
+        }
+        const dot = file.name.lastIndexOf('.');
+        const ext = dot >= 0 ? file.name.slice(dot).toLowerCase().replace(/[^a-z0-9.]/g, '') : '';
+        const base = (dot >= 0 ? file.name.slice(0, dot) : file.name)
+            .normalize('NFKD').replace(/[^a-zA-Z0-9_-]+/g, '_').replace(/_+/g, '_').slice(0, 80) || 'file';
+        const fileName = `${folder}/${Date.now()}_${base}${ext}`;
+        const contentType = file.type || (ext === '.pdf' ? 'application/pdf' : 'application/octet-stream');
+        const { error } = await supabase.storage.from('publications').upload(fileName, file, { cacheControl: '3600', upsert: true, contentType });
+        if (error) {
+            console.error('Upload error:', error);
+            toast({ title: "Upload failed", description: error.message, variant: "destructive" });
+            return null;
+        }
+        toast({ title: "Uploaded", description: file.name });
         return fileName;
     };
 
