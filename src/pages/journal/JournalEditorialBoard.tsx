@@ -4,8 +4,22 @@ import PageShell from "@/components/layout/PageShell";
 import { pageSEO } from "@/lib/seo-data";
 import { Mail } from "lucide-react";
 
+type LeadershipMember = {
+  role: string;
+  name: string;
+  position?: string;
+  department?: string;
+  institution: string;
+  address?: string;
+  email: string;
+  profile?: string;
+  image: string;
+};
+
+type BoardMember = Omit<LeadershipMember, "role">;
+
 const JournalEditorialBoard = memo(() => {
-  const editorialTeam = [
+  const editorialTeam: LeadershipMember[] = [
     {
       role: "Editor-in-Chief",
       name: "Dr. Karthick B",
@@ -30,9 +44,11 @@ const JournalEditorialBoard = memo(() => {
     }
   ];
 
-  const boardMembers = [
+  const boardMembers: BoardMember[] = [
     { name: "Abhishek BP", position: "Assistant Professor in Language Pathology", department: "Centre of Speech Language Sciences", institution: "AIISH, Mysuru, Karnataka, India 570006", email: "abhishekbp@aiishmysore.in", profile: "https://aiishmysore.in/ka/faculty-members-staff/abhishek-b-p", image: "/images/editorial-board/abhishek-bp.jpeg" },
+    { name: "Dr. Bala Shanmuga Devi", position: "Principal", institution: "Nilgiri College of Arts and Science (Autonomous), Thaloor", address: "Konnachal Post, Thaloor, The Nilgiris, Tamil Nadu - 643239", email: "shanmuga25oct@gmail.com", profile: "https://nilgiricollege.ac.in/about/Principal", image: "/images/editorial-board/bala-shanmuga-devi.jpeg" },
     { name: "Dr. Dency Mary", position: "Assistant Professor", department: "Department of BBA (IB)", institution: "Nilgiri College of Arts and Science (Autonomous), Thaloor", address: "The Nilgiris – 643240, Tamil Nadu, India", email: "dencymary@nilgiricollege.ac.in", profile: "https://nilgiricollege.ac.in/faculty/dency.pdf", image: "/images/editorial-board/dr-dency-mary.jpeg" },
+    { name: "Dr. Firos Khan M.C.", position: "Dean, Commerce & Management", department: "Department of Commerce & Management", institution: "Nilgiri College of Arts and Science (Autonomous), Thaloor", address: "Konnachal Post, Thaloor, The Nilgiris, Tamil Nadu - 643239", email: "dr.firoskhan@nilgiricollege.ac.in", profile: "https://nilgiricollege.ac.in/faculty/firozkhan.pdf", image: "/images/editorial-board/firos-khan.jpeg" },
     { name: "Dr. Jaganathan", position: "Head & Assistant Professor", department: "Department of Commerce with Information Technology", institution: "Government Arts and Science College, Gudalur", email: "jaganathan@jmrh.in", profile: "https://gascgudalur.in/department-of-commerce-with-it/", image: "/images/editorial-board/dr-jaganathan.jpeg" },
     { name: "Dr. K. Palanichamy", position: "Head & Assistant Professor", department: "Department of Commerce with CA", institution: "Government Arts and Science College, Gudalur", address: "The Nilgiris, Tamil Nadu, India", email: "palanichamykp@jmrh.in", profile: "https://gascgudalur.in/department-of-commerce-with-ca/", image: "/images/editorial-board/dr-palanichamy.jpeg" },
     { name: "Dr. K Thamarai Selvi", position: "Research Coordinator & Assistant Professor", department: "Department of Commerce", institution: "Nilgiri College of Arts and Science (Autonomous)", address: "Konnachal Post, Thaloor, The Nilgiris, Tamil Nadu - 643239", email: "thamaraiselvi@nilgiricollege.ac.in", profile: "https://nilgiricollege.ac.in/faculty/thamarai.pdf", image: "/images/editorial-board/dr-thamarai-selvi.jpeg" },
@@ -81,8 +97,8 @@ const JournalEditorialBoard = memo(() => {
                     <div className="flex-1 min-w-0">
                       <h3 className="font-serif text-sm sm:text-lg font-bold text-oxford mb-1">{member.role}</h3>
                       <h4 className="font-bold text-gold text-lg sm:text-xl mb-2">{member.name}</h4>
-                      <p className="text-oxford/70 mb-1 text-sm">{member.position}</p>
-                      <p className="text-oxford/60 mb-1 text-sm">{member.department}</p>
+                      {member.position && <p className="text-oxford/70 mb-1 text-sm">{member.position}</p>}
+                      {member.department && <p className="text-oxford/60 mb-1 text-sm">{member.department}</p>}
                       <p className="text-oxford/60 mb-1 text-sm">{member.institution}</p>
                       {member.address && <p className="text-oxford/60 mb-1 text-sm">{member.address}</p>}
                       <a href={`mailto:${member.email}`} className="inline-flex items-center gap-2 text-gold hover:text-oxford transition-colors mt-2 text-sm min-h-[44px] touch-manipulation">
@@ -117,16 +133,16 @@ const JournalEditorialBoard = memo(() => {
                     )}
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold text-oxford mb-1 text-sm sm:text-base">{member.name}</h3>
-                      <p className="text-oxford/70 text-xs sm:text-sm mb-1">{member.position}</p>
-                      <p className="text-oxford/60 text-xs sm:text-sm mb-1">{member.department}</p>
+                      {member.position && <p className="text-oxford/70 text-xs sm:text-sm mb-1">{member.position}</p>}
+                      {member.department && <p className="text-oxford/60 text-xs sm:text-sm mb-1">{member.department}</p>}
                       <p className="text-oxford/60 text-xs sm:text-sm mb-1">{member.institution}</p>
-                      {(member as any).address && <p className="text-oxford/60 text-xs sm:text-sm mb-2">{(member as any).address}</p>}
+                      {member.address && <p className="text-oxford/60 text-xs sm:text-sm mb-2">{member.address}</p>}
                       <a href={`mailto:${member.email}`} className="inline-flex items-center gap-2 text-gold hover:text-oxford transition-colors text-xs sm:text-sm min-h-[44px] touch-manipulation">
                         <Mail size={12} />
                         {member.email}
                       </a>
-                      {(member as any).profile && (
-                        <a href={(member as any).profile} target="_blank" rel="noopener noreferrer" className="block text-gold hover:text-oxford transition-colors text-xs sm:text-sm mt-1">
+                      {member.profile && (
+                        <a href={member.profile} target="_blank" rel="noopener noreferrer" className="block text-gold hover:text-oxford transition-colors text-xs sm:text-sm mt-1">
                           View Profile →
                         </a>
                       )}
