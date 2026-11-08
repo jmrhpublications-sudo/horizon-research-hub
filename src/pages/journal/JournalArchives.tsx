@@ -1,5 +1,6 @@
-import { memo, useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { memo, useState, useMemo, useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import ShareLinkButton from "@/components/journal/ShareLinkButton";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SEOHead from "@/components/seo/SEOHead";
@@ -24,9 +25,7 @@ interface IssueGroup {
 
 const JournalArchives = memo(() => {
     const { publishedJournals } = useJMRH();
-    const [viewMode, setViewMode] = useState<"volumes" | "issues" | "journals">("volumes");
-    const [selectedVolume, setSelectedVolume] = useState<VolumeGroup | null>(null);
-    const [selectedIssue, setSelectedIssue] = useState<IssueGroup | null>(null);
+    const [searchParams, setSearchParams] = useSearchParams();
     const [viewingJournal, setViewingJournal] = useState<any>(null);
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
@@ -73,23 +72,40 @@ const JournalArchives = memo(() => {
         return getPublicFileUrl('publications', filePath);
     };
 
+    const volParam = searchParams.get("volume");
+    const issueParam = searchParams.get("issue");
+    const articleParam = searchParams.get("article");
+    const selectedVolume = volumes.find(v => v.id === volParam) || null;
+    const selectedIssue = selectedVolume?.issues.find(i => i.id === issueParam) || null;
+    const viewMode: "volumes" | "issues" | "journals" =
+        selectedIssue ? "journals" : selectedVolume ? "issues" : "volumes";
+
+    const volumePath = (v: string) => `/journal/archives?volume=${encodeURIComponent(v)}`;
+    const issuePath = (v: string, i: string) => `${volumePath(v)}&issue=${encodeURIComponent(i)}`;
+    const articlePath = (v: string, i: string, id: string) => `${issuePath(v, i)}&article=${encodeURIComponent(id)}`;
+
+    useEffect(() => {
+        if (viewMode === "journals" && articleParam) {
+            const el = document.getElementById(`article-${articleParam}`);
+            if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+        } else {
+            window.scrollTo({ top: 0 });
+        }
+    }, [viewMode, articleParam, volParam, issueParam]);
+
     const navigateToVolume = (volume: VolumeGroup) => {
-        setSelectedVolume(volume);
-        setViewMode("issues");
+        setSearchParams({ volume: volume.id });
     };
 
     const navigateToIssue = (issue: IssueGroup) => {
-        setSelectedIssue(issue);
-        setViewMode("journals");
+        if (selectedVolume) setSearchParams({ volume: selectedVolume.id, issue: issue.id });
     };
 
     const goBack = () => {
-        if (viewMode === "journals") {
-            setSelectedIssue(null);
-            setViewMode("issues");
-        } else if (viewMode === "issues") {
-            setSelectedVolume(null);
-            setViewMode("volumes");
+        if (viewMode === "journals" && selectedVolume) {
+            setSearchParams({ volume: selectedVolume.id });
+        } else {
+            setSearchParams({});
         }
     };
 
@@ -167,8 +183,14 @@ const JournalArchives = memo(() => {
                     <h1 className="font-serif text-4xl md:text-5xl font-black text-oxford mb-6">
                         {viewMode === "volumes" && "ARCHIVES (ISSUES)"}
                         {viewMode === "issues" && selectedVolume?.name}
-                        {viewMode === "journals" && selectedIssue?.name}
+                        {viewMode === "journals" && `${selectedVolume?.name} · ${selectedIssue?.name}`}
                     </h1>
+                    {viewMode === "journals" && selectedVolume && selectedIssue && (
+                        <ShareLinkButton path={issuePath(selectedVolume.id, selectedIssue.id)} title={`JMRH ${selectedVolume.name}, ${selectedIssue.name}`} label="Share this issue" />
+                    )}
+                    {viewMode === "issues" && selectedVolume && (
+                        <ShareLinkButton path={volumePath(selectedVolume.id)} title={`JMRH ${selectedVolume.name}`} label="Share this volume" />
+                    )}
                 </div>
             </section>
 
@@ -179,7 +201,10 @@ const JournalArchives = memo(() => {
                         volumes.length > 0 ? (
                             <div className="space-y-8">
                                 {volumes.map((volume) => (
-                                    <div key={volume.id} className="border-b border-black/10 pb-8 last:border-0">
+                                    <div key={volume.id} className="border-b border-black/10 pb-8 last:border-0 space-y-2">
+                                        <div className="flex justify-end">
+                                            <ShareLinkButton path={volumePath(volume.id)} title={`JMRH ${volume.name}`} label="Share volume" />
+                                        </div>
                                         <button 
                                             onClick={() => navigateToVolume(volume)}
                                             className="w-full text-left group"
@@ -227,7 +252,10 @@ const JournalArchives = memo(() => {
                     {viewMode === "issues" && selectedVolume && (
                         <div className="space-y-8">
                             {selectedVolume.issues.sort((a, b) => parseInt(b.id) - parseInt(a.id)).map((issue) => (
-                                <div key={issue.id} className="border-b border-black/10 pb-8 last:border-0">
+                                <div key={issue.id} className="border-b border-black/10 pb-8 last:border-0 space-y-2">
+                                    <div className="flex justify-end">
+                                        <ShareLinkButton path={issuePath(selectedVolume.id, issue.id)} title={`JMRH ${selectedVolume.name}, ${issue.name}`} label="Share issue" />
+                                    </div>
                                     <button 
                                         onClick={() => navigateToIssue(issue)}
                                         className="w-full text-left group"
@@ -260,11 +288,12 @@ const JournalArchives = memo(() => {
                         <div className="space-y-8">
                             {selectedIssue.journals.length > 0 ? (
                                 selectedIssue.journals.map((journal, idx) => (
-                                    <div key={journal.id} className="bg-white border border-black/5 p-8 hover:border-gold/20 transition-all">
-                                        <div className="mb-4">
+                                    <div key={journal.id} id={`article-${journal.id}`} className={`scroll-mt-28 bg-white border p-5 sm:p-8 hover:border-gold/20 transition-all ${articleParam === String(journal.id) ? 'border-gold ring-2 ring-gold/30' : 'border-black/5'}`}>
+                                        <div className="mb-4 flex items-center justify-between gap-2">
                                             <span className="text-xs font-bold text-oxford/40 uppercase tracking-widest">
                                                 Article {idx + 1}
                                             </span>
+                                            <ShareLinkButton path={articlePath(selectedVolume!.id, selectedIssue.id, String(journal.id))} title={journal.title || 'JMRH Article'} />
                                         </div>
                                         
                                         <h3 className="font-serif text-xl md:text-2xl font-bold text-oxford mb-4">
