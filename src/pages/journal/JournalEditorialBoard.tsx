@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import PageShell from "@/components/layout/PageShell";
 import { pageSEO } from "@/lib/seo-data";
 import { Mail } from "lucide-react";
-import drBalaMuraliPortrait from "@/assets/dr-bala-murali-s.jpeg.asset.json";
 
 type LeadershipMember = {
   role: string;
@@ -47,7 +46,7 @@ const JournalEditorialBoard = memo(() => {
 
   const boardMembers: BoardMember[] = [
     { name: "Abhishek BP", position: "Assistant Professor in Language Pathology", department: "Centre of Speech Language Sciences", institution: "AIISH, Mysuru, Karnataka, India 570006", email: "abhishekbp@aiishmysore.in", profile: "https://aiishmysore.in/ka/faculty-members-staff/abhishek-b-p", image: "/images/editorial-board/abhishek-bp.jpeg" },
-    { name: "Dr. Bala Murali S", position: "Assistant Professor", department: "Department of Business Administration (BBA)", institution: "Dwaraka Doss Goverdhan Doss Vaishnav College, Chennai, Tamil Nadu, India 600106", email: "sbalamurali@dgvaishnavcollege.edu.in", profile: "https://www.dgvaishnavcollege.edu.in/dgvaishnav-c/uploads/2023/01/Mr.-Balamurali.pdf", image: drBalaMuraliPortrait.url },
+    { name: "Dr. Bala Murali S", position: "Assistant Professor", department: "Department of Business Administration (BBA)", institution: "Dwaraka Doss Goverdhan Doss Vaishnav College, Chennai, Tamil Nadu, India 600106", email: "sbalamurali@dgvaishnavcollege.edu.in", profile: "https://www.dgvaishnavcollege.edu.in/dgvaishnav-c/uploads/2023/01/Mr.-Balamurali.pdf", image: "/images/editorial-board/dr-bala-murali-s.jpeg" },
     { name: "Dr. Bala Shanmuga Devi", position: "Principal", institution: "Nilgiri College of Arts and Science (Autonomous), Thaloor", address: "Konnachal Post, Thaloor, The Nilgiris, Tamil Nadu - 643239", email: "shanmuga25oct@gmail.com", profile: "https://nilgiricollege.ac.in/about/Principal", image: "/images/editorial-board/bala-shanmuga-devi.jpeg" },
     { name: "Dr. Dency Mary", position: "Assistant Professor", department: "Department of BBA (IB)", institution: "Nilgiri College of Arts and Science (Autonomous), Thaloor", address: "The Nilgiris – 643240, Tamil Nadu, India", email: "dencymary@nilgiricollege.ac.in", profile: "https://nilgiricollege.ac.in/faculty/dency.pdf", image: "/images/editorial-board/dr-dency-mary.jpeg" },
     { name: "Dr. Firos Khan M.C.", position: "Dean, Commerce & Management", department: "Department of Commerce & Management", institution: "Nilgiri College of Arts and Science (Autonomous), Thaloor", address: "Konnachal Post, Thaloor, The Nilgiris, Tamil Nadu - 643239", email: "dr.firoskhan@nilgiricollege.ac.in", profile: "https://nilgiricollege.ac.in/faculty/firozkhan.pdf", image: "/images/editorial-board/firos-khan.jpeg" },
